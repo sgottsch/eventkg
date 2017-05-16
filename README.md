@@ -23,11 +23,14 @@ wikidata_meta_files	wikidata_meta_files
 #### Run the extraction
 
 Export the Pipeline class as exectuable jar and start the data download using:
+
 ```java -jar Pipeline.jar path_to_config_file.txt 1```
 ```java -jar Pipeline.jar path_to_config_file.txt 2,3```
 
 Specify the language in the Dumper class and export it as Jar. Run the extraction from the Wikipedia dump files for each language:
+
 ```nohup parallel -j9 "bzip2 -dc {} | java -jar -Xmx6G -Xss40m Dumper.jar --format=eventkb:-1" :::: data/raw_data/wikipedia/fr/dump_file_list.txt 2> log_dumper.txt```
 
 Start the final steps of extraction:
+
 ```java -jar Pipeline.jar path_to_config_file.txt 4,5```
