@@ -1,0 +1,628 @@
+{{About|lung carcinomas|other lung tumors|Lung tumor (disambiguation){{!}}Lung tumor}}
+{{Use dmy dates|date=March 2014}}
+{{Infobox disease
+|Name = Lung cancer
+|Image = LungCACXR.PNG
+|Caption = A [[chest X-ray]] showing a tumor in the lung (marked by arrow)
+|field = [[Oncology]]
+|DiseasesDB = 7616
+|ICD10 = {{ICD10|C|33||c|30}}-{{ICD10|C|34||c|30}}
+|ICD9 = {{ICD9|162}}
+|ICDO =
+|OMIM =211980
+|MedlinePlus = 007194
+|eMedicineSubj = med
+|eMedicineTopic = 1333
+|eMedicine_mult = {{eMedicine2|med|1336}} {{eMedicine2|emerg|335}} {{eMedicine2|radio|807}} {{eMedicine2|radio|405}} {{eMedicine2|radio|406}}
+|MeshID = D002283
+}}
+<!-- Definition and symptoms -->
+'''Lung cancer''', also known as '''lung carcinoma''',<ref name="Merck" /> is a malignant [[lung tumor]] characterized by uncontrolled [[cell growth]] in [[tissue (biology)|tissues]] of the [[lung]]. If left untreated, this growth can spread beyond the lung by process of [[metastasis]] into nearby tissue or other parts of the body.<ref>{{cite book | last1=Falk | first1=S | last2=Williams | first2=C | title=Lung Cancer&mdash;the facts | edition=3rd | chapter=Chapter 1 | pages=3&ndash;4 | publisher=Oxford University Press | year=2010 | isbn=978-0-19-956933-5 }}</ref> Most [[cancer]]s that start in the lung, known as primary lung cancers, are [[carcinomas]] that derive from [[epithelium|epithelial]] cells. The main primary types are [[small-cell lung carcinoma]] (SCLC) and [[non-small-cell lung carcinoma]] (NSCLC). The most common [[symptom]]s are coughing (including [[Hemoptysis|coughing up blood]]), weight loss, shortness of breath, and [[chest pain]]s.<ref name="Harrison" />
+
+<!-- Cause and diagnosis -->
+The vast majority (85%) of cases of lung cancer are due to long-term exposure to [[tobacco smoking|tobacco smoke]].<ref name="Merck" /> About 10–15% of cases occur in people who have never smoked.<ref name="Thun" /> These cases are often caused by a combination of [[genetics|genetic factors]]<ref name="MurrayNadel46" /> and exposure to [[radon]] gas,<ref name="MurrayNadel46" /> [[asbestos]],<ref name="O'Reilly" /> or other forms of [[air pollution]],<ref name="MurrayNadel46" /> including [[passive smoking|second-hand smoke]].<ref name="AUTOREF" /><ref name="AUTOREF1" /> Lung cancer may be seen on [[chest radiograph]]s and [[computed tomography]] (CT) scans. The [[medical diagnosis|diagnosis]] is confirmed by [[biopsy]]<ref name="Holland-Frei78" /> which is usually performed by [[bronchoscopy]] or CT-guidance.
+
+<!-- Treatment, prognosis and epidemiology -->
+Treatment and long-term outcomes depend on the type of cancer, the [[staging (pathology)|stage]] (degree of spread), and the person's overall health, measured by [[performance status]]. Common treatments include [[surgery]], [[chemotherapy]], and [[radiation therapy|radiotherapy]]. NSCLC is sometimes treated with surgery, whereas SCLC usually responds better to chemotherapy and radiotherapy.<ref>{{cite book | last=Chapman | first=S |author2=Robinson G |author3=Stradling J |author4=West S  | title=Oxford Handbook of Respiratory Medicine | edition=2nd | chapter=Chapter 31 | publisher=Oxford University Press | year=2009 | isbn=978-0-19-954516-2 }}</ref> Overall, 16.8% of people in the United States diagnosed with lung cancer [[Five-year survival rate|survive five years]] after the diagnosis,<ref name="SEER">{{cite web | title=Surveillance, Epidemiology and End Results Program | url=http://seer.cancer.gov/statfacts/html/lungb.html | website=National Cancer Institute | accessdate=15 July 2014}}</ref> while outcomes on average are worse in the developing world. Worldwide, lung cancer is the most common cause of cancer-related death in men and women, and was responsible for 1.56 million deaths annually, as of 2012.<ref name=WCR2014Epi>{{cite book|title=World Cancer Report 2014|date=2014|publisher=World Health Organization|isbn=9283204298|pages=Chapter 1.1}}</ref>
+{{TOC limit|3}}
+
+==Signs and symptoms==
+Signs and symptoms which may suggest lung cancer include:<ref name="Harrison" />
+* Respiratory symptoms: [[coughing]], [[hemoptysis|coughing up blood]], [[wheeze|wheezing]], or [[dyspnea|shortness of breath]]
+* Systemic symptoms: weight loss, [[weakness]], [[fever]], or [[Nail clubbing|clubbing]] of the fingernails
+* Symptoms due to the cancer mass pressing on adjacent structures: chest pain, [[bone pain]], [[superior vena cava obstruction]], or [[dysphagia|difficulty swallowing]]
+
+If the cancer grows in the [[airway]]s, it may obstruct airflow, causing [[dyspnea|breathing difficulties]]. The obstruction can lead to accumulation of secretions behind the blockage, and predispose to [[pneumonia]].<ref name="Harrison" />
+
+Depending on the type of tumor, [[Paraneoplastic syndrome|paraneoplastic phenomena]]—symptoms not due to the local presence of cancer—may initially attract attention to the disease.<ref name="Honnorat" /> In lung cancer, these phenomena may include [[hypercalcemia]], [[syndrome of inappropriate antidiuretic hormone]] (SIADH, abnormally concentrated urine and diluted blood), ectopic [[ACTH]] production, or [[Lambert–Eaton myasthenic syndrome]] (muscle weakness due to [[autoimmune disorder|autoantibodies]]). Tumors in the [[Apex of lung|top of the lung]], known as [[Pancoast tumor]]s, may invade the local part of the [[sympathetic nervous system]], leading to [[Horner's syndrome]] (dropping of the eyelid and a small pupil on that side), as well as damage to the [[brachial plexus]].<ref name="Harrison" />
+
+Many of the symptoms of lung cancer (poor appetite, weight loss, fever, fatigue) are not specific.<ref name="Holland-Frei78" /> In many people, the cancer has already spread beyond the original site by the time they have symptoms and seek medical attention.<ref name="ajcc" /> Symptoms that suggest the presence of metastatic disease include weight loss, bone pain and neurological symptoms (headaches, [[syncope (medicine)|fainting]], [[convulsion]]s, or limb weakness).<ref name="Harrison" /> Common sites of spread include the brain, bone, [[adrenal gland]]s, opposite lung, liver, [[pericardium]], and [[kidney]]s.<ref name="ajcc" /> About 10% of people with lung cancer do not have symptoms at diagnosis; these cancers are incidentally found on routine chest radiography.<ref name="Collins" />
+
+==Causes==
+[[Image:Cancer smoking lung cancer correlation from NIH.svg|thumb|Graph showing how a general increase in sales of tobacco products in the USA in the first four decades of the 20th century (cigarettes per person per year) led to a corresponding rapid increase in the rate of lung cancer during the 1930s, '40s and '50s (lung cancer deaths per 100,000 male population per year)]]
+Cancer develops following genetic damage to [[DNA]] and epigenetic changes. These changes affect the normal functions of the cell, including cell proliferation, programmed cell death ([[apoptosis]]) and DNA repair. As more damage accumulates, the risk of cancer increases.<ref name="Holland-Frei8">{{Cite book  |vauthors=Brown KM, Keats JJ, Sekulic A, etal | title=Holland-Frei Cancer Medicine | publisher=People's Medical Publishing House USA | year=2010 | chapter=Chapter 8 | edition=8th | isbn=978-1-60795-014-1 }}</ref>
+
+===Smoking===
+[[File:cancerous lung.jpg|thumb|Cross section of a human lung: The white area in the upper lobe is cancer; the black areas are discoloration due to [[Tobacco smoking|smoking]].]]
+
+[[Tobacco smoking|Smoking]], particularly of [[cigarette]]s, is by far the main contributor to lung cancer.<ref name="AUTOREF5" /> Cigarette smoke contains at least 73 known [[carcinogen]]s,<ref name="Hecht">{{Cite journal | last=Hecht | first=SS | title=Lung carcinogenesis by tobacco smoke |journal=International Journal of Cancer | volume=131 | issue=12 | pages=2724–2732 | year=2012 | pmid=22945513 | doi=10.1002/ijc.27816 | pmc=3479369 }}</ref> including [[benzo(a)pyrene|benzo[''a'']pyrene]],<ref>{{cite book | last1=Kumar | first1=V | author2=Abbas AK | author3=Aster JC | year=2013 | title=Robbins Basic Pathology |edition=9th | publisher=Elsevier Saunders | pages=199 | chapter=Chapter 5 | isbn=978-1-4377-1781-5 }}</ref> [[NNK]], [[1,3-butadiene]] and a [[radioisotope|radioactive isotope]] of polonium, [[polonium-210]].<ref name="Hecht" /> Across the developed world, 90% of lung cancer deaths in men during the year 2000 were attributed to smoking (70% for women).<ref name="Peto" /> Smoking accounts for about 85% of lung cancer cases.<ref name="Merck" />
+
+[[Passive smoking]]—the inhalation of smoke from another's smoking—is a cause of lung cancer in nonsmokers. A passive smoker can be defined as someone living or working with a smoker. Studies from the US,<ref name="AUTOREF7">{{Cite journal | last=California Environmental Protection Agency | title=Health effects of exposure to environmental tobacco smoke. California Environmental Protection Agency |journal=Tobacco Control | volume=6 | issue=4 | pages=346–353 | year=1997 | url=http://www.druglibrary.org/schaffer/tobacco/caets/ets-main.htm | pmid=9583639 | doi=10.1136/tc.6.4.346 | pmc=1759599 }}</ref><ref>{{Cite journal | authorlink=Centers for Disease Control and Prevention | title=State-specific prevalence of current cigarette smoking among adults, and policies and attitudes about secondhand smoke—United States, 2000 | journal=Morbidity and Mortality Weekly Report | volume=50 | issue=49 | pages=1101–1106 | publisher=CDC |location=Atlanta, Georgia|date=December 2001 | url=http://www.cdc.gov/mmwr/preview/mmwrhtml/mm5049a1.htm | pmid=11794619 | author1=Centers for Disease Control and Prevention (CDC) }}</ref><ref name="Alberg">{{Cite journal | last=Alberg | first=AJ |author2=Samet JM | title=Epidemiology of lung cancer | journal=Chest | volume=132 | issue=S3 | pages=29S–55S | publisher=American College of Chest Physicians |date=September 2007 | url=http://chestjournal.chestpubs.org/content/132/3_suppl/29S.long | pmid=17873159 | doi=10.1378/chest.07-1347 }}</ref> Europe<ref>{{Cite journal | last=Jaakkola | first=MS | author2=Jaakkola JJ | title=Impact of smoke-free workplace legislation on exposures and health: possibilities for prevention |journal=European Respiratory Journal | volume=28 | issue=2 | pages=397–408 | date=August 2006 | url=http://erj.ersjournals.com/content/28/2/397.long | pmid=16880370 | doi=10.1183/09031936.06.00001306 }}</ref> and the UK<ref>{{Cite journal | last=Parkin | first=DM | title=Tobacco—attributable cancer burden in the UK in 2010 | journal=British Journal of Cancer | volume=105 | issue=Suppl. 2 | pages=S6–S13 |date=December 2011 | pmid=22158323 | doi=10.1038/bjc.2011.475 | url=http://www.ncbi.nlm.nih.gov/pmc/articles/PMC3252064/?tool=pubmed | pmc=3252064}}</ref> have consistently shown a significantly increased risk among those exposed to passive smoke.<ref name="Taylor">{{Cite journal | last=Taylor | first=R | author2=Najafi F | author3=Dobson A  | title=Meta-analysis of studies of passive smoking and lung cancer: effects of study type and continent | journal=International Journal of Epidemiology | volume=36 | issue=5 | pages=1048–1059 | date=October 2007 | url=http://ije.oxfordjournals.org/content/36/5/1048.long | pmid=17690135 | doi=10.1093/ije/dym158 }}</ref> Those who live with someone who smokes have a 20–30% increase in risk while those who work in an environment with secondhand smoke have a 16–19% increase in risk.<ref>{{cite web|title=Frequently asked questions about second hand smoke|url=http://www.who.int/tobacco/research/secondhand_smoke/faq/en/index.html|work=World Health Organization|accessdate=25 July 2012}}</ref> Investigations of [[sidestream smoke]] suggest it is more dangerous than direct smoke.<ref name="Schick" /> Passive smoking causes about 3,400 deaths from lung cancer each year in the USA.<ref name="Alberg" />
+
+Marijuana smoke contains many of the same carcinogens as those in tobacco smoke.<ref>{{Cite journal | last=Greydanus | first=DE |author2=Hawver EK | author3=Greydanus MM | title=Marijuana: current concepts | journal=Frontiers in Public Health | volume=1 | issue=42 |date=October 2013 | pmid=24350211 | doi=10.3389/fpubh.2013.00042 | pmc=3859982 }}</ref> However, the effect of smoking [[cannabis]] on lung cancer risk is not clear.<ref>{{cite journal|last1=Owen|first1=KP|last2=Sutter|first2=ME|last3=Albertson|first3=TE|title=Marijuana: respiratory tract effects.|journal=Clinical reviews in allergy & immunology|date=February 2014|volume=46|issue=1|pages=65–81|pmid=23715638|doi=10.1007/s12016-013-8374-y}}</ref><ref>{{cite journal|last1=Joshi|first1=M|last2=Joshi|first2=A|last3=Bartter|first3=T|title=Marijuana and lung diseases.|journal=Current Opinion in Pulmonary Medicine|date=March 2014|volume=20|issue=2|pages=173–179|pmid=24384575|doi=10.1097/mcp.0000000000000026}}</ref> A 2013 review did not find an increased risk from light to moderate use.<ref>{{cite journal|last1=Tashkin|first1=DP|title=Effects of marijuana smoking on the lung.|journal=Annals of the American Thoracic Society|date=June 2013|volume=10|issue=3|pages=239–47|pmid=23802821|doi=10.1513/annalsats.201212-127fr}}</ref> A 2014 review found that smoking cannabis doubled the risk of lung cancer.<ref>{{Cite journal | last=Underner | first=M | author2=Urban T | author3=Perriot J | title=Cannabis smoking and lung cancer | journal=Revue des Maladies Respiratoires | volume=31 | issue=6 | pages=488–498 | date=June 2014 | pmid=25012035 | doi=10.1016/j.rmr.2013.12.002 }}</ref>
+
+===Radon gas===
+[[Radon]] is a colourless and odorless [[gas]] generated by the breakdown of radioactive [[radium]], which in turn is the decay product of [[uranium]], found in the Earth's [[Crust (geology)|crust]]. The radiation decay products [[ion]]ize genetic material, causing mutations that sometimes turn cancerous. Radon is the second-most common cause of lung cancer in the USA,<ref>{{cite journal | last1=Choi | first1=H | last2=Mazzone | first2=P  | title=Radon and lung cancer: assessing and mitigating the risk | journal=Cleveland Clinic Journal of Medicine | volume=81 | issue=9 | pages=567–575 |date=September 2014 | pmid=25183848 | doi=10.3949/ccjm.81a.14046 | url=http://www.ccjm.org/content/81/9/567.long }}</ref> causing about 21,000 deaths each year.<ref>{{cite web | title=Radon (Rn) Health Risks | publisher=EPA | url=http://www.epa.gov/radon/healthrisks.html }}</ref> The risk increases 8–16% for every 100 [[becquerel|Bq]]/[[cubic metre|m³]] increase in the radon concentration.<ref>{{cite journal | author=Schmid K, Kuwert T, Drexler H | title=Radon in Indoor Spaces: An Underestimated Risk Factor for Lung Cancer in Environmental Medicine | journal=Dtsch Arztebl Int | volume=107 | issue=11 | pages=181–6 | date=March 2010 | pmid=20386676 | pmc=2853156 | doi=10.3238/arztebl.2010.0181 | url= }}</ref> Radon gas levels vary by locality and the composition of the underlying soil and rocks. About one in 15 homes in the US has radon levels above the recommended guideline of 4 [[picocurie]]s per liter (pCi/l) (148 Bq/m³).<ref name="EPA radon" />
+
+===Asbestos===
+[[Asbestos]] can cause a variety of lung diseases, including lung cancer. [[Tobacco]] smoking and asbestos have a [[synergy|synergistic]] effect on the formation of lung cancer.<ref name="O'Reilly" /> In smokers who work with asbestos, the risk of lung cancer is increased 45-fold compared to the general population.<ref>{{Cite book | last=Tobias | first=J |author2=Hochhauser D | title=Cancer and its Management | publisher=Wiley-Blackwell | year=2010 | page=199 | chapter=Chapter 12 | edition=6th | isbn=978-1405-170154 }}</ref> Asbestos can also cause cancer of the [[pleura]], called [[mesothelioma]] (which is different from lung cancer).<ref>{{Cite book | last=Davies | first=RJO |author2=Lee YCG | title=Oxford Textbook Medicine | publisher=OUP Oxford | year=2010 | chapter=18.19.3 | edition=5th | isbn=978-0-19-920485-4 }}</ref>
+
+===Air pollution===
+Outdoor air pollution has a small effect on increasing the risk of lung cancer.<ref name="MurrayNadel46">{{Cite book | author=Alberg AJ, Samet JM | title=Murray & Nadel's Textbook of Respiratory Medicine | publisher=Saunders Elsevier | year=2010 | chapter=Chapter 46 | edition=5th | isbn=978-1-4160-4710-0 }}</ref> Fine [[Atmospheric particulate matter|particulates]] (PM<sub>2.5</sub>) and [[stratospheric sulfur aerosols|sulfate aerosols]], which may be released in traffic exhaust fumes, are associated with slightly increased risk.<ref name="MurrayNadel46" /><ref>{{cite journal | last=Chen | first=H |author2=Goldberg MS |author3=Villeneuve PJ  | journal=Reviews on Environmental Health |date=Oct–Dec 2008 | volume=23 |issue=4 | pages=243–297 | title=A systematic review of the relation between long-term exposure to ambient air pollution and chronic diseases | pmid=19235364 | doi=10.1515/reveh.2008.23.4.243}}</ref> For [[nitrogen dioxide]], an incremental increase of 10 [[parts per billion]] increases the risk of lung cancer by 14%.<ref>{{cite journal | last=Clapp | first=RW |author2=Jacobs MM |author3=Loechler EL  | journal=Reviews on Environmental Health |date=Jan–Mar 2008 | volume=23 |issue=1 | pages=1–37 | title=Environmental and Occupational Causes of Cancer New Evidence, 2005–2007 | pmid=18557596 | url=http://www.ncbi.nlm.nih.gov/pmc/articles/PMC2791455/?tool=pubmed | pmc=2791455 | doi=10.1515/REVEH.2008.23.1.1}}</ref> Outdoor air pollution is estimated to account for 1–2% of lung cancers.<ref name="MurrayNadel46" />
+
+Tentative evidence supports an increased risk of lung cancer from [[indoor air pollution]] related to the burning of wood, charcoal, dung or crop residue for cooking and heating.<ref name=Lim2012>{{cite journal|last=Lim|first=WY|author2=Seow, A |title=Biomass fuels and lung cancer.|journal=Respirology (Carlton, Vic.)|date=January 2012|volume=17|issue=1|pages=20–31|pmid=22008241|doi=10.1111/j.1440-1843.2011.02088.x}}</ref> Women who are exposed to indoor coal smoke have about twice the risk and a number of the by-products of burning [[biomass]] are known or suspected carcinogens.<ref name=Sood2012/> This risk affects about 2.4&nbsp;billion people globally,<ref name=Lim2012/> and is believed to account for 1.5% of lung cancer deaths.<ref name=Sood2012>{{cite journal|last=Sood|first=A|title=Indoor fuel exposure and the lung in both developing and developed countries: an update.|journal=Clinics in chest medicine|date=December 2012|volume=33|issue=4|pages=649–65|pmid=23153607|doi=10.1016/j.ccm.2012.08.003}}</ref>
+
+===Genetics===
+
+About 8% of lung cancer is due to [[heredity|inherited]] factors.<ref>{{Cite journal | last1=Yang | first1=IA | last2=Holloway | first2=JW | last3=Fong | first3=KM | title=Genetic susceptibility to lung cancer and co-morbidities | journal=Journal of Thoracic Disease | volume=5 | issue=Suppl. 5 | pages=S454–S462 |date=October 2013 | doi= 10.3978/j.issn.2072-1439.2013.08.06 | pmid=24163739 | pmc=3804872 }}</ref> In relatives of people with lung cancer, the risk is increased 2.4 times. This is likely due to a [[polygenic disorder|combination of genes]].<ref name="Fishman1802">{{Cite book | author=Kern JA, McLennan G | title=Fishman's Pulmonary Diseases and Disorders | publisher=McGraw-Hill | year=2008 | page=1802 | edition=4th | isbn=0-07-145739-9 }}</ref> [[Genetic polymorphism|Polymorphisms]] on chromosomes 5, 6 and 15 are known to affect the risk of lung cancer.<ref>{{Cite journal | last=Larsen | first=JE |author2=Minna D | title=Molecular biology of lung cancer: clinical implications | journal=Clinics in Chest Medicine | volume=32 | issue=4 | pages=703–740 | date=December 2011 | doi=10.1016/j.ccm.2011.08.003 | pmid=22054881 | pmc=3367865}}</ref>
+
+===Other causes===
+Numerous other substances, occupations, and environmental exposures have been linked to lung cancer. The [[International Agency for Research on Cancer]] (IARC) states there is "sufficient evidence" to show the following are carcinogenic in the lungs:<ref name='WHOListLungCancer'>{{cite journal|authors=Cogliano, VJ; Baan, R; Straif, K; Grosse, Y; Lauby-Secretan, B; El Ghissassi, F; Bouvard, V; Benbrahim-Tallaa, L; Guha, N; Freeman, C; Galichet, L; Wild, CP|title=Preventable exposures associated with human cancers.|journal=Journal of the National Cancer Institute|date=21 December 2011|volume=103|issue=24|pages=1827–39|pmid=22158127|url=http://monographs.iarc.fr/ENG/Classification/Table4.pdf|doi=10.1093/jnci/djr483}}</ref>
+*Some metals (aluminum production, [[cadmium]] and cadmium compounds, [[chromium]](VI) compounds, [[beryllium]] and beryllium compounds, iron and steel founding, nickel compounds, [[arsenic]] and inorganic arsenic compounds, underground [[hematite]] mining)
+*Some products of combustion (incomplete combustion, coal (indoor emissions from household coal burning), coal gasification, coal-tar pitch, [[Coke (fuel)|coke production]], soot, diesel engine exhaust)
+* Ionizing radiation (X-radiation, [[gamma radiation]], [[plutonium]])
+* Some toxic gases (methyl ether (technical grade), Bis-(chloromethyl) ether, [[sulfur mustard]], MOPP ([[Mustargen Oncovin Procarbazine Prednisone|vincristine-prednisone-nitrogen mustard-procarbazine mixture]]), fumes from painting)
+* Rubber production and crystalline [[Silicon dioxide|silica dust]]
+
+==Pathogenesis==
+{{See also|Carcinogenesis}}
+
+[[Image:Lung cancer cell during cell division-NIH.jpg|thumb|left| False-color [[scanning electron microscope|scanning electron micrograph]] of a lung cancer cell dividing]]
+
+Similar to many other cancers, lung cancer is initiated by activation of [[oncogene]]s or inactivation of [[tumor suppressor gene]]s.<ref>{{Cite journal | last=Cooper | first=WA |author2=Lam DLC | author3=O'Toole SA | title=Molecular biology of lung cancer | journal=Journal of Thoracic Disease | volume=5 | issue=Suppl. 5 | pages=S. 479–490 | date=October 2013 | doi=10.3978/j.issn.2072-1439.2013.08.03 | pmid=24163741 | pmc=3804875 | url=http://www.ncbi.nlm.nih.gov/pmc/articles/PMC3804875/pdf/jtd-05-S5-S479.pdf }}</ref> Carcinogens cause mutations in these genes which induce the development of cancer.<ref>{{Cite book | last=Tobias | first=J |author2=Hochhauser D | title=Cancer and its Management | publisher=Wiley-Blackwell | year=2010 | page=200 | chapter=Chapter 12 | edition=6th | isbn=978-1405-170154 }}</ref>
+
+[[Mutation]]s in the ''[[Ras (protein)|K-ras]]'' proto-oncogene are responsible for 10–30% of lung adenocarcinomas.<ref name="NEJM-molecular" /><ref name="Aviel-Ronen" /> About 4% of non-small-cell lung carcinomas involve an [[EML4-ALK positive lung cancer|EML4-ALK]] [[tyrosine kinase]] fusion gene.<ref>{{cite book | last1=Kumar | first1=V | author2=Abbas AK | author3=Aster JC | year=2013 | title=Robbins Basic Pathology |edition=9th | publisher=Elsevier Saunders | pages=212 | chapter=Chapter 5 | isbn=978-1-4377-1781-5 }}</ref>
+
+[[Epigenetics|Epigenetic]] changes—such as alteration of [[DNA methylation]], [[histone]] tail modification, or [[microRNA]] regulation—may lead to inactivation of tumor suppressor genes.<ref name="Jakopovic">{{Cite journal | last=Jakopovic | first=M |author2=Thomas A | author3=Balasubramaniam S | title=Targeting the epigenome in lung cancer: expanding approaches to epigenetic therapy | journal=Frontiers in Oncology | volume=3 | issue=261 | date=October 2013 | doi=10.3389/fonc.2013.00261 | pmid=24130964 | pmc=3793201 | url=http://www.ncbi.nlm.nih.gov/pmc/articles/PMC3793201/pdf/fonc-03-00261.pdf }}</ref>
+
+The [[epidermal growth factor receptor]] (EGFR) regulates cell proliferation, [[apoptosis]], [[angiogenesis]], and tumor invasion.<ref name="NEJM-molecular" /> Mutations and amplification of EGFR are common in non-small-cell lung carcinoma and provide the basis for treatment with EGFR-inhibitors. [[Her2/neu]] is affected less frequently.<ref name="NEJM-molecular" /> Other genes that are often mutated or amplified are ''[[c-MET]]'', ''[[NKX2-1]]'', ''[[LKB1]]'', ''[[PIK3CA]]'', and ''[[BRAF (gene)|BRAF]]''.<ref name="NEJM-molecular" />
+
+The cell lines of origin are not fully understood.<ref name="Harrison" /> The mechanism may involve abnormal activation of [[stem cell]]s. In the proximal airways, stem cells that express [[keratin 5]] are more likely to be affected, typically leading to squamous-cell lung carcinoma. In the middle airways, implicated stem cells include [[club cell]]s and [[neuroepithelial cell]]s that express [[uteroglobin|club cell secretory protein]]. Small-cell lung carcinoma may be derived from these cell lines<ref name="Mulvihill" /> or [[neuroendocrine cell]]s,<ref name="Harrison" /> and may express [[CD44]].<ref name="Mulvihill">{{Cite journal | last=Mulvihill | first=MS |author2=Kratz JR | author3=Pham P | title=The role of stem cells in airway repair: implications for the origins of lung cancer | journal=Chinese Journal of Cancer | volume=32 | issue=2 | pages=71–74 | date=February 2013 | url=http://www.ncbi.nlm.nih.gov/pmc/articles/PMC3845611/ | doi=10.5732/cjc.012.10097 | pmid=23114089 | pmc=3845611 }}</ref>
+
+Metastasis of lung cancer requires transition from epithelial to [[mesenchyme|mesenchymal]] cell type. This may occur through activation of signaling pathways such as [[Protein kinase B|Akt]]/[[GSK3B]]eta, [[MAPK/ERK pathway|MEK-ERK]], [[Fas receptor|Fas]], and Par6.<ref>{{Cite journal | last=Powell | first=CA |author2=Halmos B | author3=Nana-Sinkam SP | title=Update in lung cancer and mesothelioma 2012 | journal=American Journal of Respiratory and Critical Care Medicine | volume=188 | issue=2 | pages=157–166 | date=July 2013 | url=http://www.ncbi.nlm.nih.gov/pmc/articles/PMC3778761/pdf/rccm.201304-0716UP.pdf | doi=10.1164/rccm.201304-0716UP | pmid=23855692 | pmc=3778761 }}</ref>
+
+==Diagnosis==
+[[Image:Thorax CT peripheres Brronchialcarcinom li OF.jpg|thumb|[[CT scan]] showing a cancerous tumor in the left lung]]
+Performing a [[chest radiograph]] is one of the first investigative steps if a person reports symptoms that may suggest lung cancer. This may reveal an obvious mass, widening of the [[mediastinum]] (suggestive of spread to [[lymph node]]s there), [[atelectasis]] (collapse), consolidation ([[pneumonia]]) or [[pleural effusion]].<ref name="Merck" /> [[X-ray computed tomography|CT imaging]] is typically used to provide more information about the type and extent of disease. [[Bronchoscopy]] or CT-guided [[biopsy]] is often used to sample the tumor for [[histopathology]].<ref name="Collins" />
+
+Lung cancer often appears as a [[solitary pulmonary nodule]] on a chest radiograph. However, the [[differential diagnosis]] is wide. Many other diseases can also give this appearance, including [[tuberculosis]], fungal infections, metastatic cancer or [[organizing pneumonia]]. Less common causes of a solitary pulmonary nodule include [[hamartoma]]s, [[bronchogenic cyst]]s, [[adenoma]]s, [[arteriovenous malformation]], [[pulmonary sequestration]], [[rheumatoid nodule]]s, [[granulomatosis with polyangiitis]], or [[lymphoma]].<ref>{{Cite book | last=Miller |first=WT | title=Fishman's Pulmonary Diseases and Disorders | publisher=McGraw-Hill | year=2008 | page=486 | edition=4th | isbn=0-07-145739-9 }}</ref> Lung cancer can also be an [[incidentaloma|incidental finding]], as a solitary pulmonary nodule on a chest radiograph or CT scan done for an unrelated reason.<ref name="Fishman1815">{{Cite book | last=Kaiser | first=LR | title=Fishman's Pulmonary Diseases and Disorders | publisher=McGraw-Hill | year=2008 | pages=1815–1816 | edition=4th | isbn=0-07-145739-9 }}</ref> The definitive diagnosis of lung cancer is based on [[histopathology|histological]] examination of the suspicious tissue<ref name="Harrison" /> in the context of the clinical and radiological features.<ref name="Holland-Frei78" />
+
+[[Clinical practice guideline]]s recommend frequencies for pulmonary [[Nodule (medicine)|nodule]] surveillance.<ref name="ACCPandATSfive">{{Citation |author1 = American College of Chest Physicians |author1-link = American College of Chest Physicians |author2 = American Thoracic Society |author2-link = American Thoracic Society |date = September 2013 |title = Five Things Physicians and Patients Should Question |publisher = American College of Chest Physicians and American Thoracic Society |work = [[Choosing Wisely]]: an initiative of the [[ABIM Foundation]] |page = |url = http://www.choosingwisely.org/doctor-patient-lists/american-college-of-chest-physicians-and-american-thoracic-society/ |accessdate = 6 January 2013}}</ref> CT imaging should not be used for longer or more frequently than indicated as extended [[Disease surveillance|surveillance]] exposes people to increased radiation.<ref name="ACCPandATSfive"/>
+
+===Classification===
+
+{| class="wikitable floatright" style="text-align:center;font-size:90%;width:25%;margin-left:1em"
+|+ style="background:#E5AFAA;"|'''Age-adjusted [[incidence (epidemiology)|incidence]] of lung cancer by histological type'''<ref name="MurrayNadel46" />
+|- style="background: #E5AFAA;text-align:center;font-size:90%;"
+! abbr="Type" | Histological type
+! abbr="Frequency" | Incidence per 100,000 per year
+|-
+| All types
+| 66.9
+|-
+| Adenocarcinoma
+| 22.1
+|-
+| Squamous-cell carcinoma
+| 14.4
+|-
+| Small-cell carcinoma
+| 9.8
+|}
+
+Lung cancers are classified according to [[histopathology|histological type]].<ref name="Holland-Frei78" /> This classification is important for determining management and predicting outcomes of the disease. Lung cancers are [[carcinoma]]s—malignancies that arise from [[epithelial cell]]s. Lung carcinomas are categorized by the size and appearance of the malignant cells seen by a histopathologist under a [[microscope]]. For therapeutic purposes, two broad classes are distinguished: [[non-small-cell lung carcinoma]] and [[small-cell lung carcinoma]].<ref name="Robbins" />
+
+====Non-small-cell lung carcinoma====
+[[Image:Squamous carcinoma lung 2 cytology.jpg|thumb|left|[[Micrograph]] of [[squamous-cell carcinoma]], a type of non-small-cell carcinoma, [[FNA specimen]], [[Pap stain]]]]
+
+The three main subtypes of NSCLC are [[Adenocarcinoma of the lung|adenocarcinoma]], [[squamous-cell lung carcinoma|squamous-cell carcinoma]] and [[large-cell lung carcinoma|large-cell carcinoma]].<ref name="Harrison" />
+
+Nearly 40% of lung cancers are adenocarcinoma, which usually originates in peripheral lung tissue.<ref name="Holland-Frei78">{{cite book | vauthors=Lu C, Onn A, Vaporciyan AA, etal | title=Holland-Frei Cancer Medicine | edition=8th | chapter=78: Cancer of the Lung | publisher=People's Medical Publishing House | year=2010 |isbn=978-1-60795-014-1 }}</ref> Although most cases of adenocarcinoma are associated with smoking, adenocarcinoma is also the most common form of lung cancer among people who have smoked fewer than 100 cigarettes in their lifetimes ("never-smokers")<ref name="Harrison" /><ref name="Subramanian">{{cite journal | last=Subramanian | first=J |author2=Govindan R  |title=Lung cancer in never smokers: a review | journal=Journal of Clinical Oncology | volume=25 | issue=5 | pages=561–570| publisher=American Society of Clinical Oncology |date=February 2007 | pmid=17290066 |doi=10.1200/JCO.2006.06.8015 }}</ref> and ex-smokers with a modest smoking history.<ref name="Harrison" /> A subtype of adenocarcinoma, the [[bronchioloalveolar carcinoma]], is more common in female never-smokers, and may have a better long-term survival.<ref name="Raz"/>
+
+Squamous-cell carcinoma accounts for about 30% of lung cancers. They typically occur close to large airways. A hollow cavity and associated [[necrosis|cell death]] are commonly found at the centre of the tumor.<ref name="Holland-Frei78" /> About 9% of lung cancers are large-cell carcinoma. These are so named because the cancer cells are large, with excess [[cytoplasm]], large [[cell nucleus|nuclei]] and conspicuous [[nucleolus|nucleoli]].<ref name="Holland-Frei78" />
+
+====Small-cell lung carcinoma====
+
+[[Image:Lung small cell carcinoma (1) by core needle biopsy.jpg|thumb|left|Small-cell lung carcinoma (microscopic view of a core needle biopsy)]]
+
+In [[small-cell lung carcinoma]] (SCLC), the cells contain dense neurosecretory granules ([[vesicle (biology)|vesicles]] containing [[neuroendocrine]] [[hormone]]s), which give this tumor an endocrine/paraneoplastic syndrome association.<ref name="Rosti" /> Most cases arise in the larger airways (primary and secondary [[bronchus|bronchi]]).<ref name="Collins" /> Sixty to seventy percent have extensive disease (which cannot be targeted within a single radiation therapy field) at presentation.<ref name="Harrison" />
+
+====Others====
+
+Four main histological subtypes are recognised, although some cancers may contain a combination of different subtypes,<ref name=Robbins>{{cite book | last1=Kumar | first1=V | author2=Abbas AK | author3=Aster JC | year=2013 | title=Robbins Basic Pathology |edition=9th | publisher=Elsevier Saunders | pages=505 | chapter=12 | isbn=978-1-4377-1781-5 }}</ref> such as adenosquamous carcinoma.<ref name="Holland-Frei78" /> Rare subtypes include [[lung carcinoid|carcinoid tumors]], bronchial gland carcinomas and sarcomatoid carcinomas.<ref name="Holland-Frei78" />
+
+===Metastasis===
+{| class="wikitable floatright" style="text-align:center;font-size:90%;width:25%;margin-left:1em"
+|+ style="background:#E5AFAA;"|'''Typical [[Napsin-A]] and [[TTF-1]] [[immunostaining]] in primary lung carcinoma'''<ref name="Harrison" />
+|- style="background: #E5AFAA;text-align:center;font-size:90%;"
+! abbr="Type" | Histological type
+! abbr="Nap=A" | Napsin-A
+! TTF-1
+|-
+| Squamous-cell carcinoma
+| Negative
+| Negative
+|-
+| Adenocarcinoma
+| Positive
+| Positive
+|-
+| Small-cell carcinoma
+| Negative
+| Positive
+|}
+
+The lung is a common place for the spread of tumors from other parts of the body. Secondary cancers are classified by the site of origin; e.g., breast cancer that has spread to the lung is called metastatic breast cancer. Metastases often have a characteristic round appearance on chest radiograph.<ref name="Seo" />
+
+Primary lung cancers themselves most commonly metastasize to the brain, bones, liver and [[adrenal gland]]s.<ref name="Holland-Frei78" /> [[Immunostaining]] of a biopsy is often helpful to determine the original source.<ref name="pmid18784820">{{cite journal |author=Tan D, Zander DS |title=Immunohistochemistry for Assessment of Pulmonary and Pleural Neoplasms: A Review and Update |journal=Int J Clin Exp Pathol |volume=1 |issue=1 |pages=19–31 |year=2008|pmid=18784820 |pmc=2480532 }}</ref> The presence of [[Napsin-A]], [[TTF-1]], CK7 and CK20 are helpful in confirming the subtype of lung carcinoma. SCLC derived from neuroendocrine cells may express [[CD56]], [[neural cell adhesion molecule]], [[synaptophysin]] or [[chromogranin]].<ref name="Harrison" />
+
+===Staging===
+{{see also|Lung cancer staging}}
+
+Lung [[cancer staging]] is an assessment of the degree of spread of the cancer from its original source.<ref name="Holland-Frei2">{{cite book | vauthors=Connolly JL, Goldsmith JD, Wang HH, etal | title=Holland-Frei Cancer Medicine | edition=8th | chapter=37: Principles of Cancer Pathology | publisher=People's Medical Publishing House | year=2010 |isbn=978-1-60795-014-1 }}</ref> It is one of the factors affecting the [[prognosis]] and potential treatment of lung cancer.<ref name="Harrison" /><ref name="Holland-Frei2" />
+
+The evaluation of non-small-cell lung carcinoma (NSCLC) staging uses the [[TNM staging system|TNM classification]]. This is based on the size of the primary '''t'''umor, lymph '''n'''ode involvement, and distant '''m'''etastasis.<ref name="Harrison" />
+
+{| class="wikitable" style="text-align:center;font-size:90%;margin-left:1em;background:#E5AFAA;"
+|+ TNM classification in lung cancer<ref name="Harrison" /><ref>{{Cite journal | last=Chheang | first=S |author2=Brown K | title=Lung cancer staging: clinical and radiologic perspectives | journal=Seminars in Interventional Radiology | volume=30 | issue=2 | pages=99–113 |date=June 2013 | pmid=24436525 | pmc=3709937 | doi=10.1055/s-0033-1342950}}</ref>
+|-
+|
+{| class="wikitable"
+|-
+! colspan="3" | T: Primary tumor
+|-
+| rowspan="2" | TX
+| rowspan="2" | Any of:
+| Primary tumor cannot be assessed
+|-
+| Tumor cells present in sputum or bronchial washing, but tumor not seen with imaging or bronchoscopy
+|-
+| T0
+| colspan="2" | No evidence of primary tumor
+|-
+| Tis
+| colspan="2" | [[Carcinoma in situ]]
+|-
+| T1
+| colspan="2" | Tumor size less than or equal to 3&nbsp;cm across, surrounded by lung or visceral pleura, without invasion proximal to the lobar bronchus
+|-
+| T1a
+| colspan="2" | Tumor size less than or equal to 2&nbsp;cm across
+|-
+| T1b
+| colspan="2" | Tumor size more than 2&nbsp;cm but less than or equal to 3&nbsp;cm across
+|-
+| rowspan="4" | T2
+| rowspan="4" | Any of:
+| Tumor size more than 3&nbsp;cm but less than or equal to 7&nbsp;cm across
+|-
+| Involvement of the main bronchus at least 2&nbsp;cm distal to the carina
+|-
+| Invasion of visceral pleura
+|-
+| Atelectasis/obstructive pneumonitis extending to the hilum but not involving the whole lung
+|-
+| T2a
+| colspan="2" | Tumor size more than 3&nbsp;cm but less than or equal to 5&nbsp;cm across
+|-
+| T2b
+| colspan="2" | Tumor size more than 5&nbsp;cm but less than or equal to 7&nbsp;cm across
+|-
+| rowspan="5" | T3
+| rowspan="5" | Any of:
+| Tumor size more than 7&nbsp;cm across
+|-
+| Invasion into the chest wall, diaphragm, [[phrenic nerve]], mediastinal pleura or parietal [[pericardium]]
+|-
+| Tumor less than 2&nbsp;cm distal to the carina, but not involving the carina
+|-
+| Atelectasis/obstructive pneumonitis of the whole lung
+|-
+| Separate tumor nodule in the same lobe
+|-
+| rowspan="2" | T4
+| rowspan="2" | Any of:
+| Invasion of the mediastinum, heart, great vessels, trachea, carina, recurrent laryngeal nerve, esophagus, or vertebra
+|-
+| Separate tumor nodule in a different lobe of the same lung
+|}
+| style="vertical-align:top;" |
+{| class="wikitable"
+|-
+! colspan="3" | N: Lymph nodes
+|-
+| NX
+| colspan="2" | Regional lymph nodes cannot be assessed
+|-
+| N0
+| colspan="2" | No regional lymph node metastasis
+|-
+| N1
+| colspan="2" | Metastasis to ipsilateral peribronchial and/or hilar lymph nodes
+|-
+| N2
+| colspan="2" | Metastasis to ipsilateral mediastinal and/or subcarinal lymph nodes
+|-
+| rowspan="2" | N3
+| rowspan="2" | Any of:
+| Metastasis to scalene or supraclavicular lymph nodes
+|-
+| Metastasis to contralateral hilar or mediastinal lymph nodes
+|}
+| style="vertical-align:top;" |
+{| class="wikitable"
+|-
+! colspan="3" | M: Metastasis
+|-
+| MX
+| colspan="2" | Distant metastasis cannot be assessed
+|-
+| M0
+| colspan="2" | No distant metastasis
+|-
+| rowspan="3" | M1a
+| rowspan="3" | Any of:
+| Separate tumor nodule in the other lung
+|-
+| Tumor with pleural nodules
+|-
+| Malignant pleural or pericardial effusion
+|-
+| M1b
+| colspan="2" | Distant metastasis
+|}
+|}
+
+Using the TNM descriptors, a group is assigned, ranging from occult cancer, through stages 0, IA (one-A), IB, IIA, IIB, IIIA, IIIB and IV (four). This stage group assists with the choice of treatment and estimation of prognosis.<ref name="Rami-Porta">{{Cite journal | last=Rami-Porta | first=R |author2=Crowley JJ |author3=Goldstraw P | title=The revised TNM staging system for lung cancer | journal=Annals of Thoracic and Cardiovascular Surgery | volume=15 | issue=1 | pages=4–9 |date=February 2009 | url=http://www.atcs.jp/pdf/2009_15_1/4.pdf | pmid=19262443 }}</ref>
+
+{| class="wikitable floatleft" style="text-align:center;font-size:90%;margin-left:1em;background:#E5AFAA;"
+|+ Stage group according to TNM classification in lung cancer<ref name="Harrison" />
+|-
+! TNM
+! Stage group
+|-
+| T1a–T1b N0 M0
+| IA
+|-
+| T2a N0 M0
+| IB
+|-
+| T1a–T2a N1 M0
+| rowspan="2" | IIA
+|-
+| T2b N0 M0
+|-
+| T2b N1 M0
+| rowspan="2" | IIB
+|-
+| T3 N0 M0
+|-
+| T1a–T3 N2 M0
+| rowspan="3" | IIIA
+|-
+| T3 N1 M0
+|-
+| T4 N0–N1 M0
+|-
+| N3 M0
+| rowspan="2" | IIIB
+|-
+| T4 N2 M0
+|-
+| M1
+| IV
+|}
+
+Small-cell lung carcinoma (SCLC) has traditionally been classified as "limited stage" (confined to one half of the chest and within the scope of a single tolerable [[radiotherapy]] field) or "extensive stage" (more widespread disease).<ref name="Harrison" /> However, the TNM classification and grouping are useful in estimating prognosis.<ref name="Rami-Porta" />
+
+For both NSCLC and SCLC, the two general types of staging evaluations are clinical staging and surgical staging. Clinical staging is performed prior to definitive surgery. It is based on the results of imaging studies (such as [[X-ray computed tomography|CT scans]] and [[positron emission tomography|PET scans]]) and biopsy results. Surgical staging is evaluated either during or after the operation, and is based on the combined results of surgical and clinical findings, including surgical sampling of thoracic lymph nodes.<ref name="Holland-Frei78" />
+
+<gallery widths="200px" heights="200px" perrow="4" caption="Diagrams of main features of staging">
+
+File:Diagram showing stage 1A and 1B lung cancer CRUK 197.svg|Stage IA and IB lung cancer
+File:Diagram showing stage 2A lung cancer CRUK 213.svg|Stage IIA lung cancer
+File:Diagram showing one option for stage 2Ba lung cancer CRUK 176.svg|Stage IIB lung cancer
+File:Diagram showing one option for stage 2Bb lung cancer CRUK 177.svg|One option for stage IIB lung cancer, with T2b; but if tumor is within 2&nbsp;cm of the [[Carina of trachea|carina]], this is stage 3
+File:Diagram 1 of 3 showing stage 3A lung cancer CRUK 008.svg|Stage IIIA lung cancer
+File:Diagram 2 of 3 showing stage 3A lung cancer CRUK 014.svg|Stage IIIA lung cancer, if there is one feature from the list on each side 
+File:Diagram 3 of 3 showing stage 3A lung cancer CRUK 017.svg|Stage IIIA lung cancer
+File:Diagram 1 of 2 showing stage 3B lung cancer CRUK 005.svg|Stage IIIB lung cancer
+File:Diagram 2 of 2 showing stage 3B lung cancer CRUK 011.svg|Stage IIIB lung cancer
+File:Diagram showing stage 4 lung cancer CRUK 232.svg|Stage IV lung cancer
+</gallery>
+
+==Prevention==
+Smoking prevention and [[smoking cessation]] are effective ways of preventing the development of lung cancer.<ref>{{cite journal | last=Dela Cruz | first=CS | author2=Tanoue LT | author3=Matthay RA | title=Lung cancer: epidemiology, etiology, and prevention | journal=Clinic in Chest Medicine | volume=32 | issue=4 |date=December 2011 | pages=605–644 | doi=10.1016/j.ccm.2011.09.001 | pmid=22054876 | pmc=3864624 | url=http://www.ncbi.nlm.nih.gov/pmc/articles/PMC3864624/pdf/nihms468128.pdf }}</ref>
+
+===Smoking ban===
+{{see also|Smoking ban}}
+While in most countries industrial and domestic carcinogens have been identified and banned, tobacco smoking is still widespread. Eliminating tobacco smoking is a primary goal in the prevention of lung cancer, and smoking cessation is an important preventive tool in this process.<ref>{{cite journal | last=Goodman | first=GE | title=Lung cancer. 1: prevention of lung cancer | journal=Thorax | volume=57 | issue=11 |date=November 2002 | pages=994–999 | url=http://www.ncbi.nlm.nih.gov/pmc/articles/PMC1746232/pdf/v057p00994.pdf | pmid=12403886 | pmc=1746232 | doi=10.1136/thorax.57.11.994 }}</ref>
+
+Policy interventions to decrease [[passive smoking]] in public areas such as restaurants and workplaces have become more common in many [[Western world|Western countries]].<ref>{{cite journal | last=McNabola | first=A | author2=Gill LW | title=The control of environmental tobacco smoke: a policy review | journal=International Journal of Environmental Research and Public Health | volume=6 | issue=2 |date=February 2009 | pages=741–758 | doi=10.3390/ijerph6020741 | pmid=19440413 | pmc=2672352 }}</ref> [[Bhutan]] has had a complete smoking ban since 2005<ref name="Bhutan" /> while India introduced a ban on smoking in public in October 2008.<ref>{{cite news | last=Pandey | first=G | title=Indian ban on smoking in public | url=http://news.bbc.co.uk/1/hi/world/south_asia/7645868.stm | publisher=[[BBC]] | date=2 October 2008 | accessdate=25 April 2012 }}</ref> The [[World Health Organization]] has called for governments to institute a total ban on tobacco advertising to prevent young people from taking up smoking. They assess that such bans have reduced tobacco consumption by 16% where instituted.<ref name="AUTOREF10">{{Cite press release |title=UN health agency calls for total ban on tobacco advertising to protect young |url=http://www.un.org/apps/news/story.asp?NewsID=26857 |publisher=[[United Nations]] News service |date=30 May 2008}}</ref>
+
+===Screening===
+{{main|Lung cancer screening}}
+[[Cancer screening]] uses [[medical test]]s to detect disease in large groups of people who have no symptoms.<ref>{{cite journal | last=Gutierrez | first=A | author2=Suh R | author3=Abtin F | title=Lung cancer screening | journal=Seminars in Interventional Radiology |date=June 2013 | volume=30 | issue=2 | pages=114–120 | pmid=24436526 | pmc=3709936 | doi=10.1055/s-0033-1342951 }}</ref> For individuals with high risk of developing lung cancer, [[computed tomography]] (CT) screening can detect cancer and give a person options to respond to it in a way that prolongs life.<ref name="ACCPandATSfive"/> This form of screening reduces the chance of death from lung cancer by an [[Absolute risk reduction|absolute amount]] of 0.3% ([[Relative risk reduction|relative amount]] of 20%).<ref>{{cite journal  |vauthors=Jaklitsch MT, Jacobson FL, Austin JH, etal | title=The American Association for Thoracic Surgery guidelines for lung cancer screening using low-dose computed tomography scans for lung cancer survivors and other high-risk groups | journal=Journal of Thoracic and Cardiovascular Surgery |date=July 2012 | volume=144 | issue=1 | pages=33–38 | pmid=22710039 | doi=10.1016/j.jtcvs.2012.05.060}}</ref><ref>{{cite journal  |vauthors=Bach PB, Mirkin JN, Oliver TK, etal | title=Benefits and harms of CT screening for lung cancer: a systematic review | journal=JAMA: the Journal of the American Medical Association |date=June 2012 | volume=307 | issue=22 | pages=2418–2429 | pmid=22610500 | doi=10.1001/jama.2012.5521 | pmc=3709596}}</ref> High risk people are those age 55-74 who have smoked equivalent amount of a pack of cigarettes daily for 30 years including time within the past 15 years.<ref name="ACCPandATSfive"/>
+
+CT screening is associated with a high rate of [[False positives and false negatives|falsely positive]] tests which may result in unneeded treatment.<ref name=Ab2013>{{cite journal|last1=Aberle|first1=D. R.|last2=Abtin|first2=F.|last3=Brown|first3=K.|title=Computed Tomography Screening for Lung Cancer: Has It Finally Arrived? Implications of the National Lung Screening Trial|journal=Journal of Clinical Oncology|volume=31|issue=8|year=2013|pages=1002–1008|issn=0732-183X|doi=10.1200/JCO.2012.43.3110|pmid=23401434}}</ref> For each true positive scan there are about 19 falsely positives scans.<ref>{{cite journal  |vauthors=Bach PB, Mirkin JN, Oliver TK, etal |title=Benefits and harms of CT screening for lung cancer: a systematic review |journal=JAMA |volume=307 |issue=22 |pages=2418–29 |date=June 2012 |pmid=22610500 |doi=10.1001/jama.2012.5521 |url= |pmc=3709596}}</ref> Other concerns include [[Ionizing radiation|radiation exposure]]<ref name=Ab2013/> and the cost of testing along with follow up.<ref name="ACCPandATSfive"/> Research has not found two other available tests—[[sputum]] [[cytopathology|cytology]] or [[chest radiograph]] (CXR) screening tests—to have any benefit.<ref>{{Cite journal | authors=Manser R, Lethaby A, Irving LB, Stone C, Byrnes G, Abramson MJ, Campbell D | title=Screening for lung cancer | journal=Cochrane Database of Systematic Reviews | issue=6 | pages=CD001991 | year=2013 | pmid=23794187 | doi=10.1002/14651858.CD001991.pub3 | volume=6}}</ref>
+
+The [[United States Preventive Services Task Force|U.S. Preventative Services Task Force]] (USPSTF) recommends yearly screening using low-dose computed tomography in those who have a total smoking history of 30 pack-years and are between 55 to 80 years old until a person has not been smoking for more than 15 years.<ref name=Moy2014/> Screening should not be done in those with other health problems that would make treatment of lung cancer if found not an option.<ref name=Moy2014>{{cite journal|last1=Moyer|first1=VA|last2=U.S. Preventive Services Task|first2=Force|title=Screening for lung cancer: U.S. Preventive Services Task Force recommendation statement.|journal=Annals of Internal Medicine|date=Mar 4, 2014|volume=160|issue=5|pages=330–8|pmid=24378917|doi=10.7326/M13-2771}}</ref> The [[National Health Service (England)|English National Health Service]] was in 2014 re-examining the evidence for screening.<ref>{{cite journal|last1=Baldwin|first1=DR|last2=Hansell|first2=DM|last3=Duffy|first3=SW|last4=Field|first4=JK|title=Lung cancer screening with low dose computed tomography.|journal=BMJ (Clinical research ed.)|date=Mar 7, 2014|volume=348|pages=g1970|pmid=24609921|doi=10.1136/bmj.g1970}}</ref>
+
+===Other prevention strategies===
+The long-term use of supplemental vitamin A,<ref name="Fabricius">{{cite journal | last=Fabricius | first=P |author2=Lange P  | title=Diet and lung cancer | journal=Monaldi Archives for Chest Disease | volume=59 | issue=3 |date=July–September 2003 | pages=207–211 | pmid=15065316 }}</ref><ref>{{Cite journal  |vauthors=Fritz H, Kennedy D, Fergusson D, etal | title=Vitamin A and Retinoid Derivatives for Lung Cancer: A Systematic Review and Meta Analysis | journal=PLoS ONE | volume=6 | issue=6 | year=2011 | page=e21107 | pmid=21738614 | doi=10.1371/journal.pone.0021107 | pmc=3124481}}</ref> vitamin C,<ref name="Fabricius" /> vitamin D<ref>{{cite journal  |vauthors=Herr C, Greulich T, Koczulla RA, etal | title=The role of vitamin D in pulmonary disease: COPD, asthma, infection, and cancer | journal=Respiratory Research | volume=12 | issue=1 |date=March 2011 | page=31 | doi=10.1186/1465-9921-12-31 | pmid=21418564 | pmc=3071319}}</ref> or vitamin E<ref name="Fabricius" /> does not reduce the risk of lung cancer. Some studies suggest that people who eat diets with a higher proportion of vegetables and fruit tend to have a lower risk,<ref name="Alberg" /><ref name="Key">{{cite journal | last=Key | first=TJ | title=Fruit and vegetables and cancer risk | journal=British Journal of Cancer | volume=104 | issue=1 |date=January 2011 | pages=6–11 | doi=10.1038/sj.bjc.6606032 | pmid=21119663 | pmc=3039795}}</ref> but this may be due to [[confounding]]—with the lower risk actually due to the association of a high fruit/vegetables diet with less smoking.<ref>{{cite journal | last1=Bradbury | first1=KE | last2=Appleby | first2=PN | last3=Key | first3=TJ | title=Fruit, vegetable, and fiber intake in relation to cancer risk: findings from the European Prospective Investigation into Cancer and Nutrition (EPIC) | journal=American Journal of Clinical Nutrition | volume=100 | issue=Suppl. 1 | date=June 2014 | pages=394S–398S | doi=10.3945/ajcn.113.071357 | pmid=24920034 | url=http://ajcn.nutrition.org/content/100/Supplement_1/394S.long }}</ref> More rigorous studies have not demonstrated a clear association between diet and lung cancer risk.<ref name="Harrison" /><ref name="Key" />
+
+==Management==
+{{main|Treatment of lung cancer}}
+Treatment for lung cancer depends on the cancer's specific cell type, how far it has [[cancer staging|spread]], and the person's [[performance status]]. Common treatments include [[palliative care]],<ref>{{cite journal | last=Ferrell | first=B |author2=Koczywas M |author3=Grannis F |author4=Harrington A  | title=Palliative care in lung cancer | journal=Surgical Clinics of North America | volume=91 | issue=2 | pages=403–417 |date=April 2011 | pmid=21419260 | doi=10.1016/j.suc.2010.12.003}}</ref> [[surgery]], [[chemotherapy]], and [[radiation therapy]].<ref name="Harrison" /> [[Targeted therapy of lung cancer]] is growing in importance for advanced lung cancer.
+
+===Surgery===
+{{main|Lung cancer surgery}}
+[[Image:Lung cancer.jpg|thumb|[[Pneumonectomy]] specimen containing a [[squamous-cell carcinoma]], seen as a white area near the bronchi]]
+
+If investigations confirm NSCLC, the [[cancer staging|stage]] is assessed to determine whether the disease is localized and amenable to surgery or if it has spread to the point where it cannot be cured surgically. CT scan and [[positron emission tomography]] are used for this determination.<ref name="Harrison" /> If mediastinal lymph node involvement is suspected, [[mediastinoscopy]] may be used to sample the nodes and assist staging.<ref name="Fishman1853">{{Cite book | author=Kaiser LR | title=Fishman's Pulmonary Diseases and Disorders | publisher=McGraw-Hill | year=2008 | pages=1853–1854 | edition=4th | isbn=0-07-145739-9 }}</ref> [[Blood test]]s and [[pulmonary function testing]] are used to assess whether a person is well enough for surgery.<ref name="Collins" /> If pulmonary function tests reveal poor respiratory reserve, surgery may not be possible.<ref name="Harrison" />
+
+In most cases of early-stage NSCLC, removal of a lobe of lung ([[lobectomy]]) is the surgical treatment of choice. In people who are unfit for a full lobectomy, a smaller sublobar excision ([[wedge resection]]) may be performed. However, wedge resection has a higher risk of recurrence than lobectomy.<ref name="Fishman1855">{{Cite book | author=Kaiser LR | title=Fishman's Pulmonary Diseases and Disorders | publisher=McGraw-Hill | year=2008 | pages=1855–1856 | edition=4th | isbn=0-07-145739-9 }}</ref> Radioactive [[iodine]] [[brachytherapy]] at the margins of wedge excision may reduce the risk of recurrence.<ref>{{cite journal | last=Odell | first=DD |author2=Kent MS |author3=Fernando HC  | title=Sublobar resection with brachytherapy mesh for stage I non-small cell lung cancer | journal=Seminars in Thoracic and Cardiovascular Surgery | volume=22 | issue=1 | pages=32–37 |date=Spring 2010 | pmid=20813314 | doi=10.1053/j.semtcvs.2010.04.003}}</ref> Rarely, removal of a whole lung ([[pneumonectomy]]) is performed.<ref name="Fishman1855" /> [[Video-assisted thoracoscopic surgery]] (VATS) and [[VATS lobectomy]] use a minimally invasive approach to lung cancer surgery.<ref>{{cite journal | last=Alam | first=N |author2=Flores RM  | title=Video-assisted thoracic surgery (VATS) lobectomy: the evidence base | journal=Journal of the Society of Laparoendoscopic Surgeons | volume=11 | issue=3 | pages=368–374 |date=July–September 2007 | pmid=17931521 | pmc=3015831}}</ref> VATS lobectomy is equally effective compared to conventional open lobectomy, with less postoperative illness.<ref>{{cite journal | last=Rueth | first=NM |author2=Andrade RS  | title=Is VATS lobectomy better: perioperatively, biologically and oncologically? | journal=Annals of Thoracic Surgery | volume=89 | issue=6 | pages=S2107–S2111 |date=June 2010 | pmid=20493991 | doi=10.1016/j.athoracsur.2010.03.020}}</ref>
+
+In SCLC, chemotherapy and/or radiotherapy is typically used.<ref name='SimonTurrisi'>{{cite journal |author=Simon GR, Turrisi A |title=Management of small cell lung cancer: ACCP evidence-based clinical practice guidelines (2nd edition) |journal=Chest |volume=132 |issue=3 Suppl |pages=324S–339S |date=September 2007 |pmid=17873178 |doi=10.1378/chest.07-1385 |url=http://chestjournal.chestpubs.org/content/132/3_suppl/324S.long}}</ref> However the role of surgery in SCLC is being reconsidered. Surgery might improve outcomes when added to chemotherapy and radiation in early stage SCLC.<ref>{{cite journal | last=Goldstein | first=SD |author2=Yang SC  | title=Role of surgery in small cell lung cancer | journal=Surgical Oncology Clinics of North America | volume=20 | issue=4 | pages=769–777 |date=October 2011 | pmid=21986271 | doi=10.1016/j.soc.2011.08.001}}</ref>
+
+===Radiotherapy===
+[[Radiation therapy|Radiotherapy]] is often given together with chemotherapy, and may be used with curative intent in people with NSCLC who are not eligible for surgery. This form of high-intensity radiotherapy is called radical radiotherapy.<ref name="OTO" /> A refinement of this technique is continuous hyperfractionated accelerated radiotherapy (CHART), in which a high dose of radiotherapy is given in a short time period.<ref>{{Cite journal | last=Hatton | first=MQ |author2=Martin JE | title=Continuous hyperfractionated accelerated radiotherapy (CHART) and non-conventionally fractionated radiotherapy in the treatment of non-small cell lung cancer: a review and consideration of future directions | journal=Clinical Oncology (Royal College of Radiologists) | volume=22 | issue=5 | pages=356–364 |date=June 2010 | pmid=20399629 | doi=10.1016/j.clon.2010.03.010}}</ref> Postoperative thoracic radiotherapy generally should not be used after curative intent surgery for NSCLC.<ref name="PORT Meta-analysis Trialists Group" /> Some people with mediastinal N2 lymph node involvement might benefit from post-operative radiotherapy.<ref>{{Cite journal | last=Le Péchoux | first=C | title=Role of postoperative radiotherapy in resected non-small cell lung cancer: a reassessment based on new data | journal=Oncologist | volume=16 | issue=5 | pages=672–681 | year=2011 | pmid=21378080 | doi=10.1634/theoncologist.2010-0150 | pmc=3228187}}</ref>
+
+For potentially curable SCLC cases, chest radiotherapy is often recommended in addition to chemotherapy.<ref name="Holland-Frei78" />
+
+[[File:Diagram showing how you have internal radiotherapy for lung cancer CRUK 160.svg|thumb|left|Internal radiotherapy for lung cancer given via the airway.]]
+If cancer growth blocks a short section of bronchus, [[brachytherapy]] (localized radiotherapy) may be given directly inside the airway to open the passage. Compared to external beam radiotherapy, brachytherapy allows a reduction in treatment time and reduced radiation exposure to healthcare staff.<ref>{{Cite journal | last=Ikushima | first=H | title=Radiation therapy: state of the art and the future | journal=Journal of Medical Investigation | volume=57 | issue=1–2 | pages=1–11 |date=February 2010 | url=http://www.jstage.jst.go.jp/article/jmi/57/1,2/1/_pdf | pmid=20299738 | doi=10.2152/jmi.57.1}}</ref> Evidence for brachytherapy, however, is less than that for external beam radiotherapy.<ref>{{cite journal|last1=Reveiz|first1=L|last2=Rueda|first2=JR|last3=Cardona|first3=AF| title=Palliative endobronchial brachytherapy for non-small cell lung cancer |journal=The Cochrane database of systematic reviews|date=12 December 2012|volume=12|pages=CD004284|pmid=23235606|doi=10.1002/14651858.CD004284.pub3}}</ref>
+
+[[Prophylactic cranial irradiation]] (PCI) is a type of radiotherapy to the brain, used to reduce the risk of [[metastasis]]. PCI is most useful in SCLC. In limited-stage disease, PCI increases three-year survival from 15% to 20%; in extensive disease, one-year survival increases from 13% to 27%.<ref>{{Cite journal | last=Paumier | first=A |author2=Cuenca X |author3=Le Péchoux C  | title=Prophylactic cranial irradiation in lung cancer | journal=Cancer Treatment Reviews | volume=37 | issue=4 | pages=261–265 |date=June 2011 | pmid=20934256 | doi=10.1016/j.ctrv.2010.08.009}}</ref>
+
+Recent improvements in targeting and imaging have led to the development of stereotactic radiation in the treatment of early-stage lung cancer. In this form of radiotherapy, high doses are delivered over a number of sessions using stereotactic targeting techniques. Its use is primarily in patients who are not surgical candidates due to medical [[comorbidities]].<ref>{{Cite journal | last=Girard | first=N |author2=Mornex F | title=Stereotactic radiotherapy for non-small cell lung cancer: From concept to clinical reality. 2011 update | journal=Cancer Radiothérapie | volume=15 | issue=6–7 | pages=522–526 |date=October 2011 | pmid=21889901 | doi=10.1016/j.canrad.2011.07.241}}</ref>
+
+For both NSCLC and SCLC patients, smaller doses of radiation to the chest may be used for symptom control ([[palliative care|palliative]] radiotherapy).<ref>{{Cite journal  |vauthors=Fairchild A, Harris K, Barnes E, etal | title=Palliative thoracic radiotherapy for lung cancer: a systematic review | journal=Journal of Clinical Oncology | volume=26 | issue=24 | pages=4001–4011 |date=August 2008 | pmid=18711191 | url=http://jco.ascopubs.org/content/26/24/4001.full | doi=10.1200/JCO.2007.15.3312}}</ref>
+
+===Chemotherapy===
+The [[chemotherapy]] regimen depends on the tumor type.<ref name="Holland-Frei78" /> Small-cell lung carcinoma (SCLC), even relatively early stage disease, is treated primarily with chemotherapy and radiation.<ref>{{cite journal |author=Hann CL, Rudin CM |title=Management of small-cell lung cancer: incremental changes but hope for the future |journal=Oncology (Williston Park)|date=30 November 2008|volume=22|issue=13|pages=1486–92 |pmid=19133604}}</ref> In SCLC, [[cisplatin]] and [[etoposide]] are most commonly used.<ref name="Murray"/> Combinations with [[carboplatin]], [[gemcitabine]], [[paclitaxel]], [[vinorelbine]], [[topotecan]], and [[irinotecan]] are also used.<ref name="Azim" /><ref name="MacCallum" /> In advanced non-small cell lung carcinoma (NSCLC), chemotherapy improves survival and is used as first-line treatment, provided the person is well enough for the treatment.<ref name="pmid18678835" /> Typically, two drugs are used, of which one is often platinum-based (either [[cisplatin]] or [[carboplatin]]). Other commonly used drugs are [[gemcitabine]], [[paclitaxel]], [[docetaxel]],<ref name="Fishman1876">{{Cite book | author=Mehra R, Treat J | title=Fishman's Pulmonary Diseases and Disorders | publisher=McGraw-Hill | year=2008 | page=1876 | edition=4th | isbn=0-07-145739-9 }}</ref><ref name="Clegg" /> [[pemetrexed]],<ref name="pmid20446853">{{cite journal |author=Fuld AD, Dragnev KH, Rigas JR |title=Pemetrexed in advanced non-small-cell lung cancer |journal=Expert Opin Pharmacother |volume=11 |issue=8 |pages=1387–402 |date=June 2010 |pmid=20446853 |doi=10.1517/14656566.2010.482560 }}</ref> [[etoposide]] or [[vinorelbine]].<ref name="Clegg" />
+
+[[Adjuvant chemotherapy]] refers to the use of chemotherapy after apparently curative surgery to improve the outcome. In NSCLC, samples are taken of nearby [[lymph node]]s during surgery to assist [[lung cancer staging|staging]]. If stage II or III disease is confirmed, adjuvant chemotherapy improves survival by 5% at five years.<ref name="Carbone">{{Cite journal | last=Carbone | first=DP |author2=Felip E  | title=Adjuvant therapy in non-small cell lung cancer: future treatment prospects and paradigms | journal=Clinical Lung Cancer | volume=12 | issue=5 | pages=261–271 |date=September 2011 | pmid=21831720 | doi=10.1016/j.cllc.2011.06.002 }}</ref><ref name="Le Chevalier">{{Cite journal | last=Le Chevalier | first=T | title=Adjuvant chemotherapy for resectable non-small-cell lung cancer: where is it going? | journal=Annals of Oncology | volume=21 | issue=Suppl. 7 | pages=vii196–198 |date=October 2010 | pmid=20943614 | url=http://annonc.oxfordjournals.org/content/21/suppl_7/vii196.long | doi=10.1093/annonc/mdq376}}</ref> The combination of vinorelbine and cisplatin is more effective than older regimens.<ref name="Le Chevalier" /> Adjuvant chemotherapy for people with stage IB cancer is controversial, as [[clinical trial]]s have not clearly demonstrated a survival benefit.<ref name="Horn" /><ref name="Wakelee" /> [[neoadjuvant chemotherapy|Chemotherapy before surgery]] in NSCLC that can be removed surgically also appears to improve outcomes.<ref>{{cite journal|last1=NSCLC Meta-analysis Collaborative|first1=Group|title=Preoperative chemotherapy for non-small-cell lung cancer: a systematic review and meta-analysis of individual participant data.|journal=Lancet|date=May 3, 2014|volume=383|issue=9928|pages=1561–71|pmid=24576776|doi=10.1016/S0140-6736(13)62159-5|pmc=4022989}}</ref>
+
+Chemotherapy may be combined with palliative care in the treatment of the NSCLC. In advanced cases, appropriate chemotherapy improves [[median|average]] survival over supportive care alone, as well as improving quality of life.<ref name="pmid7551923">{{cite journal|author=Souquet PJ, Chauvin F, Boissel JP, Bernard JP |title=Meta-analysis of randomised trials of systemic chemotherapy versus supportive treatment in non-resectable non-small cell lung cancer |journal=Lung Cancer |volume=12 Suppl 1 |issue= |pages=S147–54|date=April 1995 |pmid=7551923 |doi=10.1016/0169-5002(95)00430-9 }}</ref> With adequate [[Performance status|physical fitness]] maintaining chemotherapy during lung cancer palliation offers 1.5 to 3 months of prolongation of survival, symptomatic relief, and an improvement in quality of life, with better results seen with modern agents.<ref name="pmid11441939">{{cite journal |author=Sörenson S, Glimelius B, Nygren P |title=A systematic overview of chemotherapy effects in non-small cell lung cancer |journal=Acta Oncologica |volume=40 |issue=2–3 |pages=327–39 |year=2001 |pmid=11441939 |doi=10.1080/02841860151116402}}</ref><ref name="pmid12065068">{{cite journal |author=Clegg A, Scott DA, Sidhu M, Hewitson P, Waugh N |title=A rapid and systematic review of the clinical effectiveness and cost-effectiveness of paclitaxel, docetaxel, gemcitabine and vinorelbine in non-small-cell lung cancer |journal=Health Technology Assessment |volume=5 |issue=32 |pages=1–195 |year=2001 |pmid=12065068 }}</ref> The NSCLC Meta-Analyses Collaborative Group recommends if the recipient wants and can tolerate treatment, then chemotherapy should be considered in advanced NSCLC.<ref name="pmid18678835">{{cite journal |title=Chemotherapy in Addition to Supportive Care Improves Survival in Advanced Non–Small-Cell Lung Cancer: A Systematic Review and Meta-Analysis of Individual Patient Data From 16 Randomized Controlled Trials |journal=J. Clin. Oncol. |volume=26 |issue=28|pages=4617–25 |date=October 2008 |pmid=18678835 |pmc=2653127 |doi=10.1200/JCO.2008.17.7162 |author1=NSCLC Meta-Analyses Collaborative Group }}</ref><ref name="pmid20464750">{{cite journal|last1=Non-Small Cell Lung Cancer Collaborative|first1=Group|title=Chemotherapy and supportive care versus supportive care alone for advanced non-small cell lung cancer.|journal=The Cochrane database of systematic reviews|date=12 May 2010|issue=5|pages=CD007309|pmid=20464750|doi=10.1002/14651858.CD007309.pub2}}</ref>
+
+====Targeted therapy====
+
+Several drugs that [[targeted therapy of lung cancer|target molecular pathways]] in lung cancer are available, especially for the treatment of advanced disease. [[Erlotinib]], [[gefitinib]] and [[afatinib]] inhibit [[tyrosine kinase]] at the [[epidermal growth factor receptor]]. [[Denosumab]] is a [[monoclonal antibody]] directed against [[RANKL|receptor activator of nuclear factor kappa-B ligand]]. It may be useful in the treatment of bone metastases.<ref>{{Cite journal | last=D'Antonio | author2=Passaro A | author3=Gori B | title=Bone and brain metastasis in lung cancer: recent advances in therapeutic strategies | journal=Therapeutic Advances in Medical Oncology | volume=6 | issue=3 | pages=101–114 |date=May 2014 | pmid=24790650 | pmc=3987652 | doi=10.1177/1758834014521110 | url=http://www.ncbi.nlm.nih.gov/pmc/articles/PMC3987652/ }}</ref>
+
+=== Bronchoscopy  ===
+
+Several treatments can be administered via bronchoscopy for the management of airway obstruction or bleeding. If an airway becomes obstructed by cancer growth, options include rigid bronchoscopy, balloon bronchoplasty, stenting, and microdebridement.<ref>{{Cite book | last1=Lazarus | first1=DR | last2=Eapen | first2=GA | title=Lung Cancer | publisher=Wiley-Blackwell | editor-last1=Roth | editor-first=JA | editor-last2=Hong | editor-first2=WK | editor-last3=Komaki | editor-first3=RU | year=2014 | chapter=Chapter 16: Bronchoscopic interventions for lung cancer | edition=4th | isbn=978-1-118-46874-6 }}</ref> Laser photosection involves the delivery of laser light inside the airway via a bronchoscope to remove the obstructing tumor.<ref>{{cite journal | last1=Khemasuwan | first1=D | last2=Mehta | first2=AC | last3=Wang | first3=KP | title=Past, present, and future of endobronchial laser photoresection | journal=Journal of Thoracic Disease | volume=7 | issue=Suppl. 4 | pages=S380–S388 | date=December 2015 | pmid=26807285 | doi=10.3978/j.issn.2072-1439.2015.12.55 | pmc=4700383 }}</ref>
+
+===Palliative care===
+[[Palliative care]] when added to usual cancer care benefits people even when they are still receiving chemotherapy.<ref>{{cite journal|last=Parikh|first=RB|author2=Kirch, RA |author3=Smith, TJ |author4= Temel, JS |title=Early specialty palliative care--translating data in oncology into practice.|journal=The New England Journal of Medicine|date=12 December 2013 | volume=369|issue=24|pages=2347–51|pmid=24328469|doi=10.1056/nejmsb1305469 |pmc=3991113}}</ref> These approaches allow additional discussion of treatment options and provide opportunities to arrive at well-considered decisions.<ref name="pmid20818881">{{cite journal |author=Kelley AS, Meier DE |title=Palliative care—a shifting paradigm |journal=New England Journal of Medicine |volume=363 |issue=8 |pages=781–2|date=August 2010 |pmid=20818881 |doi=10.1056/NEJMe1004139 }}</ref><ref name="pmid19856592">{{cite journal |author=Prince-Paul M |title=When hospice is the best option: an opportunity to redefine goals|journal=Oncology (Williston Park, N.Y.) |volume=23 |issue=4 Suppl Nurse Ed |pages=13–7 |date=April 2009 |pmid=19856592 }}</ref>   Palliative care may avoid unhelpful but expensive care not only at the end of life, but also throughout the course of the illness. For individuals who have more advanced disease, [[hospice care]] may also be appropriate.<ref name="Collins" /><ref name="pmid19856592"/>
+
+==Prognosis==
+{| class="wikitable floatright" style="text-align:center;font-size:90%;width:35%;margin-left:1em"
+|+ style="background:#E5AFAA;"|'''Outcomes in lung cancer according to clinical stage'''<ref name="Rami-Porta" />
+|- style="background: #E5AFAA;text-align:center;font-size:90%;"
+! abbr="Type" rowspan="2" | Clinical stage
+! abbr="5-year" colspan="2" | Five-year survival (%)
+|- style="background: #E5AFAA;text-align:center;font-size:90%;"
+! abbr="NSCLC" | Non-small-cell lung carcinoma
+! abbr="SCLC" | Small-cell lung carcinoma
+|-
+| IA
+| 50
+| 38
+|-
+| IB
+| 47
+| 21
+|-
+| IIA
+| 36
+| 38
+|-
+| IIB
+| 26
+| 18
+|-
+| IIIA
+| 19
+| 13
+|-
+| IIIB
+| 7
+| 9
+|-
+| IV
+| 2
+| 1
+|}
+
+Of all people with lung cancer in the US, 16.8% survive for at least five years after diagnosis.<ref name="SEER" /><ref>{{cite journal | last=Ridge | first=CA |author2=McErlean AM |author3=Ginsberg MS  | title=Epidemiology of lung cancer | date=June 2013 | journal=Seminars in Interventional Radiology | volume=30 | issue=2 | pages=93–98 | pmid=24436524 | url=http://www.ncbi.nlm.nih.gov/pmc/articles/PMC3709917/ | doi=10.1055/s-0033-1342949 | pmc=3709917 }}</ref> In England, between 2005 and 2009, overall five-year survival for lung cancer was less than 10%.<ref>{{cite web | url=http://www.cancerresearchuk.org/cancer-info/cancerstats/types/lung/survival/ | title=Lung cancer survival statistics | publisher=Cancer Research UK }}</ref> Outcomes are generally worse in the [[developing world]].<ref name=Maj2009>{{cite book|last=Majumder|first=edited by Sadhan|title=Stem cells and cancer|year=2009|publisher=Springer|location=New York|isbn=978-0-387-89611-3|page=193|url=https://books.google.com/books?id=HaErOupWnO0C&pg=PA193|edition=Online-Ausg.}}</ref> Stage is often advanced at the time of diagnosis. At presentation, 30–40% of cases of NSCLC are stage IV, and 60% of SCLC are stage IV.<ref name="Holland-Frei78" /> Survival for lung cancer falls as the stage at diagnosis becomes more advanced: the English data suggest that around 70% of patients survive at least a year when diagnosed at the earliest stage, but this falls to just 14% for those diagnosed with the most advanced disease.<ref>{{cite web|url=http://www.cancerresearchuk.org/cancer-info/cancerstats/types/lung/survival/#stage|title=Lung cancer survival statistics|publisher=|accessdate=28 October 2014}}</ref>
+
+Prognostic factors in NSCLC include presence of pulmonary symptoms, large [[tumor]] size (>3&nbsp;cm), nonsquamous cell type ([[histology]]), degree of spread [[staging (pathology)|(stage)]] and [[metastases]] to multiple [[lymph nodes]], and [[vascular invasion]]. For people with inoperable disease, outcomes are worse in those with poor [[performance status]] and weight loss of more than 10%.<ref name="AUTOREF17">
+{{cite web |url=http://www.ncbi.nlm.nih.gov/pubmedhealth/PMH0032637/|title=Non-Small Cell Lung Cancer Treatment |publisher=National Cancer Institute |work=PDQ for Health Professionals |accessdate=17 November 2015|PMID=26389304}}</ref> Prognostic factors in small cell lung cancer include performance status, [[gender]], stage of disease, and involvement of the [[central nervous system]] or [[liver]] at the time of diagnosis.<ref name="AUTOREF18" />
+
+For NSCLC, the best prognosis is achieved with complete surgical resection of stage IA disease, with up to 70% five-year survival.<ref name="OTM">{{Cite book | last=Spiro | first=SG | title=Oxford Textbook Medicine | publisher=OUP Oxford | year=2010 | chapter=18.19.1 | edition=5th | isbn=978-0-19-920485-4 }}</ref> People with extensive-stage SCLC have an average five-year survival rate of less than 1%. The average survival time for limited-stage disease is 20 months, with a five-year survival rate of 20%.<ref name="Merck" />
+
+According to data provided by the [[National Cancer Institute]], the median age at diagnosis of lung cancer in the United States is 70 years,<ref>SEER data (SEER.cancer.gov) [http://seer.cancer.gov/csr/1975_2003/results_single/sect_01_table.11_2pgs.pdf Median Age of Cancer Patients at Diagnosis 2002–2003]</ref> and the median age at death is 72 years.<ref>SEER data (SEER.cancer.gov) [http://seer.cancer.gov/csr/1975_2006/results_single/sect_01_table.13_2pgs.pdf Median Age of Cancer Patients at Death 2002–2006]</ref> In the US, people with medical insurance are more likely to have a better outcome.<ref>{{cite journal | last=Slatore | first=CG |author2=Au DH |author3=Gould MK  | title=An official American Thoracic Society systematic review: insurance status and disparities in lung cancer practices and outcomes | date=November 2010 | journal=American Journal of Respiratory and Critical Care Medicine | volume=182 | issue=9 | pages=1195–1205 | pmid=21041563 | url=http://ajrccm.atsjournals.org/content/182/9/1195.long | doi=10.1164/rccm.2009-038ST}}</ref>
+
+==Epidemiology==
+[[Image:Trachea, bronchus, lung cancers world map - Death - WHO2004.svg|thumb|[[Age adjustment|Age-standardized]] death from tracheal, bronchial, and lung cancers per 100,000&nbsp;inhabitants in 2004<ref name="AUTOREF20" />
+{{Multicol}}
+{{legend|#b3b3b3|no data}}
+{{legend|#ffff65|≤&nbsp;5}}
+{{legend|#fff200|5-10}}
+{{legend|#ffdc00|10-15}}
+{{legend|#ffc600|15-20}}
+{{legend|#ffb000|20-25}}
+{{legend|#ff9a00|25-30}}
+{{Multicol-break}}
+{{legend|#ff8400|30-35}}
+{{legend|#ff6e00|35-40}}
+{{legend|#ff5800|40-45}}
+{{legend|#ff4200|45-50}}
+{{legend|#ff2c00|50-55}}
+{{legend|#cb0000|≥&nbsp;55}}
+{{Multicol-end}}]]
+[[Image:Lung cancer US distribution.gif|right|thumb|Lung cancer distribution in the [[United States]]]]
+[[File:Lung cancer, incidence, mortality and survival, England 1971 - 2011.png|thumb|right|Lung cancer, incidence, mortality and survival, England 1971–2011]]
+Worldwide, lung cancer is the most common cancer among men in terms of both [[Incidence (epidemiology)|incidence]] and mortality, and among women has the third highest incidence, and is second after [[breast cancer]] in mortality. In 2012, there were 1.82 million new cases globally, and 1.56 million deaths due to lung cancer, representing 19.4% of all deaths from cancer.<ref name=WCR2014Epi/> The highest rates are in North America, Europe and East Asia, with over a third of new cases in 2012 in China.  Rates in Africa and South Asia are much lower.<ref>{{cite book|last1=Stewart|first1=edited by Bernard W.|last2=Wild|first2=Christopher P.|title=World cancer report 2014|date=2014|publisher=IARC Press|location=Lyon|isbn=9789283204299|pages=350–352}}</ref>
+
+The population segment most likely to develop lung cancer is people aged over 50 who have a history of smoking. In contrast to the mortality rate in men, which began declining more than 20 years ago, women's lung cancer mortality rates have been rising over the last decades, and are just recently beginning to stabilize.<ref name="AUTOREF22" /><!-- now declining in US & Aus, WCR --> In the USA, the [[lifetime risk]] of developing lung cancer is 8% in men and 6% in women.<ref name="Harrison" />
+
+For every 3–4 million cigarettes smoked, one lung cancer death occurs.<ref>{{cite journal | last=Proctor | first=RN | title=The history of the discovery of the cigarette-lung cancer link: evidentiary traditions, corporate denial, global toll | journal=Tobacco Control | volume=21 | issue=2 | pages=87–91 |date=March 2012 | pmid=22345227 | doi=10.1136/tobaccocontrol-2011-050338 }}</ref> The influence of "[[Big Tobacco]]" plays a significant role in the smoking culture.<ref name="Lum" /> Young nonsmokers who see tobacco advertisements are more likely to take up smoking.<ref>{{cite journal | last=Lovato | first=C |author2=Watts A |author3=Stead LF  | title=Impact of tobacco advertising and promotion on increasing adolescent smoking behaviours | date=October 2011 | journal=Cochrane Database of Systematic Reviews | issue=10 | pages=CD003439 | pmid=21975739 | doi=10.1002/14651858.CD003439.pub2}}</ref> The role of [[passive smoking]] is increasingly being recognized as a risk factor for lung cancer,<ref name="Taylor" /> leading to policy interventions to decrease undesired exposure of nonsmokers to others' tobacco smoke.<ref>{{cite journal | last=Kemp | first=FB | title=Smoke free policies in Europe. An overview | journal=Pneumologia | volume=58 | issue=3 | pages=155–158 |date=Jul–Sep 2009 | pmid=19817310 }}</ref> Emissions from automobiles, factories, and power plants also pose potential risks.<ref name="MurrayNadel46" />
+
+In the United States, black men and women have a higher incidence.<ref>National Cancer Institute; SEER stat fact sheets: Lung and Bronchus. Surveillance Epidemiology and End Results. 2010 [http://seer.cancer.gov/statfacts/html/lungb.html#incidence-mortality]</ref> Lung cancer rates are currently lower in developing countries.<ref name="AUTOREF23" /> With increased smoking in developing countries, the rates are expected to increase in the next few years, notably in China<ref>{{cite journal | last=Zhang | first=J |author2=Ou JX |author3=Bai CX  | title=Tobacco smoking in China: prevalence, disease burden, challenges and future strategies | date=November 2011 | journal=Respirology | volume=16 | issue=8 | pages=1165–1172 | pmid=21910781 | doi=10.1111/j.1440-1843.2011.02062.x }}</ref> and India.<ref name="AUTOREF25" />
+
+In the United States military veterans have a 25-50% higher rate of lung cancer primarily due to higher rates of smoking.<ref>{{cite web|title=HONORING VETERANS WITH GOOD HEALTH|url=http://gibbscancercenter.org/news/honoring-veterans-good-health/|accessdate=1 December 2015|date=November 7, 2014}}</ref> During World War Two and the Korean War asbestos also played a part and Agent Orange may have caused some problems during the Vietnam War.<ref>{{cite web|title=Lung Cancer As It Affects Veterans And Military|url=http://www.lungcanceralliance.org/special-features/special-focus-on-veterans-and-lung-cancer/lung-cancer-and-wartime-exposure.html|accessdate=1 December 2015}}</ref>
+
+Lung cancer is the second most common cancer in the UK (around 43,500 people were diagnosed with the disease in 2011), and it is the most common cause of cancer death (around 35,400 people died in 2012).<ref>{{cite web|title=Lung cancer statistics|url=http://www.cancerresearchuk.org/cancer-info/cancerstats/types/lung/|website=Cancer Research UK|accessdate=28 October 2014}}</ref>
+
+From the 1960s, the rates of lung adenocarcinoma started to rise relative to other types of lung cancer. This is partly due to the introduction of filter cigarettes. The use of filters removes larger particles from tobacco smoke, thus reducing deposition in larger airways. However, the smoker has to inhale more deeply to receive the same amount of nicotine, increasing particle deposition in small airways where adenocarcinoma tends to arise.<ref name="Charloux" /> The incidence of lung adenocarcinoma continues to rise.<ref>{{cite journal | last=Kadara | first=H |author2=Kabbout M |author3=Wistuba II  | title=Pulmonary adenocarcinoma: a renewed entity in 2011 | journal=Respirology | volume=17 | issue=1 | pages=50–65 |date=January 2012 | pmid=22040022 | doi=10.1111/j.1440-1843.2011.02095.x }}</ref>
+
+==History==
+Lung cancer was uncommon before the advent of cigarette smoking; it was not even recognized as a distinct disease until 1761.<ref name="AUTOREF27" /> Different aspects of lung cancer were described further in 1810.<ref name="AUTOREF28" /> Malignant lung tumors made up only 1% of all cancers seen at autopsy in 1878, but had risen to 10–15% by the early 1900s.<ref name="Witschi" /> Case reports in the medical literature numbered only 374 worldwide in 1912,<ref name="AUTOREF29" /> but a review of autopsies showed the incidence of lung cancer had increased from 0.3% in 1852 to 5.66% in 1952.<ref name="Grannis" /> In [[Germany]] in 1929, physician [[Fritz Lickint]] recognized the link between smoking and lung cancer,<ref name="Witschi" /> which led to an aggressive [[Anti-tobacco movement in Nazi Germany|antismoking campaign]].<ref name="Proctor" /> The [[British Doctors Study|British Doctors' Study]], published in the 1950s, was the first solid [[epidemiology|epidemiological]] evidence of the link between lung cancer and smoking.<ref name="Doll" /> As a result, in 1964 the [[Surgeon General of the United States]] recommended smokers should stop smoking.<ref name="AUTOREF30" />
+
+The connection with [[radon]] gas was first recognized among miners in the [[Ore Mountains (Germany)|Ore Mountains]] near [[Schneeberg, Saxony]]. [[Silver]] has been mined there since 1470, and these mines are rich in [[uranium]], with its accompanying [[radium]] and radon gas.<ref name="Greaves" /> Miners developed a disproportionate amount of lung disease, eventually recognized as lung cancer in the 1870s.<ref>{{Cite journal | last=Greenberg | first=M |author2=Selikoff IJ  | title=Lung cancer in the Schneeberg mines: a reappraisal of the data reported by Harting and Hesse in 1879 | journal=Annals of Occupational Hygiene | volume=37 | issue=1 | pages=5–14 |date=February 1993 | pmid=8460878 | doi=10.1093/annhyg/37.1.5}}</ref> Despite this discovery, mining continued into the 1950s, due to the [[USSR]]'s demand for uranium.<ref name="Greaves" /> Radon was confirmed as a cause of lung cancer in the 1960s.<ref>{{Cite journal | last=Samet | first=JM | title=Radiation and cancer risk: a continuing challenge for epidemiologists | journal=Environmental Health | volume=10 | issue=Suppl. 1 | pages=S4 |date=April 2011 | pmid=21489214 | doi=10.1186/1476-069X-10-S1-S4 | pmc=3073196}}</ref>
+
+The first successful [[pneumonectomy]] for lung cancer was performed in 1933.<ref name="AUTOREF32" /> Palliative [[radiotherapy]] has been used since the 1940s.<ref name="Edwards" /> Radical radiotherapy, initially used in the 1950s, was an attempt to use larger radiation doses in patients with relatively early-stage lung cancer, but who were otherwise unfit for surgery.<ref name="AUTOREF33" /> In 1997, continuous hyperfractionated accelerated radiotherapy was seen as an improvement over conventional radical radiotherapy.<ref name="Saunders" /> With small-cell lung carcinoma, initial attempts in the 1960s at surgical resection<ref name="AUTOREF34" /> and radical radiotherapy<ref name="AUTOREF35" /> were unsuccessful. In the 1970s, successful chemotherapy regimens were developed.<ref name="AUTOREF36" />
+
+==Research directions==
+Current research directions for lung cancer treatment include [[immunotherapy]],<ref name="Brahmer" >{{cite journal|last1=Brahmer|first1=JR|title=Immune checkpoint blockade: the hope for immunotherapy as a treatment of lung cancer?|journal=Seminars in oncology|date=February 2014|volume=41|issue=1|pages=126–32|pmid=24565586|doi=10.1053/j.seminoncol.2013.12.014}}</ref> which encourages the body's immune system to attack the tumor cells, [[epigenetics]], and new combinations of chemotherapy and radiotherapy, both on their own and together.  Many of these new treatments work through [[immune checkpoint blockade]], disrupting cancer's ability to evade the [[immune system]].<ref name="Brahmer" />
+
+[[Ipilimumab]] blocks [[Signal transduction|signaling]] through a [[Receptor (biochemistry)|receptor]] on [[T cells]] known as [[CTLA-4]] which dampens down the immune system. It has been approved by the [[U.S. Food and Drug Administration]] (FDA) for treatment of [[melanoma]] and is undergoing clinical trials for both non-small cell lung cancer (NSCLC) and small cell lung cancer (SCLC).<ref name="Brahmer" />
+
+Other immunotherapy treatments interfere with the binding of [[programmed cell death 1]] (PD-1) protein with its [[ligand]] [[programmed cell death 1 ligand 1|PD-1 ligand 1]] (PD-L1). Signaling through PD-1 inactivates T cells. Some cancer cells appear to exploit this by expressing PD-L1 in order to switch off T cells that might recognise them as a threat. Monoclonal antibodies targeting both PD-1 and PD-L1, such as [[pembrolizumab]] and [[nivolumab]]<ref>{{cite journal | last1=Powell | first1=CA | last2=Halmos | first2=B | last3=Nana-Sinkam | first3=SP | title=Update in lung cancer and mesothelioma 2012 |date=July 2013 | journal=American Journal of Respiratory and Critical Care Medicine | volume=188 | issue=2 | pages=157–166 | pmid=23855692 | doi=10.1164/rccm.201304-0716UP | pmc=3778761 }}</ref> are currently in clinical trials for treatment for lung cancer.<ref name="Brahmer" />
+
+[[Epigenetics]] is the study of small, usually heritable, molecular modifications&mdash;or "tags"&mdash;that bind DNA and modify [[gene expression]] levels. Targeting these tags with drugs can kill cancer cells. Early-stage research in NSCLC using drugs aimed at epigenetic modifications shows that blocking more than one of these tags can kill cancer cells with fewer side effects.<ref name="Epi" >{{cite journal|last1=Forde|first1=PM|last2=Brahmer|first2=JR|last3=Kelly|first3=RJ|title=New strategies in lung cancer: epigenetic therapy for non-small cell lung cancer.|journal=Clinical cancer research : an official journal of the American Association for Cancer Research|date=1 May 2014|volume=20|issue=9|pages=2244–8|pmid=24644000|doi=10.1158/1078-0432.ccr-13-2088}}</ref> Studies also show that giving patients these drugs before standard treatment can improve its effectiveness. Clinical trials are underway to evaluate how well these drugs kill lung cancer cells in humans.<ref name="Epi" /> Several drugs that target epigenetic mechanisms are in development. [[Histone deacetylase inhibitor]]s in development include [[valproic acid]], [[vorinostat]], [[belinostat]], [[panobinostat]], [[entinostat]], and [[romidepsin]]. [[DNA methyltransferase]] inhibitors in development include [[decitabine]], [[azacitidine|azacytidine]], and [[hydralazine]].<ref name="Jakopovic" />
+
+The TRACERx project is looking at how NSCLC develops and evolves, and how these tumors become resistant to treatment.<ref name="Tracer" >{{cite journal|last1=Jamal-Hanjani| first1=M| last2=Hackshaw| first2=A|last3=Ngai|first3=Y|title=Tracking genomic cancer evolution for precision medicine: the lung TRACERx study.|journal=PLOS Biology|date=July 2014|volume=12|issue=7|pages=e1001906|pmid=25003521|doi=10.1371/journal.pbio.1001906|display-authors=etal}}</ref> The project will look at tumor samples from 850 NSCLC patients at various stages including diagnosis, after first treatment, post-treatment, and relapse.<ref>[http://scienceblog.cancerresearchuk.org/2013/07/18/a-new-era-in-lung-cancer-research-the-tracerx-study/ TRACERx project, Cancer Research UK science blog]</ref> By studying samples at different points of tumor development, the researchers hope to identify the changes that drive tumor growth and resistance to treatment. The results of this project will help scientists and doctors gain a better understanding of NSCLC and potentially lead to the development of new treatments against the disease.<ref name="Tracer" />
+
+For lung cancer cases that develop resistance to epidermal growth factor receptor (EGFR) and [[anaplastic lymphoma kinase]] (ALK) [[Kinase tyrosine-based inhibitory motif|tyrosine kinase inhibitors]], new drugs are in development. New EGFR inhibitors include afatinib and [[dacomitinib]]. An alternative signaling pathway, [[c-Met]], can be inhibited by [[tivantinib]] and [[onartuzumab]]. New ALK inhibitors include [[crizotinib]] and [[ceritinib]].<ref>{{cite journal | last1=Spaans | first1=JN | last2=Goss | first2=GD | title=Trials to overcome drug resistance to EGFR and ALK targeted therapies—past, present, and future |date=August 2014 | journal=Frontiers in Oncology | volume=4 | issue=233 | pmid=25221748 | doi=10.3389/fonc.2014.00233 | pmc=4145253 }}</ref>
+
+==References==
+{{Clear}}
+{{reflist|30em|refs=
+<ref name="Harrison">{{Cite book | last1=Horn | first1=L | last2=Lovly | first2=CM | last3=Johnson | first3=DH  | title=Harrison's Principles of Internal Medicine | publisher=McGraw-Hill | editor-last=Kasper | editor-first=DL | editor-last2=Hauser | editor-first2=SL | editor-last3=Jameson | editor-first3=JL | editor-last4=Fauci | editor-first4=AS | editor-last5=Longo | editor-first5=DL | editor-last6=Loscalzo | editor-first6=J | year=2015 | chapter=Chapter 107: Neoplasms of the lung | edition=19th | isbn=978-0-07-180216-1 }}</ref>
+
+<ref name="Thun">{{Cite journal  |vauthors=Thun MJ, Hannan LM, Adams-Campbell LL, etal | title=Lung cancer occurrence in never-smokers: an analysis of 13 cohorts and 22 cancer registry studies | journal=PLoS Medicine | volume=5 | issue=9 | pages=e185 |date=September 2008 | doi=10.1371/journal.pmed.0050185 | pmid=18788891 | pmc=2531137 }}</ref>
+
+<ref name="O'Reilly">{{Cite journal | last=O'Reilly | first=KM |author2=Mclaughlin AM |author3=Beckett WS |author4=Sime PJ  | title =Asbestos-related lung disease | journal=American Family Physician | volume=75 | issue=5 | pages=683–688 |date=March 2007 | url=http://www.aafp.org/afp/20070301/683.html | pmid=17375514 }}</ref>
+
+<ref name="AUTOREF">{{cite web |url=http://www.ncbi.nlm.nih.gov/books/NBK44324/ |author=Carmona, RH |publisher=U.S. Department of Health and Human Services |title=The Health Consequences of Involuntary Exposure to Tobacco Smoke: A Report of the Surgeon General |date=27 June 2006 |quote=Secondhand smoke exposure causes disease and premature death in children and adults who do not smoke.}} Retrieved 2014-06-16</ref>
+
+<ref name="AUTOREF1">{{Cite journal |url=http://monographs.iarc.fr/ENG/Monographs/vol83/mono83.pdf |format=PDF |publisher=WHO International Agency for Research on Cancer |title=Tobacco Smoke and Involuntary Smoking |journal=IARC Monographs on the Evaluation of Carcinogenic Risks to Humans |volume=83 |year=2004 |quote=There is sufficient evidence that involuntary smoking (exposure to secondhand or 'environmental' tobacco smoke) causes lung cancer in humans.&nbsp;... Involuntary smoking (exposure to secondhand or 'environmental' tobacco smoke) is carcinogenic to humans (Group 1). }}</ref>
+
+<ref name="Collins">{{Cite journal | last=Collins | first=LG |author2=Haines C |author3=Perkel R |author4=Enck RE  | title=Lung cancer: diagnosis and management | journal=American Family Physician | volume=75 | issue=1 | pages=56–63 | publisher=American Academy of Family Physicians |date=January 2007 | url=http://www.aafp.org/afp/20070101/56.html | pmid=17225705 }}</ref>
+
+<ref name="Honnorat">{{Cite journal | last=Honnorat | first=J |author2=Antoine JC  | title=Paraneoplastic neurological syndromes | journal=Orphanet Journal of Rare Diseases | volume=2 | page=22 | publisher=BioMed Central |date=May 2007 | url=http://www.ojrd.com/content/2/1/22 | pmid=17480225 | doi=10.1186/1750-1172-2-22 | pmc=1868710 | issue=1}}</ref>
+
+<ref name="ajcc">{{Cite book |author=Greene, Frederick L. |title=AJCC cancer staging manual |publisher=Springer-Verlag |location=Berlin |year=2002 |pages= |isbn=0-387-95271-3 |oclc= |doi= |accessdate=}}</ref>
+
+<ref name="AUTOREF5">{{Cite journal  |vauthors=Biesalski HK, Bueno de Mesquita B, Chesson A, etal | title=European Consensus Statement on Lung Cancer: risk factors and prevention. Lung Cancer Panel | journal=CA Cancer J Clin | volume=48 | issue=3 | pages=167–176; discussion 164–166 | year=1998 | pmid=9594919 | doi=10.3322/canjclin.48.3.167 | location=Smoking is the major risk factor, accounting for about 90% of lung cancer incidence. }}</ref>
+
+<ref name="Peto">{{Cite book  |vauthors=Peto R, Lopez AD, Boreham J, etal | title=Mortality from smoking in developed countries 1950–2000: Indirect estimates from National Vital Statistics | publisher=Oxford University Press | year=2006 | url=http://www.ctsu.ox.ac.uk/~tobacco/ | isbn=0-19-262535-7 }}</ref>
+
+<ref name="Schick">{{Cite journal | last=Schick | first=S |author2=Glantz S  | title=Philip Morris toxicological experiments with fresh sidestream smoke: more toxic than mainstream smoke | journal=Tobacco Control | volume=14 | issue=6 | pages=396–404 |date=December 2005 | pmid=16319363 | doi=10.1136/tc.2005.011288 | pmc=1748121 }}</ref>
+
+<ref name="EPA radon">{{cite web | last=EPA | authorlink=United States Environmental Protection Agency | title=Radiation information: radon | publisher=EPA |date=February 2013 | url=http://www.epa.gov/rpdweb00/radionuclides/radon.html }}</ref>
+
+<ref name="Merck">{{cite web | title=Lung Carcinoma: Tumors of the Lungs | publisher = Merck Manual Professional Edition, Online edition | url=http://www.merck.com/mmpe/sec05/ch062/ch062b.html#sec05-ch062-ch062b-1405 | accessdate=15 August 2007 }}</ref>
+
+<ref name="NEJM-molecular">{{Cite journal | last=Herbst | first=RS |author2=Heymach JV |author3=Lippman SM  | title=Lung cancer | journal=New England Journal of Medicine | volume=359 | issue=13 | pages=1367–1380 |date=September 2008| url=http://content.nejm.org/cgi/content/full/359/13/1367 | doi=10.1056/NEJMra0802714 | pmid=18815398 }}</ref>
+
+<ref name="Aviel-Ronen">{{Cite journal | last=Aviel-Ronen | first=S |author2=Blackhall FH |author3=Shepherd FA |author4=Tsao MS  | title=K-ras mutations in non-small-cell lung carcinoma: a review | journal=Clinical Lung Cancer | volume=8 | issue=1 | pages=30–38 | publisher=Cancer Information Group |date=July 2006 | pmid=16870043 | doi=10.3816/CLC.2006.n.030 }}</ref>
+
+<ref name="Rosti">{{Cite journal  |vauthors=Rosti G, Bevilacqua G, Bidoli P, etal | title=Small cell lung cancer | journal=Annals of Oncology | volume=17 | issue=Suppl. 2 | pages=5–10 |date=March 2006 | pmid=16608983 | doi=10.1093/annonc/mdj910 }}</ref>
+
+<ref name="Seo">{{Cite journal  |vauthors=Seo JB, Im JG, Goo JM, etal | title=Atypical pulmonary metastases: spectrum of radiologic findings | journal=Radiographics | volume=21 | issue=2 | pages=403–417 | url=http://radiographics.rsnajnls.org/cgi/content/full/21/2/403 | pmid=11259704 | date=1 March 2001 | doi=10.1148/radiographics.21.2.g01mr17403}}</ref>
+
+<ref name="Raz">{{Cite journal | last=Raz | first=DJ |author2=He B |author3=Rosell R |author4=Jablons DM  | title=Bronchioloalveolar carcinoma: a review | journal=Clinical Lung Cancer | volume=7 | issue=5 | pages=313–322 |date=March 2006 | pmid=16640802 | doi=10.3816/CLC.2006.n.012 }}</ref>
+
+<ref name="Bhutan">{{cite news | last=Pandey | first=G | title=Bhutan's smokers face public ban | publisher=BBC |date=February 2005 | url=http://news.bbc.co.uk/2/hi/south_asia/4305715.stm | accessdate=7 September 2007 }}</ref>
+
+<ref name="OTO">{{Cite book | last=Arriagada | first=R |author2=Goldstraw P |author3=Le Chevalier T  | title=Oxford Textbook of Oncology | publisher=Oxford University Press | year=2002 | page=2094 | edition=2nd | isbn=0-19-262926-3 }}</ref>
+
+<ref name="PORT Meta-analysis Trialists Group">{{Cite journal |title=Postoperative radiotherapy for non-small cell lung cancer |journal=Cochrane Database of Systematic Reviews |issue=2 |pages=CD002142 |year=2005 |pmid=15846628 |doi=10.1002/14651858.CD002142.pub2 |author1= PORT Meta-analysis Trialists Group |editor1-last= Rydzewska |editor1-first= Larysa}}</ref>
+
+<ref name="Murray">{{Cite journal | last=Murray | first=N |author2=Turrisi AT  | title=A review of first-line treatment for small-cell lung cancer | journal=Journal of Thoracic Oncology | volume=1 | issue=3 | pages=270–278 |date=March 2006 | pmid=17409868 }}</ref>
+
+<ref name="Azim">{{Cite journal | last=Azim | first=HA |author2=Ganti AK  | title=Treatment options for relapsed small-cell lung cancer | journal=Anti-Cancer Drugs | volume=18 | issue=3 | pages=255–261 |date=March 2007 | pmid=17264756 | doi=10.1097/CAD.0b013e328011a547 }}</ref>
+
+<ref name="MacCallum">{{Cite journal | last=MacCallum | first=C |author2=Gillenwater HH  | title=Second-line treatment of small-cell lung cancer | journal=Current Oncology Reports | volume=8 | issue=4 | pages=258–264 |date=July 2006 | pmid=17254525 | doi=10.1007/s11912-006-0030-8 }}</ref>
+
+<ref name="Clegg">{{Cite journal  |vauthors=Clegg A, Scott DA, Hewitson P, etal | title=Clinical and cost effectiveness of paclitaxel, docetaxel, gemcitabine, and vinorelbine in non-small cell lung cancer: a systematic review | journal=Thorax | volume=57 | issue=1 | pages=20–28 | publisher=BMJ Publishing Group |date=January 2002 | pmid=11809985 | doi=10.1136/thorax.57.1.20 | pmc=1746188 }}</ref>
+
+<ref name="Horn">{{Cite journal | last=Horn | first=L |author2=Sandler AB |author3=Putnam JB Jr |author4=Johnson DH  | title=The rationale for adjuvant chemotherapy in stage I non-small cell lung cancer | journal=Journal of Thoracic Oncology | volume=2 | issue=5 | pages=377–383 |date=May 2007 | pmid=17473651 | doi=10.1097/01.JTO.0000268669.64625.bb }}</ref>
+
+<ref name="Wakelee">{{Cite journal | last=Wakelee | first=HA |author2=Schiller JH |author3=Gandara DR  | title=Current status of adjuvant chemotherapy for stage IB non-small-cell lung cancer: implications for the New Intergroup Trial | journal=Clinical Lung Cancer | volume=8 | issue=1 | pages=18–21 | publisher=Cancer Information Group |date=July 2006 | pmid=16870041 | doi=10.3816/CLC.2006.n.028 }}</ref>
+
+<ref name="AUTOREF18">{{cite web |title=Small Cell Lung Cancer Treatment |publisher=National Cancer Institute |url=http://www.cancer.gov/cancertopics/pdq/treatment/small-cell-lung/healthprofessional |work=PDQ for Health Professionals |year=2012 |accessdate=16 May 2012}}</ref>
+
+<ref name="AUTOREF20">{{cite web |url=http://www.who.int/healthinfo/global_burden_disease/estimates_country/en/index.html |title=WHO Disease and injury country estimates |year=2009 |work=World Health Organization |accessdate=11 November 2009}}</ref>
+
+<ref name="AUTOREF22">{{cite journal  |vauthors=Jemal A, Tiwari RC, Murray T, etal |title=Cancer statistics, 2004 |journal=CA: a Cancer Journal for Clinicians |volume=54 |issue=1 |pages=8–29 |year=2004 |pmid=14974761 |doi=10.3322/canjclin.54.1.8}}</ref>
+
+<ref name="Lum">{{Cite journal | last=Lum | first=KL |author2=Polansky JR |author3=Jackler RK |author4=Glantz SA  | title=Signed, sealed and delivered: "big tobacco" in Hollywood, 1927–1951 | journal=Tobacco Control | volume=17 | issue=5 | pages=313–323 |date=October 2008 | url=http://tobaccocontrol.bmj.com/cgi/content/full/17/5/313 | pmid=18818225 | doi=10.1136/tc.2008.025445 | pmc=2602591 }}</ref>
+
+<ref name="AUTOREF23">{{cite web | title=Gender in lung cancer and smoking research | publisher=[[World Health Organization]] | year=2004 | url=http://www.who.int/gender/documents/en/lungcancerlow.pdf | format=PDF | accessdate=26 May 2007 }}</ref>
+
+<ref name="AUTOREF25">{{Cite journal | last=Behera | first=D |author2=Balamugesh T  | title=Lung cancer in India | journal=Indian Journal of Chest Diseases and Allied Sciences | volume=46 | issue=4 | pages=269–281 | year=2004 | pmid=15515828 | url=http://www.vpci.org.in/upload/Journals/pic130.pdf#page=27 | format=PDF }}</ref>
+
+<ref name="Charloux">{{Cite journal  |vauthors=Charloux A, Quoix E, Wolkove N, etal | title=The increasing incidence of lung adenocarcinoma: reality or artefact? A review of the epidemiology of lung adenocarcinoma | journal=International Journal of Epidemiology | volume=26 | issue=1 | pages=14–23 |date=February 1997 | pmid=9126499 | url=http://ije.oxfordjournals.org/cgi/reprint/26/1/14 | doi=10.1093/ije/26.1.14 }}</ref>
+
+<ref name="AUTOREF27">{{Cite book | last=Morgagni | first=Giovanni Battista | title=De sedibus et causis morborum per anatomen indagatis | year=1761 |ol=24830495M }}</ref>
+
+<ref name="AUTOREF28">{{Cite book | last=Bayle | first=Gaspard-Laurent | title=Recherches sur la phthisie pulmonaire |place=Paris |language=French | year=1810 |ol=15355651W }}</ref>
+
+<ref name="Witschi">{{Cite journal | last=Witschi | first=H | title=A short history of lung cancer | journal=[[Toxicological Sciences]] | volume=64 | issue=1 | pages=4–6 |date=November 2001 | url=http://toxsci.oxfordjournals.org/cgi/content/full/64/1/4 |pmid=11606795 | doi=10.1093/toxsci/64.1.4 }}</ref>
+
+<ref name="AUTOREF29">{{Cite book|author=Adler, I |year=1912 |title=Primary Malignant Growths of the Lungs and Bronchi |place= New York |publisher=Longmans, Green, and Company |oclc=14783544 |ol=24396062M }}, cited in {{Cite journal |author=Spiro SG, Silvestri GA |title=One hundred years of lung cancer |journal=American Journal of Respiratory and Critical Care Medicine |volume=172 |issue=5 |pages=523–529 |year=2005 |pmid=15961694 |doi=10.1164/rccm.200504-531OE}}</ref>
+
+<ref name="Grannis">{{cite web | last=Grannis | first=FW |title=History of cigarette smoking and lung cancer | publisher=smokinglungs.com | url=http://www.smokinglungs.com/cighist.htm | accessdate=6 August 2007 | archiveurl = https://web.archive.org/web/20070718174754/http://www.smokinglungs.com/cighist.htm| archivedate = 18 July 2007}}</ref>
+
+<ref name="Proctor">{{Cite book | last=Proctor | first=R | title=The Nazi War on Cancer | publisher=Princeton University Press | year=2000 | pages=173–246 | isbn=0-691-00196-0 }}</ref>
+
+<ref name="Doll">{{Cite journal | last=Doll | first=R |author2=Hill AB  | title=Lung Cancer and Other Causes of Death in Relation to Smoking | journal=British Medical Journal | volume=2 | issue=5001 | pages=1071–1081 |date=November 1956 | pmid=13364389 | doi=10.1136/bmj.2.5001.1071 | pmc=2035864 }}</ref>
+
+<ref name="AUTOREF30">{{cite web | author=US Department of Health Education and Welfare | title=Smoking and health: report of the advisory committee to the Surgeon General of the Public Health Service | location=Washington, DC | publisher=US Government Printing Office | year=1964 | url=http://profiles.nlm.nih.gov/NN/B/B/M/Q/_/nnbbmq.pdf | format=PDF }}</ref>
+
+<ref name="Greaves">{{Cite book | last=Greaves | first=M | title=Cancer: the Evolutionary Legacy | publisher=Oxford University Press | year=2000 | pages=196–197 | isbn=0-19-262835-6 }}</ref>
+
+<ref name="AUTOREF32">{{Cite journal | last=Horn | first=L |author2=Johnson DH  | title=Evarts A. Graham and the first pneumonectomy for lung cancer | journal=Journal of Clinical Oncology | volume=26 | issue=19 | pages=3268–3275 |date=July 2008 | pmid=18591561 | url=http://jco.ascopubs.org/cgi/pdf_extract/26/19/3268 | doi=10.1200/JCO.2008.16.8260 }}</ref>
+
+<ref name="Edwards">{{Cite journal | last=Edwards | first=AT | title=Carcinoma of the Bronchus | journal=Thorax | volume=1 | issue=1 | pages=1–25 | year=1946 | pmc = 1018207 | doi=10.1136/thx.1.1.1 | pmid=20986395}}</ref>
+
+<ref name="AUTOREF33">{{Cite journal | last=Kabela | first=M | title=Erfahrungen mit der radikalen Röntgenbestrahlung des Bronchienkrebses |trans_title=Experience with radical irradiation of bronchial cancer | language=German | journal=Ceskoslovenská Onkológia | volume=3 | issue=2 | pages=109–115 | year=1956 | pmid=13383622 }}</ref>
+
+<ref name="Saunders">{{Cite journal  |vauthors=Saunders M, Dische S, Barrett A, etal | title=Continuous hyperfractionated accelerated radiotherapy (CHART) versus conventional radiotherapy in non-small-cell lung cancer: a randomised multicentre trial | journal=Lancet | volume=350 | issue=9072 | pages=161–165 | publisher=Elsevier |date=July 1997 | pmid=9250182 | doi=10.1016/S0140-6736(97)06305-8 }}</ref>
+
+<ref name="AUTOREF34">{{Cite journal  |vauthors=Lennox SC, Flavell G, Pollock DJ, etal | title=Results of resection for oat-cell carcinoma of the lung | journal=Lancet | volume=2 | issue=7575 | pages=925–927 | publisher=Elsevier |date=November 1968 | pmid=4176258 | doi=10.1016/S0140-6736(68)91163-X }}</ref>
+
+<ref name="AUTOREF35">{{Cite journal | last=Miller | first=AB |author2=Fox W |author3=Tall R  | title=Five-year follow-up of the Medical Research Council comparative trial of surgery and radiotherapy for the primary treatment of small-celled or oat-celled carcinoma of the bronchus | journal=Lancet | volume=2 | issue=7619 | pages=501–505 | publisher=Elsevier |date=September 1969 | pmid=4184834 | doi=10.1016/S0140-6736(69)90212-8 }}</ref>
+
+<ref name="AUTOREF36">{{Cite journal | authors=Cohen M, Creaven PJ, Fossieck BE Jr| title=Intensive chemotherapy of small cell bronchogenic carcinoma | journal=Cancer Treatment Reports | volume=61 | issue=3 | pages=349–354 | year=1977 | pmid=194691 |display-authors=etal}}</ref>
+
+}}
+
+==External links==
+{{commons category|Lung cancers}}
+* {{dmoz|Health/Conditions_and_Diseases/Cancer/Lung/}}
+
+{{Respiratory tract neoplasia}}
+{{featured article}}
+
+{{Authority control}}
+
+{{DEFAULTSORT:Lung cancer}}
+[[Category:Lung cancer|*]]
+[[Category:Smoking]]

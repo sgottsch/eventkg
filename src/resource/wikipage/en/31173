@@ -1,0 +1,141 @@
+{{Infobox planet
+| name         = Telesto
+| image        = [[File:Telesto cassini closeup.jpg|250px]]
+| caption      = Telesto as seen by the ''[[Cassini–Huygens|Cassini]]'' probe in October 2005
+| discoverer   =
+  {{plainlist |
+* Bradford A. Smith
+* [[Harold Reitsema]]
+* Stephen M. Larson
+* John W. Fountain
+  }}
+| discovered   = April 8, 1980
+| semimajor    = {{val|294619|u=km}} <!-- Computed using http://www.minorplanetcenter.net/iau/NatSats/NaturalSatellites.html µ value -->
+| eccentricity = 0.000
+| period       = {{val|1.887802|ul=d}} <ref name="NASACelestia" />
+| inclination  = 1.19° (to Saturn's equator)
+| satellite_of = [[Saturn]]
+| dimensions   = 32.6&thinsp;×&thinsp;23.6&thinsp;×&thinsp;20.0&nbsp;km {{sfn|Thomas|2010}}
+| mean_radius  = {{val|12.4|0.4|u=km}} {{sfn|Thomas|2010}}
+| rotation     = [[Synchronous rotation|synchronous]]
+| axial_tilt   = zero
+| magnitude    = 18.7 {{sfn|Hamilton}}
+}}
+
+'''Telesto''' ({{IPAc-en|t|ɨ|ˈ|l|ɛ|s|t|oʊ}} {{respell|tə|LES|toh}}, {{lang-el|Τελεστώ}}) is a [[natural satellite|moon]] of [[Saturn]]. It was discovered by [[Bradford A. Smith|Smith]], [[Harold Reitsema|Reitsema]], [[Stephen M. Larson|Larson]] and [[John W. Fountain|Fountain]] in 1980 from ground-based observations, and was provisionally designated '''{{nowrap|S/1980 S 13}}'''.{{sfn|IAUC 3466}} In the following months, several other apparitions were observed: {{nowrap|S/1980 S 24}},{{sfn|IAUC 3484}} {{nowrap|S/1980 S 33}},{{sfn|IAUC 3605}} and {{nowrap|S/1981 S 1}}.{{sfn|IAUC 3593}}
+
+In 1983 it was officially named after [[Telesto (mythology)|Telesto]] of [[Greek mythology]].{{efn|name=mythology}} It is also designated as '''{{nowrap|Saturn XIII}}''' (13) or '''Tethys B'''.
+
+Telesto is co-orbital with [[Tethys (moon)|Tethys]], residing in Tethys' leading [[Lagrangian point]] ({{L4}}). This relationship was first identified by [[#{{sfnRef|Seidelmann Harrington et al. 1981}}|Seidelmann ''et al.'']] in 1981.{{sfn|Seidelmann Harrington et al. 1981}} Another moon, [[Calypso (moon)|Calypso]], resides in the other (trailing) Lagrangian point of Tethys, 60 degrees in the other direction from Tethys. The Saturnian system has two additional [[trojan moon]]s.
+
+== Exploration ==
+
+The ''[[Cassini-Huygens Mission|Cassini]]'' probe performed a distant flyby of Telesto on October 11, 2005. The resulting images show that its surface is surprisingly smooth, devoid of small [[impact crater]]s.
+__NOTOC__
+
+== Citations ==
+{{notes
+| notes =
+
+{{efn
+| name = mythology
+| Transactions of the International Astronomical Union, Vol. XVIIIA, 1982 (confirms Janus, names Epimetheus, Telesto, Calypso) (mentioned in {{harvnb|IAUC 3872}})
+}}
+
+}}
+
+{{reflist
+| colwidth = 20em
+| refs =
+
+<ref name="NASACelestia">
+[http://exp.arc.nasa.gov/downloads/celestia/data/solarsys.ssc NASA Celestia]
+
+ {{wayback|url=http://exp.arc.nasa.gov/downloads/celestia/data/solarsys.ssc |date=20050309115746 }}</ref>
+
+}}
+
+== References ==
+
+* {{cite web
+  | last = Hamilton
+  | first = Calvin J.
+  | title = Saturn's Trojan Moon Telesto
+  | work = SolarViews.com
+  | publisher = SolarViews
+  | url = http://www.solarviews.com/eng/telesto.htm
+  | accessdate = 2011-12-23
+  | ref = harv
+  }}
+* {{cite journal
+  | last = Marsden
+  | first = Brian G.
+  | title = Satellites of Saturn
+  | date = April 10, 1980
+  | format = discovery
+  | journal = IAU Circular
+  | volume = 3466
+  | url = http://www.cbat.eps.harvard.edu/iauc/03400/03466.html
+  | accessdate = 2011-12-23
+  | ref = {{sfnRef|IAUC 3466}}
+  }}
+* {{cite journal
+  | last = Marsden
+  | first = Brian G.
+  | title = Satellites of Saturn
+  | date = June 6, 1980
+  | journal = IAU Circular
+  | volume = 3484
+  | url = http://www.cbat.eps.harvard.edu/iauc/03400/03484.html
+  | accessdate = 2011-12-23
+  | ref = {{sfnRef|IAUC 3484}}
+  }}
+* {{cite journal
+  | last = Marsden
+  | first = Brian G.
+  | title = Satellites of Saturn
+  | date = April 16, 1981
+  | journal = IAU Circular
+  | volume = 3593
+  | url = http://www.cbat.eps.harvard.edu/iauc/03500/03593.html
+  | accessdate = 2011-12-23
+  | ref = {{sfnRef|IAUC 3593}}
+  }}
+* {{cite journal
+  | last = Marsden
+  | first = Brian G.
+  | title = Satellites of Saturn
+  | date = May 18, 1981
+  | journal = IAU Circular
+  | volume = 3605
+  | url = http://www.cbat.eps.harvard.edu/iauc/03600/03605.html
+  | accessdate = 2011-12-23
+  | ref = {{sfnRef|IAUC 3605}}
+  }}
+* {{cite journal
+  | last = Marsden
+  | first = Brian G.
+  | title = Satellites of Jupiter and Saturn
+  | date = September 30, 1983
+  | journal = IAU Circular
+  | volume = 3872
+  | url = http://www.cbat.eps.harvard.edu/iauc/03800/03872.html
+  | accessdate = 2011-12-23
+  | ref = {{sfnRef|IAUC 3872}}
+  }}
+* {{cite journal| doi = 10.1016/0019-1035(81)90172-X| last1 = Seidelmann | first1 = P. K.| last2 = Harrington | first2 = R. S.| last3 = Pascu | first3 = D.| last4 = Baum | first4 = W. A.| last5 = Currie | first5 = D. G.| last6 = Westphal | first6 = J. A.| last7 = Danielson | first7 = G. E.| year = 1981| title = Saturn satellite observations and orbits from the 1980 ring plane crossing| journal = Icarus| volume = 47| issue = 2| pages = 282| pmid =  | pmc = | bibcode = 1981Icar...47..282S| ref = {{sfnRef|Seidelmann Harrington et al. 1981}}}}
+* {{cite journal| doi = 10.1016/j.icarus.2010.01.025| last1 = Thomas| first1 = P. C.| date = July 2010| title = Sizes, shapes, and derived properties of the saturnian satellites after the Cassini nominal mission| journal = Icarus| volume = 208| issue = 1| pages = 395–401| pmid = | pmc = | url = http://www.ciclops.org/media/sp/2011/6794_16344_0.pdf| bibcode = 2010Icar..208..395T| ref = harv}}
+
+== External links ==
+
+{{Commons category|Telesto (moon)|Telesto}}
+{{Spoken Wikipedia|Telesto (moon).ogg|2010-01-15}}
+* [http://solarsystem.nasa.gov/planets/profile.cfm?Object=Sat_Telesto Telesto Profile] by [http://solarsystem.nasa.gov NASA's Solar System Exploration]
+* [http://www.planetary.org/explore/topics/saturn/telesto.html The Planetary Society: Telesto]
+
+{{Moons of Saturn|state=uncollapsed}}
+
+{{DEFAULTSORT:Telesto (Moon)}}
+[[Category:Moons of Saturn]]
+[[Category:Trojan moons]]
+[[Category:Astronomical objects discovered in 1980|19800408]]

@@ -1,0 +1,27 @@
+# download as .tsv
+
+# All properties with their names
+SELECT ?property ?propertyLabel
+WHERE {
+  hint:Query hint:optimizer "None" .
+  ?property a wikibase:Property .
+  SERVICE wikibase:label { bd:serviceParam wikibase:language "en" }
+}
+
+#Properties of type external-id
+# Make a list of properties of the type external-id
+SELECT ?property ?propertyLabel WHERE {
+  ?property wikibase:propertyType wikibase:ExternalId .
+	SERVICE wikibase:label {
+		bd:serviceParam wikibase:language "en" .
+	}           
+}
+
+# Properties with "instance of" "Wikidata property for authority control"
+SELECT ?property ?propertyLabel WHERE {
+  ?property a wikibase:Property .
+  ?property wd:P31 wd:Q18614948 .
+	SERVICE wikibase:label {
+		bd:serviceParam wikibase:language "en" .
+	}           
+}

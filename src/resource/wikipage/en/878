@@ -1,0 +1,311 @@
+{{distinguish|Abjad}}
+{{Use dmy dates|date=June 2013}}
+[[Image:Winnipeg Forks - Plains Cree Inscription.jpg|thumb|300px|An inscription of [[Swampy Cree language|Swampy Cree]] using [[Canadian Aboriginal syllabics]], an abugida developed by Christian missionaries for Aboriginal Canadian languages]]
+{{Contains Indic text}}
+{{Contains Canadian text}}
+{{Contains Ethiopic text}}
+An '''abugida''' {{IPAc-en|ˌ|ɑː|b|uː|ˈ|ɡ|iː|d|ə}} (from [[Ge'ez language|Ge'ez]] አቡጊዳ ''’äbugida''), and likewise an '''alphasyllabary''', is a [[Writing systems#Segmental writing system|segmental writing system]] in which consonant–vowel sequences are written as a unit: each unit is based on a [[consonant]] letter, and [[vowel]] notation is secondary. This contrasts with a full [[alphabet]], in which vowels have status equal to consonants, and with an [[abjad]], in which vowel marking is absent or optional. (In less formal contexts, all three types of script may be termed alphabets.) The terms also contrast them with a [[syllabary]], in which the symbols cannot be split into separate consonants and vowels.  Abugidas include the extensive [[Brahmic family of scripts]] of South and Southeast Asia.
+
+As is the case for syllabaries, the units of the writing system may consist of the representations both of syllables and of consonants.  For scripts of the Brahmic family, the term ''[[Shiksha#syllable|akshara]]'' is used for the units.
+
+''Abugida'' as a term in linguistics was proposed by [[Peter T. Daniels]] in his 1990 [[Linguistic typology|typology]] of [[writing system]]s.<ref>{{citation|jstor=602899|title=Fundamentals of Grammatology|author=Peter T. Daniels|date=Oct–Dec 1990|volume=119|issue=4|pages=727–731 |journal=Journal of the American Oriental Society |url=http://isites.harvard.edu/fs/docs/icb.topic129948.files/Daniels.pdf}}</ref> ''’Abugida'' is an Ethiopian name for the [[Ge'ez alphabet|Ge‘ez script]], taken from four letters of that script, ''{{'}}ä bu gi da'', in much the same way that ''[[abecedary]]'' is derived from Latin ''a be ce de'', and ''[[alphabet]]'' is derived from the names of the two first letters in the [[Greek alphabet]], ''alpha'' and ''beta''. As Daniels used the word, an abugida is in contrast with a [[syllabary]], where letters with shared consonants or vowels show no particular resemblance to one another, and also with an [[alphabet]] proper, where independent letters are used to denote both consonants and vowels. The term ''alphasyllabary'' was suggested for the Indic scripts in 1997 by [[William Bright]], following South Asian linguistic usage, to convey the idea that "they share features of both alphabet and syllabary."<ref>He describes this term as "formal", i.e., more concerned with graphic arrangement of symbols, whereas ''abugida'' was "functional", putting the focus on sound–symbol correspondence. However, this is not a distinction made in the literature.</ref><ref name=Bright/>
+
+Abugidas were long considered to be syllabaries, or intermediate between syllabaries and alphabets, and the term ''syllabics'' is retained in the name of [[Canadian Aboriginal Syllabics]]. Other terms that have been used include ''neosyllabary'' ([[James-Germain Février|Février]] 1959), ''pseudo-alphabet'' ([[Fred Householder|Householder]] 1959), ''semisyllabary'' ([[David Diringer|Diringer]] 1968; a word that has [[semi-syllabary|other uses]]) and ''syllabic alphabet'' ([[Florian Coulmas|Coulmas]] 1996; this term is also a synonym for [[syllabary]]).<ref name=Bright/>
+
+The formal definitions given by Daniels and Bright for abugida and alphasyllabary differ; some writing systems are abugidas but not alphasyllabaries, and some are alphasyllabaries but not abugidas.
+
+{{Writing systems sidebar}}
+
+==General Description==
+The formal definitions given by Daniels and Bright for abugida and alphasyllabary differ; some writing systems are abugidas but not alphasyllabaries, and some are alphasyllabaries but not abugidas.  An abugida is defined as "a type of writing system whose basic characters denotes consonants followed by a particular vowel, and in which diacritics denote other vowels".<ref name=WWS_glossary/>  (This 'particular vowel' is referred to as the ''inherent'' or ''implicit'' vowel, as opposed to the ''explicit'' vowels marked by the 'diacritics'.)  An alphasyllabary is defined as "a type of writing system in which the vowels are denoted by subsidiary symbols not all of which occur in a linear order (with relation to the consonant symbols) that is congruent with their temporal order in speech".<ref name=WWS_glossary/>  Bright did not require that an alphabet explicitly represent all vowels.<ref name=Bright/>  [[#Phagspa|Phagspa]] is an example of an abugida that is not an alphasyllabary, and modern [[Lao alphabet|Lao]] is an example of an alphasyllabary that is not an abugida, for its vowels are always explicit.
+
+This description is expressed in terms of an abugida.  Formally, an alphasyllabary that is not an abugida can be converted to an abugida by adding a purely formal vowel sound that is never used and declaring that to be the inherent vowel of the letters representing consonants.  This may formally make the system ambiguous, but in 'practice' this is not a problem, for then the interpretation with the never used inherent vowel sound will always be a wrong interpretation!  Note that the actual pronunciation may be complicated by interactions between the sounds apparently written just as the sounds of the letters in the English words ''wan, gem'' and ''war'' are affected by neighbouring letters.
+
+The fundamental principles of an abugida apply to words made up of consonant-vowel (CV) syllables.  The syllables are written as a linear sequences of the units of the script.  Each syllable is either a letter that represents the sound of a consonant and the inherent vowel, or a letter with a modification to indicate the vowel, either by means of [[diacritic]]s, or by changes in the form of the letter itself.  If all modifications are by diacritics and all diacritics follow the direction of the writing of the letters, then the abugida is not an alphasyllabary.
+
+However, most languages have words that are more complicated than a sequence of CV syllables, even ignoring tone.
+
+The first complication is syllables that consist of just a vowel (V).  Now, in some languages, this issue does not arise, for every syllable starts with a consonant.  This is common in Semitic languages and in languages of mainland SE Asia, and for such languages this issue need not arise.  For some languages, a [[zero consonant]] letter is used as though every syllable began with a consonant.  For other languages, each vowel has a separate letter that is used for each syllable consisting of just the vowel.  These letters are known as ''independent vowels'', and are found in most Indic scripts.  These letters may be quite different to the corresponding diacritics, which by contrast are known as ''dependent vowels''.  As a result of the spread of writing systems, independent vowels may be used to represent syllables beginning with a glottal stop, even for non-initial syllables.
+
+The next two complications are sequences of consonants before a vowel (CCV) and syllables ending in a consonant (CVC). The simplest solution, which is not always available, is to break with the principle of writing words as a sequence of syllables and use a unit representing just a consonant (C).  This unit may be represented with:
+*a modification that explicitly indicates the lack of a vowel ([[virama]]),
+*a lack of vowel marking (often with ambiguity between no vowel and a default [[inherent vowel]]),
+*vowel marking for a short or neutral vowel such as ''[[schwa]]'' (with ambiguity between no vowel and that short or neutral vowel), or
+*a visually unrelated letter.
+
+In a true abugida, the lack of distinctive marking may result from the diachronic loss of the inherent vowel, e.g. by [[syncope (phonology)|syncope]] and [[apocope]] [[Schwa deletion in Indo-Aryan languages|in Hindi]].
+
+When not handled by decomposition into C + CV, CCV syllables are handled by combining the two consonants.  In the Indic scripts, the earliest method was simply to arrange them vertically, but the two consonants may merge as a [[Typographic ligature|conjunct consonant]] letters, where two or more letters are graphically joined in a [[Typographic ligature|ligature]], or otherwise change their shapes.  Rarely, one of the consonants may be replaced by a gemination mark, e.g. the [[Gurmukhi]] ''[[Gurmukhi alphabet#Gemination: addak|addak]]''.  When they are arranged vertically, as in [[Burmese alphabet|Burmese]] or [[Khmer alphabet|Khmer]], they are said to be 'stacked'.  Often there has been a change to writing the two consonants side by side.  In the latter case, the fact of combination may be indicated by a diacritic on one of the consonants or a change in the form of one of the consonants, e.g. the [[Devanagari#Conjuncts|half forms]] of Devanagari.  Generally, the reading order is top to bottom or the general reading order of the script, but sometimes the order is reversed.
+
+The division of a word into syllables for the purposes of writing does not always accord with the natural phonetics of the language.  For example, Brahmic scripts commonly handle a phonetic sequence CVC-CV as CV-CCV or CV-C-CV.  However, sometimes phonetic CVC syllables are handled as single units, and the final consonant may be represented:
+
+*in much the same way as the second consonant in CCV, e.g. in the [[Tibetan alphabet|Tibetan]]{{citation needed|reason=This is the condensed, single-stack style, not the usual multi-stack style|date=January 2016}}, [[Khmer alphabet|Khmer]]<ref name="TUS_Khmer_VC"/> and [[Tai Tham alphabet|Tai Tham]]<ref  name=Tai_Tham_Unicode_Proposal/> scripts. <!-- Full stop is **after** reference because the final reference refers only to Tai Tham. The list of names has now been sandwiched by 'the ... scripts' to prevent the reference for Tai Tham being taken to apply to the whole sentence. -->  The positioning of the components may be slightly different, as in Khmer and Tai Tham.
+*by a special dependent consonant sign, which may be a smaller or differently placed version of the full consonant letter, or may be a distinct sign altogether.
+*not at all.  For example, repeated consonants need not be represented, homorganic nasals may be ignored, and in [[Philippine scripts]], the syllable-final consonant was traditionally never represented.<ref name=WWS_Insular_SEA/><!-- p476 -->
+
+More complicated unit structures (e.g. CC or CCVC) are handled by combining the various techniques above.
+
+==Family-Specific Features==
+There are three principal families of abugidas, depending on whether vowels are indicated by modifying consonants by ''diacritics, distortion,'' or ''orientation.''<ref>John D. Berry (2002:19) ''Language Culture Type''</ref>
+*The oldest and largest is the [[Brahmic family]] of India and Southeast Asia, in which vowels are marked with [[diacritic]]s and syllable-final consonants, when they occur, are indicated with [[Typographic ligature|ligatures]], diacritics, or with a special [[virama|vowel-canceling mark]].
+*In the [[Ge'ez alphabet|Ethiopic family]], vowels are marked by modifying the shapes of the consonants, and one of the vowel-forms serves additionally to indicate final consonants.
+*In the [[Canadian Aboriginal syllabics|Cree family]], vowels are marked by rotating or flipping the consonants, and final consonants are indicated with either special diacritics or superscript forms of the main initial consonants.
+
+[[Tāna]] of the [[Maldives]] has dependent vowels and a zero vowel sign, but no inherent vowel.
+
+{| class="wikitable" style="text-align:center"
+!Feature!!North Indic!!South Indic!!Tāna!!Ethiopic!!Canadian
+|-
+|Vowel representation<br>after consonant||colspan="3"|Dependent sign (diacritic)<br>in distinct position per vowel||Fused diacritic||Rotate/reflect
+|-
+|Initial vowel<br>representation||Distinct inline<br>letter per vowel{{ref|IVNI|e1}}||colspan="2"|Glottal stop or zero consonant plus<br>dependent vowel in Tāna and mainland [[Southeast Asia|SEA]]{{ref|IVSEA|e2}}||Glottal stop<br>plus dependent||[[Zero consonant]]<br>plus dependent
+|-
+|Inherent vowel<br>(value of no vowel sign)||colspan="2"|{{IPA|[ə]}}, {{IPA|[ɔ]}}, {{IPA|[a]}}, or [[Bengali script#Vowels|{{IPA|[o]}}]]{{ref|INHSEA|e3}}||No||{{IPA|[ɐ]<ref name=WWS_Ethiopic/>}}||N/A
+|-
+|[[Virama|Zero vowel sign]]<br>(sign for no value)||Often||Colspan="2"|Always used when<br>no final vowel{{ref|VRMSEA|e4}}||Ambiguous with ə ({{IPA|[ɨ]}})||Shrunk or separate letter{{ref|VRMCAN|e5}}
+|-
+|Consonant cluster|| [[Devanagari conjuncts|Conjunct]]{{ref|CLUNI|e6}}||Stack or separate{{clarify|reason="Does 'separate' allow modification to inidicate the formation of a conjunct?|date=January 2016}}{{ref|CLUSI|e7}}||colspan="3"|Separate
+|-
+|Final consonant (not sign)||colspan="2"|Inline{{ref|FCI|e8}}||colspan="2"|Inline||Inline
+|-
+|Distinct final sign||colspan="2"|Only for {{Unicode|[[anusvara|ṃ]], [[visarga|ḥ]]}}{{ref|DFVAR|e9}}{{ref|DFSI|e10}}||colspan="2"|No||Only in [[Canadian Aboriginal syllabics#Eastern and western syllabics|Western]]
+|-
+|Final sign position||Inline or top||Inline, top or occasionally bottom||colspan="2"|N/A||Raised or inline{{clarify|reason=In talk, there is the implication that signs can be lowered.  Perhaps best to leave as 'Inline'.|date=January 2016}} 
+|-
+|colspan="6"|
+; Exceptions
+
+: {{note|IVNI|e1|Tibetan, [[Róng]] and [[Kharoṣṭhī]] use the glottal stop or zero consonant plus dependent vowel.}}
+: {{note|IVSEA|e2|Pali in the Burmese, Khmer and Tai Tham scripts uses independent vowels instead, and they are also used in loan words in the local languages.  The Cham script also uses both independent vowels and glottal stop consonant plus dependent vowel.<ref name=Cham_Unicode_Proposal/>  In all three cases, the glottal stop letter is the same as the independent vowel letter for the inherent vowel.  Conversely, the [[Lontara]] script of [[Sulawesi]] uses zero consonant plus vowel.}}
+: {{note|INHSEA|e3|Lao has no inherent vowel - it is an alphasyllabary but not an abugida.  There is also a Thai-script Pali orthography which has no inherent vowel.}}
+: {{note|VRMSEA|e4|The Thai, Lao, Tai Viet, Tai Tham and Khmer scripts often or always use the plain letter for word-final consonants, and normally do not use a zero vowel sign.  However, the Thai script regularly uses it for Pali and Sanskrit.}}   
+: {{note|VRMCAN|e5|Deviations include omissions{{citation needed|reason=Sole evidence is discussion on Qalam|date=January 2016}} and systematic use of i-forms{{citation needed|reason=Sole evidence is a claim in the talk page|date=January 2016}}.}}
+: {{note|CLUNI|e6|Often separate and unmodified as a result of [[Schwa deletion in Indo-Aryan languages|syncope]].  Also, as a legitimate font fall-back, can occur as side-by-side consonants modified only by the inclusion of a virama.}}
+: {{note|CLUSI|e7|Tamil and Lao have conjuncts formed from straightforward ligation of side by side consonants.  Burmese and Tai Tham have a few conjuncts.}}
+: {{note|FCI|e8|Tibetan and Khmer occasionally and Tai Tham regularly write final consonants below the rest of the akshara.  This practice is the origin of the Lao letter ຽ U+0EBD LAO SEMIVOWEL SIGN NYO, and a similar sign may be found in Javanese.  Tai Tham may also write several final consonants above the rest of the akshara.  The Rónɡ script writes final consonants above the rest of the akshara, except that final /ŋ/ ''precedes'' the rest.  The Philippine scripts do not represent final consonants.}}
+: {{note|DFVAR|e9|The symbol for ṃ represents the sound for /m/ or /ŋ/ in some languages, and the symbol for ḥ may represent a ɡlottal stop or even /k/.  Not all scripts have these symbols.}}
+: {{note|DFSI|e10|Tai Tham has superscript and subscript signs for final /k/.  Javanese and related scripts have a superscript symbol for final /r/, though it is ultimately related to the normal letter for /r/.}}
+
+|-
+|}
+
+===Indic (Brahmic)===
+{{see also|Brahmic family of scripts}}
+Indic scripts originated in [[India]] and spread to [[Southeast Asia]]. All surviving Indic scripts are descendants of the [[Brahmi alphabet]]. Today they are used in most languages of [[South Asia]] (although replaced by [[Perso-Arabic]] in [[Urdu]], [[Kashmiri language|Kashmiri]] and some other languages of [[Pakistan]] and [[India]]), mainland [[Southeast Asia]] ([[Burma]], [[Thailand]], [[Laos]], [[Cambodia]]; but not [[Malaysia]] or [[Vietnam]]), and [[Indonesia]]n archipelago ([[Javanese script|Javanese]], [[Balinese script|Balinese]], [[Sundanese script|Sundanese]], etc.). The primary division is into North Indic scripts used in Northern India, Nepal, Tibet and Bhutan, and Southern Indic scripts used in [[South India]], [[Sri Lanka]] and [[Southeast Asia]].
+South Indic letter forms are very rounded; North Indic less so, though [[Odia script|Odia]], Golmol and Litumol of Nepal script are rounded.
+
+Most North Indic scripts' full letters incorporate a horizontal line at the top, with [[Gujarati script|Gujarati]] and Odia as exceptions; South Indic scripts do not.
+
+Indic scripts indicate vowels through dependent vowel signs (diacritics) around the consonants, often including a sign that explicitly indicates the lack of a vowel. If a consonant has no vowel sign, this indicates a default vowel. Vowel diacritics may appear above, below, to the left, to the right, or around the consonant.
+
+The most widely used Indic script is [[Devanagari]], shared by [[Hindi]], [[Bhojpuri]], [[Marathi language|Marathi]], [[Konkani language|Konkani]], [[Nepali language|Nepali]], and often [[Sanskrit]]. A basic letter such as [[Devanagari ka|क]] in Hindi represents a syllable with the default vowel, in this case ''ka'' ({{IPA|[kə]}}). In some languages, including Hindi, it becomes a final closing consonant at the end of a word, in this case ''k''. The inherent vowel may be changed by adding vowel mark ([[diacritic]]s), producing syllables such as कि ''ki,'' कु ''ku,'' के ''ke,''  को ''ko.''
+
+[[Image:Rigveda MS2097.jpg|thumb|right|300px|A 19th-century manuscript in the [[Devanagari script]]]]
+{| class="wikitable" style="text-align:center"
+|+ Diacritic placement in Brahmic abugidas
+! position
+! syllable
+! pronunciation
+! base form
+! script
+|-
+| above || के || {{IPA|/keː/}} || rowspan=4 | क {{IPA|/k(a)/}} || rowspan=4 | [[Devanagari]]
+|-
+| below || कु || {{IPA|/ku/}}
+|-
+| left || कि || {{IPA|/ki/}}
+|-
+| right || को || {{IPA|/koː/}}
+|-
+| around || கௌ || {{IPA|/kau/}} || க {{IPA|/ka/}} || [[Tamil script|Tamil]]
+|-
+| surround || កៀ || {{IPA|/kie/}} || ក {{IPA|/kɑɑ/}} || [[Khmer alphabet|Khmer]]
+|-
+| within || ಕಿ || {{IPA|/ki/}} || ಕ {{IPA|/ka/}} || [[Kannada alphabet|Kannada]]
+|-
+| within || కి|| {{IPA|/ki/}} || క {{IPA|/ka/}} || [[Telugu alphabet|Telugu]]
+|-
+| below and extend<br>to the right || ꦏꦾ || {{IPA|/kya/}} || ꦏ {{IPA|/ka/}} || [[Javanese script|Javanese]]
+|-
+| below and extend<br>to the left || ꦏꦿꦸ || {{IPA|/kru/}} || ꦏ {{IPA|/ka/}} || [[Javanese script|Javanese]]
+|}
+
+In many of the Brahmic scripts, a syllable beginning with a cluster is treated as a single character for purposes of vowel marking, so a vowel marker like {{Unicode|ि}} ''-i,'' falling before the character it modifies, may appear several positions before the place where it is pronounced. For example, the game [[cricket]] in [[Hindi]] is क्रिकेट ''krikeţ;'' the diacritic for {{IPA|/i/}} appears before the [[consonant cluster]] {{IPA|/kr/}}, not before the {{IPA|/r/}}. A more unusual example is seen in the [[Batak alphabet]]: Here the syllable ''bim'' is written ''ba-ma-i-(virama)''. That is, the vowel diacritic and virama are both written after the consonants for the whole syllable.
+
+In many abugidas, there is also a diacritic to suppress the inherent vowel, yielding the bare consonant. In [[Devanagari]], क् is ''k,'' and ल् is ''l''. This is called the ''[[virāma]]'' or ''halantam'' in [[Sanskrit]]. It may be used to form [[consonant cluster]]s, or to indicate that a consonant occurs at the end of a word. Thus in Sanskrit, a default vowel consonant such as क does not take on a final consonant sound. Instead, it keeps its vowel. For writing two consonants without a vowel in between, instead of using diacritics on the first consonant to remove its vowel, another popular method of special [[conjunct]] forms is used in which two or more consonant characters are merged to express a cluster, such as Devanagari: क्ल ''kla.'' (Note that some fonts display this as क् followed by ल, rather than forming a conjunct. This expedient is used by [[ISCII]] and South Asian scripts of [[Unicode]].) Thus a closed syllable such as ''kal'' requires two ''aksharas'' to write.
+
+The [[Róng]] script used for the [[Lepcha language]] goes further than other Indic abugidas, in that a single ''akshara'' can represent a closed syllable: Not only the vowel, but any final consonant is indicated by a diacritic. For example, the syllable [sok] would be written as something like {{unicode|s̥̽}}, here with an underring representing {{IPA|/o/}} and an overcross representing the diacritic for final {{IPA|/k/}}. Most other Indic abugidas can only indicate a very limited set of final consonants with diacritics, such as {{IPA|/ŋ/}} or {{IPA|/r/}}, if they can indicate any at all.
+
+===Ethiopic===
+[[Image:Ethiopic genesis.jpg|thumb|The [[Ge'ez alphabet|Ge'ez script]], an abugida of Eritrea and Ethiopia]]
+In [[Ethiopic script|Ethiopic]], where the term ''abugida'' originates, the diacritics have been fused to the consonants to the point that they must be considered modifications of the form of the letters. Children learn each modification separately, as in a syllabary; nonetheless, the graphic similarities between syllables with the same consonant is readily apparent, unlike the case in a true syllabary.
+
+Though now an abugida, the [[Ge'ez alphabet]], until the advent of Christianity (''ca.'' AD 350), had originally been what would now be termed an ''[[abjad]]''. In the Ge'ez abugida (or ''fidel''), the base form of the letter (also known as ''fidel'') may be altered. For example, ሀ ''hä'' {{IPA|[hə]}} (base form), ሁ ''hu'' (with a right-side diacritic that doesn't alter the letter), ሂ ''hi'' (with a subdiacritic that compresses the consonant, so it is the same height), ህ ''hə'' {{IPA|[hɨ]}} or {{IPA|[h]}} (where the letter is modified with a kink in the left arm).
+
+===Canadian Aboriginal syllabics===
+<!--[[Image:Lci.gif]] an inscription of [[Old Kawi]] found in the [[Philippines]]-->
+
+In the family known as [[Canadian Aboriginal syllabics]], which was inspired by the [[Devanagari script]] of India, vowels are indicated by changing the orientation of the [[syllabogram]]. Each vowel has a consistent orientation; for example, [[Inuktitut]] ᐱ ''pi,'' ᐳ ''pu,'' ᐸ ''pa;'' ᑎ ''ti,'' ᑐ ''tu,'' ᑕ ''ta''. Although there is a vowel inherent in each, all rotations have equal status and none can be identified as basic. Bare consonants are indicated either by separate diacritics, or by superscript versions of the ''aksharas''; there is no vowel-killer mark.
+
+==Borderline cases==
+
+===Vowelled abjads===
+Consonantal scripts ("[[abjad]]s") are normally written without indication of many vowels. However, in some contexts like teaching materials or [[scripture]]s, [[Arabic]] and [[Hebrew]] are written with full indication of vowels via diacritic marks (''[[harakat]]'', ''[[niqqud]]'') making them effectively alphasyllabaries. The Brahmic and Ethiopic families are thought to have originated from the Semitic abjads by the addition of vowel marks.
+
+<!-- Not best place to mention Thaana since not an abjad
+[[Thaana]] is similar, with all vowels marked with diacritics, and no inherent vowel. However, the absence of a vowel is also marked with a diacritic, as in many Indic abugidas. Thaana developed among a population that was already literate in an Indic abugida.
+-->
+The Arabic scripts used for [[Sorani Kurdish|Kurdish]] in Iraq and for [[Uyghur language|Uyghur]] in [[Xinjiang]], [[China]], as well as the Hebrew script of [[Yiddish language|Yiddish]], are fully vowelled, but because the vowels are written with full letters rather than diacritics (with the exception of distinguishing between /a/ and /o/ in the latter) and there are no inherent vowels, these are considered alphabets, not abugidas.
+
+===Phagspa===
+The imperial Mongol script called [['Phags-pa script|Phagspa]] was derived from the Tibetan abugida, but all vowels are written in-line rather than as diacritics. However, it retains the features of having an inherent vowel /a/ and having distinct initial vowel letters.
+
+===Pahawh===
+[[Pahawh Hmong]] is a non-segmental script that indicates [[syllable onset]]s and [[syllable rime|rime]]s, such as consonant clusters and vowels with final consonants. Thus it is not segmental and cannot be considered an abugida. However, it superficially resembles an abugida with the roles of consonant and vowel reversed. Most syllables are written with two letters in the order rime–onset (typically vowel-consonant), even though they are pronounced as onset-rime (consonant-vowel), rather like the position of the {{IPA|/i/}} vowel in Devanagari, which is written before the consonant. Pahawh is also unusual in that, while an inherent rime {{IPA|/āu/}} (with mid tone) is unwritten, it also has an inherent onset {{IPA|/k/}}. For the syllable {{IPA|/kau/}}, which requires one or the other of the inherent sounds to be overt, it is {{IPA|/au/}} that is written. Thus it is the rime (vowel) that is basic to the system.
+
+===Meroitic===
+It is difficult to draw a dividing line between abugidas and other [[segment (linguistics)|segmental]] scripts. For example, the [[Meroitic script]] of ancient [[Sudan]] did not indicate an inherent ''a'' (one symbol stood for both ''m'' and ''ma,'' for example), and is thus similar to Brahmic family of abugidas. However, the other vowels were indicated with full letters, not diacritics or modification, so the system was essentially an alphabet that did not bother to write the most common vowel.
+
+===Shorthand===
+Several systems of [[shorthand]] use diacritics for vowels, but they do not have an inherent vowel, and are thus more similar to [[Thaana]] and [[Kurdish alphabet|Kurdish script]] than to the Brahmic scripts. The [[Gabelsberger shorthand]] system and its derivatives modify the ''following'' consonant to represent vowels. The [[Pollard script]], which was based on shorthand, also uses diacritics for vowels; the placements of the vowel relative to the consonant indicates [[tone (linguistics)|tone]]. [[Pitman shorthand]] uses straight strokes and quarter-circle marks in different orientations as the principal "alphabet" of consonants; vowels are shown as light and heavy dots, dashes and other marks in one of 3 possible positions to indicate the various vowel-sounds. However, to increase writing speed, Pitman has rules for [http://pitmanshorthand.homestead.com "vowel indication"] using the positioning or choice of consonant signs so that writing vowel-marks can be dispensed with.
+
+==Development==
+As the term ''alphasyllabary'' suggests, abugidas have been considered an intermediate step between [[alphabet]]s and [[syllabary|syllabaries]]. Historically, abugidas appear to have evolved from [[abjad]]s (vowelless alphabets). They contrast with syllabaries, where there is a distinct symbol for each syllable or consonant-vowel combination, and where these have no systematic similarity to each other, and typically develop directly from [[logogram|logographic scripts]]. Compare the Devanagari examples above to sets of syllables in the Japanese [[hiragana]] syllabary: か ''ka'', き ''ki'', く ''ku'', け ''ke'', こ ''ko'' have nothing in common to indicate ''k;'' while ら ''ra'', り ''ri'', る ''ru'', れ ''re'', ろ ''ro'' have neither anything in common for ''r'', nor anything to indicate that they have the same vowels as the ''k'' set.
+
+Most Indian and Indochinese abugidas appear to have first been developed from abjads with the {{Unicode|[[Kharoṣṭhī]]}} and [[Brāhmī script]]s; the abjad in question is usually considered to be the [[Aramaic alphabet|Aramaic]] one, but while the link between Aramaic and Kharosthi is more or less undisputed, this is not the case with Brahmi. The Kharosthi family does not survive today, but Brahmi's descendants include most of the modern scripts of [[South Asia|South]] and [[Southeast Asia]]. Ge'ez derived from a different abjad, the [[Sabaean language#Script|Sabean script]] of [[Yemen]]; the advent of vowels coincided with the introduction of Christianity about AD 350.<ref name=WWS_Ethiopic/>
+<blockquote>
+''"{{IAST|Oṛiyā}} is encumbered with the drawback of an excessively awkward and cumbrous written character.... At first glance, an {{IAST|Oṛiyā}} book seems to be all curves, and it takes a second look to notice that there is something inside each."'' ([[George Abraham Grierson|G. A. Grierson]], ''Linguistic Survey of India'', 1903)</blockquote>
+
+<div style="overflow:auto">
+[[File:Development of Orissan scripts.jpg|centre|300px|Development of Oriyan scripts]]
+[[File:Development of ancient numerals in oriya.jpg|centre|300px|Development of ancient numerals in Oriya]]
+</div>
+
+The Ethiopic script is the elaboration of an abjad.
+
+The [[Canadian Aboriginal syllabics#history|Cree family]] was invented with full knowledge of the Devanagari system.
+
+The [[Meroitic script]] was developed from [[Egyptian hieroglyphs]], within which various schemes of 'group writing'<ref name=Hoch_Semitic/> had been used for showing vowels.
+
+==Other types of writing systems==
+* [[Featural alphabet]]
+* [[Abjad]]
+* [[Alphabet]]
+* [[Logogram]]
+* [[Syllabary]]
+
+==List of abugidas==
+{{For|a more complete list|List of writing systems}}
+
+[[Image:Phrase sanskrit.png|thumb|300px|Comparison of various abugidas descended from [[Brahmi script]]. ''May [[Shiva|Śiva]] protect those who take delight in the language of the gods.'' ([[Kalidasa]])]]
+
+*[[Brahmic family]], descended from [[Brāhmī script|Brāhmī]] (c. 6th century BC)
+**[[Ahom alphabet|Ahom]]
+**[[Brāhmī script|Brahmi]]{{spaced ndash}}[[Sanskrit]], [[Prakrit]],
+**[[Balinese alphabet|Balinese]]
+**[[Batak script|Batak]]{{spaced ndash}}[[Toba Batak language|Toba]] and other [[Batak (Indonesia)|Batak]] languages
+**[[Baybayin]]{{spaced ndash}}[[Ilokano language|Ilokano]], [[Kapampangan language|Kapampangan]], [[Pangasinan language|Pangasinan]], [[Tagalog language|Tagalog]], [[Bikol languages]], [[Visayan languages]], and possibly other [[Philippine languages]]
+**[[Bengali alphabet|Bengali]] and [[Assamese alphabet|Assamese]]{{spaced ndash}}Bengali, Assamese, [[Meithei language|Meithei]], [[Bishnupriya Manipuri language|Bishnupriya Manipuri]]
+**[[Bhaiksuki alphabet|Bhaiksuki]] 
+**[[Buhid script|Buhid]]
+**[[Burmese alphabet|Burmese]]{{spaced ndash}}[[Burmese language|Burmese]], [[Karen languages]], [[Mon language|Mon]], and [[Shan language|Shan]]
+**[[Cham alphabet|Cham]]
+**[[Chakma alphabet|Chakma]] 
+**[[Tai Nüa language|Dehong]]{{spaced ndash}}Dehong Dai
+**[[Devanagari]]{{spaced ndash}}[[Hindi]], [[Sanskrit]], [[Marathi language|Marathi]], [[Nepali language|Nepali]], and many other languages of northern India
+**[[Maldivian writing systems|Dhives Akuru]]
+**[[Grantha alphabet|Grantha]]{{spaced ndash}}[[Sanskrit]]
+**[[Gujarati script|Gujarati]]{{spaced ndash}}[[Gujarati language|Gujarāti]], [[Kachchi language|Kachchi]]
+**[[Gurmukhi script]]{{spaced ndash}}[[Punjabi language|Punjabi]]
+**[[Hanunoo script|Hanuno’o]]
+**[[Javanese alphabet|Javanese]]
+**[[Kaithi]]
+**[[Kannada script|Kannada]]{{spaced ndash}}[[Kannada language|Kannada]], [[Tulu language|Tulu]], [[Konkani language|Konkani]], [[Kodava language|Kodava]]
+**[[Kawi script|Kawi]]
+**[[Khojki]] 
+**[[Saka language|Khotanese]]
+**[[Khudabadi script|Khudawadi]] 
+**[[Khmer alphabet|Khmer]]
+**[[Kolezhuthu]]{{spaced ndash}}[[Tamil language|Tamil]], [[Malayalam]]
+**[[Lao alphabet|Lao]]
+**[[Lepcha alphabet|Lepcha]]
+**Leke
+**[[Limbu alphabet|Limbu]]
+**[[Lontara alphabet|Lontara’]]{{spaced ndash}}Formerly used for [[Buginese language|Buginese]], [[Makassar language|Makassar]], and [[Mandar language|Mandar]]
+**[[Mahajani]]
+**[[Malayalam script|Malayalam]]{{spaced ndash}}[[Malayalam]]
+**[[Malayanma]]{{spaced ndash}}[[Malayalam]]
+**[[Zhang-Zhung language|Marchen]]{{spaced ndash}}[[Zhang-Zhung language|Zhang-Zhung]] 
+**[[Meithei script|Meetei Mayek]]
+**[[Modi alphabet|Modi]]{{spaced ndash}}[[Marathi language|Marathi]]
+**[[Multani alphabet|Multani]]{{spaced ndash}}[[Saraiki dialect|Saraiki]] 
+**[[Nandinagari]]{{spaced ndash}}[[Sanskrit]]
+**[[Nepal script|Newar]]{{spaced ndash}}[[Nepal Bhasa]], [[Sanskrit]]
+**[[New Tai Lue alphabet|New Tai Lue]]
+**[[Oriya script|Oriya]]
+**[[Pallava script]]{{spaced ndash}}[[Tamil language|Tamil]], [[Prakrit]], [[Sanskrit]]
+**[[Phagspa script|Phags-pa]]{{spaced ndash}}[[Mongolian language|Mongolian]], [[Chinese language|Chinese]], and other languages of the [[Yuan Dynasty]] [[Mongol Empire]]
+**[[Ranjana script|Ranjana]]{{spaced ndash}}[[Nepal Bhasa]], [[Sanskrit]]
+**[[Rejang alphabet|Rejang]]
+**[[Śāradā script|Sharada]]{{spaced ndash}}[[Sanskrit]]
+**[[Siddham script|Siddham]]{{spaced ndash}}[[Sanskrit]]
+**[[Sinhala script|Sinhala]]
+**[[Saurashtra alphabet|Sourashtra]]
+**[[Soyombo script|Soyombo]]
+**[[Sundanese script|Sundanese]]
+**[[Syloti Nagri]]{{spaced ndash}}[[Sylheti language|Sylheti]]
+**[[Tagbanwa alphabet|Tagbanwa]]{{spaced ndash}}[[Ethnic Groups of Palawan|Languages of Palawan]]
+**[[Tai Le alphabet|Tai Le]]
+**[[Tai Dam language|Tai Dam]]
+**[[Tai Tham script|Tai Tham]]{{spaced ndash}}[[Khün language|Khün]], and [[Northern Thai language|Northern Thai]]
+**[[Takri alphabet|Takri]] 
+**[[Tamil script|Tamil]]
+**[[Telugu script|Telugu]]
+**[[Thai alphabet|Thai]]
+**[[Tibetan alphabet|Tibetan]]
+**[[Tigalari alphabet|Tigalari]]{{spaced ndash}}[[Sanskrit]]
+**[[Tirhuta]]{{spaced ndash}}[[Maithili language|Maithili]]
+**[[Tocharian script|Tocharian]]
+**[[Vatteluttu]]{{spaced ndash}}[[Tamil language|Tamil]], [[Malayalam]]
+**[[Mongolian alphabets|Zanabazar Square]] 
+**[[Zhang-Zhung language|Zhang zhung]] scripts
+*{{Unicode|[[Kharoṣṭhī]]}} (extinct), from the 3rd century BC
+*[[Ge'ez script|Ge'ez]] (Ethiopic), from the 4th century AD
+*[[Canadian Aboriginal syllabics]]
+**[[Cree syllabics|Cree]]{{spaced ndash}}[[Ojibwe writing systems#Ojibwe syllabics|Ojibwe syllabics]]
+**[[Inuktitut syllabics]]
+**[[Blackfoot language#Writing system|Blackfoot syllabics]]
+**[[Carrier syllabics]]
+*[[Thaana]]
+*[[Pollard script]]
+*[[Pitman shorthand]]
+*[[Tengwar]] (fictional)
+*[http://www.omniglot.com/conscripts/ihavsabeired.htm Ihathvé Sabethired] (fictional)
+
+===Abugida-like scripts===
+*[[Meroitic script|Meroitic]] (extinct) (an alphabet with an inherent vowel)
+
+==References==
+{{Reflist|refs=
+<ref name=Cham_Unicode_Proposal>{{cite web |first=Michael |last=Everson |authorlink=Michael Everson |url=http://www.unicode.org/L2/L2006/06257-n3120-cham.pdf |format=pdf |title=Proposal for encoding the Cham script in the BMP of the UCS|date=2006-08-06 |publisher=Unicode Consortium}}</ref>
+
+<ref name=Tai_Tham_Unicode_Proposal>{{cite web |first=Michael |last=Everson |authorlink=Michael Everson |author2=Hosken, Martin  |url=http://std.dkuug.dk/jtc1/sc2/wg2/docs/n3121.pdf |format=pdf |title=Proposal for encoding the Lanna script in the BMP of the UCS |date=2006-08-06 |publisher=International Organization for Standardization |work=Working Group Document}}</ref>
+
+<ref name=TUS_Khmer_VC>{{cite web |url=http://www.unicode.org/versions/Unicode8.0.0/ch16.pdf#G43687 |format=pdf |title=The Unicode Standard, Version 8.0 |date=August 2015 | at=Section 16.4 Khmer, Subscript Consonants}}</ref>
+
+<ref name=WWS_glossary>Glossary of Daniels & Bright (1996) ''The World's Writing Systems''</ref>
+<ref name=WWS_Insular_SEA>Joel C. Kuipers & Ray McDermott, "Insular Southeast Asian Scripts". In Daniels & Bright (1996) ''The World's Writing Systems''</ref>
+<ref name=WWS_Ethiopic>Getatchew Haile, "Ethiopic Writing". In Daniels & Bright (1996) ''The World's Writing Systems''</ref>
+<ref name=Bright>William Bright (2000:65–66): "A Matter of Typology: Alphasyllabaries and Abugidas". In: ''Studies in the Linguistic Sciences''. Volume 30, Number 1, pages 63–71</ref>
+<ref name=Hoch_Semitic>James Hoch (1994) ''Semitic Words in Egyptian Texts of the New Kingdom and Third Intermediate Periods''</ref>
+}}
+
+==External links==
+*[http://www.omniglot.com/writing/syllabic.htm Syllabic alphabets] – [http://www.omniglot.com/ Omniglot's] list of abugidas, including examples of various writing systems
+*[http://www.proel.org/alfabetos.html Alphabets] – list of abugidas and other scripts (in Spanish)
+*[http://alif-shinobi.blogspot.com/2009/05/devanagari-and-its-tai-and-burmese.html Comparing Devanagari with Burmese, Khmer, Thai, and Tai Tham scripts]
+{{Writing systems |expanded=Abugidas}}
+{{list of writing systems}}
+
+[[Category:Abugida writing systems| ]]
+[[Category:Requests for audio pronunciation (English)]]

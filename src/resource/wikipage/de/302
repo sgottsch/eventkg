@@ -1,0 +1,85 @@
+[[File:Associativity of binary operations (without question marks).svg|thumb|300px|Bei assoziativen Verknüpfungen ist das Endergebnis dasselbe, auch wenn die Operationen in unterschiedlicher Reihenfolge ausgeführt werden.]]
+Das '''Assoziativgesetz''' ({{laS|associare}} „vereinigen, verbinden, verknüpfen, vernetzen“), auf Deutsch '''Verknüpfungsgesetz''' oder auch '''Verbindungsgesetz''', ist eine Regel aus der [[Mathematik]]. Eine ([[Zweistellige Verknüpfung|zweistellige]]) [[Verknüpfung (Mathematik)|Verknüpfung]] ist '''assoziativ''', wenn die Reihenfolge der Ausführung keine Rolle spielt. Anders gesagt: Die Klammerung mehrerer assoziativer Verknüpfungen ist beliebig. Deshalb kann man es anschaulich auch „Klammergesetz“ nennen.
+
+Neben dem Assoziativgesetz sind [[Distributivgesetz]] und [[Kommutativgesetz]] von elementarer Bedeutung in der Mathematik.
+
+== Definition ==
+In einem Summen- oder Produktterm dürfen die Summanden oder Faktoren beliebig mit Klammern verbunden werden. Dies gilt auch für mehr als drei Summanden oder Faktoren.
+
+Eine [[binäre Verknüpfung]] <math>{\circ}\colon A \times A\to A</math> auf einer Menge <math>A</math> heißt assoziativ, wenn für alle <math>a,b,c\in A</math> das Assoziativgesetz
+:<math> a \circ \left( b \circ c \right) = \left( a \circ b \right) \circ c </math>
+gilt.
+
+== Folgerungen ==
+Bei Gültigkeit des Assoziativgesetzes lässt sich eine vereinfachte klammerfreie Notation einführen. Wegen
+:<math> \left( a \circ b \right) \circ c = a \circ \left( b \circ c \right) </math>
+ist der Ausdruck
+:<math> a \circ b \circ c </math>
+eindeutig, da aus jeder beliebigen Klammerung immer das gleiche Ergebnis folgt.
+
+== Beispiele ==
+[[Datei:Associativity of real number addition.svg|thumb|Die Assoziativität der Addition reeller Zahlen]]
+Als Verknüpfungen auf den [[Reelle Zahlen|reellen Zahlen]] sind [[Addition]] und [[Multiplikation]] assoziativ, es gilt zum Beispiel
+
+:<math>(2+3)+7=5+7=12\quad =\quad 2+(3+7)=2+10=12 </math>
+
+und
+
+:<math>(2\cdot 3)\cdot 7=6\cdot 7=42\quad =\quad 2\cdot (3\cdot 7)=2\cdot 21=42</math>.
+
+Die [[Subtraktion]] und [[Division (Mathematik)|Division]] sind hingegen nicht assoziativ, denn es ist zum Beispiel
+
+:<math> 2 - (3 - 1) = 0 \quad\neq\quad (2 - 3) - 1 = -2 </math>
+
+und
+
+:<math> (4:2):2 = 1 \quad\neq\quad 4:(2:2)= 4 </math>. 
+
+Auch die [[Potenz (Mathematik)|Potenz]] ist nicht assoziativ, da zum Beispiel
+
+:<math>2^{(2^3)} = 2^8 = 256 \quad\neq\quad (2^2)^3 = 4^3 = 64</math>
+
+gilt.
+
+== Einordnung ==
+Das Assoziativgesetz gehört zu den [[Gruppe (Mathematik)#Gruppe|Gruppenaxiomen]], wird aber bereits für die schwächere Struktur einer [[Halbgruppe]] gefordert.
+
+== Schwächere Formen der Assoziativität ==
+Folgende Abschwächungen des Assoziativgesetzes werden an anderer Stelle genannt/definiert:
+* [[Potenz-assoziative_Algebra|Potenz-Assoziativität]]:
+:<math>a^{r+s} = (a^r)\circ (a^s)</math>
+** [[Potenz-assoziative_Algebra#Weitere Abschwächungen der Potenz-Assoziativität|i-Potenz-Assoziativität]]:
+:<math>a^i \circ a = a \circ a^i</math>
+** [[Potenz-assoziative_Algebra#Weitere Abschwächungen der Potenz-Assoziativität|Idemassoziativität]]:
+:<math>a \circ ( a \circ a ) = (a \circ a ) \circ a</math>
+* [[Alternativität]]:
+** ''Linksalternativität'':
+:<math>a \circ ( a \circ b ) = ( a \circ a ) \circ b</math>
+** ''Rechtsalternativität'':
+:<math>a \circ ( b \circ b ) = ( a \circ b ) \circ b</math>
+* [[Flexibilitätsgesetz]]:
+:<math>a \circ \left( b \circ a \right) = \left( a \circ b \right) \circ a</math>
+* [[Moufang-Identitäten]]:
+:<math>\Big(a \circ (b \circ a)\Big) \circ c = a \circ \Big(b  \circ (a \circ c)\Big)</math>
+:<math>(a \circ b) \circ (c \circ a) = a \circ \Big((b \circ c) \circ a\Big)</math>
+* Bol-Identitäten:<ref name="Bol">Gerrit Bol: ''Gewebe und Gruppen'' In: ''Mathematische Annalen'', 114 (1), 1937, S. 414–431.</ref>
+** linke Bol-Identität
+:<math>\Big(b \circ (c \circ b)\Big) \circ a = b \circ \Big(c \circ (b \circ a)\Big)</math>
+** rechte Bol-Identität
+:<math>\Big( (a \circ b) \circ c\Big) \circ b = a \circ \Big( (b  \circ c) \circ b\Big)</math>
+* [[Jordan-Algebra|Jordan-Identität]]:
+:<math>a \circ \Big( \left( a \circ a \right) \circ b \Big) = \left( a \circ a \right) \circ \left( a \circ b \right)</math>
+
+== Siehe auch ==
+* [[Algebra]]
+* [[Operatorassoziativität]]
+
+== Literatur ==
+* {{Literatur | Autor=Otto Forster | Titel=Analysis 1: Differential- und Integralrechnung einer Veränderlichen | Verlag=Vieweg-Verlag | Ort=München | Jahr=2008 | ISBN=978-3-8348-0395-5}}
+
+== Einzelnachweise ==
+<references />
+
+[[Kategorie:Algebra]]
+[[Kategorie:Arithmetik]]
+[[Kategorie:Mathematischer Grundbegriff]]

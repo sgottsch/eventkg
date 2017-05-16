@@ -1,0 +1,1210 @@
+{{About|the Dutch capital}}
+{{pp-move-indef}}
+{{Use dmy dates|date=September 2015}}
+{{Infobox settlement
+<!-- See Template:Infobox settlement for additional fields and descriptions -->
+<!-- Name and transliteration -->
+| name                    = Amsterdam
+| settlement_type         = [[List of cities in the Netherlands by province|City]] and [[List of municipalities of the Netherlands|municipality]]
+<!-- Images, nickname, motto -->
+| image_skyline           = {{Photomontage|position=center
+| photo1a = RijksmuseumAmsterdamMuseumplein2.50,1.jpg
+| photo2a = KeizersgrachtReguliersgrachtAmsterdam.jpg
+| photo2b = Paleis op de dam.JPG
+| photo3a = Concertgebouw3x2.jpg
+| photo3b = Replica VOC-schip Amsterdam.jpg
+| photo4a = Amsterdam rainbow coffeeshop.jpg
+| photo4b = Amsterdam red light district 24-7-2003.JPG
+| photo5a = Zuidas by night, Amsterdam.jpg
+   | size = 260
+   | spacing = 2
+   | color = #FFFFFF
+   | border = 0
+   | foot_montage = {{nobreak|Images, from top down, left to right: the [[Rijksmuseum]],}}<br>{{nobreak|[[canals of Amsterdam]], [[Royal Palace of Amsterdam|Royal Palace]] at [[Dam Square]],}}<br>{{nobreak|[[Concertgebouw|Royal Concertgebouw]], [[Nederlands Scheepvaartmuseum|National Maritime Museum]],}}<br>{{nobreak|a [[cannabis coffee shop]], [[De Wallen]] red-light district,}}<br>[[Zuidas]] business district by night}}
+| image_alt               =
+| image_caption           = 
+| image_flag              = Flag of Amsterdam.svg
+| flag_size               = 80x67px
+| flag_alt                =
+| image_shield            = Insigne Amstelodamensis.svg
+| shield_size             = 100x85px
+| shield_alt              =
+| nickname                = [[Mokum]], Damsko
+| motto                   = [[Coat of arms of Amsterdam#Motto|Heldhaftig, Vastberaden, Barmhartig]] ''(Valiant, Steadfast, Compassionate)''
+<!-- Maps, coordinates -->
+| image_map               = LocatieAmsterdam.svg
+| map_alt                 = Highlighted position of Amsterdam in a municipal map of North Holland
+| map_caption             = Location in North Holland
+| latd = 52 |latm = 22 |latNS = N
+| longd = 4 |longm = 54 |longEW = E
+| coordinates_display     = inline,title
+| coordinates_footnotes   =
+| coordinates_region      = NL
+<!-- Location, established, seat, subdivisions, government, leaders-->
+| subdivision_type        = Country
+| subdivision_name        = [[Netherlands]]
+| subdivision_type1       = [[Provinces of the Netherlands|Province]]
+| subdivision_name1       = [[North Holland]]
+| parts_type              = <!-- defaults to: Boroughs -->
+| parts_style             = coll
+| parts                   = 8 [[Government of Amsterdam#Boroughs|districts]]
+|p1=[[Amsterdam-Centrum|Centrum]]
+|p2=[[Amsterdam-Noord|Noord]]
+|p3=[[Amsterdam-West|West]]
+|p4=[[Amsterdam Nieuw-West|Nieuw-West]]
+|p5=[[Amsterdam-Zuid|Zuid]]
+|p6=[[Amsterdam-Oost|Oost]]
+|p7=[[Amsterdam-Zuidoost|Zuidoost]]
+|p8=[[Westpoort]]
+| government_footnotes    = <ref name="mayor_now">{{cite web
+ |url = http://www.iamsterdam.com/en-GB/living/about-amsterdam/city-of-amsterdam/city-government/portfolios-mayor-alderpersons
+ |title = Portfolios: Mayor & Alderpersons
+ |trans_title =
+ |author =
+ |work =
+ |publisher = Gemeente Amsterdam
+ |accessdate = 18 February 2014}}</ref>
+| governing_body          = [[Municipal council (Netherlands)|Municipal council]]
+| leader_party            = [[Labour Party (Netherlands)|PvdA]]
+| leader_title            = [[Burgemeester|Mayor]]
+| leader_name             = [[Eberhard van der Laan]]
+<!-- Geographic information -->
+| total_type              = Municipality<!-- to set a non-standard label for total area and population rows -->
+| unit_pref               = Metric
+<!-- ALL fields with measurements have automatic unit conversion -->
+<!-- for references: use <ref> tags -->
+| area_footnotes          = <ref>{{Dutch municipality total area|dataref}}</ref><ref name="tno_randstad">{{cite techreport
+ |author1=Anita Bouman–Eijs |author2=Thijmen van Bree |author3=Wouter Jonkhoff |author4=Olaf Koops |author5=Walter Manshanden |author6=Elmer Rietveld
+ |url=http://www.zuidvleugel.nl/sites/www.zuidvleugel.nl/files/article/downloads/top_20_europese_grootstedelijke_regios_1995_2011_tno_2012_r11155.pdf
+ |title=De Top 20 van Europese grootstedelijke regio's 1995–2011; Randstad Holland in internationaal perspectief
+ |language=Dutch
+ |trans_title=Top 20 of European metropolitan regions 1995–2011; Randstad Holland compared internationally
+ |date=17 December 2012
+ |publisher=[[Netherlands Organisation for Applied Scientific Research|TNO]]
+ |place=Delft
+ |accessdate=25 July 2013
+}}</ref>
+<!-- square kilometers -->
+| area_total_km2          = 219.32
+| area_land_km2           = 165.76
+| area_water_km2          = 53.56
+| area_blank1_title       = [[Randstad]]
+| area_blank1_km2         = 3043
+| elevation_footnotes     = <ref name="AHN">{{cite web
+ |url = http://www.ahn.nl/postcodetool
+ |title = Postcodetool for 1012JS (Dam Square)
+ |trans_title =
+ |language = Dutch
+ |author = <!--Staff writer(s); no by-line.-->
+ |work = Actueel Hoogtebestand Nederland
+ |publisher = Het Waterschapshuis
+ |accessdate = 18 February 2014}}</ref>
+| elevation_m             = −2
+| elevation_max_footnotes = <!-- for references: use <ref> tags -->
+| elevation_max_m         =
+| elevation_min_footnotes = <!-- for references: use <ref> tags -->
+| elevation_min_m         =
+<!-- Population, demographics -->
+| population_footnotes    = <ref name="tno_randstad"/><ref name="CBS_muni">{{Dutch municipality population|dataref}}</ref><ref name="CBS_urbanmetro">{{Dutch municipality population urbanmetro|dataref}}</ref><ref name=cbs2013>{{cite web|url=http://statline.cbs.nl/StatWeb/publication/?DM=SLNL&PA=37230ned&D1=0,17&D2=39,66,88,121&D3=(l-4)-l&VW=T | title = CBS Amsterdam Bevolkingsontwikkeling; regio per maand}}</ref><ref name=osamsterdam2015>{{cite web|url=http://www.os.amsterdam.nl/pdf/2015_evmra.pdf | title = Economische Verkenningen Metropool Regio Amsterdam}}</ref>
+| population_total        =   834,119
+| population_as_of        = municipality, September 2015 (CBS); urban and metro, March 2015 (CBS); Randstad, 2011
+| population_density_km2  = {{Dutch municipality population density|Amsterdam}} <!-- For automatic calculation: auto-->
+| population_urban        = 1,330,235
+| population_metro        = 1,604,155
+| population_blank1_title = {{nowrap|[[Amsterdam Metropolitan Area|<abbr style="border-bottom: none;" title="Amsterdam metropolitan region">Metro region</abbr>]]}}
+| population_blank1       =  2,431,000
+| population_blank2_title = [[Randstad]]
+| population_blank2       = 
+| population_demonym      = Amsterdammer
+<!-- Other information -->
+| timezone               = [[Central European Time|CET]]
+| utc_offset             = +1
+| timezone_DST           = [[Central European Summer Time|CEST]]
+| utc_offset_DST         = +2
+| postal_code_type        = [[Postal codes in the Netherlands|Postcode]]
+| postal_code             = 1000–1109
+| area_code_type          = [[Telephone numbers in the Netherlands|Area code]]
+| area_code               = 020
+| website                 = {{URL|1=http://www.amsterdam.nl}}
+| footnotes               =
+}}
+
+'''Amsterdam''' ({{IPAc-en|lang|ˈ|æ|m|s|t|ər|d|æ|m}} or {{IPAc-en|ˌ|æ|m|s|t|ər|ˈ|d|æ|m}};<ref>{{citation|last=Wells|first=John C.|year=2008|title=Longman Pronunciation Dictionary|edition=3rd|publisher=Longman|isbn=9781405881180}}</ref><ref>{{citation|last=Roach|first=Peter|year=2011|title=Cambridge English Pronouncing Dictionary|edition=18th|place=Cambridge|publisher=Cambridge University Press|isbn=9780521152532}}</ref> {{IPA-nl|ɑmstərˈdɑm|lang|Nl-Amsterdam.ogg}}) is the [[capital city]] and most populous city of the [[Kingdom of the Netherlands]]. Its status as the [[Capital of the Netherlands|Dutch capital]] is mandated by the [[Constitution of the Netherlands]]<ref name="capital-constitution">{{cite web |last=Dutch Wikisource |title=Grondwet voor het Koninkrijk der Nederlanden |language=Dutch |url=http://nl.wikisource.org/wiki/Grondwet_voor_het_Koninkrijk_der_Nederlanden |at=[http://nl.wikisource.org/wiki/Nederlandse_grondwet/Hoofdstuk_2#Artikel_32 Chapter 2, Article 32] |quote=...de hoofdstad Amsterdam... |accessdate=3 July 2013}}</ref> though it is not the seat of the Dutch government, which is [[The Hague]].<ref>{{cite web|url=http://netherlandsmission.org/article.asp?articleref=AR00000154EN&categoryvalue=netherlands&subcategoryvalue=nlgeneralinfo |author=Permanent Mission of the Netherlands to the UN |title=General Information |accessdate=26 June 2013 |deadurl=yes |archiveurl=http://web.archive.org/web/20131005025411/http://netherlandsmission.org/article.asp?articleref=AR00000154EN&categoryvalue=netherlands&subcategoryvalue=nlgeneralinfo |archivedate=5 October 2013 }}</ref> Amsterdam has a population of 834,119 within the [[city proper]], 1,329,779  in the urban area and 1,603,531 in the metropolitan area.<ref name="cbs2013"/> The [[city region]] has an approximate population of 2,431,000.<ref name="osamsterdam2015"/> The city is located in the [[Provinces of the Netherlands|province]] of [[North Holland]] in the west of the country, and is also North Holland's largest city. It comprises much of the northern part of the [[Randstad]], one of the larger [[conurbation]]s in [[Europe]], with a population of approximately 7&nbsp;million.<ref name="R2040">{{cite web|url=http://www.rijksoverheid.nl/onderwerpen/randstad/documenten-en-publicaties/brochures/2007/12/01/randstad-2040-facts-figures-wat-komt-er-op-de-randstad-af.html |publisher=[[Ministry of Housing, Spatial Planning and the Environment (Netherlands)|VROM]] |title=Randstad2040; Facts & Figures (p.26) |language=Dutch |format=PDF |deadurl=yes |archiveurl=http://web.archive.org/web/20130529003152/http://www.rijksoverheid.nl/onderwerpen/randstad/documenten-en-publicaties/brochures/2007/12/01/randstad-2040-facts-figures-wat-komt-er-op-de-randstad-af.html |archivedate=29 May 2013 }}</ref>
+
+Amsterdam's name derives from ''Amstelredamme'',<ref name="Britannica Eleven">[[Encyclopædia Britannica Eleventh Edition]], Vol 1, pp. 896–898.</ref> indicative of the city's origin as a dam of the river [[Amstel]]. Originating as a small fishing village in the late 12th century, Amsterdam became one of the most important ports in the world during the [[Dutch Golden Age]] (17th century), a result of its innovative developments in trade. During that time, the city was the leading center for finance and diamonds.<ref>[http://www.cambridge.org/catalogue/catalogue.asp?isbn=9780521845359&ss=exc Cambridge.org], Capitals of Capital -A History of International Financial Centres – 1780–2005, Youssef Cassis, ISBN 978-0-521-84535-9</ref> In the 19th and 20th centuries the city expanded, and many new neighbourhoods and suburbs were planned and built. The 17th-century [[canals of Amsterdam]] and the 19–20th century [[Stelling van Amsterdam|Defence Line of Amsterdam]] are on the [[World Heritage Site|UNESCO World Heritage List]].
+
+As the commercial capital of the Netherlands and one of the top financial centres in Europe, Amsterdam is considered an [[Global city|alpha world city]] by the [[Globalization and World Cities Research Network|Globalization and World Cities (GaWC) study group]]. The city is also the cultural capital of the Netherlands.<ref>After Athens in 1888 and Florence in 1986, Amsterdam was in 1986 chosen as the [[European Capital of Culture]], confirming its eminent position in Europe and the Netherlands. See [http://ec.europa.eu/culture/our-programmes-and-actions/doc443_en.htm EC.europa.eu] for an overview of the European cities and capitals of culture over the years. {{wayback|url=http://ec.europa.eu/culture/our-programmes-and-actions/doc443_en.htm |date=20081214194439 |df=y }}</ref> Many large Dutch institutions have their headquarters there, and seven of the world's 500 largest companies, including [[Philips]] and [[ING Group|ING]], are based in the city.<ref>[http://www.forbes.com/lists/2008/18/biz_2000global08_The-Global-2000-Netherlands_10Rank.html Forbes.com], [[Forbes Global 2000]] Largest Companies – Dutch rankings.</ref> In 2012, Amsterdam was ranked the second best city in which to live by the Economist Intelligence Unit (EIU)<ref>{{cite web|url="http://pages.eiu.com/rs/eiu2/images/EIU_BestCities.pdf" |title=Best cities ranking and report}}</ref> and 12th globally on quality of living for environment and infrastructure by Mercer .<ref>{{cite web|url=http://www.citymayors.com/features/quality_survey.html |title=Best cities in the world (Mercer) |publisher=City Mayors |date=26 May 2010 |accessdate=10 October 2010| archiveurl= //web.archive.org/web/20101101121637/http://citymayors.com/features/quality_survey.html| archivedate= 1 November 2010 | deadurl= no}}</ref> The city was previously ranked 3rd in innovation by 2thinknow in the Innovation Cities Index 2009.<ref>{{cite web|url=http://www.innovation-cities.com/2thinknow-innovation-cities-global-256-index/ |title=2thinknow Innovation Cities Global 256 Index – worldwide innovation city rankings |publisher=Innovation-cities.com |date=30 July 2009 |accessdate=10 October 2010| archiveurl= //web.archive.org/web/20100911231656/http://www.innovation-cities.com/2thinknow-innovation-cities-global-256-index/| archivedate= 11 September 2010 | deadurl= no}}</ref>
+
+Famous Amsterdam residents included [[Anne Frank]] the diarist, the artists [[Rembrandt|Rembrandt van Rijn]] and [[Vincent van Gogh]] and the philosopher [[Baruch Spinoza]].
+
+The [[Amsterdam Stock Exchange]], the oldest stock exchange in the world, is located in the city center. [[List of tourist attractions in Amsterdam|Amsterdam's main attractions]], including its [[Canals of Amsterdam|historic canals]], the [[Rijksmuseum]], the [[Van Gogh Museum]], [[Stedelijk Museum Amsterdam|Stedelijk Museum]], [[Hermitage Amsterdam]], [[Anne Frank House]], [[Amsterdam Museum]], its [[red-light district]], and its many [[cannabis coffee shop]]s draw more than 5&nbsp;million international visitors annually.<ref>[http://www.parool.nl/parool/nl/4/AMSTERDAM/article/detail/3975968/2015/04/23/Amsterdam-verwelkomde-in-2014-ruim-5-miljoen-buitenlandse-toeristen.dhtml Amsterdam verwelkomde in 2014 ruim 5 miljoen buitenlandse toeristen – Amsterdam – PAROOL<!-- Bot generated title -->]</ref>
+
+==History==
+{{Main|History of Amsterdam|Timeline of Amsterdam}}
+
+===Etymology===
+[[File:Okerk2.jpg|thumb|left|The [[Oude Kerk, Amsterdam|Oude Kerk]] was consecrated in 1306.]]
+After the floods of 1170 and 1173 locals of the river Amstel vicinity built a bridge over- and a dam across the river, hence giving its name to the village: "Aemstelredamme". The earliest recorded use of the name "Aemstelredamme" (Amsterdam) comes from a document dated 27 October 1275. Inhabitants of the village, by this document, were exempted from paying a [[toll bridge|bridge toll]] in the County of Holland by Count [[Floris V, Count of Holland|Floris V]].<ref name="language">{{cite book
+ |last=Berns
+ |first=Jan
+ |author2=Daan, Jo
+ |title=Hij zeit wat: de Amsterdamse volkstaal
+ |year=1993
+ |location=The Hague
+ |publisher=BZZTôH
+ |page=91
+ |language=Dutch
+ |isbn=90-6291-756-9
+}}</ref>
+<ref>Een kleine geschiedenis van Amsterdam, page 19. Geert Mak. (1994) Uitgeverij Atlas, Amsterdam/Antwerpen,</ref>
+This meant it had been allowed for the inhabitants of the village of Aemstelredamme to travel freely through the County of Holland without having to pay toll at bridges, locks and dams all throughout the county. The certificate describes the inhabitants as ''homines manentes apud Amestelledamme'' (people living near ''Amestelledamme'').<ref>{{cite web|url=http://stadsarchief.amsterdam.nl/english/amsterdam_treasures/trade/toll_privilege/index.en.html |title=The toll privilege of 1275 in the Amsterdam City Archives |publisher=Stadsarchief.amsterdam.nl |accessdate=10 October 2010 |deadurl=yes |archiveurl=http://web.archive.org/web/20110513105802/http://stadsarchief.amsterdam.nl/english/amsterdam_treasures/trade/toll_privilege/index.en.html |archivedate=13 May 2011 }}</ref> By 1327, the name had developed into ''Aemsterdam''.<ref name="language"/><ref>Een kleine geschiedenis van Amsterdam,pp 18–20. Geert Mak. (1994) Uitgeverij Atlas, Amsterdam/Antwerpen,</ref>
+
+[[File:Cornelis anthonisz vogelvluchtkaart amsterdam.JPG|thumb|right|upright|180px|A woodcut depicting Amsterdam as of 1544. The famous [[Canals of Amsterdam|Grachtengordel]] had not yet been established.]]
+
+===Founding and Middle Ages===
+[[File:Emanuel de Witte - De binnenplaats van de beurs te Amsterdam.jpg|180px|right|thumb|Courtyard of the [[Amsterdam Stock Exchange]] by [[Emanuel de Witte]], 1653. The [[Amsterdam Stock Exchange]] was the first [[stock exchange]] to introduce continuous trade in the early 17th century.]]
+Amsterdam's founding is relatively recent compared with much older Dutch cities such as [[Nijmegen]], [[Rotterdam]], and [[Utrecht]]. In October 2008, [[historical geography|historical geographer]] Chris de Bont suggested that the land around Amsterdam was being reclaimed as early as the late 10th century. This does not necessarily mean that there was already a settlement then since [[land reclamation|reclamation of land]] may not have been for farming—it may have been for [[peat]], used as fuel.<ref>{{cite web|url=http://www.nu.nl/news/1801750/80/rss/%27Amsterdam_200_jaar_ouder_dan_aangenomen%27.html|title=Amsterdam 200 jaar ouder dan aangenomen|accessdate=22 October 2008|date=22 October 2008|publisher=Nu.nl|language=Dutch| archiveurl= //web.archive.org/web/20081025045803/http://www.nu.nl/news/1801750/80/rss/'Amsterdam_200_jaar_ouder_dan_aangenomen'.html| archivedate= 25 October 2008 | deadurl= no}}</ref>
+
+Amsterdam was granted [[City rights in the Low Countries|city rights]] in either 1300 or 1306.<ref name="amnlgeschedenis">{{cite web
+|url=http://amsterdam.nl/stad_in_beeld/geschiedenis/de_geschiedenis_van#Stadsrechten
+|title=De geschiedenis van Amsterdam
+|publisher=Municipality of Amsterdam
+|language=Dutch
+|accessdate=21 May 2008
+| archiveurl= //web.archive.org/web/20080518134246/http://amsterdam.nl/stad_in_beeld/geschiedenis/de_geschiedenis_van| archivedate= 18 May 2008 | deadurl= no}}{{dead link|date=February 2016}}</ref> From the 14th century on, Amsterdam flourished, largely because of trade with the [[Hanseatic League]]. In 1345, an alleged [[Blessed Sacrament|Eucharistic miracle]] in the [[Kalverstraat]] rendered the city an important place of pilgrimage until the [[Protestant Reformation|adoption of the Protestant faith]]. The ''[[Stille Omgang]]''—a silent [[procession]] in civil attire—is today a remnant of the rich pilgrimage history.<ref name="stilleomgang">{{cite web|url=http://www.trouw.nl/laatstenieuws/laatstenieuws/article936256.ece/Katholieken_verzameld_voor_Mirakel_van_Amsterdam |title=Mirakel van Amsterdam |language=Dutch |accessdate=21 May 2008 |deadurl=yes |archiveurl=http://web.archive.org/web/20090808045508/http://www.trouw.nl:80/laatstenieuws/laatstenieuws/article936256.ece/Katholieken_verzameld_voor_Mirakel_van_Amsterdam |archivedate=8 August 2009 }}</ref>
+
+===Conflict with Spain===
+In the 16th century, the Dutch rebelled against [[Philip II of Spain]] and his successors. The main reasons for the uprising were the imposition of new taxes, the tenth penny, and the [[religious persecution]] of Protestants by the newly introduced [[Inquisition of the Netherlands|Inquisition]]. The revolt escalated into the [[Eighty Years' War]], which ultimately led to Dutch independence.<ref name="80yearswar">{{cite web
+|url=http://dutchrevolt.leidenuniv.nl/nederlands/default.htm
+|publisher=Leiden University
+|title=Eighty Years' War
+|language=Dutch
+|accessdate=21 May 2008
+|archiveurl=//web.archive.org/web/20080512110316/http://dutchrevolt.leidenuniv.nl/nederlands/default.htm|archivedate=12 May 2008}}</ref> Strongly pushed by [[Dutch Revolt]] leader [[William the Silent]], the [[Dutch Republic]] became known for its relative [[History of religion in the Netherlands|religious]] tolerance. [[History of the Jews in the Netherlands|Jews]] from the [[Iberian Peninsula]], [[Huguenot]]s from France, prosperous merchants and printers from [[Flanders]], and economic and religious refugees from the Spanish-controlled parts of the [[Low Countries]] found safety in Amsterdam. The influx of Flemish printers and the city's intellectual tolerance made Amsterdam a centre for the European [[freedom of the press|free press]].<ref>Case in point: After [[Galileo affair|his trial and sentencing]] in Rome in 1633, [[Galileo Galilei|Galileo]] chose [[Lodewijk Elzevir]] in Amsterdam to publish one of his finest works, ''[[Two New Sciences]]''. See Wade Rowland (2003), ''Galileo's Mistake, A new look at the epic confrontation between Galileo and the Church'', New York: [[Arcade Publishing]], ISBN 1-55970-684-8, p. 260.</ref>
+
+===Centre of the Dutch Golden Age===
+[[File:Amsterdam-Bowyer-1814.jpg|thumb|left|The [[Royal Palace of Amsterdam|Royal Palace]], [[Nieuwe Kerk (Amsterdam)|Nieuwe Kerk]], and now demolished weigh house on [[Dam Square]] in 1814.]]
+The 17th century is considered Amsterdam's ''[[Dutch Golden Age|Golden Age]]'', during which it became the wealthiest city in the world.<ref>E. Haverkamp-Bergmann, Rembrandt; The Night Watch (New Jersey: [[Princeton University Press]], 1982), p. 57</ref> Ships sailed from Amsterdam to the [[Baltic Sea]], North America, and Africa, as well as present-day Indonesia, India, Sri Lanka, and Brazil, forming the basis of a worldwide trading network. Amsterdam's merchants had the largest share in both the [[Dutch East India Company]] and the [[Dutch West India Company]]. These companies acquired overseas possessions that later became [[Dutch Empire|Dutch colonies]]. Amsterdam was Europe's most important point for the shipment of goods and was the leading [[Financial centre|Financial Centre]] of the world.<ref>[http://www.uncp.edu/home/rwb/Amsterdam_l.html Amsterdam in the 17th century], The University of [[North Carolina]] at Pembroke</ref> In 1602, the Amsterdam office of the Dutch East India Company became the world's first [[stock exchange]] by trading in its own shares.<ref name="The oldest share">{{cite web
+|url=http://www.oldest-share.com/
+|title=The oldest share
+|accessdate=22 May 2008
+| archiveurl= //web.archive.org/web/20080509123937/http://www.oldest-share.com/| archivedate= 9 May 2008 | deadurl= no}}</ref>
+
+===Decline and modernisation===
+Amsterdam's prosperity declined during the 18th and early 19th centuries. The [[Anglo-Dutch Wars|wars]] of the [[Dutch Republic]] with [[Kingdom of England|England]] and France took their toll on Amsterdam. During the [[Napoleonic Wars]], Amsterdam's significance reached its lowest point, with Holland being absorbed into the [[First French Empire|French Empire]]. However, the later establishment of the [[United Kingdom of the Netherlands]] in 1815 marked a turning point.
+
+[[File:Old-Amsterdam 1891-street-1.jpg|thumb|160px|right|Vijzelstraat looking towards [[Muntplein, Amsterdam|Muntplein]] in 1891]]
+
+The end of the 19th century is sometimes called Amsterdam's second Golden Age.<ref name="Amsterdam City Walks">{{cite web
+|url=http://www.amsterdamcitywalks.com/english/agenda.html
+|title=Amsterdam through the ages -A medieval village becomes a global city
+|accessdate=21 May 2008
+| archiveurl= //web.archive.org/web/20080501115531/http://www.amsterdamcitywalks.com/english/agenda.html| archivedate= 1 May 2008 | deadurl= no}}{{dead link|date=February 2016}}</ref> New museums, a railway station, and the [[Concertgebouw]] were built; in this same time, the [[Industrial Revolution]] reached the city. The [[Amsterdam–Rhine Canal|Amsterdam-Rhine Canal]] was dug to give Amsterdam a direct connection to the [[Rhine]], and the [[North Sea Canal]] was dug to give the port a shorter connection to the [[North Sea]]. Both projects dramatically improved commerce with the rest of Europe and the world. In 1906, [[Joseph Conrad]] gave a brief description of Amsterdam as seen from the seaside, in ''[[q:Joseph Conrad#The Mirror of the Sea (1906)|The Mirror of the Sea]]''.
+
+===Twentieth century===
+Shortly before the First World War, the city began expanding, and new suburbs were built. Even though the Netherlands remained neutral in this war, Amsterdam suffered a food shortage, and heating fuel became scarce. The shortages sparked riots in which several people were killed. These riots are known as the ''Aardappeloproer'' (Potato rebellion). People started looting stores and warehouses in order to get supplies, mainly food.<ref name="aardappeloproer">{{cite web|url=http://www.collectie.legermuseum.nl/sites/strategion/contents/i004516/arma39%20het%20aardappeloproer%20in%201917.pdf|title=Aardappeloproer – Legermuseum|format=PDF|language=Dutch|accessdate=21 May 2008| archiveurl= //web.archive.org/web/20080528004443/http://www.collectie.legermuseum.nl/sites/strategion/contents/i004516/arma39%20het%20aardappeloproer%20in%201917.pdf| archivedate= 28 May 2008 | deadurl= no}}{{dead link|date=February 2016}}</ref>
+
+[[File:AnneFrankHouse Bookcase.jpg|thumb|left|160px|The reconstructed bookcase that covers the entrance to the "[[Anne Frank House|Secret Annex]]" where Anne Frank hid from Germans occupying Amsterdam during [[World War II]].]]
+
+After landflood in 1916 the depleted municipalities, Durgerdam, Holysloot, Zunderdorp and [[Schellingwoude]], all lying north of Amsterdam, were, on their own request, annexed to the city on 1 January 1921.<ref>{{cite web|url=https://stadsarchief.amsterdam.nl|title=Amsterdan city archives|publisher=|accessdate=4 October 2014}}</ref><ref>http://www.centraledorpenraad.nl/landelijk-noord/historie | website centrale dorpen raad (villages central council)</ref>
+
+[[Nazi Germany|Germany]] [[Battle of the Netherlands|invaded the Netherlands]] on 10 May 1940 and took control of the country. Some Amsterdam citizens sheltered Jews, thereby exposing themselves and their families to the high risk of being imprisoned or sent to concentration camps. More than 100,000 [[Dutch Jews]] were deported to [[Nazi concentration camps]] of which some 60,000 lived in Amsterdam. Perhaps the most famous deportee was the young Jewish girl [[Anne Frank]], who died in the [[Bergen-Belsen concentration camp]].<ref name="deportation">{{cite web
+|url=http://www.hollandscheschouwburg.nl/site_en/deportatie/kader.html
+|publisher=Hollandsche Schouwburg
+|title=Deportation to camps
+|accessdate=21 May 2008
+}}</ref> At the end of the Second World War, communication with the rest of the country broke down, and food and fuel became scarce. Many citizens travelled to the countryside to forage. Dogs, cats, [[sugar|raw sugar]] beets, and [[Tulip]] bulbs—cooked to a pulp—were consumed to stay alive.<ref name="hongerwinter">{{cite web|url=http://www.nos.nl/nosjournaal/dossiers/60jaarbevrijding/60jaar_hongerwinter.html |title=Kou en strijd in een barre winter |publisher=NOS |language=Dutch |accessdate=21 May 2008 |deadurl=yes |archiveurl=http://web.archive.org/web/20080123174846/http://www.nos.nl:80/nosjournaal/dossiers/60jaarbevrijding/60jaar_hongerwinter.html#C |archivedate=23 January 2008 }}</ref> Most of the trees in Amsterdam were cut down for fuel, and all the wood was taken from the apartments of deported Jews.
+
+[[File:BevrijdingAmsterdam1945.jpg|right|thumb|160px|People celebrating the [[Liberation Day (Netherlands)|liberation of Holland]] at the end of [[World War II]] on 8 May 1945.]]
+
+Many new suburbs, such as [[Osdorp]], [[Slotervaart (neighborhood)|Slotervaart]], ''Slotermeer'', and ''Geuzenveld'', were built in the years after the Second World War.<ref name="svgeschedenis">{{cite web
+|url=http://www.slotervaart.amsterdam.nl/stadsdeel_in_beeld/geschiedenis
+|title=Stadsdeel Slotervaart – Geschiedenis
+|publisher=Municipality Amsterdam
+|language=Dutch
+|accessdate=22 May 2008
+| archiveurl= //web.archive.org/web/20080503180139/http://www.slotervaart.amsterdam.nl/stadsdeel_in_beeld/geschiedenis| archivedate= 3 May 2008 | deadurl= no}}{{dead link|date=February 2016}}</ref>
+These suburbs contained many public parks and wide, open spaces, and the new buildings provided improved housing conditions with larger and brighter rooms, gardens, and balconies. Because of the war and other incidents of the 20th century, almost the entire city centre had fallen into disrepair. As society was changing, politicians and other influential figures made plans to redesign large parts of it. There was an increasing demand for office buildings and new roads as the automobile became available to most common people.<ref name="stadsherstel">{{cite web
+|url=http://www.stadsherstelamsterdam.nl/
+|title=Stadsherstel Missie/Historie
+|language=Dutch
+|accessdate=22 May 2008
+}}</ref> A [[Amsterdam Metro|metro]] started operating in 1977 between the new suburb of Bijlmer and the centre of Amsterdam. Further plans were to build a new highway above the metro to connect the [[Amsterdam Centraal railway station|Central Station]] and city centre with other parts of the city.
+
+The incorporated large-scale demolitions began in Amsterdam's formerly Jewish neighbourhood. Smaller streets, such as the ''Jodenbreestraat'', were widened and saw almost all of their houses demolished. During the destruction's peak, the ''Nieuwmarktrellen'' ([[Nieuwmarkt Riots]]) broke out,<ref name="metrostad">{{cite web
+|url=http://amsterdam.nl/?ActItmIdt=101459
+|title=Typisch Metrostad
+|publisher=Municipality Amsterdam
+|language=Dutch
+|accessdate=22 May 2008
+| archiveurl= //web.archive.org/web/20080610023117/http://amsterdam.nl/?ActItmIdt=101459| archivedate= 10 June 2008 | deadurl= no}}{{dead link|date=February 2016}}</ref> where people expressed their fury about the demolition caused by the restructuring of the city.
+
+As a result, the demolition was stopped, and the highway was never built, with only the metro being finished. Only a few streets remained widened. The new city hall was built on the almost completely demolished ''Waterlooplein''. Meanwhile, large private organisations, such as ''Stadsherstel Amsterdam'', were founded with the aim of restoring the entire city centre. Although the success of this struggle is visible today, efforts for further restoration are still ongoing.<ref name="stadsherstel"/> The entire city centre has reattained its former splendor and, as a whole, is now a [[protected area]]. Many of its buildings have become monuments, and in July 2010 the ''Grachtengordel'' ([[Herengracht]], [[Keizersgracht]], and [[Prinsengracht]]) was added to the [[World Heritage Site|UNESCO World Heritage List]].<ref name="unesco">{{cite web|url=https://www.amsterdam.nl/kunstencultuur/monumenten/indexen/nieuws_bma/?ActItmIdt=122633 |title=Monumenten en Archeologie |language=Dutch|accessdate=5 August 2015 |publisher=Gemeente Amsterdam}}{{dead link|date=February 2016}}</ref>
+
+[[File:ZuidasAmsterdamtheNetherlands.jpg|thumb|right|The [[Zuidas]] district is the headquarters of many Dutch [[multinational corporation|multinationals]].]]
+
+===Twenty-first century===
+{{Refimprove section|date=June 2015}}
+At the beginning of the new millennium, social problems such as safety, ethnic discrimination and segregation between religious and social groups began to develop. Forty-five percent of the population of Amsterdam has non-Dutch parents. Large social groups come from Suriname, the Dutch Antilles, Morocco and Turkey. Amsterdam is characterised by its (perceived) social tolerance and diversity. The former mayor of Amsterdam, Job Cohen, and his alderman for integration Ahmed Aboutaleb (Now mayor of Rotterdam)  formulated a policy of "keeping things together" which involves social dialogue, tolerance and harsh measures against those who break the law.
+
+==Geography==
+[[File:Amsterdam-plaats-OpenTopo.jpg|thumb|left|Topographic map of Amsterdam, Sept. 2014]]
+Amsterdam is located in the western Netherlands, in the province of [[North Holland]]. The river [[Amstel]] terminates in the city centre and connects to a large number of canals that eventually terminate in the [[IJ (Amsterdam)|IJ]]. Amsterdam is situated 2 metres below [[above mean sea level|sea level]].<ref name="elevation">{{cite web
+ |url=http://www.ahn.nl/
+ |title=Actueel Hoogtebestand Nederland
+ |language=Dutch
+ |accessdate=18 May 2008}}</ref> The surrounding land is flat as it is formed of large [[polder]]s. A man made forest, [[Amsterdamse Bos]], is situated southwest. Amsterdam is connected to the [[North Sea]] through the long [[North Sea Canal]].
+
+Amsterdam is intensely urbanised, as is the [[Amsterdam Metropolitan Area|Amsterdam metropolitan area]] surrounding the city. Comprising {{convert|219.4|km2|1|abbr=off}} of land, the [[city limits|city proper]] has 4,457 inhabitants per km<sup>2</sup> and 2,275 houses per km<sup>2</sup>.<ref name="density">
+{{cite web
+ |url=http://www.os.amsterdam.nl/pdf/2007_jaarboek_hoofdstuk_01.pdf
+ |title=Kerncijfers Amsterdam 2007
+ |language=Dutch
+ |format=PDF
+ |accessdate=18 May 2008
+| archiveurl= //web.archive.org/web/20080528004554/http://www.os.amsterdam.nl/pdf/2007_jaarboek_hoofdstuk_01.pdf| archivedate= 28 May 2008 | deadurl= no}}{{dead link|date=February 2016}}</ref> Parks and [[nature reserve]]s make up 12% of Amsterdam's land area.<ref name="12percent">
+{{cite web
+ |url=http://www.os.amsterdam.nl/feitenencijfers/24112/
+ |title=Openbare ruimte en groen: Inleiding
+ |language=Dutch
+ |accessdate=18 May 2008
+| archiveurl= //web.archive.org/web/20080624164359/http://www.os.amsterdam.nl/feitenencijfers/24112/| archivedate= 24 June 2008 | deadurl= no}}{{dead link|date=February 2016}}</ref>
+
+[[File:Amsterdam canals in summer.JPG|thumb|View of the Oudezijds Voorburgwal canal and [[Basilica of St. Nicholas, Amsterdam|Basilica of St. Nicholas]] during summer]]
+[[File:Frozen Prinsengracht.jpg|thumb|Ice skaters on [[Prinsengracht]]]]
+
+===Canals===
+Amsterdam is home to more than one hundred kilometers of [[Canals of Amsterdam|canals]], most of which are navigable by boat. The three main canals are [[Prinsengracht]], [[Herengracht]] and [[Keizersgracht]]. In the [[Middle Ages]], Amsterdam was surrounded by a moat, called the [[Singel]], which now forms the innermost ring in the city, and makes the city centre a horseshoe shape. The city is also served by a [[Port of Amsterdam|seaport]]. It has been compared with [[Venice]], due to its division into approximately 90 islands, which are linked by more than 1,200 bridges.<ref>[http://geography.howstuffworks.com/europe/geography-of-amsterdam.htm How Stuff Works, Geography of Amsterdam]</ref>
+
+===Climate===
+Amsterdam has an [[oceanic climate]] ([[Köppen climate classification]] ''Cfb'') it strongly influenced by its proximity to the North Sea to the west, with prevailing westerly winds. Both winters and summers are considered mild, although occasionally quite cool. Amsterdam, as well as most of the North Holland province, lies in [[United States Department of Agriculture|USDA]] [[Hardiness zone]] 8b. Frosts mainly occur during spells of easterly or northeasterly winds from the inner European continent. Even then, because Amsterdam is surrounded on three sides by large bodies of water, as well as having a significant [[Urban heat island|heat-island effect]], nights rarely fall below {{convert|-5|°C|0}}, while it could easily be {{convert|−12|°C|0}} in Hilversum, {{convert|25|km|0|abbr=off}} southeast. Summers are moderately warm but rarely hot. The average daily high in August is {{convert|22.1|°C|1}}, and {{convert|30|°C}} or higher is only measured on average on 2.5 days, placing Amsterdam in AHS Heat Zone 2. The record extremes range from {{convert|-24|°C}} to {{convert|36.8|°C}}.<ref name="Extreme temps">{{cite web|url=http://www.mherrera.org/temp.htm |title=Extreme temperatures around the world |publisher=Herrera, Maximiliano |accessdate=2 March 2012}}</ref>
+Days with more than {{convert|1|mm|2}} of [[precipitation]] are common, on average 133 days per year. Amsterdam's average annual precipitation is {{convert|838|mm|0}},<ref>{{cite web |url= http://www.klimaatatlas.nl/tabel/stationsdata/klimtab_8110_240.pdf |title= Stationsdata station Schiphol 1981–2010 |accessdate= 10 September 2013 |publisher= Royal Netherlands Meteorological Institute}}</ref> more than what is measured at Amsterdam Schiphol Airport. A large part of this precipitation falls as light rain or brief showers. Cloudy and damp days are common during the cooler months of October through March.
+
+{{Weather box
+|location = [[Amsterdam Airport Schiphol]]
+|metric first = Yes
+|single line = Yes
+| Jan record high C = 13.9
+| Feb record high C = 16.6
+| Mar record high C = 21.1
+| Apr record high C = 27.0
+| May record high C = 31.5
+| Jun record high C = 33.2
+| Jul record high C = 32.3
+| Aug record high C = 34.5
+| Sep record high C = 29.4
+| Oct record high C = 25.0
+| Nov record high C = 17.5
+| Dec record high C = 15.5
+|year record high C = 34.5
+| Jan high C = 5.8
+| Feb high C = 6.3
+| Mar high C = 9.6
+| Apr high C = 13.5
+| May high C = 17.4
+| Jun high C = 19.7
+| Jul high C = 22.0
+| Aug high C = 22.1
+| Sep high C = 18.8
+| Oct high C = 14.5
+| Nov high C = 9.7
+| Dec high C = 6.4
+|year high C = 
+| Jan mean C = 3.4
+| Feb mean C = 3.5
+| Mar mean C = 6.1
+| Apr mean C = 9.1
+| May mean C = 12.9
+| Jun mean C = 15.4
+| Jul mean C = 17.6
+| Aug mean C = 17.5
+| Sep mean C = 14.7
+| Oct mean C = 11.0
+| Nov mean C = 7.1
+| Dec mean C = 4.0
+|year mean C = 
+| Jan low C = 0.8
+| Feb low C = 0.5
+| Mar low C = 2.6
+| Apr low C = 4.6
+| May low C = 8.2
+| Jun low C = 10.8
+| Jul low C = 12.0
+| Aug low C = 11.8
+| Sep low C = 10.6
+| Oct low C = 7.5
+| Nov low C = 4.2
+| Dec low C = 1.5
+|year low C = 
+| Jan record low C = -15.4
+| Feb record low C = -15.0
+| Mar record low C = -11.1
+| Apr record low C = -4.7
+| May record low C = -1.1
+| Jun record low C = 2.3
+| Jul record low C = 5.0
+| Aug record low C = 5.0
+| Sep record low C = 2.0
+| Oct record low C = -3.4
+| Nov record low C = -6.9
+| Dec record low C = -14.8
+|year record low C = -15.4
+|precipitation colour = green
+| Jan precipitation mm = 66.6
+| Feb precipitation mm = 50.6
+| Mar precipitation mm = 60.6
+| Apr precipitation mm = 40.9
+| May precipitation mm = 55.6
+| Jun precipitation mm = 66.0
+| Jul precipitation mm = 76.5
+| Aug precipitation mm = 85.9
+| Sep precipitation mm = 82.4
+| Oct precipitation mm = 89.6
+| Nov precipitation mm = 87.2
+| Dec precipitation mm = 76.3
+|year precipitation mm = 838.2
+|unit precipitation days = 1&nbsp;mm
+| Jan precipitation days = 12
+| Feb precipitation days = 10
+| Mar precipitation days = 11
+| Apr precipitation days = 9
+| May precipitation days = 10
+| Jun precipitation days = 10
+| Jul precipitation days = 10
+| Aug precipitation days = 10
+| Sep precipitation days = 12
+| Oct precipitation days = 13
+| Nov precipitation days = 13
+| Dec precipitation days = 13
+|Year precipitation days = 132
+| Jan snow days = 6
+| Feb snow days = 6
+| Mar snow days = 4
+| Apr snow days = 2
+| May snow days = 0
+| Jun snow days = 0
+| Jul snow days = 0
+| Aug snow days = 0
+| Sep snow days = 0
+| Oct snow days = 0
+| Nov snow days = 3
+| Dec snow days = 5
+|Year snow days = 
+|Jan humidity = 88
+|Feb humidity = 86
+|Mar humidity = 83
+|Apr humidity = 78
+|May humidity = 76
+|Jun humidity = 78
+|Jul humidity = 79
+|Aug humidity = 80
+|Sep humidity = 83
+|Oct humidity = 86
+|Nov humidity = 89
+|Dec humidity = 90
+| Jan sun = 63.2
+| Feb sun = 87.5
+| Mar sun = 126.3
+| Apr sun = 182.7
+| May sun = 221.9
+| Jun sun = 205.7
+| Jul sun = 217.0
+| Aug sun = 197.0
+| Sep sun = 139.4
+| Oct sun = 109.1
+| Nov sun = 61.7
+| Dec sun = 50.5
+|year sun = 1662.0
+|source 1 = [[Royal Netherlands Meteorological Institute]] (1981–2010 normals, snowy days normals for 1971–2000)<ref>
+{{cite web
+  |       url = http://www.klimaatatlas.nl/tabel/stationsdata/klimtab_8110_240.pdf
+  |     title = Klimaattabel Schiphol, langjarige gemiddelden, tijdvak 1981–2010
+  | publisher = [[Royal Netherlands Meteorological Institute]]
+  |  language = Dutch
+  |accessdate = 9 September 2013
+}}</ref>
+|source 2 = Royal Netherlands Meteorological Institute (1971–2000 extremes)<ref>{{cite web|url=http://www.knmi.nl/klimatologie/normalen1971-2000/per_station/stn240/5-extremen/240_extremen.pdf |title=Klimaattabel Schiphol, langjarige extremen, tijdvak 1971–2000 |publisher=Royal Netherlands Meteorological Institute |language=Dutch |accessdate=9 September 2013 |deadurl=yes |archiveurl=http://web.archive.org/web/20151223191702/http://www.knmi.nl/klimatologie/normalen1971-2000/per_station/stn240/5-extremen/240_extremen.pdf |archivedate=23 December 2015 }}</ref>
+|date=June 2014}}
+
+==Demographics==
+{{Historical populations
+|1300<ref name="BMA Gesch1">{{cite web
+|url=http://www.bma.amsterdam.nl/adam/uk/intro/gesch1.html
+|archiveurl=//web.archive.org/web/20070402012355/http://www.bma.amsterdam.nl/adam/uk/intro/gesch1.html|archivedate=2 April 2007|title=History of Amsterdam, The Early History|publisher=Bureau Monumenten & Archeologie (Office of Monuments and Archeology)|accessdate=19 April 2007}}{{dead link|date=February 2016}}</ref>|1000
+|1400<ref name="Paul Bairoch">{{cite book |last=Bairoch |first=Paul |author2=Jean Batou |author3=Pierre Chèvre  |title=La Population des villes Europeennes. Banque de donnees et analyse sommaire des resultats |publisher=Droz |location=Geneva |language=French|oclc=19650044 |page=53 |year=1988}}</ref>
+|3000
+|1500<ref name="Paul Bairoch"/>|15000
+|1600<ref name="Paul Bairoch"/>|54000
+|1675<ref name="BMA Gesch2">{{cite web |url=http://www.bma.amsterdam.nl/adam/uk/intro/gesch2.html|archiveurl=//web.archive.org/web/20070402012355/http://www.bma.amsterdam.nl/adam/uk/intro/gesch2.html|archivedate=2 April 2007|title=History of Amsterdam, The Golden Age
+|publisher=Bureau Monumenten & Archeologie (Office of Monuments and Archeology)|accessdate=19 April 2007}}{{dead link|date=February 2016}}</ref>|206000
+|1796<ref name="BMA Gesch2"/>|200600
+|1810<ref name="BMA Gesch5">{{cite web|url=http://www.bma.amsterdam.nl/adam/uk/intro/gesch5.html|archiveurl=//web.archive.org/web/20070402012355/http://www.bma.amsterdam.nl/adam/uk/intro/gesch5.html|archivedate=2 April 2007|title=History of Amsterdam, Recovery and Expansion|publisher=Bureau Monumenten & Archeologie (Office of Monuments and Archeology)
+|accessdate=19 April 2007}}{{dead link|date=February 2016}}</ref>|180000
+|1850<ref name="BMA Topo5">{{cite web|url=http://www.bma.amsterdam.nl/adam/uk/intro/topo5.html
+|archiveurl=//web.archive.org/web/20070402012355/http://www.bma.amsterdam.nl/adam/uk/intro/topo5.html|archivedate=2 April 2007|title=The 19th century Urban Expansions|publisher=Bureau Monumenten & Archeologie (Office of Monuments and Archeology)|accessdate=19 April 2007}}{{dead link|date=February 2016}}</ref>|224000
+|1879<ref name="BMA Topo5"/>|317000
+|1900<ref name="Britannica Eleven"/>|523577
+|1930<ref name="BMA Gesch5"/>|757000
+|1990<ref name="dosamsterdam2">{{cite web|url=http://www.os.amsterdam.nl/tabel/6547/ |title=Dienst Onderzoek & Stat Amsterdam 2 |deadurl=yes |archiveurl=http://web.archive.org/web/20130603154728/http://www.os.amsterdam.nl/tabel/6547/ |archivedate=3 June 2013 }}</ref>|695221
+|2013<ref name="cbs2013"/>|810084}}
+Amsterdam has a population of 832,563 inhabitants within city limits.
+
+{| class="infobox" style="float:right;"
+|-
+! colspan="2" | City of Amsterdam (2015)<br />population by country of origin<ref>[http://www.ois.amsterdam.nl/feiten-en-cijfers/amsterdam/ Onderzoek, Informatie en Statistiek<!-- Bot generated title -->]</ref>
+|-
+! '''Country/Territory''' || '''Population''' 
+|-
+|{{flagicon|MAR}} [[Morocco]] || style="text-align:right;"|74,210
+|-
+|{{flagicon|SUR}} [[Suriname]] || style="text-align:right;"|66,623	
+|-
+|{{flagicon|TUR}} [[Turkey]] || style="text-align:right;"|42,358	
+|-
+|{{flagicon|IDN}} [[Indonesia]] || style="text-align:right;"|25,988	
+|-
+|{{flagicon|GER}} [[Germany]] || style="text-align:right;"|17,667	
+|-
+| {{flagicon|NED}} [[Dutch Caribbean]] || style="text-align:right;"|12,125
+|-
+|{{flagicon|GHA}} [[Ghana]] || style="text-align:right;"|11,902
+|-
+|{{flagicon|UK}} [[United Kingdom]] || style="text-align:right;"|11,474	
+|-
+|{{flagicon|US}} [[United States]] || style="text-align:right;"|7,862	
+|-
+|{{flagicon|ITA}} [[Italy]] || style="text-align:right;"|7,069
+|}<noinclude>
+
+In the 16th and 17th century non-Dutch [[immigrants]] to
+Amsterdam were mostly [[Huguenot]]s, [[Flemish people|Flemings]], [[Sephardi Jews]] and [[Westphalia]]ns. Huguenots came after the [[Edict of Fontainebleau]] in 1685, while the Flemish Protestants came during the [[Eighty Years' War]]. The Westphalians came to Amsterdam mostly for economic reasons – their influx continued through the 18th and 19th centuries. Before the Second World War, 10% of the city population was [[History of the Jews in Amsterdam|Jewish]]. Just twenty percent of them survived the [[The Holocaust|Shoah]].{{citation needed|date=October 2014}}
+
+The first mass immigration in the 20th century were by people from Indonesia, who came to Amsterdam after the independence of the [[Dutch East Indies]] in the 1940s and 1950s. In the 1960s [[Foreign worker|guest workers]] from Turkey, Morocco, Italy and Spain emigrated to Amsterdam. After the independence of Suriname in 1975, a large wave of [[Suriname]]se settled in Amsterdam, mostly in the [[Bijlmermeer|Bijlmer]] area. Other immigrants, including refugees [[Right of asylum|asylum seekers]] and [[illegal immigration|illegal immigrants]], came from Europe, [[Americas|America]], Asia, and Africa. In the 1970s and 1980s, many 'old' Amsterdammers moved to 'new' cities like [[Almere]] and [[Purmerend]], prompted by the third [[Land-use planning|planological]] bill of the Dutch government. This bill promoted suburbanisation and arranged for new developments in so-called "groeikernen", literally ''cores of growth''. Young professionals and artists moved into neighbourhoods de Pijp and the [[Jordaan]] abandoned by these Amsterdammers. The non-Western immigrants settled mostly in the [[Public housing|social housing]] projects in Amsterdam-West and the Bijlmer. Today, people of non-Western origin make up approximately one-third of the population of Amsterdam, and more than 50% of the city'
+s children.<ref>{{cite web|url=http://www.cbs.nl/en-GB/menu/themas/bevolking/publicaties/artikelen/archief/2006/2006-1995-wm.htm?RefererType=Favorite |title=Half of young big-city dwellers have non-western background |publisher=Cbs.nl |accessdate=10 October 2010}}</ref><ref name="OS 4351">{{cite web|url=http://www.os.amsterdam.nl/tabel/4351/ |title=Bevolking naar herkomstgroepering, 1&nbsp;January 2001–2006 |language=Dutch |publisher=Dienst Onderzoek en Statistiek (Research and Statistics Service) |accessdate=19 April 2007 |deadurl=yes |archiveurl=http://web.archive.org/web/20090807180418/http://www.os.amsterdam.nl:80/tabel/4351/ |archivedate=7 August 2009 }}</ref><ref>{{cite web|url=http://www.cbs.nl/en-GB/menu/themas/bevolking/publicaties/artikelen/archief/2004/2004-1443-wm.htm |title=Most foreign babies born in big cities |publisher=Cbs.nl |date=26 April 2004 |accessdate=10 October 2010| archiveurl= //web.archive.org/web/20100925064323/http://www.kinky.nl/en-GB/menu/themas/bevolking/publicaties/artikelen/archief/2004/2004-1443-wm.htm| archivedate= 25 September 2010 | deadurl= no}}</ref> Segregation along ethnic lines is clearly visible, with people of non-Western origin, considered a separate group by [[Statistics Netherlands]], concentrating in specific neighbourhoods especially in [[Amsterdam Nieuw-West|Nieuw-West]], [[Zeeburg]], [[Bijlmermeer|Bijlmer]] and in certain areas of [[Amsterdam-Noord]].<ref>{{cite web|url=http://www.nrc.nl/nieuws/2012/02/14/statistiek-saai-cbs-cijfers-komen-tot-leven-op-een-kaart/|language=Dutch|title=Statistics on a map}}</ref><ref>{{cite web|url=http://www.cbsinuwbuurt.nl/#pageLocation=index|language=Dutch|title=Statistics by Neighborhood}}</ref>
+
+The largest [[religious denomination|religious group]] are Christians (27% in 2000),. The next largest religion is Islam (14% in 2000), most of whose followers are [[Sunni Islam|Sunni]].<ref name="religion">{{cite web
+|url=http://www.os.amsterdam.nl/pdf/2006_ob_religie_5.pdf
+|title=Religie Amsterdam
+|language=Dutch
+|accessdate=22 May 2008
+|format=PDF| archiveurl= //web.archive.org/web/20080528004546/http://www.os.amsterdam.nl/pdf/2006_ob_religie_5.pdf| archivedate= 28 May 2008 | deadurl= no}}{{dead link|date=February 2016}}</ref><ref>{{cite web|url=http://www.os.amsterdam.nl/pdf/2001_factsheets_5.pdf |title=Bureau of Onderzoek en Statistiek: 'Geloven in Amsterdam' |format=PDF |accessdate=25 April 2012}}</ref>
+
+===Religious history===
+In 1578 the previously Roman Catholic city of Amsterdam joined the revolt against Spanish rule, late in comparison to other major northern Dutch cities. In line with Protestant procedure of that time, all churches were converted to Protestant worship. [[Calvinism]] became the dominant religion, and although Catholicism was not forbidden and priests allowed to serve, the [[Hierarchy of the Catholic Church|Catholic hierarchy]] was prohibited. This led to the establishment of ''schuilkerken'', covert churches, behind seemingly ordinary canal side house fronts. One example is the current debate centre [[de Rode Hoed]].
+A large influx of foreigners of many religions came to 17th-century Amsterdam, in particular [[Sephardi Jews|Sefardic Jews]] from Spain and Portugal, [[Huguenot]]s from France, and Protestants from the [[Southern Netherlands]]. This led to the establishment of many non-Dutch-speaking religious churches. In 1603, the first notification was made of Jewish religious service. In 1639, the first synagogue was consecrated. The Jews came to call the town [[Jerusalem of the West]], a reference to their sense of belonging there.
+
+[[File:The Church of St Nicholas.jpg|thumb|right|The [[Basilica of St. Nicholas, Amsterdam|Basilica of St. Nicholas]]]]
+As they became established in the city, other [[Christian denomination]]s used converted Catholic chapels to conduct their own services. The oldest English-language church congregation in the world outside the United Kingdom is found at the [[Begijnhof, Amsterdam|Begijnhof]]. Regular services there are still offered in English under the auspices of the Church of Scotland.<ref name="englishchurch">{{cite web
+|url=http://home.tiscali.nl/~t451501/ercadam/content/history.htm
+|archiveurl=//web.archive.org/web/20050124020021/http://home.tiscali.nl/~t451501/ercadam/content/history.htm
+|archivedate=24 January 2005
+|title=English Reformed Church Amsterdam
+|accessdate=22 May 2008
+}}</ref> The Huguenots accounted for nearly 20% of Amsterdam's inhabitants in 1700. Being Calvinists, they soon integrated into the [[Dutch Reformed Church]], though often retaining their own congregations. Some, commonly referred by the moniker 'Walloon', are recognisable today as they offer occasional services in French.
+
+In the second half of the 17th century, Amsterdam experienced an influx of [[Ashkenazi Jews|Ashkenazim]], Jews from [[Central Europe|Central and Eastern Europe]], which continued into the 19th century. Jews often fled the [[pogrom]]s in those areas. The first Ashkenazi who arrived in Amsterdam were [[refugee]]s from the [[Khmelnytsky Uprising|Chmielnicki Uprising]] in Poland and the [[Thirty Years' War]]. They not only founded their own synagogues, but had a strong influence on the 'Amsterdam dialect' adding a large [[Yiddish language|Yiddish]] local vocabulary.
+
+Despite an absence of an official Jewish [[ghetto]], most Jews preferred to live in the eastern part of the old medieval heart of the city. The main street of this Jewish neighbourhood was the ''Jodenbreestraat''. The neighbourhood comprised the ''Waterlooplein'' and the [[Nieuwmarkt]].<ref name="Jodenbuurt Amsterdam">{{cite web
+|url=http://amsterdam.nl/stad_in_beeld/werkstukken/wijken
+|title=Amsterdamse wijken
+|language=Dutch
+|publisher=Municipality Amsterdam
+|accessdate=22 May 2008
+|archiveurl=//web.archive.org/web/20080125140019/http://www.amsterdam.nl/stad_in_beeld/werkstukken/wijken|archivedate=25 January 2008}}</ref> Buildings in this neighbourhood fell into disrepair after the Second World War, and a large section of the neighbourhood was demolished during the construction of the subway. This led to riots, and as a result the original plans for large-scale reconstruction were abandoned and the neighbourhood was rebuilt with smaller-scale residence buildings on the basis of its original layout.
+
+[[File:Vondelpark, Amsterdam.jpg|thumb|left|The [[Vondelpark]] is the largest park in Amsterdam.]]
+Catholic churches in Amsterdam have been constructed since the restoration of the episcopal hierarchy in 1853. One of the principal architects behind the city's Catholic churches, [[Pierre Cuypers|Cuypers]], was also responsible for the Amsterdam Central Station and the [[Rijksmuseum]], which led to a refusal of Protestant King [[William III of the Netherlands|William III]] to open 'that monastery'.
+In 1924, [[Catholic Church|the Roman Catholic Church]] of the Netherlands hosted the [[Eucharistic Congress|International Eucharistic Congress]] in Amsterdam, and numerous Catholic [[prelate]]s visited the city, where festivities were held in churches and stadiums. Catholic processions on the public streets, however, were still forbidden under law at the time. Only in the 20th century was Amsterdam's relation to Catholicism normalised, but despite its far larger [[population size]], the [[Holy orders|Catholic clergy]] chose to place its episcopal see of the city in the nearby provincial town of [[Haarlem]].<ref name="Diocese of Haarlem">{{cite web
+|url=http://www.catholic-hierarchy.org/diocese/dhaar.html
+|title=Diocese of Haarlem
+|publisher=Catholic Hierarchy
+|accessdate=4 June 2008
+| archiveurl= //web.archive.org/web/20080614173747/http://www.catholic-hierarchy.org/diocese/dhaar.html| archivedate= 14 June 2008 | deadurl= no}}</ref>
+
+In recent times, religious demographics in Amsterdam have been changed by large-scale immigration from former colonies. Immigrants from Suriname have introduced [[Evangelicalism|Evangelical]] Protestantism and [[Lutheranism]], from the Hernhutter variety; [[Hinduism]] has been introduced mainly from Suriname; and several distinct branches of Islam have been brought from various parts of the world. Islam is now the largest non-Christian religion in Amsterdam. The large community of Ghanaian and Nigerian immigrants have established African churches, often in parking garages in the [[Bijlmermeer|Bijlmer]] area, where many have settled. In addition, a broad array of other religious movements have established congregations, including [[Buddhism]], [[Confucianism]] and [[Hinduism]]. [[Jews|Jewish]] make up about 2% of the city total population.
+
+===Tolerance and ethnic tension===
+Although the saying "Leef en laat leven" or "Live and let live" summarises the Dutch and especially the Amsterdam open and tolerant society, the increased influx of many races, religions, and cultures after the Second World War, has on a number of occasions strained [[social relation]]s. With 176 different nationalities, Amsterdam is home to one of the widest varieties of nationalities of any city in the world.<ref>Quest, issue of March 2009</ref> The proportion of the population of immigrant origin in the city proper is about 50% <ref>{{cite web|url=http://www.os.amsterdam.nl/tabel/7003/ |title=Amsterdam in cijfers 2010 |publisher=Os.amsterdam.nl |accessdate=25 April 2012 |deadurl=yes |archiveurl=http://web.archive.org/web/20120318161044/http://www.os.amsterdam.nl/tabel/7003/ |archivedate=18 March 2012 }}</ref> and 88% of the population are Dutch citizens.<ref>[http://www.amsterdam.nl/gemeente/organisatie-diensten/dbi/nieuws/2010/juni/inwoneraantal/]{{dead link|date=February 2016}}</ref>
+
+The city has been at times marked by ethnic tension. In 2004 film director [[Theo van Gogh (film director)|Theo van Gogh]] was murdered by [[Mohammed Bouyeri]] in Amsterdam. Among others, in line with attitude changes {{Citation needed|date=April 2015}} in Dutch politics towards certain (especially Islamic) minorities Turkish-language and Arabic-language TV channels have been dropped from the basic cable TV package{{Citation needed|date=April 2015}}. In recent years, politicians are actively discouraged against campaigning in minority languages. In the previous local elections politicians were criticised by current Amsterdam mayor Mr van der Laan (then minister of Integration) for distributing election leaflets in minority languages and in some cases leaflets were collected. Due to this alleged anti-Multicultural stand, van der Laan has been accused of hypocrisy by his own party's [[Labour Party (Netherlands)|PvdA]] main candidate.<ref>{{cite web|url=http://www.elsevier.nl/web/Nieuws/Nederland/258644/PvdAlijsttrekker-Van-der-Laan-ongekend-hypocriet.htm |title=Nederland – PvdA-lijsttrekker: Van der Laan ongekend hypocriet |publisher=Elsevier.nl |date=18 February 2010 |accessdate=27 May 2012}}</ref>  Also during the same period, possibly due to his belief in integration via (possibly not always voluntary) assimilation, Amsterdam has been one of the municipalities in the Netherlands which provided immigrants with extensive and free [[Dutch language|Dutch-language]] courses, which have benefited many immigrants.<ref>[http://intt.uva.nl/dutch-for-foreigners/dutch-for-foreigners.html Dutch for foreigners – INTT – University of Amsterdam<!-- Bot generated title -->]</ref>
+
+==Cityscape and architecture==
+{{see also|List of tallest buildings in Amsterdam}}
+{{Panorama
+ | image      = File:Amsterdam Cityscape.jpg
+ | caption    = View looking southwest from the [[Openbare Bibliotheek Amsterdam|Amsterdam Public Library]].
+ | height     = 250
+}}
+
+Amsterdam fans out south from the [[Amsterdam Centraal railway station]]. The oldest area of the town is known as ''[[de Wallen]]'' (the quays). It lies to the east of Damrak and contains the city's famous red light district. To the south of de Wallen is the old Jewish quarter of Waterlooplein. The medieval and colonial age [[canals of Amsterdam]], known as ''Grachten'', embraces the heart of the city where homes have interesting gables. Beyond the Grachtengordel are the former working class areas of [[Jordaan]] and de Pijp. The [[Museumplein]] with the city's major museums, the [[Vondelpark]], a 19th-century park named after the Dutch writer [[Joost van den Vondel]], and the [[Plantage (Amsterdam)|Plantage]] neighbourhood, with the [[Natura Artis Magistra|zoo]], are also located outside the Grachtengordel.
+
+Several parts of the city and the surrounding urban area are [[polder]]s. This can be recognised by the suffix ''-meer'' which means ''lake'', as in [[Aalsmeer]], [[Bijlmermeer]], [[Haarlemmermeer]], and [[Watergraafsmeer]].
+
+===Canals===
+{{Main|Canals of Amsterdam}}
+[[File:Amsterdam Canals - July 2006.jpg|thumb|Panorama of a canal in the Canal District]]
+The Amsterdam canal system is the result of conscious [[Urban planning|city planning]].<ref name="canals">{{cite web
+|url=http://amsterdam.nl/stad_in_beeld/werkstukken/grachten
+|title=Amsterdamse Grachten
+|publisher=Municipality Amsterdam
+|language=Dutch
+|accessdate=21 May 2008
+|archiveurl=//web.archive.org/web/20080320060143/http://amsterdam.nl/stad_in_beeld/werkstukken/grachten|archivedate=20 March 2008}}{{dead link|date=February 2016}}</ref> In the early 17th century, when immigration was at a peak, a comprehensive plan was developed that was based on four concentric half-circles of canals with their ends emerging at the [[IJ (Amsterdam)|IJ]] bay. Known as the ''Grachtengordel'', three of the canals were mostly for residential development: the ''[[Herengracht]]'' (where "Heren" refers to ''Heren Regeerders van de stad Amsterdam'' (ruling lords of Amsterdam), and ''gracht'' means canal, so the name can be roughly translated as "Canal of the lords"), ''[[Keizersgracht]]'' (Emperor's Canal), and ''[[Prinsengracht]]'' (Prince's Canal).<ref>{{cite web|url=http://www.stadsherstel.nl/content/ned/actualiteiten/Vriendenwandeling/documents/Vriendenwandelingroute2011.pdf |title=Vriendenwandelingroute2011.pdf |publisher=stadsherstel |accessdate=21 July 2011 |deadurl=yes |archiveurl=http://web.archive.org/web/20120328001102/http://www.stadsherstel.nl/content/ned/actualiteiten/Vriendenwandeling/documents/Vriendenwandelingroute2011.pdf |archivedate=28 March 2012 }}</ref> The fourth and outermost canal is the ''Singelgracht'', which is often not mentioned on maps, because it is a collective name for all canals in the outer ring. The Singelgracht should not be confused with the oldest and most inner canal ''[[Singel]]''. The canals served for defence, [[Water resource management|water management]] and transport. The defences took the form of a moat and [[Earthworks (engineering)|earthen dikes]], with gates at transit points, but otherwise no masonry [[superstructure]]s.<ref>{{cite book
+|last=Taverne
+|first=E. R. M.
+|title=In ‘t land van belofte, in de nieuwe stadt: ideaal en werkelijkheid van de stadsuitleg in de Republiek, 1580–1680 (In the land of promise, in the kinky city: ideal and reality of the city lay-out in the [Dutch] Republic, 1580–1680)
+|publisher=Schwartz|year=1978
+|location=Maarssen
+|isbn=90-6179-024-7}}</ref> The original plans have been lost, so historians, such as Ed Taverne, need to speculate on the original intentions: it is thought that the considerations of the layout were purely practical and defensive rather than ornamental.<ref>{{cite book |url=https://books.google.com/?id=5UaM50-E-wwC&pg=PA33&dq=canals+of+Amsterdam&cd=5#v=onepage&q=canals%20of%20Amsterdam |title=Amsterdam human capital – Google Books |publisher=Google |accessdate=11 January 2010 |isbn=978-90-5356-595-7 |year=2003}}</ref>
+
+[[File:KeizersgrachtReguliersgrachtAmsterdam.jpg|thumb|left|A view of the Reguliersgracht on the corner with the Keizersgracht at dusk.]]
+Construction started in 1613 and proceeded from west to east, across the breadth of the layout, like a gigantic [[Windscreen wiper|windshield wiper]] as the historian [[Geert Mak]] calls it – and ''not'' from the centre outwards, as a popular myth has it. The canal construction in the southern sector was completed by 1656. Subsequently, the construction of residential buildings proceeded slowly. The eastern part of the concentric canal plan, covering the area between the Amstel river and the IJ bay, has never been implemented. In the following centuries, the land was used for parks, senior citizens' homes, theatres, other public facilities, and waterways without much planning.<ref>{{cite book|last=Mak|first=G.|title=Een kleine geschiedenis van Amsterdam|publisher=Uitgeverij Atlas|year=1995|location=Amsterdam/Antwerp|isbn=90-450-1232-4}}</ref>
+
+[[File:Bridges over Canal- Amsterdam.jpg|thumb|Bridges over a canal.]]
+Over the years, several canals have been filled in, becoming streets or squares, such as the Nieuwezijds Voorburgwal and the [[Spui (Amsterdam)|Spui]].<ref name="filledincanals">{{cite web
+|url=http://www.onderdekeizerskroon.nl/wschoonenberg/dempingen.html
+|publisher=Walther Schoonenberg
+|title=Dempingen en Aanplempingen
+|language=Dutch
+|accessdate=21 May 2008
+| archiveurl= //web.archive.org/web/20080518172457/http://www.onderdekeizerskroon.nl/wschoonenberg/dempingen.html| archivedate= 18 May 2008 | deadurl= no}}{{dead link|date=February 2016}}</ref>
+
+===Expansion===
+{{Main|Expansion of Amsterdam since the 19th century}}
+
+After the development of Amsterdam's canals in the 17th century, the city did not grow beyond its borders for two centuries. During the 19th century, [[Samuel Sarphati]] devised a plan based on the grandeur of Paris and London at that time. The plan envisaged the construction of new houses, public buildings and streets just outside the ''grachtengordel''. The main aim of the plan, however, was to improve [[public health]]. Although the plan did not expand the city, it did produce some of the largest [[Building|public buildings]] to date, like the ''Paleis voor Volksvlijt''.<ref name="joodsmuseum">{{cite web
+|url=http://www.jhm.nl/personen.aspx?naam=Sarphati%2C%20Samuel
+|title=Samuel Sarphati
+|publisher=Joods Historisch Museum Amsterdam
+|language=Dutch
+|accessdate=5 June 2008
+}}</ref><ref name="zgsarphati">{{cite web|url=http://www.zorggroep-amsterdam.nl/pagina.php?id=124 |title=Uitbreidingsplan Sarphati |publisher=Zorggroep Amsterdam |language=Dutch |accessdate=5 June 2008 |deadurl=yes |archiveurl=http://web.archive.org/web/20110501072252/http://www.zorggroep-amsterdam.nl/pagina.php?id=124 |archivedate=1 May 2011 }}</ref><ref name="jlgsarphati">{{cite web
+|url=http://www.jlgrealestate.com/Samuel_Sarphati/Sarphatipark/
+|title=Samuel Sarphati
+|publisher=JLG Real Estate
+|language=Dutch
+|accessdate=5 June 2008
+}}</ref>
+
+Following Sarphati, ''Van Niftrik'' and ''Kalff'' designed an entire ring of 19th century neighbourhoods surrounding the city’s centre, with the city preserving the ownership of all land outside the 17th century limit, thus firmly controlling development.<ref>{{cite web|url=http://stadsarchief.amsterdam.nl/english/amsterdam_treasures/maps/plan_van_niftrik/index.en.html |title=Van Niftrik's plan at the Amsterdam City Archives |publisher=Stadsarchief.amsterdam.nl |accessdate=10 October 2010 |deadurl=yes |archiveurl=http://web.archive.org/web/20110513105807/http://stadsarchief.amsterdam.nl/english/amsterdam_treasures/maps/plan_van_niftrik/index.en.html |archivedate=13 May 2011 }}</ref> Most of these neighbourhoods became home to the working class.<ref name="oudzuid">{{cite web
+|url=http://www.bmz.amsterdam.nl/adam/nl/oudzuid/index.html
+|archiveurl=//web.archive.org/web/20080113182449/http://www.bmz.amsterdam.nl/adam/nl/oudzuid/index.html
+|archivedate=13 January 2008
+|title=Amsterdam Oud-Zuid
+|publisher=BMZ
+|language=Dutch
+|accessdate=5 June 2008
+}}</ref>
+
+In response to overcrowding, two plans were designed at the beginning of the 20th century which were very different from anything Amsterdam had ever seen before: ''Plan Zuid'', designed by the architect [[Hendrik Petrus Berlage|Berlage]], and ''West''. These plans involved the development of new neighbourhoods consisting of ''housing blocks'' for all social classes.<ref name="archiefberlage">{{cite web|url=http://stadsarchief.amsterdam.nl/english/amsterdam_treasures/planning/uitbreidingsplan_berlage/index.en.html |title=Berlage's Expansion Plan |publisher=Stadsarchief Amsterdam |accessdate=5 June 2008 |deadurl=yes |archiveurl=http://web.archive.org/web/20110513105757/http://stadsarchief.amsterdam.nl/english/amsterdam_treasures/planning/uitbreidingsplan_berlage/index.en.html |archivedate=13 May 2011 }}</ref><ref name="bmzberlage">{{cite web
+|url=http://www.bmz.amsterdam.nl/adam/nl/intro/topo7.html
+|archiveurl=//web.archive.org/web/20060514181847/http://www.bmz.amsterdam.nl/adam/nl/intro/topo7.html
+|archivedate=14 May 2006
+|title=Plan-Berlage
+|publisher=Bureau Monumentenzorg Amsterdam
+|language=Dutch
+|accessdate=5 June 2008
+}}</ref>
+
+After the Second World War, large new neighbourhoods were built in the western, southeastern, and northern parts of the city. These new neighbourhoods were built to relieve the city's shortage of living space and give people affordable houses with modern conveniences. The neighbourhoods consisted mainly of large housing blocks situated among green spaces, connected to wide roads, making the neighbourhoods easily accessible by [[Car|motor car]]. The western suburbs which were built in that period are collectively called the ''Westelijke Tuinsteden''. The area to the southeast of the city built during the same period is known as the ''Bijlmer''.<ref name="bijlmer">{{cite web
+|url=http://www.ymere.nl/ymere/template.asp?mnid=1&subid=35&cntid=119
+|title=Westelijke Tuinsteden
+|publisher=Ymere
+|language=Dutch
+|accessdate=5 June 2008
+}}</ref><ref name="westelijketuinsteden">{{cite web
+|url=http://www.archex.info/nederlands/nederland/amsterdam_westelijke_tuinsteden.html
+|title=Ontwerp Westelijke Tuinsteden
+|publisher=Archex.info
+|language=Dutch
+|accessdate=5 June 2008
+| archiveurl= //web.archive.org/web/20080611221726/http://www.archex.info/nederlands/nederland/amsterdam_westelijke_tuinsteden.html| archivedate= 11 June 2008 | deadurl= no}}</ref>
+
+===Architecture===
+[[File:Amsterdam, Westerkerk foto3 2007-10-20 13.45.JPG|thumb|right|The [[Westerkerk]] (1631), designed by Dutch architect [[Hendrick de Keyser]] in the [[Renaissance architecture|Renaissance]] style. At 85m (280 ft) the cathedral's "Westertoren" [[steeple]] is the highest in Amsterdam. The canal houses on the right are characteristic of the architectural styles from the [[Dutch Golden Age]].]]
+Amsterdam has a rich [[History of architecture|architectural history]]. The oldest building in Amsterdam is the [[Oude Kerk, Amsterdam|Oude Kerk]] (Old Church), at the heart of the Wallen, consecrated in 1306.<ref name="Oude Kerk">{{cite web|url=http://www.oudekerk.nl/|title=Oude Kerk official website|accessdate=10 June 2009}}</ref> The oldest wooden building is ''[[Begijnhof, Amsterdam|het Houten Huys]]''<ref name="houtenhuys">{{cite web
+|url=http://www.bmz.amsterdam.nl/adam/nl/huizen/beg34.html
+|archiveurl=//web.archive.org/web/20071226022822/http://www.bmz.amsterdam.nl/adam/nl/huizen/beg34.html
+|archivedate=26 December 2007
+|title=Houten Huys
+|language=Dutch
+|accessdate=19 May 2008
+}}</ref> at the [[Begijnhof, Amsterdam|Begijnhof]].
+It was constructed around 1425 and is one of only two existing wooden buildings. It is also one of the few examples of [[Gothic architecture]] in Amsterdam.
+In the 16th century, wooden buildings were razed and replaced with brick ones. During this period, many buildings were constructed in the [[architectural style]] of the [[The Renaissance|Renaissance]]. Buildings of this period are very recognisable with their [[Crow-stepped gable|stepped gable]] façades, which is the common Dutch Renaissance style. Amsterdam quickly developed its own [[Renaissance architecture]]. These buildings were built according to the principles of the architect [[Hendrick de Keyser]].<ref name="dekeyser">{{cite web
+|url=http://www.bmz.amsterdam.nl/adam/nl/renaiss3.html
+|archiveurl=//web.archive.org/web/20071127014006/http://www.bmz.amsterdam.nl/adam/nl/renaiss3.html
+|archivedate=27 November 2008
+|title=Amsterdamse renaissance in de stijl van Hendrick de Keyser
+|language=Dutch
+|accessdate=19 May 2008
+}}</ref> One of the most striking buildings designed by Hendrick de Keyer is the [[Westerkerk]]. In the 17th century [[baroque architecture]] became very popular, as it was elsewhere in Europe. This roughly coincided with Amsterdam’s [[Dutch Golden Age|Golden Age]]. The leading architects of this style in Amsterdam were [[Jacob van Campen]], [[Philips Vingboons]] and [[Daniël Stalpaert|Daniel Stalpaert]].<ref name="holclass">{{cite web
+|url=http://www.bmz.amsterdam.nl/adam/nl/holclass.html
+|archiveurl=//web.archive.org/web/20070202200016/http://www.bmz.amsterdam.nl/adam/nl/holclass.html
+|archivedate=2 February 2007
+|title=Hollands Classicisme
+|language=Dutch
+|accessdate=21 May 2008
+}}</ref>
+
+[[File:Amsterdam Scheepvaarthuis 002.JPG|thumb|left|The [[Scheepvaarthuis]], by architects [[Johan van der Mey]], [[Michel de Klerk]], [[Piet Kramer]] is characteristic of the architecture of the [[Amsterdam School]].]]
+Philip Vingboons designed splendid merchants' houses throughout the city. A famous building in [[baroque|baroque style]] in Amsterdam is the [[Royal Palace of Amsterdam|Royal Palace]] on [[Dam Square]]. Throughout the 18th century, Amsterdam was heavily influenced by [[Culture of France|French culture]]. This is reflected in the architecture of that period. Around 1815, architects broke with the baroque style and started building in different neo-styles.<ref name="neostijl">{{cite web
+|url=http://www.bmz.amsterdam.nl/adam/nl/neostijl.html
+|archiveurl=//web.archive.org/web/20070819204630/http://www.bmz.amsterdam.nl/adam/nl/neostijl.html
+|archivedate=19 August 2007
+|title=Neo-stijlen
+|language=Dutch
+|accessdate=19 May 2008
+}}</ref> Most Gothic style buildings date from that era and are therefore said to be built in a [[Gothic Revival architecture|neo-gothic]] style. At the end of the 19th century, the [[Art Nouveau|Jugendstil]] or [[Art Nouveau]] style became popular and many new buildings were constructed in this architectural style. Since Amsterdam expanded rapidly during this period, new buildings adjacent to the city centre were also built in this style. The houses in the vicinity of the [[Museumplein|Museum Square]] in Amsterdam Oud-Zuid are an example of Jugendstil. The last style that was popular in Amsterdam before the [[Modern history|modern era]] was [[Art Deco]]. Amsterdam had its own version of the style, which was called the [[Amsterdam School|Amsterdamse School]]. Whole districts were built this style, such as the ''Rivierenbuurt''.<ref name="aschool">{{cite web
+|url=http://www.bmz.amsterdam.nl/adam/nl/aschool.html
+|archiveurl=//web.archive.org/web/20071027144316/http://www.bmz.amsterdam.nl/adam/nl/aschool.html
+|archivedate=27 October 2007
+|title=Amsterdamse School
+|language=Dutch
+|accessdate=21 May 2008
+}}</ref> A notable feature of the façades of buildings designed in Amsterdamse School is that they are highly decorated and ornate, with oddly shaped windows and doors.
+
+The old city centre is the focal point of all the architectural styles before the end of the 19th century.
+Jugendstil and Georgian are mostly found outside the city’s centre in the neighbourhoods built in the early
+20th century, although there are also some striking examples of these styles in the city centre.
+Most historic buildings in the city centre and nearby are houses, such as the famous merchants' houses lining the canals.
+
+===Parks and recreational areas===
+
+[[File:Horses in Amsterdam.jpg|thumb|Old-fashioned carriage with horses in Amsterdam.]]
+
+Amsterdam has many parks, open spaces, and squares throughout the city. [[Vondelpark]], the largest park in the city, is located in the [[Amsterdam Oud-Zuid|Oud-Zuid]] borough and is named after the 17th century Amsterdam author, [[Joost van den Vondel]]. Yearly, the park has around 10 million visitors. In the park is an open-air theatre, a playground and several [[horeca]] facilities. In the [[Amsterdam-Zuid|Zuid]] borough, is [[Beatrixpark (Amsterdam)|Beatrixpark]], named after [[Beatrix of the Netherlands|Queen Beatrix]]. Between Amsterdam and [[Amstelveen]] is the [[Amsterdamse Bos]] (Amsterdam Forest), the largest recreational area in Amsterdam. Annually, almost 4.5 million people visit the park, which has a size of 1.000 [[hectare]]s and is approximately three times the size of [[Central Park]].<ref>[http://www.amsterdamsebos.amsterdam.nl/algemene_onderdelen/english_site Amsterdamse Bos – English site]. [[Government of Amsterdam|City of Amsterdam]]. Retrieved on 27 November 2008. {{wayback|url=http://www.amsterdamsebos.amsterdam.nl/algemene_onderdelen/english_site |date=20131105092412 |df=y }}</ref> [[Amstelpark]] in the [[Amsterdam-Zuid|Zuid]] borough houses the Rieker windmill, which dates to 1636. Other parks include [[Sarphatipark]] in the [[De Pijp]] neighbourhood, [[Oosterpark (Amsterdam)|Oosterpark]] in the [[Amsterdam-Oost|Oost]] borough, and [[Westerpark (park)|Westerpark]] in the [[Westerpark (neighborhood)|Westerpark neighbourhood]]. The city has four beaches, the Nemo Beach, Citybeach "Het stenen hoofd" (Silodam), Blijburg, and one in [[Amsterdam-Noord]].
+
+The city has many open squares (plein in Dutch). The namesake of the city as the site of the original dam, [[Dam Square]], is the main town square and has the [[Royal Palace of Amsterdam|Royal Palace]] and [[National Monument (Amsterdam)|National Monument]]. [[Museumplein]] hosts various museums, including the [[Rijksmuseum]], [[Van Gogh Museum]], and [[Stedelijk Museum Amsterdam|Stedelijk Museum]]. Other squares include [[Rembrandtplein]], [[Muntplein, Amsterdam|Muntplein]], [[Nieuwmarkt]], [[Leidseplein]], [[Spui (Amsterdam)|Spui]], and [[Waterlooplein]].
+
+==Economy==
+[[File:Beurs1.jpg|thumb|right|The [[Amsterdam Stock Exchange]], right, is the oldest stock exchange in the world.]]
+[[File:Diamond cutter. Amsterdam. 2012.jpg|thumb|Diamond cutter]]
+Amsterdam is the financial and business capital of the Netherlands.<ref name="ez">{{cite web|url=http://www.ez.amsterdam.nl/page.php?menu=24&page=6 |title=Amsterdam – Economische Zaken |language=Dutch |accessdate=22 May 2008 |deadurl=yes |archiveurl=http://web.archive.org/web/20080608143058/http://www.ez.amsterdam.nl:80/page.php?page=6&menu=24 |archivedate=8 June 2008 }}</ref>
+Amsterdam is currently one of the best European cities in which to locate an [[international business]].{{by whom|date=June 2014}} It is ranked fifth in this category and is only surpassed by London, Paris, [[Frankfurt]] and [[Barcelona]].<ref name="eubusiness">{{cite web
+|url=http://www.iamsterdam.com/press_room/press_releases_0/2007/european_cities
+|archiveurl=//web.archive.org/web/20080108130938/http://www.iamsterdam.com/press_room/press_releases_0/2007/european_cities
+|archivedate=8 January 2008
+|title=European Cities Monitor 2007
+|publisher=I Amsterdam
+|language=Dutch
+|accessdate=11 June 2008
+}}{{dead link|date=February 2016}}</ref> Many large corporations and banks have their headquarters in Amsterdam, including [[AkzoNobel|Akzo Nobel]], [[Heineken International]], [[ING Group]], [[ABN AMRO]], [[TomTom]], [[Delta Lloyd Group]] and [[Philips]]. [[KPMG]] International's global headquarters is located in nearby Amstelveen, where many non-Dutch companies have settled as well, because surrounding communities allow full land ownership, contrary to Amsterdam's land-lease system.
+
+Though many small offices are still located on the old canals, companies are increasingly relocating outside the city centre. The [[Zuidas]] (English: South Axis) has become the new financial and legal hub.<ref name="zuidas">{{cite web
+|url=http://www.zuidas.nl/smartsite.dws?id=1044&curindex=2
+|archiveurl=//web.archive.org/web/20071224035945/http://www.zuidas.nl/smartsite.dws?id=1044&curindex=2
+|archivedate=24 December 2007
+|title=Zuidas
+|language=Dutch
+|accessdate=22 May 2008
+}}</ref> The five largest law firms of the Netherlands, a number of Dutch subsidiaries of large consulting firms like [[Boston Consulting Group]] and [[Accenture]], and the [[World Trade Center (Amsterdam)|World Trade Center Amsterdam]] are also located in Zuidas.
+
+There are three other smaller financial districts in Amsterdam. The first is the area surrounding [[Amsterdam Sloterdijk railway station]], where several newspapers like ''[[De Telegraaf]]'' have their offices. Also, [[Deloitte]], the [[Gemeentelijk Vervoerbedrijf]] (municipal public transport company) and the Dutch tax offices (''Belastingdienst'') are located there. The second [[Central business district|Financial District]] is the area surrounding [[Amsterdam Arena]]. The third is the area surrounding [[Amsterdam Amstel railway station]]. The [[List of tallest buildings and structures in the world|tallest building]] in Amsterdam, the [[Rembrandt Tower]], is situated there, as is the headquarters of [[Philips]].<ref name="rembrandtoren">{{cite web
+|url=http://www.emporis.com/en/wm/ci/bu/sk/li/?id=100759&bt=2&ht=2&sro=0
+|title=Rembrandt Tower
+|accessdate=22 May 2008
+}}</ref><ref name="philips">{{cite web
+|url=http://www.philips.nl/about/index.page
+|title=Philips
+|language=Dutch
+|accessdate=22 May 2008
+| archiveurl= //web.archive.org/web/20080527081538/http://www.philips.nl/about/index.page| archivedate= 27 May 2008 | deadurl= no}}</ref>
+
+===Port of Amsterdam===
+The [[Port of Amsterdam]] is the 4th port in Europe, the 38th port in the world and the second port in the Netherlands by metric tons of cargo. In 2014, the Port of Amsterdam had a cargo throughput of 97,4 million tons of cargo, which most was [[Bulk cargo]].
+Amsterdam has the biggest cruiseport in the Netherlands with more than 150 cruiseships every year.
+In 2019 the new sealock near ijmuiden will open that Amsterdam can grow to 125 milion tonnes.
+
+The [[Amsterdam Stock Exchange]] (AEX), now part of [[Euronext]], is the world's oldest stock exchange and is one of Europe's largest bourses. It is situated near [[Dam Square]] in the city's centre.
+
+Together with [[Eindhoven]] ([[Brainport, Netherlands|Brainport]]) and [[Rotterdam]] ([[Port of Rotterdam|Seaport]]), Amsterdam (Airport) forms the foundation of the Dutch economy.<ref name="ref1367203750">{{cite web|url=http://www.brainport.nl/over-brainport|title=Over Brainport|publisher=brainport.nl|accessdate=19 February 2014}}</ref>
+
+===Tourism===
+{{Main|List of tourist attractions in Amsterdam}}
+[[File:KeizersgrachtLeliegracht.jpg|thumb|left|Canal boats, such as this one on [[Canals of Amsterdam|Keizersgracht]], give tours of the city.]]
+Amsterdam is one of the most popular [[tourist destination]]s in Europe, receiving more than 4.63&nbsp;million international visitors annually, this is excluding the 16 million day trippers visiting the city every year.<ref name="ams2009">{{cite web|title=Key Figures Amsterdam 2009: Tourism |url=http://www.os.amsterdam.nl/tabel/13871/ |publisher=City of Amsterdam Department for Research and Statistics |year=2009 |accessdate=30 September 2009 |deadurl=yes |archiveurl=http://web.archive.org/web/20110501140135/http://www.os.amsterdam.nl/tabel/13871/ |archivedate=1 May 2011 }}</ref> The number of visitors has been growing steadily over the past decade. This can be attributed to an increasing number of European visitors. Two thirds of the hotels are located in the city's centre. Hotels with 4 or 5 stars contribute 42% of the total beds available and 41% of the overnight stays in Amsterdam. The room occupation rate was 78% in 2006, up from 70% in 2005.<ref name="TourismReport">{{cite web |url=http://www.os.amsterdam.nl/pdf/2008_toerisme_in_amsterdam.pdf |format=PDF |title=Toerisme in Amsterdam 2006/2007 |accessdate=22 May 2008|date=January 2007|author=Fedorova, T and Meijer, R|language=Dutch| archiveurl= //web.archive.org/web/20080528004444/http://www.os.amsterdam.nl/pdf/2008_toerisme_in_amsterdam.pdf| archivedate= 28 May 2008 | deadurl= no}}</ref> The majority of tourists (74%) originate from Europe. The largest group of non-European visitors come from the United States, accounting for 14% of the total.<ref name="TourismReport"/> Certain years have a theme in Amsterdam to attract extra tourists. For example, the year 2006 was designated "Rembrandt 400", to celebrate the 400th birthday of [[Rembrandt|Rembrandt van Rijn]]. Some hotels offer special arrangements or activities during these years. The average number of guests per year staying at the four campsites around the city range from 12,000 to 65,000.<ref name="TourismReport"/>
+
+[[File:RedLightDistrictAmsterdamTheNetherlands.jpg|thumb|left|The [[red-light district]] is a main [[tourist attraction]].]]
+
+====Red light district====
+{{Main|De Wallen}}
+'''De Wallen''', also known as '''Walletjes''' or '''Rosse Buurt''', is a designated area for [[Prostitution in the Netherlands|legalised prostitution]] and is Amsterdam's largest and most well known [[red-light district]]. This neighborhood has become a famous attraction for tourists. It consists of a network of roads and alleys containing several hundred small, one-room apartments rented by [[sex worker]]s who offer their services from behind a window or glass door, typically illuminated with red lights.
+
+===Retail===
+Shops in Amsterdam range from large high end [[department store]]s such as [[De Bijenkorf]] founded in 1870 and [[Maison de Bonneterie]] a Parisian style store founded in 1889, to small [[specialty store|specialty shops]]. Amsterdam's [[Luxury goods|high-end]] shops are found in the streets [[P.C. Hooftstraat]] and ''Cornelis Schuytstraat'', which are located in the vicinity of the [[Vondelpark]]. One of Amsterdam's busiest high streets is the narrow, medieval [[Kalverstraat]] in the heart of the city. Other shopping areas include the ''Negen Straatjes'' and Haarlemmerdijk and Haarlemmerstraat. ''Negen Straatjes'' are nine narrow streets within the ''Grachtengordel'', the concentric canal system of Amsterdam. The Negen Straatjes differ from other shopping districts with the presence of a large diversity of privately owned shops. The Haarlemmerstraat and Haarlemmerdijk were voted best shopping street in the Netherlands in 2011. These streets have as the ''Negen Straatjes'' a large diversity of privately owned shops. But as the ''Negen Straatjes'' are dominated by fashion stores the Haarlemmerstraat and Haarlemmerdijk offer a very wide variety of all kinds of stores, just to name some specialties: candy and other food related stores, lingerie, sneakers, wedding clothing, interior shops, books, Italian deli's, racing and mountain bikes, skatewear, etc.
+
+The city also features a large number of open-air markets such as the [[Albert Cuyp Market]], Westerstraat-markt, Ten Katemarkt, and [[Dappermarkt]]. Some of these markets are held on a daily basis, like the Albert Cuypmarkt and the Dappermarkt. Others, like the Westerstraatmarkt, are held on a weekly basis.
+
+===Fashion===
+Fashion brands like [[G-Star Raw|G-star]], Gsus, BlueBlood, [http://www.pichichistore.com/ PICHICHI], Iris van Herpen, [[10 feet]] and [[Warmenhoven & Venderbos]], and fashion designers like [[Mart Visser]], [[Viktor & Rolf]], Sheila de Vries, [[Marlies Dekkers]] and [[Frans Molenaar]] are based in Amsterdam. [[Modeling agency|Modelling agencies]] [[Elite Model Management|Elite Models]], Touche models and Tony Jones have opened branches in Amsterdam. Fashion models like [[Yfke Sturm]], [[Doutzen Kroes]] and [[Kim Noorda]] started their careers in Amsterdam. Amsterdam has its garment centre in the World Fashion Center. Buildings which formerly housed brothels in the red light district have been converted to ateliers for young fashion designers, AKA eagle fuel. {{citation needed|date=July 2014}} Fashion photographers [[Inez and Vinoodh|Inez van Lamsweerde and Vinoodh Matadin]] were born in Amsterdam(Netherland).
+
+==Culture==
+[[File:Amsterdam rijkmuseum.JPG|thumb|The [[Rijksmuseum]] houses [[Rembrandt]]'s ''[[The Night Watch]]''.]]
+[[File:Van Gogh Museum.jpg|thumb|The [[Van Gogh Museum]] houses the world's largest collection of [[Vincent van Gogh|Van Gogh]]'s paintings and letters.]]
+During the later part of the 16th century Amsterdam's Rederijkerskamer ([[Chamber of rhetoric|Chamber of Rhetoric]]) organised contests between different Chambers in the reading of poetry and drama. In 1638, Amsterdam opened its first theatre. Ballet performances were given in this theatre as early as 1642. In the 18th century, French theatre became popular. While Amsterdam was under the influence of German music in the 19th century there were few national opera productions; the Hollandse Opera of Amsterdam was built in 1888 for the specific purpose of promoting Dutch opera.<ref>{{cite book |url=https://books.google.com/?id=l_b2vIXHsUkC&pg=PA541&dq=Amsterdam+opera&cd=3#v=onepage&q=Amsterdam%20opera |title=A short history of opera|publisher=Columbia University Press|year=2003|last=Grout|first=Donald Jay|page=541|accessdate=11 January 2010|author2=Hermine Weigel Williams |isbn=978-0-231-11958-0}}</ref> In the 19th century, popular culture was centred on the Nes area in Amsterdam (mainly [[vaudeville]] and [[music hall|music-hall]]).{{Citation needed|date=June 2008}} The [[metronome]], one of the most important advances in [[Classical music|European classical music]], was invented here in 1812 by [[Dietrich Nikolaus Winkel]]. At the end of this century, the [[Rijksmuseum]] and [[Stedelijk Museum Amsterdam|Stedelijk Museum]] were built.{{Citation needed|date=June 2008}} In 1888, the [[Royal Concertgebouw Orchestra|Concertgebouworkest]] was established. With the 20th century came cinema, radio and television.{{Citation needed|date=June 2008}} Though most studios are located in [[Hilversum]] and [[Aalsmeer]], Amsterdam's influence on programming is very strong. Many people who work in the television industry live in Amsterdam. Also, the headquarters of the Dutch [[SBS 6|SBS Broadcasting Group]] is located in Amsterdam.<ref name="sbs6">{{cite web
+|url=http://www.sbs6.nl/web/show/id=78637/langid=43
+|title=Contact SBS 6
+|language=Dutch
+|accessdate=19 May 2008
+| archiveurl= //web.archive.org/web/20080524054324/http://www.sbs6.nl/web/show/id=78637/langid=43| archivedate= 24 May 2008 | deadurl= no}}{{dead link|date=February 2016}}</ref>
+
+===Museums===
+The most important museums of Amsterdam are located on the [[Museumplein]] (Museum Square), located at the southwestern side of the Rijksmuseum. It was created in the last quarter of the 19th century on the grounds of the former [[Internationale Koloniale en Uitvoerhandel Tentoonstelling|World's fair]]. The northeastern part of the square is bordered by the very large Rijksmuseum. In front of the Rijksmuseum on the square itself is a long, rectangular pond. This is transformed into an ice rink in winter.<ref name="ijsbaan">{{cite web
+|url=http://www.evenementnieuws.nl/nieuws/3900/Feestelijke+opening+ijsbaan+Museumplein.html
+|title=Ijsbaan Museumplein
+|publisher=Evenementennieuws
+|language=Dutch
+|accessdate=30 May 2008
+}}</ref> The northwestern part of the square is bordered by the Van Gogh Museum, Stedelijk Museum, House of Bols Cocktail & Genever Experience and Coster Diamonds. The southwestern border of the Museum Square is the Van Baerlestraat, which is a major thoroughfare in this part of Amsterdam. The Concertgebouw is situated across this street from the square. To the southeast of the square are situated a number of large houses, one of which contains the American consulate. A [[Multi-storey car park|parking garage]] can be found underneath the square, as well as a supermarket. The Museumplein is covered almost entirely with a lawn, except for the northeastern part of the square which is covered with gravel. The current appearance of the square was realised in 1999, when the square was remodeled. The square itself is the most prominent site in Amsterdam for festivals and outdoor concerts, especially in the summer. Plans were made in 2008 to remodel the square again, because many inhabitants of Amsterdam are not happy with its current appearance.<ref name="museumpleinfacelift">{{cite web|url=http://www.topstad.amsterdam.nl/nieuws/museumplein_krijgt |title=Museumplein krijgt facelift |publisher=Gemeente Amsterdam |language=Dutch |accessdate=30 May 2008 |deadurl=yes |archiveurl=http://web.archive.org/web/20090807174714/http://www.topstad.amsterdam.nl:80/nieuws/museumplein_krijgt |archivedate=7 August 2009 }}</ref>
+
+[[File:Rembrandt.JPG|thumb|left|180px|[[Rembrandt]] monument on [[Rembrandtplein]]]]
+The [[Rijksmuseum]] possesses the largest and most important collection of classical [[Dutch art]].<ref>{{cite web
+ |title=Home Page
+ |publisher=Rijksmuseum Amsterdam
+ |url=http://www.rijksmuseum.nl/?lang=en
+ |accessdate=25 October 2008| archiveurl= //web.archive.org/web/20081103074636/http://www.rijksmuseum.nl/?lang=en| archivedate= 3 November 2008 | deadurl= no}}</ref>
+It opened in 1885. Its collection consists of nearly one million objects.<ref>{{cite web
+ |title=Rijksmuseum
+ |work=Amsterdam
+ |publisher=A view on cities
+ |url=http://www.aviewoncities.com/amsterdam/rijksmuseum.htm
+ |accessdate=25 October 2008| archiveurl= //web.archive.org/web/20080917054130/http://www.aviewoncities.com/amsterdam/rijksmuseum.htm| archivedate= 17 September 2008 | deadurl= no}}
+</ref> The artist most associated with Amsterdam is [[Rembrandt]], whose work, and the work of his pupils, is displayed in the Rijksmuseum. Rembrandt's masterpiece ''[[The Night Watch]]'' is one of top pieces of art of the museum. It also houses paintings from artists like [[Bartholomeus van der Helst|Van der Helst]], [[Johannes Vermeer|Vermeer]], [[Frans Hals]], [[Ferdinand Bol]], [[Aelbert Cuyp|Albert Cuyp]], [[Jacob van Ruisdael]] and [[Paulus Potter]]. Aside from paintings, the collection consists of a large variety of [[Decorative arts|decorative art]]. This ranges from [[Delftware]] to giant [[dollhouse]]s from the 17th century. The architect of the [[Gothic Revival architecture|gothic revival]] building was P.J.H. Cuypers. The museum underwent a 10-year, 375 million euro renovation starting in 2003. The full collection was reopened to the public on 13 April 2013 and the Rijksmuseum has established itself as the most visited museum in Amsterdam with 2.2 million visitors in 2013.<ref>{{cite web
+|url=http://www.amsterdamtips.com/news/2014/01/top-8-amsterdam-museums-in-2013-by-visitor-numbers
+|title=Top 8 Amsterdam museums by visitor numbers
+|accessdate=7 August 2014
+|publisher=Amsterdamtips.com
+}}</ref>
+
+[[Vincent van Gogh|Van Gogh]] lived in Amsterdam for a short while and there is a [[Van Gogh Museum|museum dedicated to his work]]. The museum is housed in one of the few modern buildings in this area of Amsterdam. The building was designed by [[Gerrit Rietveld]]. This building is where the permanent collection is displayed. A new building was added to the museum in 1999. This building, known as the performance wing, was designed by Japanese architect [[Kisho Kurokawa]]. Its purpose is to house temporary exhibitions of the museum.<ref name="vangogh3">{{cite web
+|url=http://architectuur.org/rietveld02.php
+|title=Architectuur Van Gogh Museum Amsterdam
+|publisher=Architectuur.org
+|language=Dutch
+|accessdate=1 June 2008
+| archiveurl= //web.archive.org/web/20080516145157/http://www.architectuur.org/rietveld02.php| archivedate= 16 May 2008 | deadurl= no}}</ref><ref>{{cite web
+|url=http://www.vangoghmuseum.nl/vgm/index.jsp?page=213&lang=en&section=sectie_museum
+|title=Van Gogh Museum – The Building
+|accessdate=7 August 2014
+|publisher=Van Gogh Museum
+}}</ref> Some of Van Gogh's most famous paintings, like the ''[[The Potato Eaters]]'' and ''[[Sunflowers (series of paintings)|Sunflowers]]'', are in the collection.<ref>{{cite web
+|url=http://www.vangoghmuseum.nl/vgm/index.jsp?page=425&lang=en&section=sectie_museum
+|title=Van Gogh Museum – Permanent Collection
+|accessdate=7 August 2014
+|publisher=Van Gogh Museum
+}}</ref> The Van Gogh museum is the second most visited museum in Amsterdam, with 1.4 million annual visitors.<ref>{{cite web
+|url=http://www.vangoghmuseum.nl/vgm/index.jsp?page=339043&lang=en
+|title=Van Gogh Museum visitor numbers
+|accessdate=7 August 2014
+|publisher=Van Gogh Museum
+}}</ref>
+
+Next to the Van Gogh museum stands the [[Stedelijk Museum Amsterdam|Stedelijk Museum]]. This is Amsterdam's most important museum of [[modern art]] . The museum is as old as the square it borders and was opened in 1895. The permanent collection consists of works of art from artists like [[Piet Mondrian|Piet Mondriaan]], [[Karel Appel]], and [[Kazimir Malevich]]. After renovations lasting several years the museum opened in September 2012 with a new composite extension that has been called 'The Bathtub' due to its resemblance to one.
+
+Amsterdam contains many other museums throughout the city. They range from small museums such as the [[Verzetsmuseum]] (Resistance Museum), the [[Anne Frank House]], and the [[Rembrandt House Museum]], to the very large, like the [[Tropenmuseum]] (Museum of the Tropics), [[Amsterdam Museum]] (formerly known as Amsterdam Historical Museum), [[Hermitage Amsterdam]] (a dependency of the [[Hermitage Museum]] in Saint Petersburg) and the [[Joods Historisch Museum]] (Jewish Historical Museum). The modern-styled [[NEMO (museum)|Nemo]] is dedicated to child-friendly science exhibitions.
+
+===Music===
+{{main|List of songs about Amsterdam}}
+Amsterdam's musical culture includes a large collection of songs which treat the city nostalgically and lovingly. The 1949 song "Aan de Amsterdamse grachten" ("On the canals of Amsterdam") was performed and recorded by many artists, including [[John Kraaijkamp sr.]]; the best-known version is probably that by [[Wim Sonneveld]] (1962). In the 1950s [[Johnny Jordaan]] rose to fame with "Geef mij maar Amsterdam" ("I prefer Amsterdam"), which praises the city above all others (explicitly Paris); Jordaan sang especially about his own neighbourhood, the [[Jordaan]] ("Bij ons in de Jordaan"). Colleagues and contemporaries of Johnny include [[Tante Leen]], [[Zwarte Riek]], and [[Manke Nelis]]. Other notable Amsterdam songs are "[[Amsterdam (Jacques Brel song)|Amsterdam]]" by [[Jacques Brel]] (1964) and "Deze Stad" by [[De Dijk]] (1989).<ref name="lijflied finale">{{cite news|url=http://www.parool.nl/parool/nl/7024/AMSTERDAMS-LIJFLIED/article/detail/2948441/2011/10/05/Amsterdams-lijflied-de-finale.dhtml|title=Amsterdams lijflied: de finale|date=5 October 2011|work=[[Het Parool]]|language=Dutch|accessdate=8 May 2013}}</ref> A 2011 poll by Amsterdam paper ''[[Het Parool]]'' found, somewhat surprisingly, that [[Trio Bier]]'s "Oude Wolf" was voted "Amsterdams lijflied".<ref>{{cite news|url=http://www.parool.nl/parool/nl/7024/AMSTERDAMS-LIJFLIED/article/detail/2965125/2011/10/12/Amsterdams-Lijflied-Stadsbewoners-leven-als-oude-wolven.dhtml|title=Amsterdams Lijflied: Stadsbewoners leven als oude wolven – AMSTERDAMS LIJFLIED – PAROOL|date=12 October 2011|work=[[Het Parool]]|language=Dutch|accessdate=8 May 2013}}</ref> Notable Amsterdam bands from the modern era include the [[Osdorp Posse]] and [[The Ex (band)|The Ex]].
+
+The [[Heineken Music Hall]] is a concert hall located near the [[Amsterdam Arena|Amsterdam ArenA]]. Its main purpose is to serve as a podium for pop concerts for big audiences. Many famous international artists have performed there. Two other notable venues, [[Paradiso (Amsterdam)|Paradiso]] and the [[Melkweg]] are located near the [[Leidseplein]]. Both focus on broad programming, ranging from [[indie rock]] to [[hip hop music|hip hop]], [[Rhythm and blues|R&B]], and other popular genres. Other more [[subculture|subculturally]] focused [[music venue]]s are [[OCCII]], [[OT301]], De Nieuwe Anita, Winston Kingdom and [[Zaal 100]]. [[Jazz]] has a strong following in Amsterdam, with the [[Bimhuis]] being the premier venue. In 2012, [[Ziggo Dome]] was opened, also near Amsterdam ArenA, a state of the art indoor music arena.
+
+The [[Heineken Music Hall]] is also host to many [[electronic dance music]] festivals, alongside many other venues. [[Armin van Buuren]] and [[Tiesto]], some of the world's leading [[Trance music|Trance]] DJ's hail from the Netherlands and perform frequently in Amsterdam. Each year in October, the city hosts the Amsterdam Dance Event (ADE) which is one of the leading electronic music conferences and one of the biggest club festivals for electronic music in the world. Another popular dance festival is 5daysoff, which takes place in the venues [[Paradiso (Amsterdam)|Paradiso]] and [[Melkweg]]. In summer time there are several big outdoor dance parties in or nearby Amsterdam, such as Awakenings, [[Dance Valley]], [[Mysteryland|Mystery Land]], Loveland, A Day at the Park, Welcome to the Future, and Valtifest.
+
+[[File:Amsterdam Concertgebouw.jpg|thumb|The [[Concertgebouw]] or Royal Concert Hall houses performances of the [[Royal Concertgebouw Orchestra]] and other musical events]]
+Amsterdam has a world-class symphony orchestra, the [[Royal Concertgebouw Orchestra]]. Their home is the [[Concertgebouw]], which is across the Van Baerlestraat from the Museum Square. It is considered by critics to be a [[List of concert halls|concert hall]] with some of the best [[acoustics]] in the world. The building contains three [[hall]]s, Grote Zaal, Kleine Zaal, and Spiegelzaal. Some nine hundred concerts and other events per year take place in the Concertgebouw, for a public of over 700,000, making it one of the most-visited concert halls in the world.<ref>{{cite web|title=Facts & Figures |url=http://www.concertgebouw.nl/facts-figures|publisher=Concertgebouw NV|accessdate=24 February 2014}}</ref> The opera house of Amsterdam is situated adjacent to the city hall. Therefore, the two buildings combined are often called the [[Stopera]], (a word originally coined by protesters against it very construction: ''Stop the Opera[-house]''). This huge modern complex, opened in 1986, lies in the former Jewish neighbourhood at ''Waterlooplein'' next to the river [[Amstel]]. The ''Stopera'' is the homebase of [[Dutch National Opera]], [[Dutch National Ballet]] and the [[Holland Symfonia]]. [[Muziekgebouw aan 't IJ]] is a [[List of concert halls|concert hall]], which is situated in the [[IJ (Amsterdam)|IJ]] near the central station. Its concerts perform mostly [[20th-century classical music|modern classical music]]. Located adjacent to it, is the ''[[Bimhuis]]'', a concert hall for improvised and [[Jazz]] music.
+
+===Performing arts===
+Amsterdam has three main theatre buildings.
+
+The [[Stadsschouwburg (Amsterdam)|Stadsschouwburg Amsterdam]] at the [[Leidseplein]] is the home base of [[Toneelgroep Amsterdam]]. The current building dates from 1894. Most plays are performed in the Grote Zaal (Great Hall). The normal program of events encompasses all sorts of theatrical forms. The Stadsschouwburg is currently being renovated and expanded. The third theater space, to be operated jointly with next door [[Melkweg]], will open in late 2009 or early 2010.
+
+[[Stopera|Dutch National Opera & Ballet]] (formerly known as ''Het Muziektheater''), dating from 1986, is the principal opera house and home to [[Dutch National Opera]] and [[Dutch National Ballet]].
+
+[[Carré Theatre|Royal Theatre Carré]] was built as a permanent [[circus]] theatre in 1887 and is currently mainly used for musicals, [[cabaret]] performances and [[pop concert]]s.
+
+The recently re-opened DeLaMar Theater houses the more commercial plays and musicals.
+
+Also a new theater has moved into Amsterdam scene in 2014, joining other established venues. [[Theater Amsterdam]], situated in the west part of Amsterdam, Danzigerkade 5 / Westpoortnummer 2036 1013 AP  Amsterdam. Visit theater's website [[www.theateramsterdam.nl]] for additional details.
+It's a modern building with a panoramic view over the harbour. The theater is the first ever purpose-built venue to showcase a single play entitled ANNE, the play based on Anne Frank's life.
+
+The Netherlands has a tradition of cabaret or ''kleinkunst'', which combines music, storytelling, commentary, theatre and comedy. Cabaret dates back to the 1930s and artists like [[Wim Kan]], [[Wim Sonneveld]] and [[Toon Hermans]] were pioneers of this form of art in the Netherlands. In Amsterdam is the Kleinkunstacademie (English: Cabaret Academy). Contemporary popular artists are [[Youp van 't Hek]], [[Freek de Jonge]], [[Herman Finkers]], [[Hans Teeuwen]], [[Theo Maassen]], [[Herman van Veen]], [[Najib Amhali]], [[Raoul Heertje]], [[Jörgen Raymann]], [[Brigitte Kaandorp]] and [[Comedytrain]]. The English spoken comedy scene was established with the founding of [[Boom Chicago]] in 1993. They have their own theatre at Leidseplein.
+
+===Nightlife===
+[[File:Amsterdam Magere Brug.jpg|thumb|left|The Magere Brug or "Skinny Bridge" over the [[Amstel River]] at night]]
+Amsterdam is famous for its vibrant and diverse nightlife. Amsterdam has many ''[[bar (establishment)|cafés]]'' (bars). They range from large and modern to small and cozy. The typical ''Bruine Kroeg'' (brown ''café'') breathe a more old fashioned atmosphere with dimmed lights, candles, and somewhat older clientele. Most ''cafés'' have terraces in summertime. A common sight on the Leidseplein during summer is a square full of terraces packed with people drinking beer or wine. Many restaurants can be found in Amsterdam as well. Since Amsterdam is a multicultural city, a lot of different ethnic restaurants can be found. Restaurants range from being rather luxurious and expensive to being ordinary and affordable. Amsterdam also possesses many [[discothèque]]s. The two main nightlife areas for tourists are the [[Leidseplein]] and the [[Rembrandtplein]]. The [[Paradiso (Amsterdam)|Paradiso]], [[Melkweg]] and Sugar Factory are cultural centres, which turn into discothèques on some nights. Examples of discothèques near the Rembrandtplein are the Escape, Air, John Doe and Club Abe. Also noteworthy are Panama, Hotel Arena (East), TrouwAmsterdam and Studio 80. [[Bimhuis]] located near the Central Station, with its rich programming hosting the best in the field is considered one of the best jazz clubs in the world. The Reguliersdwarsstraat is the main street for the [[LGBT]] community and nightlife.
+
+===Festivals===
+[[File:Amsterdam's Canals.jpg|thumb|thumb|left|[[Koninginnedag|Queen's Day]] in Amsterdam in 2010]]
+In 2008, there were 140 festivals and events in Amsterdam.<ref name="festivals">{{cite news |url = http://www.at5.nl/artikelen/8239/amsterdam-kans-op-evenementenstad |title = Amsterdam kans op 'evenementenstad' |trans_title = Amsterdam has a chance to be an 'event city' |language = Dutch |work = [[AT5|AT5 Nieuws]] |location = Amsterdam |date = 17 May 2008 |accessdate =10 May 2012 |quote = ''Naast de prijs van nationale evenementenstad is Koninginnedag voorgedragen als het publieksevenement van het jaar.'' (In addition to the prize for national event city, [[Koninginnedag|Queens Day]] is nominated as the public event of the year.) }}</ref>
+Famous festivals and events in Amsterdam include: [[Koningsdag]] (which was named [[Koninginnedag]] until the crowning of king Willem-Alexander in 2013) (King's Day – Queen's Day); the [[Holland Festival]] for the performing arts; the yearly [[Prinsengrachtconcert]] (classical concerto on the Prinsen canal) in August; the '[[Stille Omgang]]' (a silent Roman Catholic evening procession held every March); [[Amsterdam Gay Pride]]; The [[Cannabis Cup]]; and the [[Uitmarkt]]. On Koninginnedag—that was held each year on 30 April—hundreds of thousands of people travel to Amsterdam to celebrate with the city's residents and Koningsdag is held on 27 April. The entire city becomes overcrowded with people buying products from the ''freemarket,'' or visiting one of the many music concerts.
+
+The yearly Holland Festival attracts international artists and visitors from all over Europe. [[Amsterdam Gay Pride]] is a yearly local [[LGBT]] parade of boats in Amsterdam's canals, held on the first Saturday in August.<ref name="gaypride">{{cite web
+|url=http://amsterdam.nl/?ActItmIdt=10073
+|title=Gay Pride in Amsterdam
+|publisher=Municipality Amsterdam
+|language=Dutch
+|accessdate=4 June 2008
+| archiveurl= //web.archive.org/web/20080601054009/http://www.amsterdam.nl/?ActItmIdt=10073| archivedate= 1 June 2008 | deadurl= no}}</ref> The annual Uitmarkt is a three-day cultural event at the start of the cultural season in late August. It offers previews of many different artists, such as musicians and poets, who perform on [[Podium|podia]].<ref name="uitmarkt">{{cite web
+|url=http://www.iamsterdam.com/visiting_exploring/culture/annual_cultural_0/uitmarkt
+|archiveurl=//web.archive.org/web/20080131104219/http://www.iamsterdam.com/visiting_exploring/culture/annual_cultural_0/uitmarkt
+|archivedate=31 January 2008
+|title=Uitmarkt in Amsterdam
+|publisher=IAmsterdam
+|accessdate=4 June 2008}}{{dead link|date=February 2016}}</ref>
+
+===Sports===
+[[File:Amsterdam ArenA1.jpg|thumb|[[Ajax Amsterdam]] play their home games at the [[Amsterdam ArenA]]]]
+Amsterdam is home of the ''[[Eredivisie]]'' football club [[AFC Ajax|Ajax Amsterdam]]. The stadium [[Amsterdam Arena|Amsterdam ArenA]] is the home of Ajax. It is located in the [[Amsterdam Zuidoost|south-east]] of the city next to the new [[Amsterdam Bijlmer ArenA railway station]]. Before moving to their current location in 1996, Ajax played their regular matches in [[De Meer Stadion]].<ref>{{cite web
+ |title=De Meer
+ |work=Stadiums
+ |publisher=AFC Ajax
+ |url=http://english.ajax.nl/web/show/id=47960
+ |accessdate=8 November 2008| archiveurl= //web.archive.org/web/20081116070239/http://english.ajax.nl/web/show/id=47960| archivedate= 16 November 2008 | deadurl= no}}{{dead link|date=February 2016}}
+</ref>
+In 1928, Amsterdam hosted the [[1928 Summer Olympics|Summer Olympics]]. The [[Olympic Stadium (Amsterdam)|Olympic Stadium]] built for the occasion has been completely restored and is now used for cultural and sporting events, such as the [[Amsterdam Marathon]].<ref>{{cite web
+ |title=Athletics
+ |work=Olympisch Stadion Amsterdam
+ |publisher=SOSA
+ |url=http://www.olympischstadion.nl/index.php?option=com_content&task=view&id=22&Itemid=98
+ |format=in Dutch
+ |accessdate=8 November 2008| archiveurl= //web.archive.org/web/20081221134507/http://www.olympischstadion.nl/index.php?option=com_content&task=view&id=22&Itemid=98| archivedate= 21 December 2008 | deadurl= no}}
+</ref> In 1920, Amsterdam assisted in hosting some of the [[Sailing at the 1920 Summer Olympics|sailing]] events for the [[1920 Summer Olympics|Summer Olympics]] held in neighbouring [[Antwerp]], Belgium by hosting events at [[IJ (Amsterdam)|Buiten Y]].
+
+The city holds the [[Dam tot Damloop|Dam to Dam Run]], a 10-mile race from Amsterdam to [[Zaandam]],  as well as the [[Amsterdam Marathon]].
+
+The ice hockey team [[Amstel Tijgers]] play in the [[Jaap Eden]] ice rink. The team competes in the Dutch ice hockey premier league. [[Long track speed skating|Speed skating]] championships have been held on the 400-metre lane of this ice rink.
+
+Amsterdam holds two [[American football|American Football]] franchises: the [[Amsterdam Crusaders]] and the [[Amsterdam Panthers]].
+The [[Amsterdam Pirates]] baseball team competes in the [[Honkbal Hoofdklasse|Dutch Major League]]. There are three [[field hockey]] teams: Amsterdam, Pinoké and Hurley, who play their matches around the [[Wagener Stadium]] in the nearby city of [[Amstelveen]]. The basketball team [[MyGuide Amsterdam]] competes in the Dutch premier division and play their games in the Sporthallen Zuid.<ref>{{cite web|url=http://www.sporthallenzuid.amsterdam.nl/over_sporthallen/referenties |title=Over Sporthallen Zuid: Referenties |publisher=Sporthallenzuid.amsterdam.nl |date=7 September 2009 |accessdate=10 October 2010 |deadurl=yes |archiveurl=http://web.archive.org/web/20100803000725/http://www.sporthallenzuid.amsterdam.nl:80/over_sporthallen/referenties |archivedate=3 August 2010 }}</ref>
+
+There is one rugbyclub in Amsterdam, which also hosts sports training classes such as RTC(Rugby Talenten Centrum or Rugby Talent Centre) and the National Rugby stadium.
+
+Since 1999 the city of Amsterdam honours the best sportsmen and women at the [[Amsterdam Sportsman of the year|Amsterdam Sports Awards]]. Boxer [[Raymond Joval]] and field hockey midfielder [[Carole Thate]] were the first to receive the awards, in 1999.
+
+==Government==
+[[File:Eberhard van der laan 6765 (2).jpg|thumb|left|[[Eberhard van der Laan]], [[Burgemeester|mayor]] of Amsterdam since 2010]] 
+The city of Amsterdam is a [[List of municipalities of the Netherlands|municipality]] under the Dutch Municipalities Act. It is governed by a directly elected [[Municipal council (Netherlands)|municipal council]], a [[College van burgemeester en wethouders|municipal executive board]] and a [[Burgemeester|mayor]]. Since 1981, the [[List of municipalities of the Netherlands|municipality]] of Amsterdam has gradually been divided into semi-autonomous [[Boroughs of Amsterdam|boroughs]], called ''stadsdelen'' or 'districts'. Over time, a total of 15 boroughs were created. In May 2010, under a major reform, the number of [[Boroughs of Amsterdam|Amsterdam boroughs]] was reduced to eight: [[Amsterdam-Centrum]] covering the city centre including the [[Canals of Amsterdam|canal belt]], [[Amsterdam-Noord]] consisting of the neighbourhoods north of the [[IJ (Amsterdam)|IJ lake]], [[Amsterdam-Oost]] in the east, [[Amsterdam-Zuid]] in the south, [[Amsterdam-West]] in the west, [[Amsterdam Nieuw-West]] in the far west, [[Amsterdam Zuidoost]] in the southeast, and [[Westpoort (Amsterdam)|Westpoort]] covering the [[Port of Amsterdam]] area.<ref>{{cite web|url=http://www.iamsterdam.com/en-GB/living/about-amsterdam/amsterdam-city-districts|title=Amsterdam City Districts|publisher=Iamsterdam.com|accessdate=12 August 2014}}</ref>
+
+===City government===
+{{Main|Government of Amsterdam|Boroughs of Amsterdam}}
+As with all Dutch municipalities, Amsterdam is governed by a directly elected [[Municipal council (Netherlands)|municipal council]], a [[College van burgemeester en wethouders|municipal executive board]] and a [[Burgemeester|mayor]] (''burgemeester''). The mayor is a member of the municipal executive board, but also has individual responsibilies in maintaining public order. In July 2010, [[Eberhard van der Laan]] ([[Labour Party (Netherlands)|Labour Party]]) was appointed [[Burgemeester|mayor]] of Amsterdam by the national government for a six-year term after being nominated by the Amsterdam [[Municipal council (Netherlands)|municipal council]]. After the [[Dutch municipal elections, 2014|2014 municipal council elections]], a governing majority of [[Democrats 66|D66]], [[People's Party for Freedom and Democracy|VVD]] and [[Socialist Party (Netherlands)|SP]] was formed – the first coalition without the [[Labour Party (Netherlands)|Labour Party]] since [[World War II]].<ref>{{cite web|url=http://www.nltimes.nl/2014/06/12/three-party-coalition-amsterdam-pvda/|title=Three-party coalition in Amsterdam|author=Britt Slegers|publisher=NL Times|date=12 Jun 2014|accessdate=13 August 2014}}</ref> Next to the [[Burgemeester|mayor]], the [[College van burgemeester en wethouders|municipal executive board]] consists of eight ''wethouders'' ('alderpersons') appointed by the [[Municipal council (Netherlands)|municipal council]]: four [[Democrats 66|D66]] alderpersons, two [[People's Party for Freedom and Democracy|VVD]] alderpersons and two [[Socialist Party (Netherlands)|SP]] alderpersons.<ref>{{cite web|url=http://www.amsterdam.nl/gemeente/college/|title=College van burgemeester en wethouders|language=Dutch|publisher=City of Amsterdam|accessdate=13 August 2014}}</ref>
+
+[[File:Amsterdamse stadsdelen 2010.png|thumb|250px|The [[boroughs of Amsterdam]].]]Unlike most other Dutch municipalities, Amsterdam is subdivided into eight [[Boroughs of Amsterdam|boroughs]], called ''stadsdelen'' or 'districts', a system that was implemented gradually in the 1980s to improve local governance. The [[Boroughs of Amsterdam|boroughs]] are responsible for many activities that had previously been run by the central city. In 2010, the number of [[Boroughs of Amsterdam|Amsterdam boroughs]] reached fifteen. Fourteen of those had their own district council (''deelraad''), elected by a popular vote. The fifteenth, [[Westpoort]], covers the harbour of Amsterdam and had very few residents. Therefore, it was governed by the central municipal council. Under the borough system, municipal decisions are made at borough level, except for those affairs pertaining to the whole city such as major infrastructure projects, which are the jurisdiction of the central municipal authorities. In 2010, the [[Boroughs of Amsterdam|borough]] system was restructured, in which many smaller boroughs merged into larger boroughs. In 2014, under a reform of the Dutch Municipalities Act, the [[Boroughs of Amsterdam|Amsterdam boroughs]] lost much of their autonomous status, as their district councils were abolished. The municipal council of Amsterdam voted to maintain the borough system by replacing the district councils with smaller, but still directly elected district committees (''bestuurscommissies''). Under a municipal ordinance, the new district committees were granted responsibilities through delegation of regulatory and executive powers by the central municipal council.
+{{Panorama
+ | image      = File:Amsterdam Amstel.jpg
+ | caption    = View of the [[Stopera]] (left), where the Amsterdam city hall and opera house are located, and the [[Hermitage Amsterdam|Hermitage Museum]] (right) on the [[Amstel River]].
+ | height     = 250
+}}
+
+===Metropolitan area===
+"Amsterdam" is usually understood to refer to the [[List of municipalities of the Netherlands|municipality]] of Amsterdam. Colloquially, some areas within the municipality, such as the town of [[Durgerdam]], may not be considered part of Amsterdam.
+
+[[Statistics Netherlands]] uses three other definitions of Amsterdam: metropolitan agglomeration Amsterdam (''Grootstedelijke Agglomeratie Amsterdam'', not to be confused with ''Grootstedelijk Gebied Amsterdam'', a synonym of ''Groot Amsterdam''), Greater Amsterdam (''Groot Amsterdam'', a [[COROP]] region) and the urban region Amsterdam (''Stadsgewest Amsterdam'').<ref name="cbs2013"/> The Amsterdam Department for Research and Statistics uses a fourth conurbation, namely the ''Stadsregio Amsterdam'' ('City Region of Amsterdam'). The city region is similar to Greater Amsterdam but includes the municipalities of [[Zaanstad]] and [[Wormerland]]. It excludes [[Graft-De Rijp]].
+
+The smallest of these areas is the [[List of municipalities of the Netherlands|municipality]] of Amsterdam with a population of 802,938 in 2013.<ref name="cbs2013"/> The metropolitan agglomeration had a population of 1,096,042 in 2013.<ref name="cbs2013"/> It includes the municipalities of Zaanstad, Wormerland, Oostzaan, Diemen and Amstelveen only, as well as the municipality of Amsterdam.<ref name="cbs2013"/> Greater Amsterdam includes 15 municipalities,<ref name="cbs2013"/> and had a population of 1,293,208 in 2013.<ref name="cbs2013"/> Though much larger in area, the population of this area is only slightly larger, because the definition excludes the relatively populous municipality of [[Zaanstad]]. The largest area by population, the [[Amsterdam Metropolitan Area]] (Dutch: Metropoolregio Amsterdam), has a population of 2,33&nbsp;million.<ref name=dosamsterdam>{{cite web|url=http://www.os.amsterdam.nl/tabel/8187/ |title=Dienst onderzoek & statistiek Amsterdam |deadurl=yes |archiveurl=http://web.archive.org/web/20130614030427/http://www.os.amsterdam.nl/tabel/8187/ |archivedate=14 June 2013 }}</ref> It includes for instance Zaanstad, Wormerveer, Muiden, Abcoude, Haarlem, Almere and Lelystad but excludes Graft-De Rijp. Amsterdam is part of the conglomerate metropolitan area [[Randstad]], with a total population of 6,659,300 inhabitants.<ref name="randstad">{{cite web|title=Population |work=Themes |publisher=City of Amsterdam |date=October 2008 |url=http://www.os.amsterdam.nl/tabel/2008_mutatiestatistiek_stand.xls |format=in Dutch |accessdate=8 March 2009 |deadurl=yes |archiveurl=http://web.archive.org/web/20110501135957/http://www.os.amsterdam.nl/tabel/2008_mutatiestatistiek_stand.xls |archivedate=1 May 2011 }}</ref>
+
+Of these various metropolitan area configurations, only the ''Stadsregio Amsterdam'' (City Region of Amsterdam) has a formal governmental status. Its responsibities include regional spatial planning and the metropolitan public transport concessions.<ref>{{cite web|url=http://www.stadsregioamsterdam.nl/algemene-onderdelen/english-information/|title=Stadsregio Amsterdam: English Information|publisher=Stadsregio Amsterdam|accessdate=12 August 2014}}</ref>
+
+===National capital===
+{{main|Capital of the Netherlands}}
+[[File:King Willem-Alexander, Princess Beatrix en Queen Maxima.jpg|thumb|[[Willem-Alexander of the Netherlands|King Willem-Alexander]], [[Beatrix of the Netherlands|Princess Beatrix]], and [[Queen Máxima of the Netherlands|Queen Máxima]] greeting Amsterdammers from the [[Royal Palace of Amsterdam]] during Willem-Alexanders inauguration in 2013]]
+Under the [[Constitution of the Netherlands|Dutch Constitution]], Amsterdam is the [[capital of the Netherlands]]. Since the 1983 constitutional revision, the constitution mentions "Amsterdam" and "capital" in chapter 2, article 32: The king's confirmation by oath and his coronation take place in "the capital Amsterdam" ("''de hoofdstad Amsterdam''").<ref name="capital-constitution"/> Previous versions of the constitution only mentioned "the city of Amsterdam" ("''de stad Amsterdam''").<ref>{{cite web|url=http://nl.wikisource.org/wiki/Nederlandse_grondwet |title=Previous versions of the constitution |language=nl |publisher=Nl.wikisource.org |accessdate=10 October 2010}}</ref> For a royal investiture, therefore, the [[States General of the Netherlands]] (the Dutch Parliament) meets for a ceremonial joint session in Amsterdam. The ceremony traditionally takes place at the [[Nieuwe Kerk (Amsterdam)|Nieuwe Kerk]] on [[Dam Square]], immediately after the former monarch has signed the act of abdication at the nearby [[Royal Palace of Amsterdam]]. Normally, however, the Parliament sits in [[The Hague]], the city which has historically been the seat of the [[Politics of the Netherlands|Dutch government]], the [[Monarchy of the Netherlands|Dutch monarchy]], and the [[Supreme Court of the Netherlands|Dutch supreme court]]. Foreign embassies are also located in The Hague.
+
+===Symbols===
+{{Main|Coat of arms of Amsterdam|Flag of Amsterdam}}
+The coat of arms of Amsterdam is composed of several historical elements. First and centre are three [[Saltire|St Andrew's crosses]], aligned in a vertical band on the city's shield (although Amsterdam's [[patron saint]] was [[Saint Nicholas]]). These St Andrew's crosses can also be found on the cityshields of neighbours [[Amstelveen]] and [[Ouder-Amstel]]. This part of the coat of arms is the basis of the [[flag of Amsterdam]], flown by the city government, but also as [[civil ensign]] for ships registered in Amsterdam. Second is the [[Imperial Crown of Austria]]. In 1489, out of gratitude for services and loans, [[Maximilian I, Holy Roman Emperor|Maximilian I]] awarded Amsterdam the right to adorn its coat of arms with the [[King of the Romans|king's]] crown. Then, in 1508, this was replaced with Maximilian's [[imperial crown]] when he was crowned [[Holy Roman Emperor]]. In the early years of the 17th century, Maximilian's crown in Amsterdam's coat of arms was again replaced, this time with the crown of [[Rudolf II, Holy Roman Emperor|Emperor Rudolph II]], a crown that became the Imperial [[Austrian Crown Jewels|Crown of Austria]]. The lions date from the late 16th century, when city and province became part of the [[Dutch Republic|Republic of the Seven United Netherlands]]. Last came the city's official motto: ''Heldhaftig, Vastberaden, Barmhartig'' ("Heroic, Determined, Merciful"), bestowed on the city in 1947 by [[Wilhelmina of the Netherlands|Queen Wilhelmina]], in recognition of the city's bravery during the Second World War.
+
+==Transport==
+{{Main|Transport in Amsterdam}}
+
+===Metro, tram, bus===
+{{main|Amsterdam Metro|Trams in Amsterdam}}
+[[File:Tram25 Damrak 2011.JPG|thumb|A [[Trams in Amsterdam|tram]] on [[Damrak]] with [[Amsterdam Centraal railway station|Centraal Station]] in the background]]
+[[File:Metro Amsterdam M5 Kraaiennest.jpg|thumb|right|The [[Amsterdam Metro]] is a mixed subway and above ground commuter rail with various lines]]
+Currently, there are sixteen [[Trams in Amsterdam|tram routes]] and four [[Amsterdam Metro|metro routes]], with a fifth route to be added when the [[Amsterdam Metro|North/South metro line]] is completed (due in 2017). All are operated by municipal public transport operator [[Gemeentelijk Vervoerbedrijf|GVB]], which also runs the city bus network.
+
+Four fare-free [[Gemeentelijk Vervoerbedrijf|GVB]] ferries carry pedestrians and cyclists across the [[IJ (Amsterdam)|IJ lake]] to the [[Boroughs of Amsterdam|borough]] of [[Amsterdam-Noord]], and two fare-charging ferries run east and west along the harbour. There are also privately operated water taxis, a water bus, a [[boat sharing]] operation, electric rental boats (Boaty) and canal cruises, that transport people along Amsterdam's waterways.
+
+Regional buses, and some suburban buses, are operated by [[Connexxion]] and [[Egged (company)|EBS]]. International coach services are provided by [[Eurolines]] from [[Amsterdam Amstel railway station]], [[IDBUS]] from [[Amsterdam Sloterdijk railway station]], and [[Megabus (Europe)|Megabus]] from ''Zuiderzeeweg'' in the east of the city.
+
+===Car===
+Amsterdam was intended in 1932 to be the hub, a kind of [[Kilometre Zero]], of the [[List of motorways in the Netherlands|highway system of the Netherlands]],<ref name="Autosnelweg 1930">{{cite web|url=http://www.autosnelwegen.nl/asw/gs04.htm|title=Autosnelweg.nl – Geschiedenis Autosnelwegen in Nederland|accessdate=19 April 2007|publisher=Autosnelweg.nl|language=Dutch|archiveurl= //web.archive.org/web/20070310145952/http://www.autosnelwegen.nl/asw/gs04.htm| archivedate= 10 March 2007 | deadurl= no}}{{dead link|date=February 2016}}</ref> with freeways numbered One to Eight planned to originate from the city.<ref name="Autosnelweg 1930"/> The outbreak of the Second World War and shifting priorities led to the current situation, where only roads [[A1 motorway (Netherlands)|A1]], [[A2 motorway (Netherlands)|A2]], and [[A4 motorway (Netherlands)|A4]] originate from Amsterdam according to the original plan. The A3 road to [[Rotterdam]] was cancelled in 1970 in order to conserve the [[Groene Hart]]. Road [[A8 motorway (Netherlands)|A8]], leading north to [[Zaandam]] and the [[A10 motorway (Netherlands)|A10]] [[Beltway|Ringroad]] were opened between 1968 and 1974.<ref name="Autosnelweg 1970">{{cite web
+|url=http://www.autosnelwegen.nl/asw/gs07.htm
+|title=Autosnelweg.nl – Geschiedenis Autosnelwegen in Nederland
+|accessdate=19 April 2007
+|publisher=Autosnelweg.nl
+|language=Dutch
+| archiveurl= //web.archive.org/web/20070316030152/http://www.autosnelwegen.nl/asw/gs07.htm| archivedate= 16 March 2007 | deadurl= no}}{{dead link|date=February 2016}}</ref> Besides the A1, A2, A4 and A8, several freeways, such as the [[A7 motorway (Netherlands)|A7]] and [[A6 motorway (Netherlands)|A6]], carry traffic mainly bound for Amsterdam.
+
+The [[A10 motorway (Netherlands)|A10 ringroad]] surrounding the city connects Amsterdam with the Dutch [[List of motorways in the Netherlands|national network of freeways]]. [[Interchange (road)|Interchanges]] on the A10 allow cars to enter the city by transferring to one of the 18 ''city roads'', numbered S101 through to S118. These city roads are regional roads without [[grade separation]], and sometimes without a [[central reservation]]. Most are accessible by cyclists. The S100 ''Centrumring'' is a smaller ringroad circumnavigating the city's centre.
+
+In the city centre, driving a car is discouraged. Parking fees are expensive, and many streets are closed to cars or are [[One-way traffic|one-way]].<ref name="Fiets">{{cite web|url=http://www.fiets.amsterdam.nl/live/main.asp?name=pagina&item_id=807|archiveurl=//web.archive.org/web/20070806175414/http://www.fiets.amsterdam.nl/live/main.asp?name=pagina&item_id=807|archivedate=6 August 2007
+|title=Amsterdam Fietst|language=Dutch|accessdate=19 April 2007}}{{dead link|date=February 2016}}</ref> The local government sponsors [[carsharing]] and [[carpool]]ing initiatives such as ''Autodelen'' and ''Meerijden.nu''.<ref name="cars">{{cite web|title=Amsterdam.nl – Auto|url=http://www.amsterdam.nl/verkeer_vervoer/auto|accessdate=19 April 2007|language=Dutch |archiveurl=//web.archive.org/web/20070405100219/http://www.amsterdam.nl/verkeer_vervoer/auto |archivedate=5 April 2007}}{{dead link|date=February 2016}}</ref>
+
+===National rail===
+[[File:Amsterdam Central Station1.jpg|thumb|left|250px|[[Amsterdam Centraal railway station|Amsterdam Central Station]] is the city's main train station]]
+Amsterdam is served by ten [[Railway stations in the Netherlands#A|stations]] of the [[Nederlandse Spoorwegen]] (Dutch Railways).<ref name="Stationsweb">{{cite web
+|url=http://stationsweb.brinkster.net/stationlijst.asp?prov=noord-holland
+|title=Stationsweb-Noord Holland
+|accessdate=19 April 2007
+|language=Dutch| archiveurl= //web.archive.org/web/20070429173930/http://stationsweb.brinkster.net/stationlijst.asp?prov=noord-holland| archivedate= 29 April 2007 | deadurl= no}}</ref> Six are intercity stops: [[Sloterdijk (Amsterdam)|Sloterdijk]], [[Amsterdam Zuid railway station|Zuid]], [[Amsterdam Amstel railway station|Amstel]], [[Amsterdam Bijlmer ArenA railway station|Bijlmer ArenA]], [[Amsterdam Lelylaan railway station|Lelylaan]] and [[Amsterdam Centraal railway station|Amsterdam Centraal]]. The stations for local services are: [[Amsterdam RAI railway station|RAI]], [[Amsterdam Holendrecht railway station|Holendrecht]], [[Amsterdam Muiderpoort railway station|Muiderpoort]] and [[Amsterdam Science Park railway station|Science Park]]. [[Amsterdam Centraal railway station|Amsterdam Centraal]] is also an international railway station. From the station there are regular services to destinations such as Austria, Belarus, Belgium, the Czech Republic, Denmark, France, Germany, Hungary, Poland, Russia and Switzerland. Among these trains are international trains of the [[Nederlandse Spoorwegen]] (Amsterdam-Berlin) and the [[Thalys]] (Amsterdam-Brussels-Paris/Lille), [[CityNightLine]], and [[Intercity-Express|InterCityExpress]] (Amsterdam-Cologne-Frankfurt).<ref>{{cite web
+ |title=Bestemmingen
+ |work=NS internationaal.nl
+ |publisher=[[Nederlandse Spoorwegen]]
+ |url=http://www.nsinternationaal.nl/bestemmingen/bestemmingen.html
+ |accessdate=19 April 2007 |archiveurl=//web.archive.org/web/20070323133521/http://www.nsinternationaal.nl/bestemmingen/bestemmingen.html |archivedate=23 March 2007}}{{dead link|date=February 2016}}</ref>
+
+===Airport===
+[[File:Schiphol-plaza-ns.jpg|thumb|right|[[Amsterdam Airport Schiphol]] ranks as Europe's 5th busiest airport and the world's 14th busiest for passenger traffic.]]
+[[Amsterdam Airport Schiphol]] {{Airport codes|AMS|EHAM}} is less than 20 minutes by train from [[Amsterdam Centraal railway station]] and is also served by domestic and international intercity trains, such as Thalys and Intercity Brussel. Schiphol is the largest airport in the Netherlands, the fourth largest in Europe, and the fourteenth largest in the world in terms of passengers. It handles about 50&nbsp;million passengers per year and is the home base of five airlines, [[KLM]], [[transavia.com]], [[Martinair]], [[Arkefly]] and [[easyJet]].<ref>http://www.routesonline.com/news/29/breaking-news/242728/easyjet-to-open-amsterdam-base-in-spring-2015/</ref> {{as of|2014}}, Schiphol was the fifth [[World's busiest airports by international passenger traffic|busiest airport in the world]] measured by international passenger numbers.<ref name="passengerrank">{{cite web
+|url=http://www.aci.aero/Data-Centre/Monthly-Traffic-Data/International-Passenger-Rankings/12-months
+|title=International Passenger Rankings |publisher=ACI Airports Council International
+|accessdate=3 June 2014}}</ref>
+
+===Cycling===
+{{main|Cycling in Amsterdam}}
+[[File:Amsterdam - Bicycles - 1058.jpg|right|thumb|thumb|Amsterdam Police [[Cycling|Bicyclist]] crossing a bridge over Prinsengracht.]]
+Amsterdam is one of the most [[bicycle-friendly]] large cities in the world and is a centre of [[bicycle culture]] with good facilities for cyclists such as bike paths and [[Bicycle stand|bike racks]], and several guarded bike storage garages (''fietsenstalling'') which can be used for a nominal fee. In 2013, there were about 1,200,000 bicycles in Amsterdam outnumbering the amount of citizens in the city.<ref>{{cite web|last=Research and Statistics Division |title=Introduction |work=Traffic and Infrastructure |language=Dutch |publisher=City of Amsterdam |url=http://www.os.amsterdam.nl/feitenencijfers/24106/ |accessdate=4 October 2008 |deadurl=yes |archiveurl=http://web.archive.org/web/20080316224718/http://www.os.amsterdam.nl:80/feitenencijfers/24106/ |archivedate=16 March 2008 }}</ref> Theft is widespread – in 2011, about 83,000 bicycles were stolen in Amsterdam.<ref>{{cite web
+ |last=Research and Statistics Division
+ |title=Core Numbers in Graphics: Fewer Bicycle Thefts
+ |work=Safety and Nuissance
+ |language= Dutch
+ |publisher=City of Amsterdam
+ |url=http://stadstat.osamsterdam.nl/programakkoord.pl?onderwerp=ov&cache_version=6
+ |accessdate=4 October 2008 |archiveurl=//web.archive.org/web/20080822155119/http://stadstat.osamsterdam.nl/programakkoord.pl?onderwerp=ov&cache_version=6 |archivedate=22 August 2008}}{{dead link|date=February 2016}}</ref> Bicycles are used by all socio-economic groups because of their convenience, Amsterdam's small size, the {{convert|400|km|0|abbr=off}} of bike paths,<ref>{{cite web
+ |title=Cycling in Amsterdam
+ |publisher=amsterdamtips.com
+ |url=http://www.amsterdamtips.com/tips/cycling-in-amsterdam.php
+ |accessdate=11 August 2010| archiveurl= //web.archive.org/web/20100917063831/http://amsterdamtips.com/tips/cycling-in-amsterdam.php| archivedate= 17 September 2010 | deadurl= no}}
+</ref> the flat terrain, and the arguable inconvenience of driving an automobile.<ref>{{cite news| url=http://www.nytimes.com/2013/06/21/world/europe/a-sea-of-bikes-swamps-amsterdam-a-city-fond-of-pedaling.html?src=me&ref=general&_r=0 | work=The New York Times | first=John | last=Tagliabue | title=The Dutch Prize Their Pedal Power, but a Sea of Bikes Swamps Their Capital | date=20 June 2013}}</ref>
+
+==Education==
+{{Refimprove section|date=July 2015}}
+[[File:Anietenkapel Gate.jpg|thumb|right|The Agnietenkapel Gate at the [[University of Amsterdam]], founded in 1632 as the Athenaeum Illustre]]
+Amsterdam has two universities: the [[University of Amsterdam]] (Universiteit van Amsterdam), and the [[VU University Amsterdam]] (Vrije Universiteit or "VU"). Other institutions for higher education include an [[art school]] – [[Gerrit Rietveld Academie]], a [[Hogeschool|university of applied sciences]] – the [[Hogeschool van Amsterdam]], and the [[Amsterdamse Hogeschool voor de Kunsten]]. Amsterdam's [[International Institute of Social History]] is one of the world's largest documentary and research institutions concerning [[social history]], and especially the [[labor history (discipline)|history of the labour movement]]. Amsterdam's [[Hortus Botanicus (Amsterdam)|Hortus Botanicus]], founded in the early 17th century, is one of the oldest [[botanical garden]]s in the world,<ref name="Hortus">{{cite web|url=http://www.dehortus.nl/Index.asp|title=Hortus Botanicus official website|publisher=2009 de Hortus|accessdate=10 June 2009}}</ref> with many old and rare specimens, among them the [[coffee|coffee plant]] that served as the parent for the entire coffee culture in Central and South America.<ref name="he">{{cite web
+|url=http://www.amsterdam.info/universities/
+|title=Higher Education in Amsterdam
+|publisher=Amsterdam.info
+|accessdate=4 June 2008
+| archiveurl= //web.archive.org/web/20080704195020/http://www.amsterdam.info/universities/| archivedate= 4 July 2008 | deadurl= no}}</ref>
+
+There are over 200 primary schools in Amsterdam.<ref>{{nl icon}} [https://www.amsterdam.nl/onderwijs-jeugd/basisonderwijs/stedelijk/ Stedelijk Toelatingsbeleid], Municipality of Amsterdam, 2015. Retrieved on 20 July 2015.</ref> Some of these primary schools base their teachings on particular pedagogic theories like the various [[Maria Montessori|Montessori]] schools. The biggest Montessori high school in Amsterdam is the [[Montessori Lyceum Amsterdam]]. Many schools, however, are based on religion. This used to be primarily Roman Catholicism and various Protestant denominations, but with the influx of Muslim immigrants there has been a rise in the number of Islamic schools. Jewish schools can be found in the southern suburbs of Amsterdam.
+
+Amsterdam is noted for having five independent grammar schools (Dutch: gymnasia), the [[Vossius Gymnasium]], [[Barlaeus Gymnasium]], St. [[Ignatius Gymnasium]], [[Het 4e Gymnasium]] and the [[Cygnus Gymnasium]] where a classical curriculum including [[Latin]] and [[Ancient Greek|classical Greek]] is taught. Though believed until recently by many to be an anachronistic and elitist concept that would soon die out, the gymnasia have recently experienced a revival, leading to the formation of a fourth and fifth grammar school in which the three aforementioned schools participate. Most secondary schools in Amsterdam offer a variety of different levels of education in the same school. The city also has various colleges ranging from art and design to politics and economics which are mostly also available for students coming from other countries.
+
+==Notable people==
+{{main|List of people from Amsterdam}}
+* [[Frits Bolkestein]] (born 1933), politician
+* [[Charlene de Carvalho-Heineken]] (born 1954), businesswoman
+* [[Paul J. Crutzen]] (born 1933), atmospheric chemist
+* [[Willem Drees|Willem Drees sr.]] (1886–1988), politician
+* [[Floris Adriaan van Hall]] (1791–1866), Minister of Justice, [[Prime Minister of the Netherlands]]
+* [[Freddy Heineken]] (1923–2002, businessman)
+* [[Jaap de Hoop Scheffer]] (born 1948), politician
+* [[André Kuipers]] (born 1958), astronaut
+* [[Baruch Spinoza]] (born 1632–1677), philosopher
+* [[Hans Wiegel]] (born 1941), politician
+
+===Entertainment===
+* [[Karel Appel]] (1921–2006), painter
+* [[Jan Akkerman]] (born 1946), musician
+* [[Willeke van Ammelrooy]] (born 1944), actress
+* [[Willem Breuker]] (1944–2010), musician
+* [[Frans Brüggen]] (1934–2014), musician
+* [[Rudi van Dantzig]] (1933–2012), ballet
+* [[Joop van den Ende]] (born 1942), film, television and theatric producer
+* [[Martin Garrix]] (born Martijn Gerard Garritsen, 1996), DJ, producer
+* [[Bernard Haitink]] (born 1929), orchestra conductor
+* [[John Kraaijkamp, Sr.]] (1925–2011), actor, comedian, singer
+
+===Sports===
+* [[Co Adriaanse]] (born 1947), football trainer
+* [[Dennis Bergkamp]] (born 1969), football player
+* [[Jan van Beveren]] (1948–2011) international football goalkeeper and coach
+* [[Michael Bleekemolen]] (born 1949) racing driver
+* [[Daley Blind]] (born 1990), football player
+* [[Cor Brom]] (1932–2008), football player and football trainer
+* [[Ellie van den Brom]] (born 1949) long track speed skater
+* [[Johan Cruijff]] (born 1947), football player and football trainer
+* [[Ellen van Dijk]] (born 1987), cyclist
+* [[Max Euwe]] (1901–1981) Chess Grandmaster, mathematician, and author
+* [[Louis van Gaal]] (born 1951), football trainer
+* [[Ruud Gullit]] (born 1962), football player
+* [[Bobby Haarms]] (1934–2009), football player and football trainer
+* [[Cor van der Hart]] (1928–2006), football player and football trainer
+* [[Rinus Israël]] (born 1942), football player and football trainer
+* [[Nigel de Jong]] (born 1984), football player
+* [[Jan Jongbloed]] (born 1940), football player (goalkeeper)
+* [[Piet Keizer]] (born 1943), football player
+* [[Patrick Kluivert]] (born 1976), football player
+* [[Gerrie Knetemann]] (1951–2004), cyclist
+* [[Ada Kok]] (born 1947), swimmer
+* [[Ruud Krol]] (born 1949), football player and football coach
+* [[Edward Metgod]] (born 1959), football player (goalkeeper) and football trainer
+* [[John Metgod]] (born 1958), football player and football trainer
+* [[Rinus Michels]] (1928–2005), football player and football trainer
+* [[Bennie Muller]] (born 1938), football (47 caps)
+* [[Eddy Pieters Graafland]] (born 1934), football player (goalkeeper)
+* [[Peter Post]] (1933–2011), cyclist
+* [[Anton Pronk]] (born 1941), football (19 caps)
+* [[Rob Rensenbrink]] (born 1947), football
+* [[Frank Rijkaard]] (born 1962), football player and football coach
+* [[Wim Ruska]] (born 1940) Judoka
+* [[Ton Sijbrands]] (born 1949) international draughts player
+* [[Sjaak Swart]] (born 1938), football player
+
+===Originating from elsewhere===
+* [[Fanny Blankers-Koen]] (1918–2004), athlete
+* [[Inge de Bruijn]] (born 1973), swimmer
+* [[Ryan ten Doeschate]] (born 1980), cricketer
+* [[Jan Hein Donner]] (1927–1988), chess
+* [[Anne Frank]] (1929–1945), diarist and Holocaust victim
+* [[Theo van Gogh (film director)|Theo van Gogh]] (1957–2004), film director
+* [[Carice van Houten]] (born 1976), actress
+* [[Søren Lerby]] (born 1958), football player
+* [[Satyendra Pakhale]] (born 1967), designer
+* [[Rembrandt van Rijn]] (1606/7–1669), painter
+* [[Jan van Speyk]] (1802–1831), lieutenant-commander Dutch Royal Navy
+* [[Joop den Uyl]] (1919–1987), politics
+* [[Joost van den Vondel]] (1597–1679), poet, playwright
+* [[Gerardus Vossius]] (1577–1649), theologist, historian,
+
+==Media==
+Amsterdam is a prominent centre for national and international media. Some locally based newspapers include ''[[Het Parool]]'', a national daily paper; ''[[De Telegraaf]]'', the largest Dutch daily newspaper; the daily newspapers ''[[Trouw]]'', ''[[De Volkskrant]]'' and ''[[NRC Handelsblad]]''; ''[[De Groene Amsterdammer]]'', a weekly newspaper; the free newspapers ''[[Sp!ts]]'', ''[[Metro (Dutch newspaper)|Metro]]'', and ''[[The Holland Times]]'' (printed in English).
+
+Amsterdam is home to the Dutch second-largest commercial TV group [[SBS Broadcasting Group]], consisting of TV-stations [[SBS 6]], [[Net 5]] and [[Veronica (TV channel)|Veronica]]. However, Amsterdam is not considered 'the media city of the Netherlands'. The town of [[Hilversum]], 30&nbsp;km (19&nbsp;mi) south-east of Amsterdam, has been crowned with this unofficial title. Hilversum is the principal centre for radio and television broadcasting in the Netherlands. [[Radio Netherlands Worldwide|Radio Netherlands]], heard worldwide via shortwave radio since the 1920s, is also based there. Hilversum is home to an extensive complex of audio and television studios belonging to the national broadcast production company NOS, as well as to the studios and offices of all the Dutch public broadcasting organisations and many commercial TV production companies.
+
+In 2012, the music video of Far East Movement, 'Live My Life', was filmed in various parts of Amsterdam.
+
+Amsterdam is also featured in [[John Green (author)|John Green]]'s book 'The Fault in Our Stars,' which has also been made into a film, and part of the film takes place in Amsterdam.
+
+==Housing==
+The housing market is heavily regulated. In Amsterdam, 55% of existing housing and 30% of new housing is owned by Housing Associations, which are Government sponsored entities.
+
+[[Squatting|Squat]] properties are common throughout Amsterdam, due to property law strongly favouring tenants. A number of these squats have become well known, such as [[OT301]], [[Paradiso (Amsterdam)|Paradiso]], Vrankrijk (closed down by city government), and the Binnenpret, and several are now businesses, such as health clubs and licensed restaurants.
+
+==International relations==
+{{Refimprove section|date=April 2015}}
+{{See also|List of twin towns and sister cities in the Netherlands}}
+Amsterdam is [[twin towns and sister cities|twinned]] with the following cities:<ref name="nrc.nl">{{cite web |url=http://vorige.nrc.nl/international/Features/article2321785.ece/Amsterdam_redefines_town-twinning_as_aid |title=nrc.nl – International – Features – Amsterdam redefines town twinning as aid |last=nrc handelsblad |work=vorige.nrc.nl |year=2011 |accessdate=2 July 2011}}{{unreliable source?|date=April 2015}}</ref>{{unreliable source?|certain=y|reason=only news info about the general attitude by Amsterdam regarding SC, but not listing all of them|date=April 2015}}
+{| class="wikitable"
+|-
+| 
+;Africa
+*[[Algiers]], [[Algeria]]
+
+;Asia
+*[[Beijing]], [[China]] 
+*[[Dubai]], [[United Arab Emirates]]
+*[[Istanbul]], [[Turkey]]
+*[[Jakarta]], [[Indonesia]] 
+*[[Nicosia]], [[Cyprus]] 
+*[[Shanghai]], [[China]] 
+*[[Singapore]], [[Singapore]]
+|| 
+;Europe
+*[[Kiev]], [[Ukraine]] 
+*[[Manchester]], [[United Kingdom]] 
+*[[Moscow]], [[Russia]] 
+*[[Riga]], [[Latvia]] 
+*[[Sarajevo]], [[Bosnia and Herzegovina]] 
+*[[Varna]], [[Bulgaria]]
+
+;North America
+*[[Los Angeles]], [[United States]] 
+*[[Managua]], [[Nicaragua]] 
+*[[Montreal]], [[Canada]] 
+*[[New York City]], [[United States]]
+*[[Toronto]], [[Canada]] 
+|| 
+;Oceania
+*[[Sydney]], [[Australia]]
+
+;South America
+*[[Bogota]], [[Colombia]] 
+*[[Brasilia]], [[Brazil]] 
+*[[Recife]], [[Brazil]]
+|}
+
+==See also==
+{{Portal|Netherlands|Amsterdam}}
+* [[Amsterdammertje]]
+* [[Amstel]]
+* [[Dam Square]]
+* [[Government of Amsterdam]]
+* [[History of Amsterdam]]
+
+==References==
+{{Reflist|30em}}
+
+;Attribution
+* {{EB1911|wstitle=Amsterdam (Holland)}}
+
+==Further reading==
+{{main|Bibliography of Amsterdam}}
+
+==External links==
+{{Sister project links |wikt=Amsterdam |commons=Amsterdam |n=category:Amsterdam |voy=Amsterdam |Amsterdam|b=no|q=no|species=no}}
+* [http://www.holland.com/global/Tourism/Cities-in-Holland/Amsterdam.htm Tourist information about Amsterdam] – Website of the Netherlands Board of Tourism and Conventions
+* {{nl icon}} [http://www.amsterdam.nl/ Amsterdam.nl] – Official government site
+* [http://www.iamsterdam.com/ I amsterdam] – Portal for international visitors
+* [http://www.dutchamsterdam.nl/ DutchAmsterdam Visitors Guide]
+* [http://web.archive.org/web/20090614210412/http://stadsarchief.amsterdam.nl:80/english/home.en.html Amsterdam City Archives]
+* [http://izi.travel/browse/fb5a0602-d559-4317-af59-7017489a9f1f Free Amsterdam audio guide]
+
+<!--Please note that not all directions need to be filled-->
+<!--Please note that preferably only neighboring municipalities or bodies of water should be used-->
+{{Geographic location
+|Centre    = Amsterdam
+|North     = [[Oostzaan]], [[Landsmeer]]
+|Northeast = [[Waterland]]
+|East      = ''[[IJmeer]]'' / [[Almere]] ([[Flevoland|FL]])
+|Southeast = [[Diemen]]
+|South     = [[Amstelveen]], [[Ouder-Amstel]]
+|Southwest = [[Haarlemmermeer]]
+|West      = [[Haarlemmerliede en Spaarnwoude]]
+|Northwest = [[Zaanstad]]
+}}
+{{Geographic location
+ | Centre    = [[Amsterdam-Zuidoost|Amsterdam-Southeast]]
+ | North     = [[Diemen]]
+ | East      = [[Weesp]]
+ | South     = [[De Ronde Venen]] ([[Utrecht (province)|UT]])
+ | West      = [[Ouder-Amstel]]
+}}
+{{Amsterdam|state=show}}
+{{Neighborhoods of Amsterdam}}
+{{North Holland Province}}
+{{Dutch capital cities}}
+{{List of European capitals by region}}
+{{Capital cities of the European Union}}
+{{Navboxes
+|title=Other topics
+|list=
+{{European Capital of Culture}}
+{{Olympic Summer Games Host Cities}}
+{{1928 Summer Olympic venues}}
+{{Olympic venues cycling}}
+{{World Book Capital}}
+}}
+
+{{S-start}}
+{{S-bef|before=[[Herning]], [[Denmark]] (1987)}}
+{{S-ttl|title=[[World Gymnaestrada]] host city|years=1991}}
+{{S-aft|after=[[Berlin]], [[Germany]] (1995)}}
+{{S-end}}
+
+{{Authority control}}
+
+[[Category:Amsterdam| ]]<!--leave the empty space as standard-->
+[[Category:Capitals in Europe]]
+[[Category:Cities in the Netherlands]]
+[[Category:Municipalities of North Holland]]
+[[Category:Olympic cycling venues]]
+[[Category:Populated places established in the 13th century]]
+[[Category:Populated places in North Holland]]
+[[Category:Port cities and towns in the Netherlands]]
+[[Category:Port cities and towns of the North Sea]]
+[[Category:1928 Summer Olympic venues]]

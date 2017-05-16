@@ -1,0 +1,212 @@
+{{redirect|Ambiguous|the film|Ambiguous (film)}}
+{{Use dmy dates|date=June 2013}}[[File:Alice 05a-1116x1492.jpg|thumb|250px|Sir [[John Tenniel]]'s illustration of the [[Caterpillar (Alice's Adventures in Wonderland)|Caterpillar]] for [[Lewis Carroll]]'s ''[[Alice's Adventures in Wonderland]]'' is noted for its ambiguous central figure, whose head can be viewed as being a human male's face with a pointed nose and pointy chin or being the head end of an actual [[caterpillar]], with the first two right "true" legs visible.<ref>"And do you see its long nose and chin? At least, they ''look'' exactly like a nose and chin, that is don't they? But they really ''are'' two of its legs. You know a Caterpillar has got ''quantities'' of legs: you can see more of them, further down." Carroll, Lewis. ''The Nursery "Alice"''. Dover Publications (1966), p 27.</ref>]]
+
+'''Ambiguity''' is a type of [[uncertainty]] of [[meaning (linguistics)|meaning]] in which several interpretations are [[wikt:plausible#Adjective|plausible]]. It is thus an attribute of any idea or statement whose [[intention|intended]] meaning cannot be definitively resolved according to a rule or process with a finite number of steps. (The ''[[wikt:ambi-#Prefix|ambi]]-'' part of the name reflects an idea of "[[2 (number)|two]]" as in two meanings.)
+
+The concept of ambiguity is generally contrasted with [[vagueness]]. In ambiguity, specific and distinct interpretations are permitted (although some may not be immediately apparent), whereas with information that is vague, it is difficult to form any interpretation at the desired level of specificity.
+
+Context may play a role in resolving ambiguity. For example, the same piece of information may be ambiguous in one context and unambiguous in another.
+
+== Linguistic forms ==
+[[File:Structural analysis of an ambiguous spanish sentence.svg|thumb|Structural analysis of an ambiguous Spanish sentence:<br /> '''Pepe vio a Pablo enfurecido''<br />Interpretation 1: When Pepe was angry, then he saw Pablo<br />Interpretation 2: Pepe saw that Pablo was angry.<br />Here, the syntactic tree in figure represents interpretation 2.]]
+
+The [[Polysemy|lexical ambiguity]] of a word or phrase pertains to its having more than one meaning in the language to which the word belongs. "Meaning" here refers to whatever should be captured by a good dictionary. For instance, the word "bank" has several distinct lexical definitions, including "[[Bank|financial institution]]" and "[[Bank (geography)|edge of a river]]". Another example is as in "[[apothecary]]". One could say "I bought herbs from the apothecary". This could mean one actually spoke to the apothecary ([[pharmacist]]) or went to the apothecary ([[pharmacy]]).
+
+The context in which an ambiguous word is used often makes it evident which of the meanings is intended. If, for instance, someone says "I buried $100 in the bank", most people would not think someone used a shovel to dig in the mud. However, some linguistic contexts do not provide sufficient information to disambiguate a used word. 
+
+Lexical ambiguity can be addressed by algorithmic methods that automatically associate the appropriate meaning with a word in context, a task referred to as [[word sense disambiguation]].
+
+The use of multi-defined words requires the author or speaker to clarify their context, and sometimes elaborate on their specific intended meaning (in which case, a less ambiguous term should have been used). The goal of clear concise communication is that the receiver(s) have no misunderstanding about what was meant to be conveyed. An exception to this could include a politician whose "[[weasel word]]s" and [[obfuscation]] are necessary to gain support from multiple [[Electoral district|constituents]] with [[mutually exclusive]] conflicting desires from their candidate of choice. Ambiguity is a powerful tool of [[political science]].
+
+More problematic are words whose senses express closely related concepts. "Good", for example, can mean "useful" or "functional" (''That's a good hammer''), "exemplary" (''She's a good student''), "pleasing" (''This is good soup''), "moral" (''a good person'' versus ''the lesson to be learned from a story''), "[[righteous]]", etc. " I have a good daughter" is not clear about which sense is intended. The various ways to apply [[prefix]]es and [[suffix]]es can also create ambiguity ("unlockable" can mean "capable of being unlocked" or "impossible to lock").
+
+[[Syntactic ambiguity]] arises when a sentence can have two (or more) different meanings because of the structure of the sentence—its syntax.  This is often due to a modifying expression, such as a prepositional phrase, the application of which is unclear. "He ate the cookies on the couch", for example, could mean that he ate those cookies that were on the couch (as opposed to those that were on the table), or it could mean that he was sitting on the couch when he ate the cookies.  "To get in, you will need an entrance fee of $10 or your voucher and your drivers' license."  This could mean that you need EITHER ten dollars OR BOTH your voucher and your license.  Or it could mean that you need your license AND you need EITHER ten dollars OR a voucher.  Only rewriting the sentence, or placing appropriate punctuation can resolve a syntactic ambiguity.<ref name="ReferenceA">Critical Thinking, 10th ed., Ch 3, Moore, Brooke N. and Parker, Richard.  McGraw-Hill, 2012</ref>
+For the notion of, and theoretic results about, syntactic ambiguity in artificial, [[formal languages]] (such as computer [[programming language]]s), see [[Ambiguous grammar]].
+
+[[Spoken language]] can contain many more types of ambiguities which are called phonological ambiguities, where there is more than one way to compose a set of sounds into words. For example, "ice cream" and "I scream". Such ambiguity is generally resolved according to the context. A mishearing of such, based on incorrectly resolved ambiguity, is called a [[mondegreen]].
+
+[[Semantic ambiguity]] happens when a sentence contains an ambiguous word or phrase—a word or phrase that has more than one meaning.   In "We saw her duck" (example due to Richard Nordquist), the word "duck" can refer either
+# to the person's bird (the noun "duck", modified by the possessive pronoun "her"), or
+# to a motion she made (the verb "duck", the subject of which is the objective pronoun "her", object of the verb "saw").<ref name="ReferenceA" />
+
+For example, "You could do with a new automobile. How about a test drive?" The clause "You could do with" presents a statement with such wide possible interpretation as to be essentially meaningless.{{Citation needed|date=October 2009}} Lexical ambiguity is contrasted with semantic ambiguity. The former represents a choice between a finite number of known and meaningful context-dependent interpretations. The latter represents a choice between any number of possible interpretations, none of which may have a standard agreed-upon meaning. This form of ambiguity is closely related to [[vagueness]].
+
+Linguistic ambiguity [[Ambiguity (law)|can be a problem in law]], because the interpretation of written documents and oral agreements is often of paramount importance.
+
+== Intentional application ==
+{{See also|Word-sense disambiguation}}
+[[Philosopher]]s (and other users of [[logic]]) spend a lot of time and effort searching for and removing (or intentionally adding) ambiguity in arguments, because it can lead to incorrect conclusions and can be used to deliberately conceal bad arguments. For example, a politician might say "I oppose taxes which hinder economic growth", an example of a [[glittering generality]]. Some will think he opposes taxes in general, because they hinder economic growth. Others may think he opposes only those taxes that he believes will hinder economic growth. In writing, the sentence can be rewritten to reduce possible misinterpretation, either by adding a comma after "taxes" (to convey the first sense) or by changing "which" to "that" (to convey the second sense), or by rewriting it in other ways. The devious politician hopes that each [[Electoral district|constituent]] will interpret the statement in the most desirable way, and think the politician supports everyone's opinion. However, the opposite can also be true – An opponent can turn a positive statement into a bad one, if the speaker uses ambiguity (intentionally or not). The logical fallacies of [[amphiboly]] and [[equivocation]] rely heavily on the use of ambiguous words and phrases.
+
+In [[Continental philosophy]] (particularly [[phenomenology (philosophy)|phenomenology]] and [[existentialism]]), there is much greater tolerance of ambiguity, as it is generally seen as an integral part of the human condition. [[Martin Heidegger]] argued that the relation between the [[subject-object problem|subject and object]] is ambiguous, as is the relation of [[mind and body]], and [[mereology|part and whole]].<ref>Heidegger, Martin. "[[The Origin of the Work of Art]]". Poetry, Language, Thought. Trans. Albert Hofstadter. NY: Harper Collins, 1971, pg. 18.</ref> In Heidegger's phenomenology, [[Dasein]] is always in a meaningful world, but there is always an underlying background for every instance of signification. Thus, although some things may be certain, they have little to do with Dasein's sense of ''care'' and [[existential anxiety]], e.g., in the face of death. In calling his work [[Being and Nothingness]] an "essay in phenomenological ontology" [[Jean-Paul Sartre]] follows Heidegger in defining the human essence as ambiguous, or relating fundamentally to such ambiguity. [[Simone de Beauvoir]] tries to base an ethics on Heidegger's and Sartre's writings ([[The Ethics of Ambiguity]]), where she highlights the need to grapple with ambiguity: "as long as philosophers and they [men] have thought, most of them have tried to mask it...And the ethics which they have proposed to their disciples has always pursued the same goal. It has been a matter of eliminating the ambiguity by making oneself pure inwardness or pure externality, by escaping from the sensible world or being engulfed by it, by yielding to eternity or enclosing oneself in the pure moment.".<ref>de Beauvoir, Simone. ''The Ethics of Ambiguity.'' Trans. Bernard Frechtman. New York: Citadel Press, 1976 [1948], pg. 8.</ref> Ethics cannot be based on the authoritative certainty given by mathematics and logic, or prescribed directly from the empirical findings of science. She states: "Since we do not succeed in fleeing it, let us therefore try to look the truth in the face. Let us try to assume our fundamental ambiguity. It is in the knowledge of the genuine conditions of our life that we must draw our strength to live and our reason for acting".<ref>de Beauvoir, ''Ethics,'' pg. 9.</ref> Other continental philosophers suggest that concepts such as life, nature, and sex are ambiguous.<ref>Foucault, Michel. ''The History of Sexuality, An Introduction (Vol. 1). Trans Robert Hurley. New York: Vintage Books, 1978.</ref> Recently, Corey Anton has argued that we cannot be certain what is separate from or unified with something else: language, he asserts, divides what is not in fact separate.<ref>Anton, Corey. ''Sources of Significance: Worldly Rejuvenation and Neo-Stoic Heroism.'' West Lafayette: Purdue University Press, 2010, pg. 35-63.</ref> Following [[Ernest Becker]], he argues that the desire to 'authoritatively disambiguate' the world and existence has led to numerous [[ideologies]] and historical events such as [[genocide]]. On this basis, he argues that ethics must focus on 'dialectically integrating opposites' and balancing tension, rather than seeking a priori validation or certainty. Like the existentialists and phenomenologists, he sees the ambiguity of life as the basis of creativity.<ref>{{cite web |first=Anton |last=Corey |title= Authoritative Disambiguation |url=http://www.youtube.com/watch?v=mxNR3aOL8l4 |work= Professoranton, 2009}}</ref>
+
+In [[literature]] and [[rhetoric]], ambiguity can be a useful tool. [[Groucho Marx]]'s classic joke depends on a grammatical ambiguity for its [[humor]], for example: "Last night I shot an elephant in my pajamas. How he got in my pajamas, I'll never know". Songs and poetry often rely on ambiguous words for artistic effect, as in the song title "Don't It Make My Brown Eyes Blue" (where "blue" can refer to the color, or to [[sadness]]).
+
+In narrative, ambiguity can be introduced in several ways: motive, plot, character. [[F. Scott Fitzgerald]] uses the latter type of ambiguity with notable effect in his novel ''[[The Great Gatsby]]''.
+
+[[Christianity]] and [[Judaism]] employ the concept of [[paradox]] synonymously with 'ambiguity'. Many Christians and Jews endorse [[Rudolf Otto]]'s description of the sacred as 'mysterium tremendum et fascinans', the awe-inspiring mystery which fascinates humans.{{Dubious|date=July 2012|reason=Entire paragraph of doubtful validity}}  The orthodox Catholic writer G. K. Chesterton regularly employed paradox to tease out the meanings in common concepts which he found ambiguous, or to reveal meaning often overlooked or forgotten in common phrases.  (The title of one of his most famous books, Orthodoxy, itself employing such a paradox.)
+
+[[Metonymy]] involves the use of the name of a subcomponent part as an abbreviation, or [[jargon]], for the name of the whole object (for example "wheels" to refer to a car, or "flowers" to refer to beautiful offspring, an entire plant, or a collection of blooming plants). In modern [[vocabulary]] critical [[semiotics]],<ref>{{cite web|url=http://www.chass.utoronto.ca/epc/srb/cyber/sim8.html |title=CSI: Sim8 |publisher=Chass.utoronto.ca |date=1942-11-14 |accessdate=2013-01-23}}</ref> metonymy encompasses any potentially ambiguous word substitution that is based on contextual [[contiguity]] (located close together), or a function or process that an object performs, such as "sweet ride" to refer to a nice car. Metonym miscommunication is considered a primary mechanism of linguistic humour.<ref>Veale, Tony (2003): "Metaphor and Metonymy: The Cognitive Trump-Cards of Linguistic Humor"[http://afflatus.ucd.ie/Papers/iclc2003.pdf]</ref>
+
+=== Psychology and management ===
+In sociology and social psychology, the term "ambiguity" is used to indicate situations that involve [[uncertainty]]. An increasing amount of research is concentrating on how people react and respond to ambiguous situations. Much of this focuses on [[ambiguity tolerance]]. A number of correlations have been found between an individual's reaction and tolerance to ambiguity and a range of factors.
+
+Apter and Desselles (2001)<ref>in Motivational Styles in Everyday life: A guide to reversal Theory. M.J. Apter (ed) (2001) APA Books</ref> for example, found a strong correlation with such attributes and factors like a greater preference for safe as opposed to risk-based sports, a preference for endurance-type activities as opposed to explosive activities, a more organized and less casual lifestyle, greater care and precision in descriptions, a lower sensitivity to emotional and unpleasant words, a less acute sense of humor, engaging a smaller variety of sexual practices than their more risk-comfortable colleagues, a lower likelihood of the use of drugs, pornography and drink, a greater likelihood of displaying obsessional behavior.
+
+In the field of [[leadership]], [[David Wilkinson (ambiguity expert)|David Wilkinson]] (2006)<ref>Wilkinson, D.J. (2006) ''The Ambiguity Advantage: What great leaders are great at''. New York Palgrave Macmillan.</ref> found strong correlations between an individual leader's reaction to ambiguous situations and the [[Modes of Leadership]] they use, the type of [[creativity]], Kirton (2003)<ref>Kirton, M.J. (2003)Adaption-Innovation: In the Context of Diversity and Change. Routledge.</ref> and how they relate to others.
+
+== Music ==
+In [[music]], pieces or sections which confound expectations and may be or are interpreted simultaneously in different ways are ambiguous, such as some [[polytonality]], [[polymeter]], other ambiguous [[metre|meters]] or [[rhythm]]s, and ambiguous [[phrase (music)|phrasing]], or (Stein 2005, p.&nbsp;79) any [[aspect of music]]. The [[music of Africa]] is often purposely ambiguous. To quote [[Donald Francis Tovey|Sir Donald Francis Tovey]] (1935, p.&nbsp;195), "Theorists are apt to vex themselves with vain efforts to remove uncertainty just where it has a high aesthetic value."
+
+== Visual art ==
+[[File:Necker cube.svg|The [[Necker cube]], an ambiguous image|thumb]]
+In visual art, certain images are visually ambiguous, such as the [[Necker cube]], which can be interpreted in two ways. Perceptions of such objects remain stable for a time, then may flip, a phenomenon called [[multistable perception]].
+The opposite of such ambiguous images are [[impossible object]]s.
+
+Pictures or photographs may also be ambiguous at the semantic level: the visual image is unambiguous, but the meaning and narrative may be ambiguous: is a certain facial expression one of excitement or fear, for instance?
+
+== Constructed language ==
+Some [[Constructed language|languages have been created]] with the intention of avoiding ambiguity, especially [[Polysemy|lexical ambiguity]]. [[Lojban]] and [[Loglan]] are two related languages which have been created for this, focusing chiefly on syntactic ambiguity as well. The languages can be both spoken and written. These languages are intended to provide a greater technical precision over big natural languages, although historically, such attempts at language improvement have been criticized. Languages composed from many diverse sources contain much ambiguity and inconsistency. The many exceptions to [[syntax]] and [[semantic]] rules are time-consuming and difficult to learn.
+
+== Computer science ==
+In computer science, the [[SI prefix]]es [[kilo-]], [[mega-]] and [[giga-]] are used ambiguously to mean either the first three powers of 1000 (1000, 1000<sup>2</sup> and 1000<sup>3</sup>) or the first three powers of 1024 (1024, 1024<sup>2</sup> and 1024<sup>3</sup>), respectively.<ref>[http://physics.nist.gov/cuu/Units/binary.html Prefixes for binary multiples]</ref>
+
+== Mathematical notation ==
+[[Mathematical notation]], widely used in [[physics]] and other [[science]]s, avoids many ambiguities compared to expression in natural language. However, for various reasons, several [[Lexical (semiotics)|lexical]], [[syntactic]] and [[semantic]] ambiguities remain.
+
+=== Names of functions ===
+The '''ambiguity''' in the style of writing a [[Function (mathematics)|function]] should not be confused with a [[multivalued function]], which can (and should) be defined in a deterministic and unambiguous way. Several [[special function]]s still do not have established notations. Usually, the conversion to another notation requires to scale the argument or the resulting value; sometimes, the same name of the function is used, causing confusions. Examples of such underestablished functions:
+* [[Sinc function]]
+* [[Elliptic integral#Complete elliptic integral of the third kind|Elliptic integral of the third kind]]; translating elliptic integral form [[MAPLE]] to [[Mathematica]], one should replace the second argument to its square, see [[Talk:Elliptic integral#List of notations]]; dealing with complex values, this may cause problems.
+* [[Exponential integral]],<ref name="irene">{{cite book |first1=M. |last1=Abramovits |first2=I. |last2=Stegun |title=Handbook on mathematical functions |page= 228 |url=http://www.math.sfu.ca/~cbm/aands/page_228.htm }}</ref>
+* [[Hermite polynomial]],<ref name="irene"/>{{rp|775}}
+
+=== Expressions ===
+Ambiguous expressions often appear in physical and mathematical texts.
+It is common practice to omit multiplication signs in mathematical expressions. Also, it is common to give the same name to a variable and a function, for example, <math>f=f(x)</math>. Then, if one sees <math>f=f(y+1)</math>, there is no way to distinguish whether it means <math>f=f(x)</math> '''multiplied''' by <math>(y+1)</math>, or function <math>f</math> '''evaluated''' at argument equal to <math>(y+1)</math>. In each case of use of such notations, the reader is supposed to be able to perform the deduction and reveal the true meaning.
+
+Creators of algorithmic languages try to avoid ambiguities. Many algorithmic languages ([[C++]] and [[Fortran]]) require the character * as symbol of multiplication. The [[Wolfram Language]] used in [[Mathematica]] allows the user to omit the multiplication symbol, but requires square brackets to indicate the argument of a function; square brackets are not allowed for grouping of expressions. Fortran, in addition, does not allow use of the same name (identifier) for different objects, for example, function and variable; in particular, the expression '''f=f(x)''' is qualified as an error.
+
+The order of operations may depend on the context. In most [[programming language]]s, the operations of division and multiplication have equal priority and are executed from left to right. Until the last century, many editorials assumed that multiplication is performed first, for example, <math>a/bc</math> is interpreted as <math>a/(bc)</math>; in this case, the insertion of parentheses is required when translating the formulas to an algorithmic language. In addition, it is common to write an argument of a function without parenthesis, which also may lead to ambiguity.
+Sometimes, one uses ''italics'' letters to denote elementary functions.
+In the [[scientific journal]] style, the expression
+<math> s i n \alpha</math>
+means
+product of variables
+<math>s</math>,
+<math>i</math>,
+<math>n</math> and
+<math>\alpha</math>, although in a slideshow, it may mean <math>\sin[\alpha]</math>.
+
+A comma in subscripts and superscripts sometimes is omitted; it is also ambiguous notation.
+If it is written <math>T_{mnk}</math>, the reader should guess from the context, does it mean a single-index object, evaluated while the subscript is equal to product of variables
+<math>m</math>, <math>n</math> and <math>k</math>, or it is indication to a trivalent tensor.
+The writing of <math>T_{mnk}</math> instead of <math>T_{m,n,k}</math> may mean that the writer either is stretched in space (for example, to reduce the publication fees) or aims to increase number of publications without considering readers. The same may apply to any other use of ambiguous notations.
+
+Subscripts are also used to denote the argument to a function, as in <math>F_{x}</math>.
+<!--
+Some scientific journals use superscripts to indicate citations. If one cites reference number 6 about [[coherent addition of lasers]], the centenve may read as follows:
+Practically, the number of lasers, which can be combined in such a way, does not exceed 10<sup>6</sup>.
+"Oh, this very powerful method allows for the combination of a million lasers,"
+the reader may think. To avoid such ambiguitty, [[citations]] in Wikipedia appear inside square bracket <sup>[1]</sup>.
+!-->
+
+=== Examples of potentially confusing ambiguous mathematical expressions ===
+<math>\sin^2\alpha/2\,</math>, which could be understood to mean either <math>(\sin(\alpha/2))^2\,</math> or <math>(\sin(\alpha))^2/2\,</math>. In addition, <math>\sin^2(x)</math> may mean <math>\sin(\sin(x))</math>, as <math>\exp^2(x)</math> means <math>\exp(\exp(x))</math> (see [[tetration]]).
+
+<math>\sin^{-1}\alpha</math>, which by convention means <math>\arcsin(\alpha)</math>, though it might be thought to mean <math>(\sin(\alpha))^{-1}</math>, since <math>\sin^{n} \alpha</math> means <math>(\sin(\alpha))^{n}\,</math>.
+
+<math>a/2b\,</math>, which arguably should mean <math>(a/2)b\,</math> but would commonly be understood to mean <math>a/(2b)\,</math> .
+
+=== Notations in quantum optics and quantum mechanics ===
+It is common to define the [[coherent states]] in [[quantum optics]] with <math>~|\alpha\rangle~ </math> and states with fixed number of photons with <math>~|n\rangle~</math>. Then, there is an "unwritten rule": the state is coherent if there are more Greek characters than Latin characters in the argument, and <math>~n~</math>photon state if the Latin characters dominate. The ambiguity becomes even worse, if <math>~|x\rangle~</math> is used for the states with certain value of the coordinate, and <math>~|p\rangle~</math> means the state with certain value of the momentum, which may be used in books on [[quantum mechanics]]. Such ambiguities easy lead to confusions, especially if some normalized [[adimensional]], [[dimensionless]] variables are used. Expression <math> |1\rangle </math> may mean a state with single photon, or the coherent state with mean amplitude equal to 1, or state with momentum equal to unity, and so on. The reader is supposed to guess from the context.
+
+=== Ambiguous terms in physics and mathematics ===
+Some physical quantities do not yet have established notations; their value (and sometimes even [[dimension]], as in the case of the [[Einstein coefficients]]), depends on the system of notations. Many terms are ambiguous. Each use of an ambiguous term should be preceded by the definition, suitable for a specific case. Just like [[Ludwig Wittgenstein]] states in [[Tractatus Logico-Philosophicus]]: "... Only in the context of a proposition has a name meaning."<ref>{{cite book |last=Wittgenstein |first=Ludwig |title=Tractatus Logico-Philosophicus |page=39 |publisher=Dover Publications Inc. |year=1999 |isbn=0-486-40445-5 }}</ref>
+
+A highly confusing term is ''gain''. For example, the sentence "the gain of a system should be doubled", without context, means close to nothing.<br />
+It may mean that the ratio of the output voltage of an electric circuit to the input voltage should be doubled.<br />
+It may mean that the ratio of the output power of an electric or optical circuit to the input power should be doubled.<br />
+It may mean that the gain of the laser medium should be doubled, for example, doubling the population of the upper laser level in a quasi-two level system (assuming negligible absorption of the ground-state).
+
+The term ''intensity'' is ambiguous when applied to light. The term can refer to any of [[irradiance]], [[luminous intensity]], [[radiant intensity]], or [[radiance]], depending on the background of the person using the term.
+
+Also, confusions may be related with the use of [[atomic percent]] as measure of concentration of a [[dopant]], or [[Optical resolution|resolution]] of an imaging system, as measure of the size of the smallest detail which still can be resolved at the background of statistical noise. See also [[Accuracy and precision]] and its talk.
+
+The [[Berry paradox]] arises as a result of systematic ambiguity in the meaning of terms such as "definable" or "nameable". Terms of this kind give rise to [[Virtuous circle and vicious circle|vicious circle]] fallacies. Other terms with this type of ambiguity are: satisfiable, true, false, function, property, class, relation, cardinal, and ordinal.<ref>Russell/Whitehead, Principia Mathematica</ref>
+
+== Mathematical interpretation of ambiguity ==
+[[File:Necker cube and impossible cube.svg|The [[Necker cube]] and [[impossible cube]], an underdetermined and overdetermined object, respectively.|thumb]]
+In mathematics and logic, ambiguity can be considered to be an instance of the logical concept of [[underdetermination]]—for example, <math>X=Y</math> leaves open what the value of ''X'' is—while its opposite is a [[self-contradiction]], also called [[inconsistency]], [[paradoxicalness]], or [[oxymoron]], or in mathematics an [[inconsistent system]]—such as <math>X=2, X=3</math>, which has no solution.
+
+Logical ambiguity and self-contradiction is analogous to visual ambiguity and [[impossible object]]s, such as the Necker cube and impossible cube, or many of the drawings of [[M. C. Escher]].<ref>{{cite journal
+|title=Reflexivity, Contradiction, Paradox and M. C. Escher
+|first=Laurence
+|last=Goldstein
+|year=1996
+|publisher=[[The MIT Press]]
+|journal=[[Leonardo Journal|Leonardo]]
+|volume=29
+|pages=299–308
+|doi=10.2307/1576313
+|issue=4
+|jstor=1576313
+|postscript=<!-- Bot inserted parameter. Either remove it; or change its value to "." for the cite to end in a ".", as necessary. -->{{inconsistent citations}}
+}}</ref>
+
+== Pedagogic use of ambiguous expressions ==
+Ambiguity can be used as a pedagogical trick, to force students to reproduce the deduction by themselves. Some textbooks<ref>{{cite book |first1=H. |last1=Haug |first2=S. |last2=Koch |title=Quantum Theory of the Optical and Electronic Properties of Semiconductors |url=http://www.allbookstores.com/book/9812387560}}</ref>
+give the same name to the function and to its [[Fourier transform]]:
+:<math>~f(\omega)=\int f(t) \exp(i\omega t) {\rm d}t </math>.
+Rigorously speaking, such an expression requires that <math>~ f=0 ~</math>;
+even if function <math>~ f ~</math> is a [[self-Fourier function]], the expression should be written as
+<math>~f(\omega)=\frac{1}{\sqrt{2\pi}}\int f(t) \exp(i\omega t) {\rm d}t </math>; however, '''it is assumed that
+the shape of the function ''' (and even its norm
+<math>\int |f(x)|^2 {\rm d}x </math>) '''depend on the character used to denote its argument'''.
+If the Greek letter is used, it is assumed to be a Fourier transform of another function,
+The first function is assumed, if the expression in the argument contains more characters <math>~t~</math> or <math>~\tau~</math>, than characters <math>~\omega~</math>, and the second function is assumed in the opposite case. Expressions like <math>~f(\omega t)~</math> or <math>~f(y)~</math> contain symbols <math>~t~</math> and <math>~\omega~</math> in equal amounts; they are ambiguous and should be avoided in serious deduction.
+
+== See also ==
+{{Col-begin}}
+{{Col-1-of-3}}
+* [[Abbreviation]]
+* [[Ambiguity (law)]]
+* [[Ambiguity tolerance]]
+* [[Amphibology]]
+* [[Decision problem]]
+* [[Disambiguation (disambiguation)]]
+* [[Double entendre]]
+{{Col-2-of-3}}
+* [[Essentially contested concept]]
+* [[Fallacy]]
+* [[Formal fallacy]]
+* [[Golden hammer]]
+* [[Informal fallacy]]
+{{Col-3-of-3}}
+* [[Self reference]]
+* [[Semantics]]
+* [[Uncertainty]]
+* [[Vagueness]]
+* [[Volatility, uncertainty, complexity and ambiguity]]
+* [[Word-sense disambiguation]]
+{{col-end}}
+
+== References ==
+{{Reflist|2}}
+
+== External links ==
+{{Wiktionary|ambiguity}}
+* {{SEP|Ambiguity}}
+* {{InPho|idea|1883}}
+* {{PhilPapers|search|ambiguity}}
+* [http://www.gray-area.org/Research/Ambig/ Collection of Ambiguous or Inconsistent/Incomplete Statements]
+* [http://www.languagesoftware.net/articles/better-english-leaving-out-ambiguities/?article2pdf=1? Leaving out ambiguities when writing]
+
+{{Relevance fallacies}}
+{{Formal Fallacy}}
+{{Informal Fallacy}}
+{{Philosophical logic}}
+{{philosophy of language}}
+
+[[Category:Semantics]]
+[[Category:Critical thinking]]
+[[Category:Ambiguity| ]]
