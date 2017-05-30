@@ -25,6 +25,7 @@ import de.l3s.eventkg.util.FileName;
 
 public class DataStoreWriter {
 
+	private static final int NUMBER_OF_LINES_IN_PREVIEW = 50;
 	private DataStore dataStore;
 	private DataSets dataSets;
 
@@ -35,7 +36,7 @@ public class DataStoreWriter {
 		this.dataSets = DataSets.getInstance();
 	}
 
-	public void write(String path) {
+	public void write() {
 		System.out.println("writeDataSets");
 		writeDataSets();
 		System.out.println("writeEvents");
@@ -58,14 +59,19 @@ public class DataStoreWriter {
 			List<Prefix> prefixes = new ArrayList<Prefix>();
 			prefixes.add(Prefix.VOID);
 			prefixes.add(Prefix.FOAF);
+			prefixes.add(Prefix.RDF);
 			for (String line : createIntro(prefixes)) {
 				writer.write(line + Config.NL);
 			}
 
+			// TODO: Check error with "<foaf:homepage
+			// https://dumps.wikimedia.org/enwiki/>" in the output
+
 			for (DataSet dataSet : dataSets.getAllDataSets()) {
-				writeTriple(writer, dataSet.getId(), Prefix.RDF.getAbbr() + "type", Prefix.FOAF.getAbbr() + "Dataset",
+				writeTriple(writer, null, null, dataSet.getId(), Prefix.RDF.getAbbr() + "type",
+						Prefix.FOAF.getAbbr() + "Dataset", false, null);
+				writeTriple(writer, null, null, dataSet.getId(), Prefix.FOAF.getAbbr() + "homepage", dataSet.getUrl(),
 						false, null);
-				writeTriple(writer, dataSet.getId(), Prefix.FOAF.getAbbr() + "homepage", dataSet.getUrl(), false, null);
 			}
 
 		} catch (FileNotFoundException e) {
@@ -81,8 +87,11 @@ public class DataStoreWriter {
 		int eventNo = 0;
 
 		PrintWriter writer = null;
+		PrintWriter writerPreview = null;
+
 		try {
 			writer = FileLoader.getWriter(FileName.ALL_TTL_EVENTS_WITH_TEXTS);
+			writerPreview = FileLoader.getWriter(FileName.ALL_TTL_EVENTS_WITH_TEXTS_PREVIEW);
 
 			List<Prefix> prefixes = new ArrayList<Prefix>();
 			prefixes.add(Prefix.RDF);
@@ -97,23 +106,27 @@ public class DataStoreWriter {
 
 			for (String line : createIntro(prefixes)) {
 				writer.write(line + Config.NL);
+				writerPreview.write(line + Config.NL);
 			}
 
+			int lineNo = 0;
 			for (Event event : dataStore.getEvents()) {
+
 				event.setId("<" + eventId + String.valueOf(eventNo) + ">");
 				eventNo += 1;
-				writeTriple(writer, event.getId(), Prefix.RDF.getAbbr() + "type", Prefix.EVENT_KG.getAbbr() + "Event",
-						false, null);
+				lineNo += 1;
+				writeTriple(writer, writerPreview, lineNo, event.getId(), Prefix.RDF.getAbbr() + "type",
+						Prefix.EVENT_KG.getAbbr() + "Event", false, null);
 
 				if (event.getWikidataId() != null)
-					writeTriple(writer, event.getId(), Prefix.DCTERMS.getAbbr() + "relation",
+					writeTriple(writer, writerPreview, lineNo, event.getId(), Prefix.DCTERMS.getAbbr() + "relation",
 							"<" + Prefix.WIKIDATA.getUrlPrefix() + event.getWikidataId() + ">", false,
 							dataSets.getDataSetWithoutLanguage(Source.WIKIDATA));
 
 				if (event.getUrls() != null) {
 					for (String url : event.getUrls())
-						writeTriple(writer, event.getId(), Prefix.DCTERMS.getAbbr() + "relation", "<" + url + ">",
-								false, null);
+						writeTriple(writer, writerPreview, lineNo, event.getId(), Prefix.DCTERMS.getAbbr() + "relation",
+								"<" + url + ">", false, null);
 				}
 
 				for (Language language : event.getWikipediaLabels().keySet()) {
@@ -138,32 +151,38 @@ public class DataStoreWriter {
 					default:
 						break;
 					}
-					writeTriple(writer, event.getId(), Prefix.DCTERMS.getAbbr() + "relation",
+					writeTriple(writer, writerPreview, lineNo, event.getId(), Prefix.DCTERMS.getAbbr() + "relation",
 							"<" + dbPediaId + event.getWikipediaLabels().get(language) + ">", false,
 							dataSets.getDataSet(language, Source.WIKIPEDIA));
 				}
 			}
 
 			System.out.println("labels: " + dataStore.getLabels().size());
+			lineNo = 0;
 			for (Label label : dataStore.getLabels()) {
 				if (label.getSubject().isEvent() || label.getSubject().getEventEntity() != null) {
-					writeTriple(writer, label.getSubject().getEventEntity().getId(), Prefix.RDF.getAbbr() + "label",
-							label.getLabel(), true, label.getDataSet(), label.getLanguage());
+					lineNo += 1;
+					writeTriple(writer, writerPreview, lineNo, label.getSubject().getEventEntity().getId(),
+							Prefix.RDF.getAbbr() + "label", label.getLabel(), true, label.getDataSet(),
+							label.getLanguage());
 				}
 			}
 
 			System.out.println("aliases: " + dataStore.getAliases().size());
+			lineNo = 0;
 			for (Alias alias : dataStore.getAliases()) {
 				if (alias.getSubject().isEvent() || alias.getSubject().getEventEntity() != null) {
 					Event event = alias.getSubject().getEventEntity();
 					if (event == null)
 						event = (Event) alias.getSubject();
-					writeTriple(writer, event.getId(), Prefix.DCTERMS.getAbbr() + "alternative", alias.getLabel(), true,
-							alias.getDataSet(), alias.getLanguage());
+					lineNo += 1;
+					writeTriple(writer, writerPreview, lineNo, event.getId(), Prefix.DCTERMS.getAbbr() + "alternative",
+							alias.getLabel(), true, alias.getDataSet(), alias.getLanguage());
 				}
 			}
 
 			System.out.println("descriptions: " + dataStore.getDescriptions().size());
+			lineNo = 0;
 			for (Description description : dataStore.getDescriptions()) {
 				if (description.getSubject() == null)
 					continue;
@@ -171,8 +190,9 @@ public class DataStoreWriter {
 					Event event = description.getSubject().getEventEntity();
 					if (event == null)
 						event = (Event) description.getSubject();
-					writeTriple(writer, event.getId(), Prefix.DCTERMS.getAbbr() + "description", description.getLabel(),
-							true, description.getDataSet(), description.getLanguage());
+					lineNo += 1;
+					writeTriple(writer, writerPreview, lineNo, event.getId(), Prefix.DCTERMS.getAbbr() + "description",
+							description.getLabel(), true, description.getDataSet(), description.getLanguage());
 				}
 			}
 
@@ -180,6 +200,7 @@ public class DataStoreWriter {
 			e.printStackTrace();
 		} finally {
 			writer.close();
+			writerPreview.close();
 		}
 
 	}
@@ -190,8 +211,10 @@ public class DataStoreWriter {
 		int entityNo = 0;
 
 		PrintWriter writer = null;
+		PrintWriter writerPreview = null;
 		try {
 			writer = FileLoader.getWriter(FileName.ALL_TTL_ENTITIES_WITH_TEXTS);
+			writerPreview = FileLoader.getWriter(FileName.ALL_TTL_ENTITIES_WITH_TEXTS_PREVIEW);
 
 			List<Prefix> prefixes = new ArrayList<Prefix>();
 			prefixes.add(Prefix.RDF);
@@ -205,20 +228,24 @@ public class DataStoreWriter {
 
 			for (String line : createIntro(prefixes)) {
 				writer.write(line + Config.NL);
+				writerPreview.write(line + Config.NL);
 			}
 
+			int lineNo = 0;
+
 			for (Entity entity : dataStore.getEntities()) {
+				lineNo += 1;
 
 				if (entity.isEvent() || entity.getEventEntity() != null)
 					continue;
 
 				entity.setId("<" + entityId + String.valueOf(entityNo) + ">");
 				entityNo += 1;
-				writeTriple(writer, entity.getId(), Prefix.RDF.getAbbr() + "type", Prefix.EVENT_KG.getAbbr() + "Entity",
-						false, null);
+				writeTriple(writer, writerPreview, lineNo, entity.getId(), Prefix.RDF.getAbbr() + "type",
+						Prefix.EVENT_KG.getAbbr() + "Entity", false, null);
 
 				if (entity.getWikidataId() != null)
-					writeTriple(writer, entity.getId(), Prefix.DCTERMS.getAbbr() + "relation",
+					writeTriple(writer, writerPreview, lineNo, entity.getId(), Prefix.DCTERMS.getAbbr() + "relation",
 							"<" + Prefix.WIKIDATA.getAbbr() + entity.getWikidataId() + ">", false,
 							dataSets.getDataSetWithoutLanguage(Source.WIKIDATA));
 
@@ -244,32 +271,41 @@ public class DataStoreWriter {
 					default:
 						break;
 					}
-					writeTriple(writer, entity.getId(), Prefix.DCTERMS.getAbbr() + "relation",
+					writeTriple(writer, writerPreview, lineNo, entity.getId(), Prefix.DCTERMS.getAbbr() + "relation",
 							"<" + dbPediaId + entity.getWikipediaLabels().get(language) + ">", false,
 							dataSets.getDataSet(language, Source.WIKIPEDIA));
 				}
 
 			}
 
+			lineNo = 0;
 			for (Label label : dataStore.getLabels()) {
 				if (!label.getSubject().isEvent() && label.getSubject().getEventEntity() == null) {
-					writeTriple(writer, label.getSubject().getId(), Prefix.RDF.getAbbr() + "label", label.getLabel(),
-							true, label.getDataSet(), label.getLanguage());
+					lineNo += 1;
+					writeTriple(writer, writerPreview, lineNo, label.getSubject().getId(),
+							Prefix.RDF.getAbbr() + "label", label.getLabel(), true, label.getDataSet(),
+							label.getLanguage());
 				}
 			}
 
+			lineNo = 0;
 			for (Alias alias : dataStore.getAliases()) {
 				if (!alias.getSubject().isEvent() && alias.getSubject().getEventEntity() == null) {
-					writeTriple(writer, alias.getSubject().getId(), Prefix.DCTERMS.getAbbr() + "alternative",
-							alias.getLabel(), true, alias.getDataSet(), alias.getLanguage());
+					lineNo += 1;
+					writeTriple(writer, writerPreview, lineNo, alias.getSubject().getId(),
+							Prefix.DCTERMS.getAbbr() + "alternative", alias.getLabel(), true, alias.getDataSet(),
+							alias.getLanguage());
 				}
 			}
 
+			lineNo = 0;
 			for (Description description : dataStore.getDescriptions()) {
 				if (description.getSubject() != null && !description.getSubject().isEvent()
 						&& description.getSubject().getEventEntity() == null) {
-					writeTriple(writer, description.getSubject().getId(), Prefix.DCTERMS.getAbbr() + "description",
-							description.getLabel(), true, description.getDataSet(), description.getLanguage());
+					lineNo += 1;
+					writeTriple(writer, writerPreview, lineNo, description.getSubject().getId(),
+							Prefix.DCTERMS.getAbbr() + "description", description.getLabel(), true,
+							description.getDataSet(), description.getLanguage());
 				}
 			}
 
@@ -277,6 +313,7 @@ public class DataStoreWriter {
 			e.printStackTrace();
 		} finally {
 			writer.close();
+			writerPreview.close();
 		}
 
 	}
@@ -284,41 +321,53 @@ public class DataStoreWriter {
 	private void writeBaseRelations() {
 
 		PrintWriter writer = null;
+		PrintWriter writerPreview = null;
 		try {
 			writer = FileLoader.getWriter(FileName.ALL_TTL_EVENTS_BASE_RELATIONS);
+			writerPreview = FileLoader.getWriter(FileName.ALL_TTL_EVENTS_BASE_RELATIONS_PREVIEW);
 			List<Prefix> prefixes = new ArrayList<Prefix>();
 			prefixes.add(Prefix.RDF);
 			prefixes.add(Prefix.SCHEMA_ORG);
 			for (String line : createIntro(prefixes)) {
 				writer.write(line + Config.NL);
+				writerPreview.write(line + Config.NL);
 			}
 
+			int lineNo = 0;
 			for (Location location : dataStore.getLocations()) {
-				writeTriple(writer, location.getSubject().getId(), Prefix.SCHEMA_ORG.getAbbr() + "location",
-						location.getLocation().getId(), false, location.getDataSet(), null);
+				lineNo += 1;
+				writeTriple(writer, writerPreview, lineNo, location.getSubject().getId(),
+						Prefix.SCHEMA_ORG.getAbbr() + "location", location.getLocation().getId(), false,
+						location.getDataSet(), null);
 			}
 
+			lineNo = 0;
 			for (StartTime startTime : dataStore.getStartTimes()) {
-
 				// TODO: Why null here?
 				if (startTime.getStartTime() == null)
 					continue;
 
-				writeTriple(writer, startTime.getSubject().getId(), Prefix.SCHEMA_ORG.getAbbr() + "startTime",
-						standardFormat.format(startTime.getStartTime()), false, startTime.getDataSet(), null);
+				lineNo += 1;
+				writeTriple(writer, writerPreview, lineNo, startTime.getSubject().getId(),
+						Prefix.SCHEMA_ORG.getAbbr() + "startTime", standardFormat.format(startTime.getStartTime()),
+						false, startTime.getDataSet(), null);
 			}
 
+			lineNo = 0;
 			for (EndTime endTime : dataStore.getEndTimes()) {
 				if (endTime.getEndTime() == null)
 					continue;
-				writeTriple(writer, endTime.getSubject().getId(), Prefix.SCHEMA_ORG.getAbbr() + "endTime",
-						standardFormat.format(endTime.getEndTime()), false, endTime.getDataSet(), null);
+				lineNo += 1;
+				writeTriple(writer, writerPreview, lineNo, endTime.getSubject().getId(),
+						Prefix.SCHEMA_ORG.getAbbr() + "endTime", standardFormat.format(endTime.getEndTime()), false,
+						endTime.getDataSet(), null);
 			}
 
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		} finally {
 			writer.close();
+			writerPreview.close();
 		}
 
 	}
@@ -326,8 +375,10 @@ public class DataStoreWriter {
 	private void writeLinkRelations() {
 
 		PrintWriter writer = null;
+		PrintWriter writerPreview = null;
 		try {
 			writer = FileLoader.getWriter(FileName.ALL_TTL_EVENTS_LINK_RELATIOINS);
+			writerPreview = FileLoader.getWriter(FileName.ALL_TTL_EVENTS_LINK_RELATIOINS_PREVIEW);
 			List<Prefix> prefixes = new ArrayList<Prefix>();
 			prefixes.add(Prefix.RDF);
 			prefixes.add(Prefix.EVENT_KG);
@@ -335,19 +386,22 @@ public class DataStoreWriter {
 
 			for (String line : createIntro(prefixes)) {
 				writer.write(line + Config.NL);
+				writerPreview.write(line + Config.NL);
 			}
 
 			int relationNo = 0;
+			int lineNo = 0;
 			for (GenericRelation relation : dataStore.getLinkRelations()) {
+				lineNo += 1;
 				String relationId = "eventkg_link_relation_" + String.valueOf(relationNo);
 
-				writeTriple(writer, relationId, Prefix.EVENT_KG.getAbbr() + "relationSubject",
+				writeTriple(writer, writerPreview, lineNo, relationId, Prefix.EVENT_KG.getAbbr() + "relationSubject",
 						relation.getSubject().getId(), false, relation.getDataSet());
-				writeTriple(writer, relationId, Prefix.EVENT_KG.getAbbr() + "relationObject",
+				writeTriple(writer, writerPreview, lineNo, relationId, Prefix.EVENT_KG.getAbbr() + "relationObject",
 						relation.getObject().getId(), false, relation.getDataSet());
-				writeTriple(writer, relationId, Prefix.EVENT_KG.getAbbr() + "relation", relation.getProperty(), false,
-						relation.getDataSet());
-				writeTriple(writer, relationId, Prefix.EVENT_KG.getAbbr() + "strength",
+				writeTriple(writer, writerPreview, lineNo, relationId, Prefix.EVENT_KG.getAbbr() + "relation",
+						relation.getProperty(), false, relation.getDataSet());
+				writeTriple(writer, writerPreview, lineNo, relationId, Prefix.EVENT_KG.getAbbr() + "strength",
 						"\"" + String.valueOf(relation.getWeight()) + "\"^^xsd:double", false, relation.getDataSet());
 
 				relationNo += 1;
@@ -357,6 +411,7 @@ public class DataStoreWriter {
 			e.printStackTrace();
 		} finally {
 			writer.close();
+			writerPreview.close();
 		}
 
 	}
@@ -364,30 +419,35 @@ public class DataStoreWriter {
 	private void writeOtherRelations() {
 
 		PrintWriter writer = null;
+		PrintWriter writerPreview = null;
 		try {
 			writer = FileLoader.getWriter(FileName.ALL_TTL_EVENTS_OTHER_RELATIONS);
+			writerPreview = FileLoader.getWriter(FileName.ALL_TTL_EVENTS_OTHER_RELATIONS_PREVIEW);
 			List<Prefix> prefixes = new ArrayList<Prefix>();
 			prefixes.add(Prefix.EVENT_KG);
 			prefixes.add(Prefix.RDF);
 
 			for (String line : createIntro(prefixes)) {
 				writer.write(line + Config.NL);
+				writerPreview.write(line + Config.NL);
 			}
 
 			int relationNo = 0;
+			int lineNo = 0;
 			for (GenericRelation relation : dataStore.getGenericRelations()) {
+				lineNo += 1;
 				String relationId = "<eventkg_relation_" + String.valueOf(relationNo) + ">";
 
-				writeTriple(writer, relationId, Prefix.EVENT_KG.getAbbr() + "relationSubject",
+				writeTriple(writer, writerPreview, lineNo, relationId, Prefix.EVENT_KG.getAbbr() + "relationSubject",
 						relation.getSubject().getId(), false, relation.getDataSet());
-				writeTriple(writer, relationId, Prefix.EVENT_KG.getAbbr() + "relationObject",
+				writeTriple(writer, writerPreview, lineNo, relationId, Prefix.EVENT_KG.getAbbr() + "relationObject",
 						relation.getObject().getId(), false, relation.getDataSet());
-				writeTriple(writer, relationId, Prefix.EVENT_KG.getAbbr() + "relation", relation.getProperty(), false,
-						relation.getDataSet());
+				writeTriple(writer, writerPreview, lineNo, relationId, Prefix.EVENT_KG.getAbbr() + "relation",
+						relation.getProperty(), false, relation.getDataSet());
 
 				if (relation.getPropertyLabels() != null) {
 					for (Language language : relation.getPropertyLabels().keySet())
-						writeTriple(writer, relationId, Prefix.RDF.getAbbr() + "label",
+						writeTriple(writer, writerPreview, lineNo, relationId, Prefix.RDF.getAbbr() + "label",
 								relation.getPropertyLabels().get(language), true, relation.getDataSet(), language);
 				}
 
@@ -398,6 +458,7 @@ public class DataStoreWriter {
 			e.printStackTrace();
 		} finally {
 			writer.close();
+			writerPreview.close();
 		}
 
 	}
@@ -408,8 +469,12 @@ public class DataStoreWriter {
 
 		lines.add("");
 		for (Prefix prefix : prefixes) {
-			lines.add("@prefix " + prefix.getAbbr() + " " + prefix.getUrlPrefix() + Config.SEP + ".");
+			lines.add(
+					"@prefix" + Config.SEP + prefix.getAbbr() + " <" + prefix.getUrlPrefix() + ">" + Config.SEP + ".");
 		}
+
+		lines.add("@base" + Config.SEP + "<http://eventKG.l3s.uni-hannover.de/schema/>" + Config.SEP + ".");
+
 		lines.add("");
 
 		return lines;
@@ -434,17 +499,26 @@ public class DataStoreWriter {
 	//
 	// }
 
-	private void writeTriple(PrintWriter writer, String subject, String property, String object, boolean quoteObject,
-			DataSet dataSet) {
+	private void writeTriple(PrintWriter writer, PrintWriter writerPreview, Integer lineNo, String subject,
+			String property, String object, boolean quoteObject, DataSet dataSet) {
 
 		if (object == null)
 			return;
 
 		if (quoteObject) {
+			// object = "\"" + object.replaceAll("\"", "\\\\\"") + "\"";
+			// TODO: Check example "https://www.wikidata.org/wiki/Q859038"
+			object = object.replace("\\", "\\\\");
+
 			object = "\"" + object.replaceAll("\"", "\\\\\"") + "\"";
 		}
 
-		writer.write(subject + Config.SEP + property + Config.SEP + object + Config.SEP + "." + Config.NL);
+		String line = subject + Config.SEP + property + Config.SEP + object + Config.SEP + "." + Config.NL;
+		writer.write(line);
+
+		if (writerPreview != null && lineNo <= NUMBER_OF_LINES_IN_PREVIEW)
+			writerPreview.write(line);
+
 	}
 
 	// private void writeTriple(PrintWriter writer, String subject, String
@@ -457,8 +531,8 @@ public class DataStoreWriter {
 	// Config.SEP + "." + Config.NL);
 	// }
 
-	private void writeTriple(PrintWriter writer, String subject, String property, String object, boolean quoteObject,
-			DataSet dataSet, Language language) {
+	private void writeTriple(PrintWriter writer, PrintWriter writerPreview, Integer lineNo, String subject,
+			String property, String object, boolean quoteObject, DataSet dataSet, Language language) {
 
 		if (object == null)
 			return;
@@ -468,11 +542,17 @@ public class DataStoreWriter {
 		} else if (quoteObject)
 			object = "\"" + object.replaceAll("\"", "\\\\\"");
 
+		String line = null;
+
 		if (dataSet == null)
-			writer.write(subject + Config.SEP + property + Config.SEP + object + Config.SEP + "." + Config.NL);
+			line = subject + Config.SEP + property + Config.SEP + object + Config.SEP + "." + Config.NL;
 		else
-			writer.write(subject + Config.SEP + property + Config.SEP + object + Config.SEP + dataSet.getId()
-					+ Config.SEP + "." + Config.NL);
+			line = subject + Config.SEP + property + Config.SEP + object + Config.SEP + dataSet.getId() + Config.SEP
+					+ "." + Config.NL;
+
+		writer.write(line);
+		if (writerPreview != null && lineNo <= NUMBER_OF_LINES_IN_PREVIEW)
+			writerPreview.write(line);
 
 	}
 

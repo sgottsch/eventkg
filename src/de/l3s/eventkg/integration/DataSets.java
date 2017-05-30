@@ -35,7 +35,7 @@ public class DataSets {
 		if (!this.dataSets.containsKey(language))
 			this.dataSets.put(language, new HashMap<Source, DataSet>());
 		DataSet dataSet = new DataSet(source,
-				"<dataset_" + source.toString().toLowerCase() + "_" + language.getLanguageLowerCase() + ">",
+				"<graphs/" + source.toString().toLowerCase() + "_" + language.getLanguageLowerCase() + ">",
 				"<" + url + ">");
 		allDataSets.add(dataSet);
 		this.dataSets.get(language).put(source, dataSet);
@@ -43,7 +43,7 @@ public class DataSets {
 	}
 
 	public void addDataSetWithoutLanguage(Source source, String url) {
-		DataSet dataSet = new DataSet(source, "<dataset_" + source.toString().toLowerCase() + ">", "<" + url + ">");
+		DataSet dataSet = new DataSet(source, "<graphs/" + source.toString().toLowerCase() + ">", "<" + url + ">");
 		allDataSets.add(dataSet);
 		this.dataSetsWithoutLanguage.put(source, dataSet);
 		this.dataSetsById.put(dataSet.getId(), dataSet);

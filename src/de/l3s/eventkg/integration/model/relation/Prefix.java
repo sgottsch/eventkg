@@ -2,7 +2,7 @@ package de.l3s.eventkg.integration.model.relation;
 
 public enum Prefix {
 
-	SCHEMA_ORG("so:", "http:schema.org"),
+	SCHEMA_ORG("so:", "http:schema.org/"),
 	RDF("rdf:", "http://www.w3.org/1999/02/22-rdf-syntax-ns#"),
 	RDFS("rdfs:", "http://www.w3.org/2000/01/rdf-schema#"),
 	DCTERMS("dcterms:", "http://purl.org/dc/terms/"),

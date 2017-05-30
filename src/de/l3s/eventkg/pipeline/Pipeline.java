@@ -175,7 +175,7 @@ public class Pipeline {
 		}
 
 		DataStoreWriter outputWriter = new DataStoreWriter();
-		outputWriter.write(Config.getValue("data_folder") + FileLoader.ONLINE_RESULTS_FOLDER_SUFFIX);
+		outputWriter.write();
 	}
 
 	private AllEventPagesDataSet getAllEventPagesDataSet() {

@@ -143,12 +143,18 @@ public enum FileName {
 	 */
 	ALL_EVENT_PAGES("all_event_pages.tsv", Source.ALL, FileType.RESULTS, false, false, false),
 
-	ALL_TTL_EVENTS_WITH_TEXTS("events.ttl", Source.ALL, FileType.RESULTS, false, false, false),
-	ALL_TTL_ENTITIES_WITH_TEXTS("entities.ttl", Source.ALL, FileType.RESULTS, false, false, false),
-	ALL_TTL_EVENTS_BASE_RELATIONS("relations_base.ttl", Source.ALL, FileType.RESULTS, false, false, false),
-	ALL_TTL_EVENTS_LINK_RELATIOINS("relations_links.ttl", Source.ALL, FileType.RESULTS, false, false, false),
-	ALL_TTL_EVENTS_OTHER_RELATIONS("relations_other.ttl", Source.ALL, FileType.RESULTS, false, false, false),
-	ALL_TTL_DATASETS("datasets.ttl", Source.ALL, FileType.RESULTS, false, false, false),
+	ALL_TTL_EVENTS_WITH_TEXTS("events.nq", Source.ALL, FileType.RESULTS, false, false, false),
+	ALL_TTL_ENTITIES_WITH_TEXTS("entities.nq", Source.ALL, FileType.RESULTS, false, false, false),
+	ALL_TTL_EVENTS_BASE_RELATIONS("relations_base.nq", Source.ALL, FileType.RESULTS, false, false, false),
+	ALL_TTL_EVENTS_LINK_RELATIOINS("relations_links.nq", Source.ALL, FileType.RESULTS, false, false, false),
+	ALL_TTL_EVENTS_OTHER_RELATIONS("relations_other.nq", Source.ALL, FileType.RESULTS, false, false, false),
+	ALL_TTL_DATASETS("graphs.ttl", Source.ALL, FileType.RESULTS, false, false, false),
+
+	ALL_TTL_EVENTS_WITH_TEXTS_PREVIEW("events_preview.nq", Source.ALL, FileType.RESULTS, false, false, false),
+	ALL_TTL_ENTITIES_WITH_TEXTS_PREVIEW("entities_preview.nq", Source.ALL, FileType.RESULTS, false, false, false),
+	ALL_TTL_EVENTS_BASE_RELATIONS_PREVIEW("relations_base_preview.nq", Source.ALL, FileType.RESULTS, false, false, false),
+	ALL_TTL_EVENTS_LINK_RELATIOINS_PREVIEW("relations_links_preview.nq", Source.ALL, FileType.RESULTS, false, false, false),
+	ALL_TTL_EVENTS_OTHER_RELATIONS_PREVIEW("relations_other_preview.nq", Source.ALL, FileType.RESULTS, false, false, false),
 
 	/**
 	 * Event pages with times
