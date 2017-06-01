@@ -7,10 +7,8 @@ import java.io.PrintWriter;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import de.l3s.eventkg.integration.WikidataIdMappings.TemporalPropertyType;
@@ -321,15 +319,19 @@ public class DataCollector extends Extractor {
 		try {
 			writer = FileLoader.getWriter(FileName.ALL_PART_OF_RELATIONS);
 			for (Event event : uniqueEvents) {
-				for (Event child : event.getChildren()) {
-					writer.write(event.getWikidataId());
-					writer.write(Config.TAB);
-					writer.write(event.getWikipediaLabelsString(this.languages));
-					writer.write(Config.TAB);
-					writer.write(child.getWikidataId());
-					writer.write(Config.TAB);
-					writer.write(child.getWikipediaLabelsString(this.languages));
-					writer.write(Config.NL);
+				for (Event child : event.getChildrenWithDataSets().keySet()) {
+					for (DataSet dataSet : event.getChildrenWithDataSets().get(child)) {
+						writer.write(event.getWikidataId());
+						writer.write(Config.TAB);
+						writer.write(event.getWikipediaLabelsString(this.languages));
+						writer.write(Config.TAB);
+						writer.write(child.getWikidataId());
+						writer.write(Config.TAB);
+						writer.write(child.getWikipediaLabelsString(this.languages));
+						writer.write(Config.TAB);
+						writer.write(dataSet.getId());
+						writer.write(Config.NL);
+					}
 				}
 			}
 		} catch (FileNotFoundException e) {
@@ -719,8 +721,8 @@ public class DataCollector extends Extractor {
 					Event event2 = findEvent(language, wikipedia2Label);
 
 					if (event1 != null && event2 != null) {
-						event1.addParent(event2);
-						event2.addChild(event1);
+						event1.addParent(event2, DataSets.getInstance().getDataSet(language, Source.DBPEDIA));
+						event2.addChild(event1, DataSets.getInstance().getDataSet(language, Source.DBPEDIA));
 					}
 
 				}
@@ -761,8 +763,8 @@ public class DataCollector extends Extractor {
 				if (event1 == null || event2 == null)
 					continue;
 
-				event1.addParent(event2);
-				event2.addChild(event1);
+				event1.addParent(event2, DataSets.getInstance().getDataSetWithoutLanguage(Source.WIKIDATA));
+				event2.addChild(event1, DataSets.getInstance().getDataSetWithoutLanguage(Source.WIKIDATA));
 
 			}
 		} catch (IOException e) {

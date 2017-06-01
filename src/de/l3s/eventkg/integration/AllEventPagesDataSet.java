@@ -347,8 +347,11 @@ public class AllEventPagesDataSet {
 					continue;
 				}
 
-				GenericRelation relation = new GenericRelation(event2, null, Prefix.EVENT_KG.getAbbr() + "sub_event_of",
-						event1, null);
+				String dataSetId = parts[4];
+				DataSet dataSet = DataSets.getInstance().getDataSetById(dataSetId);
+
+				GenericRelation relation = new GenericRelation(event2, dataSet, Prefix.SCHEMA_ORG, "subEvent", event1,
+						null);
 				DataStore.getInstance().addGenericRelation(relation);
 
 			}

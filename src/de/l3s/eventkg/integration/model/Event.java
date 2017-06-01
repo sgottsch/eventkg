@@ -14,8 +14,10 @@ import de.l3s.eventkg.util.FileLoader;
 public class Event extends Entity {
 
 	private Set<Event> children;
+	private Map<Event, Set<DataSet>> childrenWithDataSets = new HashMap<Event, Set<DataSet>>();
 
 	private Set<Event> parents;
+	private Map<Event, Set<DataSet>> parentsWithDataSets = new HashMap<Event, Set<DataSet>>();
 
 	private Set<Entity> locations;
 	private Map<Entity, Set<DataSet>> locationsWithDataSets = new HashMap<Entity, Set<DataSet>>();
@@ -84,12 +86,18 @@ public class Event extends Entity {
 		this.parents = parents;
 	}
 
-	public void addParent(Event event) {
+	public void addParent(Event event, DataSet dataSet) {
 		this.parents.add(event);
+		if (!this.parentsWithDataSets.containsKey(event))
+			parentsWithDataSets.put(event, new HashSet<DataSet>());
+		this.parentsWithDataSets.get(event).add(dataSet);
 	}
 
-	public void addChild(Event event) {
+	public void addChild(Event event, DataSet dataSet) {
 		this.children.add(event);
+		if (!this.childrenWithDataSets.containsKey(event))
+			childrenWithDataSets.put(event, new HashSet<DataSet>());
+		this.childrenWithDataSets.get(event).add(dataSet);
 	}
 
 	public Date getStartTime() {
@@ -148,6 +156,14 @@ public class Event extends Entity {
 
 	public void setURLs(Set<String> urls) {
 		this.urls = urls;
+	}
+
+	public Map<Event, Set<DataSet>> getChildrenWithDataSets() {
+		return childrenWithDataSets;
+	}
+
+	public Map<Event, Set<DataSet>> getParentsWithDataSets() {
+		return parentsWithDataSets;
 	}
 
 }

@@ -44,7 +44,7 @@ public class LinksToCount {
 
 	public GenericRelation toGenericRelation() {
 		return new GenericRelation(event, DataSets.getInstance().getDataSet(this.language, Source.WIKIPEDIA),
-				Prefix.EVENT_KG.getAbbr() + "links_to", entity, (double) count);
+				Prefix.EVENT_KG_SCHEMA, "links_to", entity, (double) count);
 	}
 
 }

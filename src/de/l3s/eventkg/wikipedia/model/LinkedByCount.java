@@ -16,8 +16,6 @@ public class LinkedByCount {
 
 	private int count;
 
-	private int rank;
-
 	private Language language;
 
 	public LinkedByCount(Event event, Entity entity, int count, Language language) {
@@ -40,17 +38,13 @@ public class LinkedByCount {
 		return count;
 	}
 
-	public int getRank() {
-		return rank;
-	}
-
 	public Language getLanguage() {
 		return language;
 	}
 
 	public GenericRelation toGenericRelation() {
 		return new GenericRelation(event, DataSets.getInstance().getDataSet(this.language, Source.WIKIPEDIA),
-				Prefix.EVENT_KG.getAbbr() + "linked_by", entity, (double) rank);
+				Prefix.EVENT_KG_SCHEMA, "linked_by", entity, (double) count);
 	}
 
 }

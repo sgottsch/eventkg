@@ -17,6 +17,7 @@ import de.l3s.eventkg.integration.WikidataIdMappings.TemporalPropertyType;
 import de.l3s.eventkg.integration.model.Entity;
 import de.l3s.eventkg.integration.model.Relation;
 import de.l3s.eventkg.integration.model.relation.GenericRelation;
+import de.l3s.eventkg.integration.model.relation.Prefix;
 import de.l3s.eventkg.meta.Language;
 import de.l3s.eventkg.meta.Source;
 import de.l3s.eventkg.pipeline.Config;
@@ -63,10 +64,58 @@ public class TemporalRelationsCollector extends Extractor {
 		try {
 			PrintWriter writer = FileLoader.getWriter(FileName.ALL_TEMPORAL_RELATIONS);
 			for (Relation relation : relations) {
-				
+
+				Prefix prefix = null;
+
+				// TODO: Find better solution
+				switch (relation.getSource()) {
+				case WIKIDATA:
+					prefix = Prefix.WIKIDATA;
+					break;
+				case YAGO:
+					prefix = Prefix.YAGO;
+					break;
+				case DBPEDIA: {
+					switch (relation.getSourceLanguage()) {
+					case EN:
+						prefix = Prefix.DBPEDIA_EN;
+						break;
+					case DE:
+						prefix = Prefix.DBPEDIA_DE;
+						break;
+					case PT:
+						prefix = Prefix.DBPEDIA_PT;
+						break;
+					case RU:
+						prefix = Prefix.DBPEDIA_RU;
+						break;
+					case FR:
+						prefix = Prefix.DBPEDIA_FR;
+						break;
+					default:
+						break;
+					}
+					break;
+				}
+				default:
+					System.out.println("No prefix for " + relation.getSource() + ": "
+							+ relation.getEntity1().getWikidataId() + " " + relation.getProperty());
+					break;
+				}
+
+				if (relation.getProperty().startsWith("rdf-schema#")) {
+					prefix = Prefix.RDFS;
+					relation.setProperty(relation.getProperty().substring(relation.getProperty().indexOf("#") + 1));
+				} else if (relation.getProperty().startsWith("owl#")) {
+					prefix = Prefix.OWL;
+					relation.setProperty(relation.getProperty().substring(relation.getProperty().indexOf("#") + 1));
+				}
+
 				GenericRelation genericRelation = new GenericRelation(relation.getEntity1(),
-						DataSets.getInstance().getDataSet(relation.getSourceLanguage(), relation.getSource()),
+						DataSets.getInstance().getDataSet(relation.getSourceLanguage(), relation.getSource()), prefix,
 						relation.getProperty(), relation.getEntity2(), null);
+				if (genericRelation.getDataSet() == null)
+					System.out.println("NO DATASET: " + relation.getSourceLanguage() + " " + relation.getSource());
 				DataStore.getInstance().addGenericRelation(genericRelation);
 				// Wikidata: Add labels
 				if (relation.getSource() == Source.WIKIDATA) {

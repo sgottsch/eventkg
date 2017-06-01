@@ -60,18 +60,16 @@ public class DataStoreWriter {
 			prefixes.add(Prefix.VOID);
 			prefixes.add(Prefix.FOAF);
 			prefixes.add(Prefix.RDF);
+			prefixes.add(Prefix.EVENT_KG_SCHEMA);
 			for (String line : createIntro(prefixes)) {
 				writer.write(line + Config.NL);
 			}
 
-			// TODO: Check error with "<foaf:homepage
-			// https://dumps.wikimedia.org/enwiki/>" in the output
-
 			for (DataSet dataSet : dataSets.getAllDataSets()) {
-				writeTriple(writer, null, null, dataSet.getId(), Prefix.RDF.getAbbr() + "type",
-						Prefix.FOAF.getAbbr() + "Dataset", false, null);
-				writeTriple(writer, null, null, dataSet.getId(), Prefix.FOAF.getAbbr() + "homepage", dataSet.getUrl(),
-						false, null);
+				writeTriple(writer, null, null, "<" + Prefix.EVENT_KG_GRAPH.getAbbr() + dataSet.getId() + ">",
+						Prefix.RDF.getAbbr() + "type", Prefix.FOAF.getAbbr() + "Dataset", false, null);
+				writeTriple(writer, null, null, "<" + Prefix.EVENT_KG_GRAPH.getAbbr() + dataSet.getId() + ">",
+						Prefix.FOAF.getAbbr() + "homepage", dataSet.getUrl(), false, null);
 			}
 
 		} catch (FileNotFoundException e) {
@@ -95,7 +93,7 @@ public class DataStoreWriter {
 
 			List<Prefix> prefixes = new ArrayList<Prefix>();
 			prefixes.add(Prefix.RDF);
-			prefixes.add(Prefix.EVENT_KG);
+			prefixes.add(Prefix.EVENT_KG_SCHEMA);
 			prefixes.add(Prefix.DCTERMS);
 			prefixes.add(Prefix.WIKIDATA);
 			prefixes.add(Prefix.DBPEDIA_EN);
@@ -116,7 +114,7 @@ public class DataStoreWriter {
 				eventNo += 1;
 				lineNo += 1;
 				writeTriple(writer, writerPreview, lineNo, event.getId(), Prefix.RDF.getAbbr() + "type",
-						Prefix.EVENT_KG.getAbbr() + "Event", false, null);
+						"<" + Prefix.EVENT_KG_SCHEMA.getAbbr() + "Event>", false, null);
 
 				if (event.getWikidataId() != null)
 					writeTriple(writer, writerPreview, lineNo, event.getId(), Prefix.DCTERMS.getAbbr() + "relation",
@@ -218,7 +216,7 @@ public class DataStoreWriter {
 
 			List<Prefix> prefixes = new ArrayList<Prefix>();
 			prefixes.add(Prefix.RDF);
-			prefixes.add(Prefix.EVENT_KG);
+			prefixes.add(Prefix.EVENT_KG_SCHEMA);
 			prefixes.add(Prefix.DCTERMS);
 			prefixes.add(Prefix.DBPEDIA_EN);
 			prefixes.add(Prefix.DBPEDIA_RU);
@@ -242,7 +240,7 @@ public class DataStoreWriter {
 				entity.setId("<" + entityId + String.valueOf(entityNo) + ">");
 				entityNo += 1;
 				writeTriple(writer, writerPreview, lineNo, entity.getId(), Prefix.RDF.getAbbr() + "type",
-						Prefix.EVENT_KG.getAbbr() + "Entity", false, null);
+						"<" + Prefix.EVENT_KG_SCHEMA.getAbbr() + "Entity>", false, null);
 
 				if (entity.getWikidataId() != null)
 					writeTriple(writer, writerPreview, lineNo, entity.getId(), Prefix.DCTERMS.getAbbr() + "relation",
@@ -380,9 +378,14 @@ public class DataStoreWriter {
 			writer = FileLoader.getWriter(FileName.ALL_TTL_EVENTS_LINK_RELATIOINS);
 			writerPreview = FileLoader.getWriter(FileName.ALL_TTL_EVENTS_LINK_RELATIOINS_PREVIEW);
 			List<Prefix> prefixes = new ArrayList<Prefix>();
-			prefixes.add(Prefix.RDF);
-			prefixes.add(Prefix.EVENT_KG);
-			prefixes.add(Prefix.XSD);
+			// prefixes.add(Prefix.RDF);
+			// prefixes.add(Prefix.EVENT_KG);
+			// prefixes.add(Prefix.XSD);
+
+			// add all prefixes, because they could all be in the
+			// eventKGRelations
+			for (Prefix prefix : Prefix.values())
+				prefixes.add(prefix);
 
 			for (String line : createIntro(prefixes)) {
 				writer.write(line + Config.NL);
@@ -393,15 +396,17 @@ public class DataStoreWriter {
 			int lineNo = 0;
 			for (GenericRelation relation : dataStore.getLinkRelations()) {
 				lineNo += 1;
-				String relationId = "eventkg_link_relation_" + String.valueOf(relationNo);
+				String relationId = "<eventkg_link_relation_" + String.valueOf(relationNo) + ">";
 
-				writeTriple(writer, writerPreview, lineNo, relationId, Prefix.EVENT_KG.getAbbr() + "relationSubject",
-						relation.getSubject().getId(), false, relation.getDataSet());
-				writeTriple(writer, writerPreview, lineNo, relationId, Prefix.EVENT_KG.getAbbr() + "relationObject",
-						relation.getObject().getId(), false, relation.getDataSet());
-				writeTriple(writer, writerPreview, lineNo, relationId, Prefix.EVENT_KG.getAbbr() + "relation",
-						relation.getProperty(), false, relation.getDataSet());
-				writeTriple(writer, writerPreview, lineNo, relationId, Prefix.EVENT_KG.getAbbr() + "strength",
+				writeTriple(writer, writerPreview, lineNo, relationId,
+						Prefix.EVENT_KG_SCHEMA.getAbbr() + "relationSubject", relation.getSubject().getId(), false,
+						relation.getDataSet());
+				writeTriple(writer, writerPreview, lineNo, relationId,
+						Prefix.EVENT_KG_SCHEMA.getAbbr() + "relationObject", relation.getObject().getId(), false,
+						relation.getDataSet());
+				writeTriple(writer, writerPreview, lineNo, relationId, Prefix.EVENT_KG_SCHEMA.getAbbr() + "relation",
+						relation.getPrefix().getAbbr() + relation.getProperty(), false, relation.getDataSet());
+				writeTriple(writer, writerPreview, lineNo, relationId, Prefix.EVENT_KG_SCHEMA.getAbbr() + "strength",
 						"\"" + String.valueOf(relation.getWeight()) + "\"^^xsd:double", false, relation.getDataSet());
 
 				relationNo += 1;
@@ -424,7 +429,7 @@ public class DataStoreWriter {
 			writer = FileLoader.getWriter(FileName.ALL_TTL_EVENTS_OTHER_RELATIONS);
 			writerPreview = FileLoader.getWriter(FileName.ALL_TTL_EVENTS_OTHER_RELATIONS_PREVIEW);
 			List<Prefix> prefixes = new ArrayList<Prefix>();
-			prefixes.add(Prefix.EVENT_KG);
+			prefixes.add(Prefix.EVENT_KG_SCHEMA);
 			prefixes.add(Prefix.RDF);
 
 			for (String line : createIntro(prefixes)) {
@@ -438,11 +443,13 @@ public class DataStoreWriter {
 				lineNo += 1;
 				String relationId = "<eventkg_relation_" + String.valueOf(relationNo) + ">";
 
-				writeTriple(writer, writerPreview, lineNo, relationId, Prefix.EVENT_KG.getAbbr() + "relationSubject",
-						relation.getSubject().getId(), false, relation.getDataSet());
-				writeTriple(writer, writerPreview, lineNo, relationId, Prefix.EVENT_KG.getAbbr() + "relationObject",
-						relation.getObject().getId(), false, relation.getDataSet());
-				writeTriple(writer, writerPreview, lineNo, relationId, Prefix.EVENT_KG.getAbbr() + "relation",
+				writeTriple(writer, writerPreview, lineNo, relationId,
+						Prefix.EVENT_KG_SCHEMA.getAbbr() + "relationSubject", relation.getSubject().getId(), false,
+						relation.getDataSet());
+				writeTriple(writer, writerPreview, lineNo, relationId,
+						Prefix.EVENT_KG_SCHEMA.getAbbr() + "relationObject", relation.getObject().getId(), false,
+						relation.getDataSet());
+				writeTriple(writer, writerPreview, lineNo, relationId, Prefix.EVENT_KG_SCHEMA.getAbbr() + "relation",
 						relation.getProperty(), false, relation.getDataSet());
 
 				if (relation.getPropertyLabels() != null) {
@@ -465,15 +472,20 @@ public class DataStoreWriter {
 
 	private List<String> createIntro(List<Prefix> prefixes) {
 
+		prefixes.add(Prefix.EVENT_KG_GRAPH);
+
 		List<String> lines = new ArrayList<String>();
 
 		lines.add("");
 		for (Prefix prefix : prefixes) {
+			// ignore base relation
+			if (prefix == Prefix.EVENT_KG_RESOURCE)
+				continue;
 			lines.add(
 					"@prefix" + Config.SEP + prefix.getAbbr() + " <" + prefix.getUrlPrefix() + ">" + Config.SEP + ".");
 		}
 
-		lines.add("@base" + Config.SEP + "<http://eventKG.l3s.uni-hannover.de/schema/>" + Config.SEP + ".");
+		lines.add("@base" + Config.SEP + "<" + Prefix.EVENT_KG_RESOURCE.getUrlPrefix() + ">" + Config.SEP + ".");
 
 		lines.add("");
 
@@ -513,12 +525,16 @@ public class DataStoreWriter {
 			object = "\"" + object.replaceAll("\"", "\\\\\"") + "\"";
 		}
 
-		String line = subject + Config.SEP + property + Config.SEP + object + Config.SEP + "." + Config.NL;
-		writer.write(line);
+		String line = null;
+		if (dataSet == null) {
+			line = subject + Config.SEP + property + Config.SEP + object + Config.SEP + "." + Config.NL;
+		} else
+			line = subject + Config.SEP + property + Config.SEP + object + Config.SEP + "<"
+					+ Prefix.EVENT_KG_GRAPH.getAbbr() + dataSet.getId() + ">" + Config.SEP + "." + Config.NL;
 
+		writer.write(line);
 		if (writerPreview != null && lineNo <= NUMBER_OF_LINES_IN_PREVIEW)
 			writerPreview.write(line);
-
 	}
 
 	// private void writeTriple(PrintWriter writer, String subject, String
@@ -544,11 +560,11 @@ public class DataStoreWriter {
 
 		String line = null;
 
-		if (dataSet == null)
+		if (dataSet == null) {
 			line = subject + Config.SEP + property + Config.SEP + object + Config.SEP + "." + Config.NL;
-		else
-			line = subject + Config.SEP + property + Config.SEP + object + Config.SEP + dataSet.getId() + Config.SEP
-					+ "." + Config.NL;
+		} else
+			line = subject + Config.SEP + property + Config.SEP + object + Config.SEP + "<"
+					+ Prefix.EVENT_KG_GRAPH.getAbbr() + dataSet.getId() + ">" + Config.SEP + "." + Config.NL;
 
 		writer.write(line);
 		if (writerPreview != null && lineNo <= NUMBER_OF_LINES_IN_PREVIEW)

@@ -31,6 +31,7 @@ import de.l3s.eventkg.integration.model.relation.Description;
 import de.l3s.eventkg.integration.model.relation.EndTime;
 import de.l3s.eventkg.integration.model.relation.GenericRelation;
 import de.l3s.eventkg.integration.model.relation.Location;
+import de.l3s.eventkg.integration.model.relation.Prefix;
 import de.l3s.eventkg.integration.model.relation.StartTime;
 import de.l3s.eventkg.meta.Language;
 import de.l3s.eventkg.meta.Source;
@@ -153,9 +154,19 @@ public class TextualEventsExtractor extends Extractor {
 
 			Set<String> urls = new HashSet<String>();
 
+			// for each event cluster, keep track of the events' datasets; to
+			// finally take the most frequent one.
+			Map<DataSet, Integer> dataSetsWithCount = new HashMap<DataSet, Integer>();
+
 			Date start = null;
 			Date end = null;
 			for (TextualEvent event : cluster) {
+
+				DataSet dataSet = DataSets.getInstance().getDataSet(event.getLanguage(), event.getSource());
+				if (!dataSetsWithCount.containsKey(dataSet))
+					dataSetsWithCount.put(dataSet, 1);
+				else
+					dataSetsWithCount.put(dataSet, dataSetsWithCount.get(dataSet) + 1);
 
 				urls.add(event.getWikipediaPage());
 
@@ -170,8 +181,7 @@ public class TextualEventsExtractor extends Extractor {
 								relatedEntities.get(event.getLanguage()).get(relatedEntity) + 1);
 
 					if (locationEntities.contains(relatedEntity))
-						relatedLocations.put(relatedEntity,
-								DataSets.getInstance().getDataSet(event.getLanguage(), event.getSource()));
+						relatedLocations.put(relatedEntity, dataSet);
 
 				}
 				relatedEvents.addAll(event.getRelatedEvents());
@@ -184,6 +194,16 @@ public class TextualEventsExtractor extends Extractor {
 					} catch (ParseException e) {
 						e.printStackTrace();
 					}
+				}
+			}
+
+			// find most frequent dataset
+			int maxCnt = 0;
+			DataSet dataSet = null;
+			for (DataSet dataSetCandidate : dataSetsWithCount.keySet()) {
+				if (dataSetsWithCount.get(dataSetCandidate) > maxCnt) {
+					maxCnt = dataSetsWithCount.get(dataSetCandidate);
+					dataSet = dataSetCandidate;
 				}
 			}
 
@@ -228,7 +248,8 @@ public class TextualEventsExtractor extends Extractor {
 				if (namedEvent == null) {
 					// completely new event
 				} else {
-					GenericRelation relation = new GenericRelation(event, null, "so:isPartOf", namedEvent, null);
+					GenericRelation relation = new GenericRelation(event, dataSet, Prefix.SCHEMA_ORG, "subEvent",
+							namedEvent, null);
 					DataStore.getInstance().addGenericRelation(relation);
 				}
 			}
@@ -263,11 +284,11 @@ public class TextualEventsExtractor extends Extractor {
 						DataSets.getInstance().getDataSet(eventInCluster.getLanguage(), eventInCluster.getSource()));
 			}
 
-			for (DataSet dataSet : dataSets) {
+			for (DataSet dataSetWithTime : dataSets) {
 				if (start != null)
-					DataStore.getInstance().addStartTime(new StartTime(event, dataSet, start));
+					DataStore.getInstance().addStartTime(new StartTime(event, dataSetWithTime, start));
 				if (end != null)
-					DataStore.getInstance().addEndTime(new EndTime(event, dataSet, end));
+					DataStore.getInstance().addEndTime(new EndTime(event, dataSetWithTime, end));
 			}
 
 		}

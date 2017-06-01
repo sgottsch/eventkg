@@ -34,18 +34,30 @@ public class DataSets {
 	public void addDataSet(Language language, Source source, String url) {
 		if (!this.dataSets.containsKey(language))
 			this.dataSets.put(language, new HashMap<Source, DataSet>());
-		DataSet dataSet = new DataSet(source,
-				"<graphs/" + source.toString().toLowerCase() + "_" + language.getLanguageLowerCase() + ">",
+		DataSet dataSet = new DataSet(source, source.toString().toLowerCase() + "_" + language.getLanguageLowerCase(),
 				"<" + url + ">");
 		allDataSets.add(dataSet);
 		this.dataSets.get(language).put(source, dataSet);
+		// this.dataSetsById.put(dataSet.getId().replace("graphs/", ""),
+		// dataSet);
+		this.dataSetsById.put("<" + dataSet.getId() + ">", dataSet);
 		this.dataSetsById.put(dataSet.getId(), dataSet);
 	}
 
 	public void addDataSetWithoutLanguage(Source source, String url) {
-		DataSet dataSet = new DataSet(source, "<graphs/" + source.toString().toLowerCase() + ">", "<" + url + ">");
+		DataSet dataSet = new DataSet(source, source.toString().toLowerCase(), "<" + url + ">");
 		allDataSets.add(dataSet);
 		this.dataSetsWithoutLanguage.put(source, dataSet);
+
+		// assume English as default language
+		Language language = Language.EN;
+		if (!this.dataSets.containsKey(language))
+			this.dataSets.put(language, new HashMap<Source, DataSet>());
+		this.dataSets.get(language).put(source, dataSet);
+
+		// this.dataSetsById.put(dataSet.getId().replace("graphs/", ""),
+		// dataSet);
+		this.dataSetsById.put("<" + dataSet.getId() + ">", dataSet);
 		this.dataSetsById.put(dataSet.getId(), dataSet);
 	}
 
@@ -62,6 +74,11 @@ public class DataSets {
 	}
 
 	public DataSet getDataSetById(String dataSetId) {
+
+		// TODO: Avoid that this is needed.
+		if (dataSetId.startsWith("<dataset_"))
+			dataSetId = dataSetId.replace("dataset_", "");
+
 		return this.dataSetsById.get(dataSetId);
 	}
 

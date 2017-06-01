@@ -21,7 +21,6 @@ import de.l3s.eventkg.integration.TemporalRelationsCollector;
 import de.l3s.eventkg.meta.Language;
 import de.l3s.eventkg.meta.Source;
 import de.l3s.eventkg.textual_events.TextualEventsExtractor;
-import de.l3s.eventkg.util.FileLoader;
 import de.l3s.eventkg.wikidata.WikidataExtractionWithEventPages;
 import de.l3s.eventkg.wikidata.WikidataExtractionWithoutEventPages;
 import de.l3s.eventkg.wikidata.misc.EventsFromFileFinder;

@@ -12,17 +12,21 @@ public class GenericRelation extends RelationWithSource {
 
 	private Entity object;
 
+	private Prefix prefix;
+
 	private Source source;
 
 	private Double weight;
 
 	private Map<Language, String> propertyLabels;
 
-	public GenericRelation(Entity subject, DataSet dataSet, String property, Entity object, Double weight) {
+	public GenericRelation(Entity subject, DataSet dataSet, Prefix prefix, String property, Entity object,
+			Double weight) {
 		super(subject, dataSet);
 		this.property = property;
 		this.object = object;
 		this.weight = weight;
+		this.prefix = prefix;
 	}
 
 	public String getProperty() {
@@ -63,6 +67,14 @@ public class GenericRelation extends RelationWithSource {
 
 	public void setPropertyLabels(Map<Language, String> propertyLabels) {
 		this.propertyLabels = propertyLabels;
+	}
+
+	public Prefix getPrefix() {
+		return prefix;
+	}
+
+	public void setPrefix(Prefix prefix) {
+		this.prefix = prefix;
 	}
 
 }

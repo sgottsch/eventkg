@@ -27,6 +27,8 @@ public class WikipediaLinkCountsExtractor extends Extractor {
 	private Set<LinksToCount> linksToCounts;
 	private Set<LinkedByCount> linkedByCounts;
 
+	private static final boolean WRITE_TO_FILES = false;
+
 	public static void main(String[] args) {
 		List<Language> languages = new ArrayList<Language>();
 		languages.add(Language.DE);
@@ -67,62 +69,73 @@ public class WikipediaLinkCountsExtractor extends Extractor {
 
 	private void writeResults() {
 
-		System.out.println("Write results: Link counts");
-		PrintWriter writer = null;
-		try {
-			writer = FileLoader.getWriter(FileName.ALL_LINK_COUNTS);
+		if (!WRITE_TO_FILES) {
 
 			for (LinksToCount linkCount : this.linksToCounts) {
-				
 				DataStore.getInstance().addLinkRelation(linkCount.toGenericRelation());
-				
-				writer.write(linkCount.getEvent().getWikidataId());
-				writer.write(Config.TAB);
-				writer.write(linkCount.getEvent().getWikipediaLabelsString(this.languages));
-				writer.write(Config.TAB);
-				writer.write(linkCount.getEntity().getWikidataId());
-				writer.write(Config.TAB);
-				writer.write(linkCount.getEntity().getWikipediaLabelsString(this.languages));
-				writer.write(Config.TAB);
-				writer.write(String.valueOf(String.valueOf(linkCount.getCount())));
-				writer.write(Config.TAB);
-				writer.write(linkCount.getLanguage().getLanguageLowerCase());
-				writer.write(Config.NL);
 			}
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		} finally {
-			writer.close();
-		}
-
-		System.out.println("Write results: Linked by counts");
-		PrintWriter writer2 = null;
-		try {
-			writer2 = FileLoader.getWriter(FileName.ALL_LINKED_BY_COUNTS);
 
 			for (LinkedByCount linkCount : this.linkedByCounts) {
-				
 				DataStore.getInstance().addLinkRelation(linkCount.toGenericRelation());
-				
-				writer2.write(linkCount.getEvent().getWikidataId());
-				writer2.write(Config.TAB);
-				writer2.write(linkCount.getEvent().getWikipediaLabelsString(this.languages));
-				writer2.write(Config.TAB);
-				writer2.write(linkCount.getEntity().getWikidataId());
-				writer2.write(Config.TAB);
-				writer2.write(linkCount.getEntity().getWikipediaLabelsString(this.languages));
-				writer2.write(Config.TAB);
-				writer2.write(String.valueOf(linkCount.getCount()));
-				writer2.write(Config.TAB);
-				writer2.write(linkCount.getLanguage().getLanguageLowerCase());
-				writer2.write(Config.NL);
 			}
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		} finally {
-			writer2.close();
-		}
+		} else {
 
+			System.out.println("Write results: Link counts");
+			PrintWriter writer = null;
+			try {
+				writer = FileLoader.getWriter(FileName.ALL_LINK_COUNTS);
+
+				for (LinksToCount linkCount : this.linksToCounts) {
+
+					DataStore.getInstance().addLinkRelation(linkCount.toGenericRelation());
+
+					writer.write(linkCount.getEvent().getWikidataId());
+					writer.write(Config.TAB);
+					writer.write(linkCount.getEvent().getWikipediaLabelsString(this.languages));
+					writer.write(Config.TAB);
+					writer.write(linkCount.getEntity().getWikidataId());
+					writer.write(Config.TAB);
+					writer.write(linkCount.getEntity().getWikipediaLabelsString(this.languages));
+					writer.write(Config.TAB);
+					writer.write(String.valueOf(String.valueOf(linkCount.getCount())));
+					writer.write(Config.TAB);
+					writer.write(linkCount.getLanguage().getLanguageLowerCase());
+					writer.write(Config.NL);
+				}
+			} catch (FileNotFoundException e) {
+				e.printStackTrace();
+			} finally {
+				writer.close();
+			}
+
+			System.out.println("Write results: Linked by counts");
+			PrintWriter writer2 = null;
+			try {
+				writer2 = FileLoader.getWriter(FileName.ALL_LINKED_BY_COUNTS);
+
+				for (LinkedByCount linkCount : this.linkedByCounts) {
+
+					DataStore.getInstance().addLinkRelation(linkCount.toGenericRelation());
+
+					writer2.write(linkCount.getEvent().getWikidataId());
+					writer2.write(Config.TAB);
+					writer2.write(linkCount.getEvent().getWikipediaLabelsString(this.languages));
+					writer2.write(Config.TAB);
+					writer2.write(linkCount.getEntity().getWikidataId());
+					writer2.write(Config.TAB);
+					writer2.write(linkCount.getEntity().getWikipediaLabelsString(this.languages));
+					writer2.write(Config.TAB);
+					writer2.write(String.valueOf(linkCount.getCount()));
+					writer2.write(Config.TAB);
+					writer2.write(linkCount.getLanguage().getLanguageLowerCase());
+					writer2.write(Config.NL);
+				}
+			} catch (FileNotFoundException e) {
+				e.printStackTrace();
+			} finally {
+				writer2.close();
+			}
+		}
 	}
 
 	private void processFile(File file, Language language) {

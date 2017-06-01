@@ -28,6 +28,8 @@ import de.l3s.eventkg.util.FileName;
 
 public class LabelsAndDescriptionsExtractor extends Extractor {
 
+	private static final boolean WRITE_TO_FILES = false;
+
 	private AllEventPagesDataSet allEventPagesDataSet;
 
 	private Map<Language, Map<Event, String>> sentences;
@@ -166,10 +168,7 @@ public class LabelsAndDescriptionsExtractor extends Extractor {
 
 	private void writeResults() {
 
-		System.out.println("Write results: labels, descriptions, aliases,...");
-		PrintWriter writer = null;
-		try {
-			writer = FileLoader.getWriter(FileName.ALL_FIRST_SENTENCES);
+		if (!WRITE_TO_FILES) {
 
 			for (Language language : this.languages) {
 				for (Event event : this.sentences.get(language).keySet()) {
@@ -178,15 +177,6 @@ public class LabelsAndDescriptionsExtractor extends Extractor {
 							.addDescription(new Description(event,
 									DataSets.getInstance().getDataSet(language, Source.WIKIPEDIA),
 									this.sentences.get(language).get(event), language));
-
-					writer.write(event.getWikidataId());
-					writer.write(Config.TAB);
-					writer.write("wiki_first_sentence");
-					writer.write(Config.TAB);
-					writer.write(event.getWikipediaLabelsString(this.languages));
-					writer.write(Config.TAB);
-					writer.write(this.sentences.get(language).get(event));
-					writer.write(Config.NL);
 				}
 			}
 
@@ -197,15 +187,6 @@ public class LabelsAndDescriptionsExtractor extends Extractor {
 							.addDescription(new Description(event,
 									DataSets.getInstance().getDataSetWithoutLanguage(Source.WIKIDATA),
 									this.descriptions.get(language).get(event), language));
-
-					writer.write(event.getWikidataId());
-					writer.write(Config.TAB);
-					writer.write("wikidata_description");
-					writer.write(Config.TAB);
-					writer.write(event.getWikipediaLabelsString(this.languages));
-					writer.write(Config.TAB);
-					writer.write(this.descriptions.get(language).get(event));
-					writer.write(Config.NL);
 				}
 			}
 
@@ -215,17 +196,7 @@ public class LabelsAndDescriptionsExtractor extends Extractor {
 					DataStore.getInstance().addLabel(
 							new Label(entity, DataSets.getInstance().getDataSetWithoutLanguage(Source.WIKIDATA),
 									this.labels.get(language).get(entity), language));
-
-					writer.write(entity.getWikidataId());
-					writer.write(Config.TAB);
-					writer.write("wiki_label");
-					writer.write(Config.TAB);
-					writer.write(entity.getWikipediaLabelsString(this.languages));
-					writer.write(Config.TAB);
-					writer.write(this.labels.get(language).get(entity));
-					writer.write(Config.NL);
 				}
-
 			}
 
 			for (Language language : this.languages) {
@@ -233,24 +204,100 @@ public class LabelsAndDescriptionsExtractor extends Extractor {
 					for (String alias : this.aliases.get(language).get(event)) {
 						DataStore.getInstance().addAlias(new Alias(event,
 								DataSets.getInstance().getDataSetWithoutLanguage(Source.WIKIDATA), alias, language));
+					}
+				}
+			}
+
+		} else {
+			System.out.println("Write results: labels, descriptions, aliases,...");
+			PrintWriter writer = null;
+			try {
+				writer = FileLoader.getWriter(FileName.ALL_FIRST_SENTENCES);
+
+				for (Language language : this.languages) {
+					for (Event event : this.sentences.get(language).keySet()) {
+
+						DataStore.getInstance()
+								.addDescription(new Description(event,
+										DataSets.getInstance().getDataSet(language, Source.WIKIPEDIA),
+										this.sentences.get(language).get(event), language));
 
 						writer.write(event.getWikidataId());
 						writer.write(Config.TAB);
-						writer.write("wikidata_alias");
+						writer.write("wiki_first_sentence");
 						writer.write(Config.TAB);
 						writer.write(event.getWikipediaLabelsString(this.languages));
 						writer.write(Config.TAB);
-						writer.write(alias);
+						writer.write(this.sentences.get(language).get(event));
+						writer.write(Config.NL);
+					}
+				}
+
+				for (Language language : this.languages) {
+					for (Event event : this.descriptions.get(language).keySet()) {
+
+						DataStore.getInstance()
+								.addDescription(new Description(event,
+										DataSets.getInstance().getDataSetWithoutLanguage(Source.WIKIDATA),
+										this.descriptions.get(language).get(event), language));
+
+						writer.write(event.getWikidataId());
+						writer.write(Config.TAB);
+						writer.write("wikidata_description");
+						writer.write(Config.TAB);
+						writer.write(event.getWikipediaLabelsString(this.languages));
+						writer.write(Config.TAB);
+						writer.write(this.descriptions.get(language).get(event));
+						writer.write(Config.NL);
+					}
+				}
+
+				for (Language language : this.languages) {
+					for (Entity entity : this.labels.get(language).keySet()) {
+
+						DataStore.getInstance()
+								.addLabel(new Label(entity,
+										DataSets.getInstance().getDataSetWithoutLanguage(Source.WIKIDATA),
+										this.labels.get(language).get(entity), language));
+
+						writer.write(entity.getWikidataId());
+						writer.write(Config.TAB);
+						writer.write("wiki_label");
+						writer.write(Config.TAB);
+						writer.write(entity.getWikipediaLabelsString(this.languages));
+						writer.write(Config.TAB);
+						writer.write(this.labels.get(language).get(entity));
 						writer.write(Config.NL);
 					}
 
 				}
-			}
 
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		} finally {
-			writer.close();
+				for (Language language : this.languages) {
+					for (Event event : this.aliases.get(language).keySet()) {
+						for (String alias : this.aliases.get(language).get(event)) {
+							DataStore.getInstance()
+									.addAlias(new Alias(event,
+											DataSets.getInstance().getDataSetWithoutLanguage(Source.WIKIDATA), alias,
+											language));
+
+							writer.write(event.getWikidataId());
+							writer.write(Config.TAB);
+							writer.write("wikidata_alias");
+							writer.write(Config.TAB);
+							writer.write(event.getWikipediaLabelsString(this.languages));
+							writer.write(Config.TAB);
+							writer.write(alias);
+							writer.write(Config.NL);
+						}
+
+					}
+				}
+
+			} catch (FileNotFoundException e) {
+				e.printStackTrace();
+			} finally {
+				writer.close();
+			}
 		}
 
 	}
