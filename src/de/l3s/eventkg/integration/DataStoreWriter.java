@@ -381,11 +381,7 @@ public class DataStoreWriter {
 			// prefixes.add(Prefix.RDF);
 			// prefixes.add(Prefix.EVENT_KG);
 			// prefixes.add(Prefix.XSD);
-
-			// add all prefixes, because they could all be in the
-			// eventKGRelations
-			for (Prefix prefix : Prefix.values())
-				prefixes.add(prefix);
+			prefixes.add(Prefix.EVENT_KG_SCHEMA);
 
 			for (String line : createIntro(prefixes)) {
 				writer.write(line + Config.NL);
@@ -429,8 +425,13 @@ public class DataStoreWriter {
 			writer = FileLoader.getWriter(FileName.ALL_TTL_EVENTS_OTHER_RELATIONS);
 			writerPreview = FileLoader.getWriter(FileName.ALL_TTL_EVENTS_OTHER_RELATIONS_PREVIEW);
 			List<Prefix> prefixes = new ArrayList<Prefix>();
-			prefixes.add(Prefix.EVENT_KG_SCHEMA);
-			prefixes.add(Prefix.RDF);
+			// prefixes.add(Prefix.EVENT_KG_SCHEMA);
+			// prefixes.add(Prefix.RDF);
+
+			// add all prefixes, because they could all be in the
+			// eventKGRelations
+			for (Prefix prefix : Prefix.values())
+				prefixes.add(prefix);
 
 			for (String line : createIntro(prefixes)) {
 				writer.write(line + Config.NL);
@@ -472,15 +473,18 @@ public class DataStoreWriter {
 
 	private List<String> createIntro(List<Prefix> prefixes) {
 
-		prefixes.add(Prefix.EVENT_KG_GRAPH);
+		if (!prefixes.contains(Prefix.EVENT_KG_GRAPH))
+			prefixes.add(Prefix.EVENT_KG_GRAPH);
 
 		List<String> lines = new ArrayList<String>();
 
 		lines.add("");
 		for (Prefix prefix : prefixes) {
+
 			// ignore base relation
 			if (prefix == Prefix.EVENT_KG_RESOURCE)
 				continue;
+
 			lines.add(
 					"@prefix" + Config.SEP + prefix.getAbbr() + " <" + prefix.getUrlPrefix() + ">" + Config.SEP + ".");
 		}
