@@ -66,10 +66,10 @@ public class DataStoreWriter {
 			}
 
 			for (DataSet dataSet : dataSets.getAllDataSets()) {
-				writeTriple(writer, null, null, "<" + Prefix.EVENT_KG_GRAPH.getAbbr() + dataSet.getId() + ">",
+				writeTriple(writer, null, null, Prefix.EVENT_KG_GRAPH.getAbbr() + dataSet.getId(),
 						Prefix.RDF.getAbbr() + "type", Prefix.FOAF.getAbbr() + "Dataset", false, null);
-				writeTriple(writer, null, null, "<" + Prefix.EVENT_KG_GRAPH.getAbbr() + dataSet.getId() + ">",
-						Prefix.FOAF.getAbbr() + "homepage", dataSet.getUrl(), false, null);
+				writeTriple(writer, null, null, Prefix.EVENT_KG_GRAPH.getAbbr() + dataSet.getId(),
+						Prefix.FOAF.getAbbr() + "homepage", dataSet.getUrl(), true, null);
 			}
 
 		} catch (FileNotFoundException e) {
@@ -114,44 +114,44 @@ public class DataStoreWriter {
 				eventNo += 1;
 				lineNo += 1;
 				writeTriple(writer, writerPreview, lineNo, event.getId(), Prefix.RDF.getAbbr() + "type",
-						"<" + Prefix.EVENT_KG_SCHEMA.getAbbr() + "Event>", false, null);
+						Prefix.EVENT_KG_SCHEMA.getAbbr() + "Event", false, null);
 
 				if (event.getWikidataId() != null)
 					writeTriple(writer, writerPreview, lineNo, event.getId(), Prefix.DCTERMS.getAbbr() + "relation",
-							"<" + Prefix.WIKIDATA.getUrlPrefix() + event.getWikidataId() + ">", false,
+							Prefix.WIKIDATA.getAbbr() + event.getWikidataId(), false,
 							dataSets.getDataSetWithoutLanguage(Source.WIKIDATA));
 
 				if (event.getUrls() != null) {
 					for (String url : event.getUrls())
 						writeTriple(writer, writerPreview, lineNo, event.getId(), Prefix.DCTERMS.getAbbr() + "relation",
-								"<" + url + ">", false, null);
+								"<" + url + ">", true, null);
 				}
 
+				Prefix prefix = null;
 				for (Language language : event.getWikipediaLabels().keySet()) {
-					String dbPediaId = "";
 					switch (language) {
 					// TODO: Create a mapping from language to prefix
 					case EN:
-						dbPediaId = Prefix.DBPEDIA_EN.getUrlPrefix();
+						prefix = Prefix.DBPEDIA_EN;
 						break;
 					case DE:
-						dbPediaId = Prefix.DBPEDIA_DE.getUrlPrefix();
+						prefix = Prefix.DBPEDIA_DE;
 						break;
 					case PT:
-						dbPediaId = Prefix.DBPEDIA_PT.getUrlPrefix();
+						prefix = Prefix.DBPEDIA_PT;
 						break;
 					case RU:
-						dbPediaId = Prefix.DBPEDIA_RU.getUrlPrefix();
+						prefix = Prefix.DBPEDIA_RU;
 						break;
 					case FR:
-						dbPediaId = Prefix.DBPEDIA_FR.getUrlPrefix();
+						prefix = Prefix.DBPEDIA_FR;
 						break;
 					default:
 						break;
 					}
 					writeTriple(writer, writerPreview, lineNo, event.getId(), Prefix.DCTERMS.getAbbr() + "relation",
-							"<" + dbPediaId + event.getWikipediaLabels().get(language) + ">", false,
-							dataSets.getDataSet(language, Source.WIKIPEDIA));
+							prefix.getAbbr() + event.getWikipediaLabels().get(language), true,
+							dataSets.getDataSet(language, Source.DBPEDIA));
 				}
 			}
 
@@ -223,6 +223,7 @@ public class DataStoreWriter {
 			prefixes.add(Prefix.DBPEDIA_PT);
 			prefixes.add(Prefix.DBPEDIA_DE);
 			prefixes.add(Prefix.DBPEDIA_FR);
+			prefixes.add(Prefix.WIKIDATA);
 
 			for (String line : createIntro(prefixes)) {
 				writer.write(line + Config.NL);
@@ -240,38 +241,39 @@ public class DataStoreWriter {
 				entity.setId("<" + entityId + String.valueOf(entityNo) + ">");
 				entityNo += 1;
 				writeTriple(writer, writerPreview, lineNo, entity.getId(), Prefix.RDF.getAbbr() + "type",
-						"<" + Prefix.EVENT_KG_SCHEMA.getAbbr() + "Entity>", false, null);
+						Prefix.EVENT_KG_SCHEMA.getAbbr() + "Entity", false, null);
 
 				if (entity.getWikidataId() != null)
 					writeTriple(writer, writerPreview, lineNo, entity.getId(), Prefix.DCTERMS.getAbbr() + "relation",
-							"<" + Prefix.WIKIDATA.getAbbr() + entity.getWikidataId() + ">", false,
+							Prefix.WIKIDATA.getAbbr() + entity.getWikidataId(), false,
 							dataSets.getDataSetWithoutLanguage(Source.WIKIDATA));
 
+				Prefix prefix = null;
+
 				for (Language language : entity.getWikipediaLabels().keySet()) {
-					String dbPediaId = "";
 					switch (language) {
 					// TODO: Create a mapping from language to prefix
 					case EN:
-						dbPediaId = Prefix.DBPEDIA_EN.getUrlPrefix();
+						prefix = Prefix.DBPEDIA_EN;
 						break;
 					case DE:
-						dbPediaId = Prefix.DBPEDIA_DE.getUrlPrefix();
+						prefix = Prefix.DBPEDIA_DE;
 						break;
 					case PT:
-						dbPediaId = Prefix.DBPEDIA_PT.getUrlPrefix();
+						prefix = Prefix.DBPEDIA_PT;
 						break;
 					case RU:
-						dbPediaId = Prefix.DBPEDIA_RU.getUrlPrefix();
+						prefix = Prefix.DBPEDIA_RU;
 						break;
 					case FR:
-						dbPediaId = Prefix.DBPEDIA_FR.getUrlPrefix();
+						prefix = Prefix.DBPEDIA_FR;
 						break;
 					default:
 						break;
 					}
 					writeTriple(writer, writerPreview, lineNo, entity.getId(), Prefix.DCTERMS.getAbbr() + "relation",
-							"<" + dbPediaId + entity.getWikipediaLabels().get(language) + ">", false,
-							dataSets.getDataSet(language, Source.WIKIPEDIA));
+							prefix.getAbbr() + entity.getWikipediaLabels().get(language), true,
+							dataSets.getDataSet(language, Source.DBPEDIA));
 				}
 
 			}
@@ -401,7 +403,7 @@ public class DataStoreWriter {
 						Prefix.EVENT_KG_SCHEMA.getAbbr() + "relationObject", relation.getObject().getId(), false,
 						relation.getDataSet());
 				writeTriple(writer, writerPreview, lineNo, relationId, Prefix.EVENT_KG_SCHEMA.getAbbr() + "relation",
-						relation.getPrefix().getAbbr() + relation.getProperty(), false, relation.getDataSet());
+						relation.getPrefix().getAbbr() + relation.getProperty(), true, relation.getDataSet());
 				writeTriple(writer, writerPreview, lineNo, relationId, Prefix.EVENT_KG_SCHEMA.getAbbr() + "strength",
 						"\"" + String.valueOf(relation.getWeight()) + "\"^^xsd:double", false, relation.getDataSet());
 
@@ -451,7 +453,7 @@ public class DataStoreWriter {
 						Prefix.EVENT_KG_SCHEMA.getAbbr() + "relationObject", relation.getObject().getId(), false,
 						relation.getDataSet());
 				writeTriple(writer, writerPreview, lineNo, relationId, Prefix.EVENT_KG_SCHEMA.getAbbr() + "relation",
-						relation.getProperty(), false, relation.getDataSet());
+						relation.getProperty(), true, relation.getDataSet());
 
 				if (relation.getPropertyLabels() != null) {
 					for (Language language : relation.getPropertyLabels().keySet())
@@ -522,19 +524,25 @@ public class DataStoreWriter {
 			return;
 
 		if (quoteObject) {
-			// object = "\"" + object.replaceAll("\"", "\\\\\"") + "\"";
-			// TODO: Check example "https://www.wikidata.org/wiki/Q859038"
 			object = object.replace("\\", "\\\\");
-
-			object = "\"" + object.replaceAll("\"", "\\\\\"") + "\"";
+			object = object.replaceAll("\"", "\\\\\"");
+			object = "\"" + object + "\"";
 		}
+
+		// if (quoteObject) {
+		// // object = "\"" + object.replaceAll("\"", "\\\\\"") + "\"";
+		// // TODO: Check example "https://www.wikidata.org/wiki/Q859038"
+		// object = object.replace("\\", "\\\\");
+		//
+		// object = "\"" + object.replaceAll("\"", "\\\\\"") + "\"";
+		// }
 
 		String line = null;
 		if (dataSet == null) {
 			line = subject + Config.SEP + property + Config.SEP + object + Config.SEP + "." + Config.NL;
 		} else
-			line = subject + Config.SEP + property + Config.SEP + object + Config.SEP + "<"
-					+ Prefix.EVENT_KG_GRAPH.getAbbr() + dataSet.getId() + ">" + Config.SEP + "." + Config.NL;
+			line = subject + Config.SEP + property + Config.SEP + object + Config.SEP + Prefix.EVENT_KG_GRAPH.getAbbr()
+					+ dataSet.getId() + Config.SEP + "." + Config.NL;
 
 		writer.write(line);
 		if (writerPreview != null && lineNo <= NUMBER_OF_LINES_IN_PREVIEW)
@@ -557,18 +565,31 @@ public class DataStoreWriter {
 		if (object == null)
 			return;
 
-		if (quoteObject && language != null) {
-			object = "\"" + object.replaceAll("\"", "\\\\\"") + "\"@" + language.getLanguageLowerCase();
-		} else if (quoteObject)
-			object = "\"" + object.replaceAll("\"", "\\\\\"");
+		if (quoteObject) {
+			object = object.replace("\\", "\\\\");
+			object = object.replaceAll("\"", "\\\\\"");
+			object = "\"" + object + "\"";
+			if (language != null) {
+				object += "@" + language.getLanguageLowerCase();
+			}
+		}
+
+		// if (quoteObject && language != null) {
+		// object = object.replace("\\", "\\\\");
+		// object = "\"" + object.replaceAll("\"", "\\\\\"") + "\"@" +
+		// language.getLanguageLowerCase();
+		// } else if (quoteObject) {
+		// object = object.replace("\\", "\\\\");
+		// object = "\"" + object.replaceAll("\"", "\\\\\"");
+		// }
 
 		String line = null;
 
 		if (dataSet == null) {
 			line = subject + Config.SEP + property + Config.SEP + object + Config.SEP + "." + Config.NL;
 		} else
-			line = subject + Config.SEP + property + Config.SEP + object + Config.SEP + "<"
-					+ Prefix.EVENT_KG_GRAPH.getAbbr() + dataSet.getId() + ">" + Config.SEP + "." + Config.NL;
+			line = subject + Config.SEP + property + Config.SEP + object + Config.SEP + Prefix.EVENT_KG_GRAPH.getAbbr()
+					+ dataSet.getId() + Config.SEP + "." + Config.NL;
 
 		writer.write(line);
 		if (writerPreview != null && lineNo <= NUMBER_OF_LINES_IN_PREVIEW)
