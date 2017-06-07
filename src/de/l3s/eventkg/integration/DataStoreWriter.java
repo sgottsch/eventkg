@@ -25,6 +25,8 @@ import de.l3s.eventkg.util.FileName;
 
 public class DataStoreWriter {
 
+	public static final boolean OLD_MODEL = false;
+
 	private static final int NUMBER_OF_LINES_IN_PREVIEW = 50;
 	private DataStore dataStore;
 	private DataSets dataSets;
@@ -45,10 +47,10 @@ public class DataStoreWriter {
 		writeEntities();
 		System.out.println("writeBaseRelations");
 		writeBaseRelations();
-		System.out.println("writeLinkRelations");
-		writeLinkRelations();
 		System.out.println("writeOtherRelations");
 		writeOtherRelations();
+		System.out.println("writeLinkRelations");
+		writeLinkRelations();
 	}
 
 	private void writeDataSets() {
@@ -396,6 +398,8 @@ public class DataStoreWriter {
 				lineNo += 1;
 				String relationId = "<eventkg_link_relation_" + String.valueOf(relationNo) + ">";
 
+				writeTriple(writer, writerPreview, lineNo, relationId, Prefix.RDF.getAbbr() + "type",
+						Prefix.EVENT_KG_SCHEMA.getAbbr() + "Relation", false, relation.getDataSet());
 				writeTriple(writer, writerPreview, lineNo, relationId,
 						Prefix.EVENT_KG_SCHEMA.getAbbr() + "relationSubject", relation.getSubject().getId(), false,
 						relation.getDataSet());
@@ -446,6 +450,8 @@ public class DataStoreWriter {
 				lineNo += 1;
 				String relationId = "<eventkg_relation_" + String.valueOf(relationNo) + ">";
 
+				writeTriple(writer, writerPreview, lineNo, relationId, Prefix.RDF.getAbbr() + "type",
+						Prefix.EVENT_KG_SCHEMA.getAbbr() + "Relation", false, relation.getDataSet());
 				writeTriple(writer, writerPreview, lineNo, relationId,
 						Prefix.EVENT_KG_SCHEMA.getAbbr() + "relationSubject", relation.getSubject().getId(), false,
 						relation.getDataSet());
@@ -453,7 +459,7 @@ public class DataStoreWriter {
 						Prefix.EVENT_KG_SCHEMA.getAbbr() + "relationObject", relation.getObject().getId(), false,
 						relation.getDataSet());
 				writeTriple(writer, writerPreview, lineNo, relationId, Prefix.EVENT_KG_SCHEMA.getAbbr() + "relation",
-						relation.getProperty(), true, relation.getDataSet());
+						relation.getPrefix().getAbbr() + relation.getProperty(), false, relation.getDataSet());
 
 				if (relation.getPropertyLabels() != null) {
 					for (Language language : relation.getPropertyLabels().keySet())
@@ -478,6 +484,12 @@ public class DataStoreWriter {
 		if (!prefixes.contains(Prefix.EVENT_KG_GRAPH))
 			prefixes.add(Prefix.EVENT_KG_GRAPH);
 
+		if (OLD_MODEL) {
+			prefixes.remove(Prefix.EVENT_KG_GRAPH);
+			prefixes.remove(Prefix.EVENT_KG_SCHEMA);
+			prefixes.remove(Prefix.EVENT_KG_RESOURCE);
+		}
+
 		List<String> lines = new ArrayList<String>();
 
 		lines.add("");
@@ -491,7 +503,10 @@ public class DataStoreWriter {
 					"@prefix" + Config.SEP + prefix.getAbbr() + " <" + prefix.getUrlPrefix() + ">" + Config.SEP + ".");
 		}
 
-		lines.add("@base" + Config.SEP + "<" + Prefix.EVENT_KG_RESOURCE.getUrlPrefix() + ">" + Config.SEP + ".");
+		if (!OLD_MODEL)
+			lines.add("@base" + Config.SEP + "<" + Prefix.EVENT_KG_RESOURCE.getUrlPrefix() + ">" + Config.SEP + ".");
+		else
+			lines.add("@base" + Config.SEP + "<" + Prefix.EVENT_KG_OLD.getUrlPrefix() + ">" + Config.SEP + ".");
 
 		lines.add("");
 

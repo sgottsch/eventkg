@@ -1,5 +1,7 @@
 package de.l3s.eventkg.integration.model.relation;
 
+import de.l3s.eventkg.integration.DataStoreWriter;
+
 public enum Prefix {
 
 	SCHEMA_ORG("so:", "http:schema.org/"),
@@ -7,6 +9,7 @@ public enum Prefix {
 	RDFS("rdfs:", "http://www.w3.org/2000/01/rdf-schema#"),
 	DCTERMS("dcterms:", "http://purl.org/dc/terms/"),
 	XSD("xsd:", "http://www.w3.org/2001/XMLSchema#"),
+	EVENT_KG_OLD("eventKG:", "http://eventKG.l3s.uni-hannover.de/schema/"),
 	EVENT_KG_SCHEMA("eventKG-s:", "http://eventKG.l3s.uni-hannover.de/schema/"),
 	EVENT_KG_RESOURCE("eventKG-r:", "http://eventKG.l3s.uni-hannover.de/resource/"),
 	EVENT_KG_GRAPH("eventKG-g:", "http://eventKG.l3s.uni-hannover.de/graph/"),
@@ -31,10 +34,22 @@ public enum Prefix {
 	}
 
 	public String getUrlPrefix() {
+
+		if (DataStoreWriter.OLD_MODEL) {
+			if (this == EVENT_KG_SCHEMA || this == EVENT_KG_RESOURCE || this == EVENT_KG_GRAPH)
+				return EVENT_KG_OLD.urlPrefix;
+		}
+
 		return urlPrefix;
 	}
 
 	public String getAbbr() {
+
+		if (DataStoreWriter.OLD_MODEL) {
+			if (this == EVENT_KG_SCHEMA || this == EVENT_KG_RESOURCE || this == EVENT_KG_GRAPH)
+				return EVENT_KG_OLD.abbr;
+		}
+
 		return abbr;
 	}
 
