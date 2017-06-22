@@ -4,7 +4,7 @@ import de.l3s.eventkg.integration.DataStoreWriter;
 
 public enum Prefix {
 
-	SCHEMA_ORG("so:", "http:schema.org/"),
+	SCHEMA_ORG("so:", "http://schema.org/"),
 	RDF("rdf:", "http://www.w3.org/1999/02/22-rdf-syntax-ns#"),
 	RDFS("rdfs:", "http://www.w3.org/2000/01/rdf-schema#"),
 	DCTERMS("dcterms:", "http://purl.org/dc/terms/"),
@@ -14,15 +14,21 @@ public enum Prefix {
 	EVENT_KG_RESOURCE("eventKG-r:", "http://eventKG.l3s.uni-hannover.de/resource/"),
 	EVENT_KG_GRAPH("eventKG-g:", "http://eventKG.l3s.uni-hannover.de/graph/"),
 	VOID("void:", "http://rdfs.org/ns/void#"),
-	WIKIDATA("wikidata:", "https://www.wikidata.org/wiki/"),
+	WIKIDATA_PROPERTY("wdt:", "http://www.wikidata.org/prop/direct/"),
+	WIKIDATA_ENTITY("wd:", "http://www.wikidata.org/entity/"),
 	FOAF("foaf:", "http://xmlns.com/foaf/0.1/"),
 	OWL("owl:", "http://www.w3.org/2002/07/owl#"),
-	DBPEDIA_DE("dbpedia-de:", "http://de.dbpedia.org/page/"),
-	DBPEDIA_EN("dbpedia-en:", "http://dbpedia.org/page/"),
-	DBPEDIA_PT("dbpedia-pt:", "http://pt.dbpedia.org/page/"),
-	DBPEDIA_FR("dbpedia-fr:", "http://fr.dbpedia.org/page/"),
-	DBPEDIA_RU("dbpedia-ru:", "http://ru.dbpedia.org/page/"),
-	// TODO: Solve that better...
+	// TODO: Solve that better. Mapping from lang to prefix.
+	DBPEDIA_RESOURCE_EN("dbr:", "http://dbpedia.org/resource/"),
+	DBPEDIA_RESOURCE_DE("dbpedia-de:", "http://de.dbpedia.org/resource/"),
+	DBPEDIA_RESOURCE_PT("dbpedia-pt:", "http://pt.dbpedia.org/resource/"),
+	DBPEDIA_RESOURCE_FR("dbpedia-fr:", "http://fr.dbpedia.org/resource/"),
+	DBPEDIA_RESOURCE_RU("dbpedia-ru:", "http://ru.dbpedia.org/resource/"),
+	DBPEDIA_ONTOLOGY("dbo:", "http://dbpedia.org/ontology/"),
+	// DBPEDIA_PROPERTY_DE("dbpprop-de:", "http://de.dbpedia.org/property/"),
+	// DBPEDIA_PROPERTY_PT("dbpprop-pt:", "http://pt.dbpedia.org/property/"),
+	// DBPEDIA_PROPERTY_FR("dbpprop-fr:", "http://fr.dbpedia.org/property/"),
+	// DBPEDIA_PROPERTY_RU("dbpprop-ru:", "http://ru.dbpedia.org/property/"),
 	YAGO("yago:", "http://yago-knowledge.org/resource/");
 
 	private String urlPrefix;

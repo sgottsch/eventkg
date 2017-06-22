@@ -45,6 +45,8 @@ public class EventsFromFileFinder extends Extractor {
 
 		Map<String, String> labels = new HashMap<String, String>();
 
+		Set<String> forbiddenClasses = new HashSet<String>();
+
 		BufferedReader br = null;
 		try {
 			try {
@@ -59,7 +61,14 @@ public class EventsFromFileFinder extends Extractor {
 				String[] parts = line.split(Config.TAB);
 
 				String id = parts[0];
+
 				String parentClass = parts[2];
+
+				// ignore "Wikimedia internal stuff" children
+				if (parentClass.equals("Q17442446")) {
+					forbiddenClasses.add(id);
+					continue;
+				}
 
 				labels.put(id, parts[1]);
 
@@ -85,9 +94,10 @@ public class EventsFromFileFinder extends Extractor {
 		targetClasses.add("Q1190554");
 		targetClasses.add("Q1656682");
 
-		Set<String> forbiddenClasses = new HashSet<String>();
 		forbiddenClasses.add("Q1914636"); // activity
 		forbiddenClasses.add("Q3249551"); // process
+		forbiddenClasses.add("Q17442446"); // Wikimedia internal stuff
+		forbiddenClasses.add("Q12139612"); // enumeration
 
 		Set<String> allClasses = new HashSet<String>();
 

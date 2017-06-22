@@ -1,5 +1,6 @@
 package de.l3s.eventkg.integration.model.relation;
 
+import java.util.Date;
 import java.util.Map;
 
 import de.l3s.eventkg.integration.model.Entity;
@@ -19,6 +20,10 @@ public class GenericRelation extends RelationWithSource {
 	private Double weight;
 
 	private Map<Language, String> propertyLabels;
+
+	private Date startTime;
+
+	private Date endTime;
 
 	public GenericRelation(Entity subject, DataSet dataSet, Prefix prefix, String property, Entity object,
 			Double weight) {
@@ -75,6 +80,22 @@ public class GenericRelation extends RelationWithSource {
 
 	public void setPrefix(Prefix prefix) {
 		this.prefix = prefix;
+	}
+
+	public Date getStartTime() {
+		return startTime;
+	}
+
+	public void setStartTime(Date startTime) {
+		this.startTime = startTime;
+	}
+
+	public Date getEndTime() {
+		return endTime;
+	}
+
+	public void setEndTime(Date endTime) {
+		this.endTime = endTime;
 	}
 
 }

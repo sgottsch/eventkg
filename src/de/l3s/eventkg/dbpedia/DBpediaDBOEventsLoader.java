@@ -61,7 +61,10 @@ public class DBpediaDBOEventsLoader extends Extractor {
 					String subject = parts[0];
 					String property = parts[1];
 
-					subject = subject.substring(subject.lastIndexOf("/") + 1, subject.lastIndexOf(">"));
+					if (!subject.contains("resource"))
+						continue;
+
+					subject = subject.substring(subject.lastIndexOf("resource/") + 9, subject.lastIndexOf(">"));
 					object = object.substring(object.lastIndexOf("/") + 1, object.lastIndexOf(">"));
 
 					String fileLine = subject + Config.TAB + property + Config.TAB + object;

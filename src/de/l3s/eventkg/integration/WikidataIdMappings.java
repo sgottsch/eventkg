@@ -127,21 +127,34 @@ public class WikidataIdMappings {
 			}
 		}
 
-		Set<Entity> listEntities = new HashSet<Entity>();
+		Set<Entity> entitiesToRemove = new HashSet<Entity>();
+		// remove category entities
+		for (Entity entity : this.entitiesByWikidataIds.values()) {
+			for (Language labelLanguage : entity.getWikipediaLabels().keySet()) {
+				for (String listPrefix : WikiWords.getInstance().getCategoryPrefixes(labelLanguage)) {
+					if (entity.getWikipediaLabel(labelLanguage).startsWith(listPrefix)) {
+						entitiesToRemove.add(entity);
+					}
+				}
+			}
+		}
+
 		// remove list entities
 		for (Entity entity : this.entitiesByWikidataIds.values()) {
 			for (Language labelLanguage : entity.getWikipediaLabels().keySet()) {
 				for (String listPrefix : WikiWords.getInstance().getListPrefixes(labelLanguage)) {
 					if (entity.getWikipediaLabel(labelLanguage).startsWith(listPrefix)) {
-						listEntities.add(entity);
+						entitiesToRemove.add(entity);
 					}
 				}
 			}
 		}
-		for (Entity entity : listEntities) {
+
+		for (Entity entity : entitiesToRemove) {
 			this.entitiesByWikidataIds.remove(entity.getWikidataId());
 			for (Language labelLanguage : entity.getWikipediaLabels().keySet()) {
 				this.entitiesByWikipediaLabels.get(labelLanguage).remove(entity.getWikipediaLabel(labelLanguage));
+				DataStore.getInstance().removeEntity(entity);
 			}
 		}
 

@@ -20,6 +20,8 @@ public class WikiWords {
 	private Map<Language, Set<String>> fileLabels;
 	private Map<Language, String> categoryLabels;
 	private HashMap<Language, Set<String>> imageLabels;
+	private HashMap<Language, Set<String>> listPrefixes;
+	private HashMap<Language, Set<String>> categoryPrefixes;
 	private Map<Language, Set<String>> eventsLabels;
 
 	private Map<Language, List<Set<String>>> monthNames;
@@ -56,7 +58,9 @@ public class WikiWords {
 		Set<String> forbiddenInternalLinks = new HashSet<String>();
 
 		String talkPrefix = null;
+		String talkPrefix2 = null;
 		String talkSuffix = null;
+		String talkSuffix2 = null;
 
 		if (language == Language.DE) {
 			forbiddenNameSpaces.add("Diskussion");
@@ -111,6 +115,16 @@ public class WikiWords {
 			talkSuffix = "Discuss\u00e3o";
 			forbiddenInternalLinks.add("WP:");
 			forbiddenInternalLinks.add("Discuss\u00e3o Portal:");
+
+			// TODO: Check whether to use Discuss\u00e3o or Discussão as
+			// talkSuffix
+			talkSuffix2 = "Discussão";
+			forbiddenNameSpaces.add("Usuário");
+			forbiddenNameSpaces.add("Wikipédia");
+			forbiddenNameSpaces.add("Predefinição");
+			forbiddenNameSpaces.add("Discussão");
+			forbiddenNameSpaces.add("Discussão Portal");
+
 		} else if (language == Language.RU) {
 			forbiddenNameSpaces.add("\u041e\u0431\u0441\u0443\u0436\u0434\u0435\u043d\u0438\u0435");
 			forbiddenNameSpaces.add("\u0423\u0447\u0430\u0441\u0442\u043d\u0438\u043a");
@@ -130,6 +144,23 @@ public class WikiWords {
 			forbiddenNameSpaces.add("\u041c\u043e\u0434\u0443\u043b\u044c");
 			talkPrefix = "\u041e\u0431\u0441\u0443\u0436\u0434\u0435\u043d\u0438\u0435";
 			forbiddenInternalLinks.add("WP:");
+
+			forbiddenNameSpaces.add("Участник");
+			forbiddenNameSpaces.add("Википедия");
+			forbiddenNameSpaces.add("Файл");
+			forbiddenNameSpaces.add("Шаблон");
+			forbiddenNameSpaces.add("MediaWiki");
+			forbiddenNameSpaces.add("Справка");
+			forbiddenNameSpaces.add("Категория");
+			forbiddenNameSpaces.add("Портал");
+			forbiddenNameSpaces.add("Инкубатор");
+			forbiddenNameSpaces.add("Проект");
+			forbiddenNameSpaces.add("Арбитраж");
+			forbiddenNameSpaces.add("Образовательная программа");
+			forbiddenNameSpaces.add("Модуль");
+			forbiddenNameSpaces.add("Обсуждение");
+			talkPrefix2 = "Обсуждение";
+
 		} else if (language == Language.IT) {
 			forbiddenNameSpaces.add("File");
 			forbiddenNameSpaces.add("Wikipedia");
@@ -158,9 +189,13 @@ public class WikiWords {
 			forbiddenNameSpaces.add("Programa educativo");
 			forbiddenNameSpaces.add("M\u00f3dulo");
 			talkSuffix = "Discusi\u00f3n";
+
+			forbiddenNameSpaces.add("Categoría");
+			forbiddenNameSpaces.add("Módulo");
+
 			forbiddenInternalLinks.add("WP:");
 		} else if (language == Language.FR) {
-			forbiddenNameSpaces.add("Utilisateur ");
+			forbiddenNameSpaces.add("Utilisateur");
 			forbiddenNameSpaces.add("Mod\u00e8le");
 			forbiddenNameSpaces.add("Projet");
 			forbiddenNameSpaces.add("Wikip\u00e9dia");
@@ -173,6 +208,11 @@ public class WikiWords {
 			forbiddenInternalLinks.add("WT:");
 			forbiddenInternalLinks.add("H:");
 			forbiddenInternalLinks.add("CAT:");
+
+			forbiddenNameSpaces.add("Wikipédia");
+			forbiddenNameSpaces.add("Catégorie");
+			forbiddenNameSpaces.add("Modèle");
+			forbiddenNameSpaces.add("Référence");
 		} else if (language == Language.EN) {
 			forbiddenNameSpaces.add("Talk");
 			forbiddenNameSpaces.add("User");
@@ -199,15 +239,29 @@ public class WikiWords {
 		}
 		for (String forbiddenNameSpace : forbiddenNameSpaces) {
 			forbiddenInternalLinks.add(String.valueOf(forbiddenNameSpace) + ":");
+
 			if (talkSuffix != null) {
 				forbiddenInternalLinks.add(String.valueOf(forbiddenNameSpace) + " " + talkSuffix + ":");
 				continue;
 			}
-			if (talkPrefix == null)
+
+			if (talkSuffix2 != null) {
+				forbiddenInternalLinks.add(String.valueOf(forbiddenNameSpace) + " " + talkSuffix2 + ":");
 				continue;
-			forbiddenInternalLinks.add(String.valueOf(talkPrefix) + " " + forbiddenNameSpace + ":");
-			forbiddenInternalLinks.add(String.valueOf(talkPrefix) + " "
-					+ forbiddenNameSpace.substring(0, 1).toLowerCase() + forbiddenNameSpace.substring(1) + ":");
+			}
+
+			if (talkPrefix != null) {
+				forbiddenInternalLinks.add(String.valueOf(talkPrefix) + " " + forbiddenNameSpace + ":");
+				forbiddenInternalLinks.add(String.valueOf(talkPrefix) + " "
+						+ forbiddenNameSpace.substring(0, 1).toLowerCase() + forbiddenNameSpace.substring(1) + ":");
+			}
+
+			if (talkPrefix2 != null) {
+				forbiddenInternalLinks.add(String.valueOf(talkPrefix2) + " " + forbiddenNameSpace + ":");
+				forbiddenInternalLinks.add(String.valueOf(talkPrefix2) + " "
+						+ forbiddenNameSpace.substring(0, 1).toLowerCase() + forbiddenNameSpace.substring(1) + ":");
+			}
+
 		}
 		return forbiddenInternalLinks;
 	}
@@ -674,32 +728,58 @@ public class WikiWords {
 	}
 
 	public Set<String> getListPrefixes(Language language) {
-		if (this.imageLabels == null) {
-			this.imageLabels = new HashMap<Language, Set<String>>();
+		if (this.listPrefixes == null) {
+			this.listPrefixes = new HashMap<Language, Set<String>>();
 
-			this.imageLabels.put(Language.EN, new HashSet<String>());
-			this.imageLabels.get(Language.EN).add("Lists_of_");
-			this.imageLabels.get(Language.EN).add("List_of_");
-			this.imageLabels.get(Language.EN).add("Alphabetical_list_of_");
-			this.imageLabels.get(Language.EN).add("Chronological_list_of_");
+			this.listPrefixes.put(Language.EN, new HashSet<String>());
+			this.listPrefixes.get(Language.EN).add("Lists_of_");
+			this.listPrefixes.get(Language.EN).add("List_of_");
+			this.listPrefixes.get(Language.EN).add("Alphabetical_list_of_");
+			this.listPrefixes.get(Language.EN).add("Chronological_list_of_");
 
-			this.imageLabels.put(Language.DE, new HashSet<String>());
-			this.imageLabels.get(Language.DE).add("Liste_");
-			this.imageLabels.get(Language.DE).add("Listen_");
-			this.imageLabels.get(Language.DE).add("Übersicht_der_Listen_");
+			this.listPrefixes.put(Language.DE, new HashSet<String>());
+			this.listPrefixes.get(Language.DE).add("Liste_");
+			this.listPrefixes.get(Language.DE).add("Listen_");
+			this.listPrefixes.get(Language.DE).add("Übersicht_der_Listen_");
 
-			this.imageLabels.put(Language.PT, new HashSet<String>());
-			this.imageLabels.get(Language.PT).add("Lista_");
-			this.imageLabels.get(Language.PT).add("Listas_");
+			this.listPrefixes.put(Language.PT, new HashSet<String>());
+			this.listPrefixes.get(Language.PT).add("Lista_");
+			this.listPrefixes.get(Language.PT).add("Listas_");
 
-			this.imageLabels.put(Language.RU, new HashSet<String>());
-			this.imageLabels.get(Language.RU).add("Список_");
+			this.listPrefixes.put(Language.RU, new HashSet<String>());
+			this.listPrefixes.get(Language.RU).add("Список_");
 
-			this.imageLabels.put(Language.FR, new HashSet<String>());
-			this.imageLabels.get(Language.FR).add("Liste_");
+			this.listPrefixes.put(Language.FR, new HashSet<String>());
+			this.listPrefixes.get(Language.FR).add("Liste_");
 		}
 
-		return imageLabels.get(language);
+		return listPrefixes.get(language);
+	}
+
+	public Set<String> getCategoryPrefixes(Language language) {
+		if (this.categoryPrefixes == null) {
+			this.categoryPrefixes = new HashMap<Language, Set<String>>();
+
+			this.categoryPrefixes.put(Language.EN, new HashSet<String>());
+			this.categoryPrefixes.get(Language.EN).add("Category:");
+
+			this.categoryPrefixes.put(Language.DE, new HashSet<String>());
+			this.categoryPrefixes.get(Language.DE).add("Kategorie:");
+
+			this.categoryPrefixes.put(Language.PT, new HashSet<String>());
+			this.categoryPrefixes.get(Language.PT).add("Categoria:");
+
+			this.categoryPrefixes.put(Language.RU, new HashSet<String>());
+			this.categoryPrefixes.get(Language.RU).add("Категория:");
+
+			this.categoryPrefixes.put(Language.FR, new HashSet<String>());
+			this.categoryPrefixes.get(Language.FR).add("Catégorie:");
+
+			this.categoryPrefixes.put(Language.ES, new HashSet<String>());
+			this.categoryPrefixes.get(Language.ES).add("Categoría:");
+		}
+
+		return categoryPrefixes.get(language);
 	}
 
 }

@@ -1,9 +1,7 @@
 package de.l3s.eventkg.wikipedia;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -11,7 +9,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import de.l3s.eventkg.currentevents.EventsFromFileExtractor;
 import de.l3s.eventkg.integration.AllEventPagesDataSet;
 import de.l3s.eventkg.integration.DataStore;
 import de.l3s.eventkg.integration.model.Entity;
@@ -80,33 +77,37 @@ public class WikipediaLinkSetsExtractor extends Extractor {
 
 	private void writeResults() {
 
-		System.out.println("Write results: Link sets");
-		PrintWriter writer = null;
-		try {
-			writer = FileLoader.getWriter(FileName.ALL_LINK_SETS);
-
-			for (LinkSetCount linkCount : this.linkSets) {
-				
-				DataStore.getInstance().addLinkRelation(linkCount.toGenericRelation());
-				
-				writer.write(linkCount.getEvent().getWikidataId());
-				writer.write(Config.TAB);
-				writer.write(linkCount.getEvent().getWikipediaLabelsString(this.languages));
-				writer.write(Config.TAB);
-				writer.write(linkCount.getEntity().getWikidataId());
-				writer.write(Config.TAB);
-				writer.write(linkCount.getEntity().getWikipediaLabelsString(this.languages));
-				writer.write(Config.TAB);
-				writer.write(String.valueOf(linkCount.getCount()));
-				writer.write(Config.TAB);
-				writer.write(linkCount.getLanguage().getLanguageLowerCase());
-				writer.write(Config.NL);
-			}
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		} finally {
-			writer.close();
+		for (LinkSetCount linkCount : this.linkSets) {
+			DataStore.getInstance().addLinkRelation(linkCount.toGenericRelation());
 		}
+
+		// System.out.println("Write results: Link sets");
+		// PrintWriter writer = null;
+		// try {
+		// writer = FileLoader.getWriter(FileName.ALL_LINK_SETS);
+		//
+		// for (LinkSetCount linkCount : this.linkSets) {
+		//
+		// DataStore.getInstance().addLinkRelation(linkCount.toGenericRelation());
+		//
+		// writer.write(linkCount.getEvent().getWikidataId());
+		// writer.write(Config.TAB);
+		// writer.write(linkCount.getEvent().getWikipediaLabelsString(this.languages));
+		// writer.write(Config.TAB);
+		// writer.write(linkCount.getEntity().getWikidataId());
+		// writer.write(Config.TAB);
+		// writer.write(linkCount.getEntity().getWikipediaLabelsString(this.languages));
+		// writer.write(Config.TAB);
+		// writer.write(String.valueOf(linkCount.getCount()));
+		// writer.write(Config.TAB);
+		// writer.write(linkCount.getLanguage().getLanguageLowerCase());
+		// writer.write(Config.NL);
+		// }
+		// } catch (FileNotFoundException e) {
+		// e.printStackTrace();
+		// } finally {
+		// writer.close();
+		// }
 
 	}
 

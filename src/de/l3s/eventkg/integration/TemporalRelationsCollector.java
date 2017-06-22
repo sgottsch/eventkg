@@ -3,7 +3,6 @@ package de.l3s.eventkg.integration;
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
@@ -61,141 +60,151 @@ public class TemporalRelationsCollector extends Extractor {
 	}
 
 	private void writeToFiles() {
-		try {
-			PrintWriter writer = FileLoader.getWriter(FileName.ALL_TEMPORAL_RELATIONS);
-			for (Relation relation : relations) {
+		// try {
+		// PrintWriter writer =
+		// FileLoader.getWriter(FileName.ALL_TEMPORAL_RELATIONS);
+		for (Relation relation : relations) {
 
-				Prefix prefix = null;
+			Prefix prefix = null;
 
-				// TODO: Find better solution
-				switch (relation.getSource()) {
-				case WIKIDATA:
-					prefix = Prefix.WIKIDATA;
-					break;
-				case YAGO:
-					prefix = Prefix.YAGO;
-					break;
-				case DBPEDIA: {
-					switch (relation.getSourceLanguage()) {
-					case EN:
-						prefix = Prefix.DBPEDIA_EN;
-						break;
-					case DE:
-						prefix = Prefix.DBPEDIA_DE;
-						break;
-					case PT:
-						prefix = Prefix.DBPEDIA_PT;
-						break;
-					case RU:
-						prefix = Prefix.DBPEDIA_RU;
-						break;
-					case FR:
-						prefix = Prefix.DBPEDIA_FR;
-						break;
-					default:
-						break;
-					}
-					break;
+			// TODO: Find better solution
+			switch (relation.getSource()) {
+			case WIKIDATA:
+				prefix = Prefix.WIKIDATA_PROPERTY;
+				break;
+			case YAGO:
+				prefix = Prefix.YAGO;
+				break;
+			case DBPEDIA: {
+				prefix = Prefix.DBPEDIA_ONTOLOGY;
+
+				// TODO: Maybe add the DBpedia "Infobox Properties Mapped"
+				// file to get language-specific properties.
+
+				// switch (relation.getSourceLanguage()) {
+				// case EN:
+				// prefix = Prefix.DBPEDIA_ONTOLOGY;
+				// break;
+				// case DE:
+				// prefix = Prefix.DBPEDIA_PROPERTY_DE;
+				// break;
+				// case PT:
+				// prefix = Prefix.DBPEDIA_PROPERTY_PT;
+				// break;
+				// case RU:
+				// prefix = Prefix.DBPEDIA_PROPERTY_RU;
+				// break;
+				// case FR:
+				// prefix = Prefix.DBPEDIA_PROPERTY_FR;
+				// break;
+				// default:
+				// break;
+				// }
+
+				break;
+			}
+			default:
+				System.out.println("No prefix for " + relation.getSource() + ": "
+						+ relation.getEntity1().getWikidataId() + " " + relation.getProperty());
+				break;
+			}
+
+			if (relation.getProperty().startsWith("rdf-schema#")) {
+				prefix = Prefix.RDFS;
+				relation.setProperty(relation.getProperty().substring(relation.getProperty().indexOf("#") + 1));
+			} else if (relation.getProperty().startsWith("owl#")) {
+				prefix = Prefix.OWL;
+				relation.setProperty(relation.getProperty().substring(relation.getProperty().indexOf("#") + 1));
+			}
+
+			GenericRelation genericRelation = new GenericRelation(relation.getEntity1(),
+					DataSets.getInstance().getDataSet(relation.getSourceLanguage(), relation.getSource()), prefix,
+					relation.getProperty(), relation.getEntity2(), null);
+			genericRelation.setStartTime(relation.getStartTime());
+			genericRelation.setEndTime(relation.getEndTime());
+
+			if (genericRelation.getDataSet() == null)
+				System.out.println("NO DATASET: " + relation.getSourceLanguage() + " " + relation.getSource());
+			DataStore.getInstance().addGenericRelation(genericRelation);
+			// Wikidata: Add labels
+			if (relation.getSource() == Source.WIKIDATA) {
+				Map<Language, String> propertyLabels = new HashMap<Language, String>();
+				for (Language language : this.languages) {
+					if (allEventPagesDataSet.getWikidataIdMappings().getWikidataPropertysByID(language,
+							relation.getProperty()) != null)
+						propertyLabels.put(language, allEventPagesDataSet.getWikidataIdMappings()
+								.getWikidataPropertysByID(language, relation.getProperty()));
 				}
-				default:
-					System.out.println("No prefix for " + relation.getSource() + ": "
-							+ relation.getEntity1().getWikidataId() + " " + relation.getProperty());
-					break;
-				}
+				genericRelation.setPropertyLabels(propertyLabels);
+			}
 
-				if (relation.getProperty().startsWith("rdf-schema#")) {
-					prefix = Prefix.RDFS;
-					relation.setProperty(relation.getProperty().substring(relation.getProperty().indexOf("#") + 1));
-				} else if (relation.getProperty().startsWith("owl#")) {
-					prefix = Prefix.OWL;
-					relation.setProperty(relation.getProperty().substring(relation.getProperty().indexOf("#") + 1));
-				}
+			if (relation.getEntity1().getEventEntity() != null) {
 
-				GenericRelation genericRelation = new GenericRelation(relation.getEntity1(),
-						DataSets.getInstance().getDataSet(relation.getSourceLanguage(), relation.getSource()), prefix,
-						relation.getProperty(), relation.getEntity2(), null);
-				if (genericRelation.getDataSet() == null)
-					System.out.println("NO DATASET: " + relation.getSourceLanguage() + " " + relation.getSource());
-				DataStore.getInstance().addGenericRelation(genericRelation);
-				// Wikidata: Add labels
-				if (relation.getSource() == Source.WIKIDATA) {
-					Map<Language, String> propertyLabels = new HashMap<Language, String>();
-					for (Language language : this.languages) {
-						if (allEventPagesDataSet.getWikidataIdMappings().getWikidataPropertysByID(language,
-								relation.getProperty()) != null)
-							propertyLabels.put(language, allEventPagesDataSet.getWikidataIdMappings()
-									.getWikidataPropertysByID(language, relation.getProperty()));
-					}
-					genericRelation.setPropertyLabels(propertyLabels);
-				}
-
-				if (relation.getEntity1().getEventEntity() != null) {
-
-					String time1 = "\\N";
-					if (relation.getStartTime() != null)
-						time1 = FileLoader.PARSE_DATE_FORMAT.format(relation.getStartTime());
-					String time2 = "\\N";
-					if (relation.getEndTime() != null) {
-						time2 = FileLoader.PARSE_DATE_FORMAT.format(relation.getEndTime());
-					}
-
-					if (relation.getProperty() == null) {
-						System.out.println("PROP IS NULL: " + relation.getSource());
-						continue;
-					}
-
-					writer.write(relation.getEntity1().getWikidataId());
-					writer.write(Config.TAB);
-					writer.write(relation.getEntity1().getWikipediaLabelsString(languages));
-					writer.write(Config.TAB);
-
-					writer.write(relation.getProperty());
-					writer.write(Config.TAB);
-					writer.write(relation.getEntity2().getWikidataId());
-					writer.write(Config.TAB);
-					writer.write(relation.getEntity2().getWikipediaLabelsString(languages));
-					writer.write(Config.TAB);
-					writer.write(time1);
-					writer.write(Config.TAB);
-					writer.write(time2);
-					writer.write(Config.TAB);
-					writer.write(relation.getSource().toString());
-					writer.write(Config.NL);
-
+				String time1 = "\\N";
+				if (relation.getStartTime() != null)
+					time1 = FileLoader.PARSE_DATE_FORMAT.format(relation.getStartTime());
+				String time2 = "\\N";
+				if (relation.getEndTime() != null) {
+					time2 = FileLoader.PARSE_DATE_FORMAT.format(relation.getEndTime());
 				}
 
-				if (relation.getEntity2().getEventEntity() != null) {
-					String time1 = "\\N";
-					if (relation.getStartTime() != null)
-						time1 = FileLoader.PARSE_DATE_FORMAT.format(relation.getStartTime());
-					String time2 = "\\N";
-					if (relation.getEndTime() != null) {
-						time2 = FileLoader.PARSE_DATE_FORMAT.format(relation.getEndTime());
-					}
-
-					writer.write(relation.getEntity2().getWikidataId());
-					writer.write(Config.TAB);
-					writer.write(relation.getEntity2().getWikipediaLabelsString(languages));
-					writer.write(Config.TAB);
-					writer.write(relation.getProperty() + "^-1");
-					writer.write(Config.TAB);
-					writer.write(relation.getEntity1().getWikidataId());
-					writer.write(Config.TAB);
-					writer.write(relation.getEntity1().getWikipediaLabelsString(languages));
-					writer.write(Config.TAB);
-					writer.write(time1);
-					writer.write(Config.TAB);
-					writer.write(time2);
-					writer.write(Config.TAB);
-					writer.write(relation.getSource().toString());
-					writer.write(Config.NL);
+				if (relation.getProperty() == null) {
+					System.out.println("PROP IS NULL: " + relation.getSource());
+					continue;
 				}
+
+				// writer.write(relation.getEntity1().getWikidataId());
+				// writer.write(Config.TAB);
+				// writer.write(relation.getEntity1().getWikipediaLabelsString(languages));
+				// writer.write(Config.TAB);
+				//
+				// writer.write(relation.getProperty());
+				// writer.write(Config.TAB);
+				// writer.write(relation.getEntity2().getWikidataId());
+				// writer.write(Config.TAB);
+				// writer.write(relation.getEntity2().getWikipediaLabelsString(languages));
+				// writer.write(Config.TAB);
+				// writer.write(time1);
+				// writer.write(Config.TAB);
+				// writer.write(time2);
+				// writer.write(Config.TAB);
+				// writer.write(relation.getSource().toString());
+				// writer.write(Config.NL);
 
 			}
 
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
+			if (relation.getEntity2().getEventEntity() != null) {
+				String time1 = "\\N";
+				if (relation.getStartTime() != null)
+					time1 = FileLoader.PARSE_DATE_FORMAT.format(relation.getStartTime());
+				String time2 = "\\N";
+				if (relation.getEndTime() != null) {
+					time2 = FileLoader.PARSE_DATE_FORMAT.format(relation.getEndTime());
+				}
+
+				// writer.write(relation.getEntity2().getWikidataId());
+				// writer.write(Config.TAB);
+				// writer.write(relation.getEntity2().getWikipediaLabelsString(languages));
+				// writer.write(Config.TAB);
+				// writer.write(relation.getProperty() + "^-1");
+				// writer.write(Config.TAB);
+				// writer.write(relation.getEntity1().getWikidataId());
+				// writer.write(Config.TAB);
+				// writer.write(relation.getEntity1().getWikipediaLabelsString(languages));
+				// writer.write(Config.TAB);
+				// writer.write(time1);
+				// writer.write(Config.TAB);
+				// writer.write(time2);
+				// writer.write(Config.TAB);
+				// writer.write(relation.getSource().toString());
+				// writer.write(Config.NL);
+			}
+
 		}
+
+		// } catch (FileNotFoundException e) {
+		// e.printStackTrace();
+		// }
 
 	}
 
@@ -250,6 +259,11 @@ public class TemporalRelationsCollector extends Extractor {
 					String entityLabel1 = parts[0];
 					String entityLabel2 = parts[2];
 					String property = parts[1];
+
+					// remove starting end ending angle bracket from YAGO
+					// property
+					if (property.startsWith("<"))
+						property = property.substring(1, property.length() - 1);
 
 					Entity entity1 = buildEntity(Language.EN, entityLabel1);
 					Entity entity2 = buildEntity(Language.EN, entityLabel2);
@@ -315,6 +329,9 @@ public class TemporalRelationsCollector extends Extractor {
 					String entityLabel1 = parts[0];
 					String entityLabel2 = parts[2];
 					String property = parts[1];
+
+					if (property.startsWith("<"))
+						property = property.substring(1, property.length() - 1);
 
 					Entity entity1 = buildEntity(Language.EN, entityLabel1);
 					Entity entity2 = buildEntity(Language.EN, entityLabel2);
@@ -501,6 +518,7 @@ public class TemporalRelationsCollector extends Extractor {
 					try {
 						String entityLabel1 = parts[0];
 						String entityLabel2 = parts[2];
+
 						String property = parts[1].substring(parts[1].lastIndexOf("/") + 1, parts[1].lastIndexOf(">"));
 
 						// TODO: Do this during extraction
@@ -605,6 +623,11 @@ public class TemporalRelationsCollector extends Extractor {
 
 		if (entity1 == null || entity2 == null)
 			return null;
+
+		if (entity1.getEventEntity() != null)
+			entity1 = entity1.getEventEntity();
+		if (entity2.getEventEntity() != null)
+			entity2 = entity2.getEventEntity();
 
 		Relation relation = new Relation(entity1, entity2, startTime, endTime, property, source, sourceLanguage);
 

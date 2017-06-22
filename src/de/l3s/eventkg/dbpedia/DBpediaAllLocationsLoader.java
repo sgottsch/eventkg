@@ -59,8 +59,11 @@ public class DBpediaAllLocationsLoader extends Extractor {
 				String type = parts[2];
 
 				String subject = parts[0];
+				if (!subject.contains("resource"))
+					continue;
+
 				try {
-					subject = subject.substring(subject.lastIndexOf("/") + 1, subject.lastIndexOf(">"));
+					subject = subject.substring(subject.lastIndexOf("resource/") + 9, subject.lastIndexOf(">"));
 				} catch (StringIndexOutOfBoundsException e) {
 					continue;
 				}

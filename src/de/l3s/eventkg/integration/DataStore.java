@@ -133,4 +133,8 @@ public class DataStore {
 		this.entities.add(entity);
 	}
 
+	public void removeEntity(Entity entity) {
+		this.entities.remove(entity);
+	}
+
 }

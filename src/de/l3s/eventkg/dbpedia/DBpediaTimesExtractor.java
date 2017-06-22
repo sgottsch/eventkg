@@ -4,7 +4,6 @@ import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.text.ParseException;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
@@ -16,7 +15,6 @@ import de.l3s.eventkg.pipeline.Config;
 import de.l3s.eventkg.pipeline.Extractor;
 import de.l3s.eventkg.util.FileLoader;
 import de.l3s.eventkg.util.FileName;
-import de.l3s.eventkg.util.TimeTransformer;
 
 public class DBpediaTimesExtractor extends Extractor {
 
@@ -71,19 +69,20 @@ public class DBpediaTimesExtractor extends Extractor {
 
 					String timeString = parts[2];
 					String subject = parts[0];
+					if (!subject.contains("resource"))
+						continue;
 
-					Date date;
-						// date =
-						// TimeTransformer.generateEarliestTimeFromXsd(timeString);
+					// Date date =
+					// TimeTransformer.generateEarliestTimeFromXsd(timeString);
 
-						subject = subject.substring(subject.lastIndexOf("/") + 1, subject.lastIndexOf(">"));
+					subject = subject.substring(subject.lastIndexOf("resource/") + 9, subject.lastIndexOf(">"));
 
-						String fileLine = subject + Config.TAB + property + Config.TAB + timeString;
+					String fileLine = subject + Config.TAB + property + Config.TAB + timeString;
 
-						if (foundEvents.contains(fileLine))
-							continue;
-						resultsWriter.write(fileLine + "\n");
-						foundEvents.add(fileLine);
+					if (foundEvents.contains(fileLine))
+						continue;
+					resultsWriter.write(fileLine + "\n");
+					foundEvents.add(fileLine);
 				}
 
 			}

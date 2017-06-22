@@ -57,8 +57,11 @@ public class DBpediaEventRelationsExtractor extends Extractor {
 				if (property.equals("rdf-schema#seeAlso") || property.equals("owl#differentFrom"))
 					continue;
 
+				if (!subject.contains("resource"))
+					continue;
+				
 				try {
-					subject = subject.substring(subject.lastIndexOf("/") + 1, subject.lastIndexOf(">"));
+					subject = subject.substring(subject.lastIndexOf("resource/") + 9, subject.lastIndexOf(">"));
 					object = object.substring(object.lastIndexOf("/") + 1, object.lastIndexOf(">"));
 				} catch (StringIndexOutOfBoundsException e) {
 					// skip objects like
