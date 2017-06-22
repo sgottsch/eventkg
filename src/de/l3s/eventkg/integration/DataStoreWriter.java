@@ -404,13 +404,17 @@ public class DataStoreWriter {
 				lineNo += 1;
 				String relationId = "<eventkg_link_relation_" + String.valueOf(relationNo) + ">";
 
+				Entity object = relation.getObject();
+				if (object.getEventEntity() != null)
+					object = object.getEventEntity();
+
 				writeTriple(writer, writerPreview, lineNo, relationId, Prefix.RDF.getAbbr() + "type",
 						Prefix.EVENT_KG_SCHEMA.getAbbr() + "Relation", false, relation.getDataSet());
 				writeTriple(writer, writerPreview, lineNo, relationId,
 						Prefix.EVENT_KG_SCHEMA.getAbbr() + "relationSubject", relation.getSubject().getId(), false,
 						relation.getDataSet());
 				writeTriple(writer, writerPreview, lineNo, relationId,
-						Prefix.EVENT_KG_SCHEMA.getAbbr() + "relationObject", relation.getObject().getId(), false,
+						Prefix.EVENT_KG_SCHEMA.getAbbr() + "relationObject", object.getId(), false,
 						relation.getDataSet());
 				writeTriple(writer, writerPreview, lineNo, relationId, Prefix.EVENT_KG_SCHEMA.getAbbr() + "relation",
 						relation.getPrefix().getAbbr() + relation.getProperty(), false, relation.getDataSet());
@@ -453,6 +457,11 @@ public class DataStoreWriter {
 			int relationNo = 0;
 			int lineNo = 0;
 			for (GenericRelation relation : dataStore.getGenericRelations()) {
+
+				Entity object = relation.getObject();
+				if (object.getEventEntity() != null)
+					object = object.getEventEntity();
+
 				lineNo += 1;
 				String relationId = "<eventkg_relation_" + String.valueOf(relationNo) + ">";
 
@@ -462,7 +471,7 @@ public class DataStoreWriter {
 						Prefix.EVENT_KG_SCHEMA.getAbbr() + "relationSubject", relation.getSubject().getId(), false,
 						relation.getDataSet());
 				writeTriple(writer, writerPreview, lineNo, relationId,
-						Prefix.EVENT_KG_SCHEMA.getAbbr() + "relationObject", relation.getObject().getId(), false,
+						Prefix.EVENT_KG_SCHEMA.getAbbr() + "relationObject", object.getId(), false,
 						relation.getDataSet());
 				writeTriple(writer, writerPreview, lineNo, relationId, Prefix.EVENT_KG_SCHEMA.getAbbr() + "relation",
 						relation.getPrefix().getAbbr() + relation.getProperty(), false, relation.getDataSet());
