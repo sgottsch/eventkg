@@ -6,6 +6,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.regex.Pattern;
 
 import de.l3s.eventkg.meta.Language;
 import edu.stanford.nlp.util.StringUtils;
@@ -26,6 +27,8 @@ public class WikiWords {
 
 	private Map<Language, List<Set<String>>> monthNames;
 	private Map<Language, String> monthRegex;
+
+	private Map<Language, Set<Pattern>> eventCategoryRegexes;
 
 	public static WikiWords getInstance() {
 		if (instance == null) {
@@ -780,6 +783,28 @@ public class WikiWords {
 		}
 
 		return categoryPrefixes.get(language);
+	}
+
+	public Set<Pattern> getEventCategoryRegexes(Language language) {
+		if (this.eventCategoryRegexes == null) {
+			this.eventCategoryRegexes = new HashMap<Language, Set<Pattern>>();
+
+			this.eventCategoryRegexes.put(Language.EN, new HashSet<Pattern>());
+			this.eventCategoryRegexes.get(Language.EN).add(Pattern.compile(".+events$"));
+
+			this.eventCategoryRegexes.put(Language.DE, new HashSet<Pattern>());
+
+			this.eventCategoryRegexes.put(Language.PT, new HashSet<Pattern>());
+
+			this.eventCategoryRegexes.put(Language.RU, new HashSet<Pattern>());
+			this.eventCategoryRegexes.get(Language.RU).add(Pattern.compile("^События.+$"));
+
+			this.eventCategoryRegexes.put(Language.FR, new HashSet<Pattern>());
+
+			this.eventCategoryRegexes.put(Language.ES, new HashSet<Pattern>());
+		}
+
+		return eventCategoryRegexes.get(language);
 	}
 
 }

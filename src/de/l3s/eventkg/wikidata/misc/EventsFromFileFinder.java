@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -27,6 +28,14 @@ import de.l3s.eventkg.wikidata.processors.EventSubClassProcessor;
 public class EventsFromFileFinder extends Extractor {
 
 	private PrintWriter resultsWriter;
+
+	public static void main(String[] args) {
+		Config.init("config_eventkb_local.txt");
+		List<Language> ls = new ArrayList<Language>();
+		ls.add(Language.EN);
+		EventsFromFileFinder ff = new EventsFromFileFinder(ls);
+		ff.run();
+	}
 
 	public EventsFromFileFinder(List<Language> languages) {
 		super("EventsFromFileFinder", Source.WIKIDATA,
@@ -98,6 +107,7 @@ public class EventsFromFileFinder extends Extractor {
 		forbiddenClasses.add("Q3249551"); // process
 		forbiddenClasses.add("Q17442446"); // Wikimedia internal stuff
 		forbiddenClasses.add("Q12139612"); // enumeration
+		forbiddenClasses.add("Q20202269"); // music term
 
 		Set<String> allClasses = new HashSet<String>();
 

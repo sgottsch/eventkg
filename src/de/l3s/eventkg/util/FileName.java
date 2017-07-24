@@ -224,6 +224,7 @@ public enum FileName {
 	// Wikipedia
 	WIKIPEDIA_REDIRECTS("redirects.sql.gz", Source.WIKIPEDIA, FileType.RAW_DATA, false, false, true),
 	WIKIPEDIA_PAGE_INFOS("page.sql.gz", Source.WIKIPEDIA, FileType.RAW_DATA, false, false, true),
+	WIKIPEDIA_CATEGORYLINKS("categorylinks.sql.gz", Source.WIKIPEDIA, FileType.RAW_DATA, false, false, true),
 
 	WIKIPEDIA_DUMP_FILE_LIST("dump_file_list.txt", Source.WIKIPEDIA, FileType.RAW_DATA, false, false, false),
 
@@ -231,9 +232,10 @@ public enum FileName {
 
 	WIKIPEDIA_LINK_SETS("link_sets-", Source.WIKIPEDIA, FileType.RESULTS, true, false, false),
 	WIKIPEDIA_LINK_COUNTS("link_counts-", Source.WIKIPEDIA, FileType.RESULTS, true, false, false),
-	WIKIPEDIA_EVENTS("events-", Source.WIKIPEDIA, FileType.RESULTS, true, false, false),
+	WIKIPEDIA_TEXTUAL_EVENTS("events-", Source.WIKIPEDIA, FileType.RESULTS, true, false, false),
 
-	WIKIPEDIA_FIRST_SENTENCES("first_sentences-", Source.WIKIPEDIA, FileType.RESULTS, true, false, false);
+	WIKIPEDIA_FIRST_SENTENCES("first_sentences-", Source.WIKIPEDIA, FileType.RESULTS, true, false, false),
+	WIKIPEDIA_EVENTS("event_instances.tsv", Source.WIKIPEDIA, FileType.RESULTS, false, false, false);
 
 	private Source source;
 

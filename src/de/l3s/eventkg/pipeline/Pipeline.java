@@ -25,6 +25,7 @@ import de.l3s.eventkg.wikidata.WikidataExtractionWithEventPages;
 import de.l3s.eventkg.wikidata.WikidataExtractionWithoutEventPages;
 import de.l3s.eventkg.wikidata.misc.EventsFromFileFinder;
 import de.l3s.eventkg.wikipedia.LabelsAndDescriptionsExtractor;
+import de.l3s.eventkg.wikipedia.WikipediaEventsLoader;
 import de.l3s.eventkg.wikipedia.WikipediaLinkCountsExtractor;
 import de.l3s.eventkg.wikipedia.WikipediaLinkSetsExtractor;
 import de.l3s.eventkg.yago.YAGOEventLocationsExtractor;
@@ -115,6 +116,9 @@ public class Pipeline {
 		extractors.add(new DBpediaEventLocationsExtractor(languages));
 		extractors.add(new DBpediaTimesExtractor(languages));
 		extractors.add(new DBpediaPartOfLoader(languages));
+		
+		// Wikipedia
+		extractors.add(new WikipediaEventsLoader(languages));
 
 		// Wikidata
 		extractors.add(new WikidataExtractionWithoutEventPages(languages));

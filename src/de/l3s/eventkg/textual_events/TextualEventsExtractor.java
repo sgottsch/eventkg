@@ -88,7 +88,7 @@ public class TextualEventsExtractor extends Extractor {
 		this.eventsToTextualEvents = new HashMap<Event, Set<TextualEvent>>();
 
 		for (Language language : this.languages) {
-			for (File child : FileLoader.getFilesList(FileName.WIKIPEDIA_EVENTS, language)) {
+			for (File child : FileLoader.getFilesList(FileName.WIKIPEDIA_TEXTUAL_EVENTS, language)) {
 				processFile(child, language);
 			}
 		}
@@ -107,6 +107,9 @@ public class TextualEventsExtractor extends Extractor {
 
 	private void mergeEvents() {
 
+		// TODO: Is each location mentioned in the text a location of the event?
+		// Sometimes, they are just actors ("Ethiopia begins a massive offensive
+		// in Eritrea.")
 		Set<Entity> locationEntities = DBpediaAllLocationsLoader
 				.loadLocationEntities(this.allEventPagesDataSet.getWikidataIdMappings());
 

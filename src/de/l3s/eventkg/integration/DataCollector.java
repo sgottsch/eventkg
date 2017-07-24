@@ -273,6 +273,8 @@ public class DataCollector extends Extractor {
 		loadWikidataEvents();
 		System.out.println("loadDBpediaEvents.");
 		loadDBpediaEvents();
+		System.out.println("loadWikipediaEvents.");
+		loadWikipediaEvents();
 
 		// TODO: Reintegrate WCE events? Has errors like "Spain" and "London".
 		// loadWCEEvents();
@@ -946,6 +948,48 @@ public class DataCollector extends Extractor {
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
+		}
+
+	}
+
+	private void loadWikipediaEvents() {
+
+		for (Language language : this.languages) {
+
+			int numberOfWikipediaEvents = 0;
+
+			BufferedReader br = null;
+			try {
+				try {
+					br = FileLoader.getReader(FileName.WIKIPEDIA_EVENTS, language);
+				} catch (FileNotFoundException e1) {
+					e1.printStackTrace();
+				}
+
+				String line;
+				while ((line = br.readLine()) != null) {
+
+					String wikiLabel = line.split(Config.TAB)[0].replaceAll(" ", "_");
+
+					if (wikiLabel.startsWith("List_of_") || wikiLabel.startsWith("Lists_of_"))
+						continue;
+
+					Event event = createEvent(language, wikiLabel, "loadWikipediaEvents");
+					if (event != null)
+						numberOfWikipediaEvents += 1;
+				}
+			} catch (IOException e) {
+				e.printStackTrace();
+			} finally {
+				try {
+					br.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+
+			System.out.println("Number of events extracted from Wikipedia (" + language.getLanguageLowerCase() + "): "
+					+ numberOfWikipediaEvents);
 		}
 
 	}

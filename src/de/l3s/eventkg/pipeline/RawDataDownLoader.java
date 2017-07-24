@@ -16,6 +16,7 @@ import java.nio.channels.ReadableByteChannel;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.util.Calendar;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -151,6 +152,8 @@ public class RawDataDownLoader {
 					FileLoader.getFileNameWithPath(FileName.WIKIPEDIA_REDIRECTS, language));
 			downloadFile(baseUrl + wikiName + "-" + dumpDate + "-page.sql.gz",
 					FileLoader.getFileNameWithPath(FileName.WIKIPEDIA_PAGE_INFOS, language));
+			downloadFile(baseUrl + wikiName + "-" + dumpDate + "-categorylinks.sql.gz",
+					FileLoader.getFileNameWithPath(FileName.WIKIPEDIA_CATEGORYLINKS, language));
 		}
 
 	}
@@ -158,7 +161,8 @@ public class RawDataDownLoader {
 	private void downloadWCEFiles() {
 		String url = "http://wikitimes.l3s.de/webresources/WebService/getEvents/json/$yyyy$-01-01/$yyyy$-12-31";
 
-		for (int year = 2000; year <= 2016; year++) {
+		int currentYear = Calendar.getInstance().get(Calendar.YEAR);
+		for (int year = 2000; year <= currentYear; year++) {
 			downloadFile(url.replaceAll("\\$yyyy\\$", String.valueOf(year)),
 					this.dataPath + "wce/events_" + String.valueOf(year) + ".txt");
 		}
