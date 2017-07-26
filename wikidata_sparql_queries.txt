@@ -1,12 +1,4 @@
-# download as .tsv
-
-# All properties with their names
-SELECT ?property ?propertyLabel
-WHERE {
-  hint:Query hint:optimizer "None" .
-  ?property a wikibase:Property .
-  SERVICE wikibase:label { bd:serviceParam wikibase:language "en" }
-}
+# download as .tsv. Remove first line and "http://www.wikidata.org/entity/" prefixes.
 
 #Properties of type external-id
 # Make a list of properties of the type external-id
@@ -15,6 +7,16 @@ SELECT ?property ?propertyLabel WHERE {
 	SERVICE wikibase:label {
 		bd:serviceParam wikibase:language "en" .
 	}           
+}
+
+--- Others (not needed any more) ---
+
+# All properties with their names
+SELECT ?property ?propertyLabel
+WHERE {
+  hint:Query hint:optimizer "None" .
+  ?property a wikibase:Property .
+  SERVICE wikibase:label { bd:serviceParam wikibase:language "en" }
 }
 
 # Properties with "instance of" "Wikidata property for authority control"

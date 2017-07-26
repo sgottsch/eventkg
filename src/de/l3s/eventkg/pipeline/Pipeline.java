@@ -116,7 +116,7 @@ public class Pipeline {
 		extractors.add(new DBpediaEventLocationsExtractor(languages));
 		extractors.add(new DBpediaTimesExtractor(languages));
 		extractors.add(new DBpediaPartOfLoader(languages));
-		
+
 		// Wikipedia
 		extractors.add(new WikipediaEventsLoader(languages));
 

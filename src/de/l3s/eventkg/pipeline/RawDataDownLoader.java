@@ -14,8 +14,6 @@ import java.net.URL;
 import java.nio.channels.Channels;
 import java.nio.channels.ReadableByteChannel;
 import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
 import java.util.Calendar;
 import java.util.HashSet;
 import java.util.List;
@@ -24,6 +22,7 @@ import java.util.Set;
 import org.apache.commons.compress.archivers.sevenz.SevenZArchiveEntry;
 import org.apache.commons.compress.archivers.sevenz.SevenZFile;
 import org.apache.commons.compress.compressors.bzip2.BZip2CompressorInputStream;
+import org.apache.commons.io.FileUtils;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -42,21 +41,32 @@ public class RawDataDownLoader {
 	private String metaDataPath;
 
 	public void copyMetaFiles() {
-		String pathName = Config.getValue("wikidata_meta_files");
-		String targetFolder = metaDataPath + "wikidata";
-		System.out.println("Copy meta files from " + Paths.get(pathName) + " to " + Paths.get(targetFolder) + ".");
+
+		// Currently, we only have meta files for Wikidata
+
 		try {
-
-			File folder = new File(pathName);
-			for (File f : folder.listFiles()) {
-				System.out.println("Copy " + f + " to " + Paths.get(targetFolder) + "/" + f.getName() + ".");
-				Files.copy(f.toPath(), Paths.get(targetFolder + "/" + f.getName()),
-						StandardCopyOption.REPLACE_EXISTING);
-			}
-
+			FileUtils.copyURLToFile(
+					RawDataDownLoader.class.getResource("/resource/meta_data/wikidata/"
+							+ FileName.WIKIDATA_MANUAL_FORBIDDEN_PROPERTY_NAMES.getFileName()),
+					new File(metaDataPath + "wikidata/"
+							+ FileName.WIKIDATA_MANUAL_FORBIDDEN_PROPERTY_NAMES.getFileName()));
+			FileUtils.copyURLToFile(
+					RawDataDownLoader.class.getResource("/resource/meta_data/wikidata/"
+							+ FileName.WIKIDATA_EXTERNAL_IDS_PROPERTY_NAMES.getFileName()),
+					new File(metaDataPath + "wikidata/" + FileName.WIKIDATA_EXTERNAL_IDS_PROPERTY_NAMES.getFileName()));
+			FileUtils.copyURLToFile(
+					RawDataDownLoader.class.getResource(
+							"/resource/meta_data/wikidata/" + FileName.WIKIDATA_LOCATION_PROPERTY_NAMES.getFileName()),
+					new File(metaDataPath + "wikidata/" + FileName.WIKIDATA_LOCATION_PROPERTY_NAMES.getFileName()));
+			FileUtils.copyURLToFile(
+					RawDataDownLoader.class.getResource("/resource/meta_data/wikidata/"
+							+ FileName.WIKIDATA_TEMPORAL_PROPERTY_LIST_FILE_NAME.getFileName()),
+					new File(metaDataPath + "wikidata/"
+							+ FileName.WIKIDATA_TEMPORAL_PROPERTY_LIST_FILE_NAME.getFileName()));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+
 	}
 
 	public RawDataDownLoader(List<Language> languages) {

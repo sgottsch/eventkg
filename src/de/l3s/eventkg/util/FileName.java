@@ -49,21 +49,6 @@ public enum FileName {
 
 	ID_TO_WIKIPEDIA_MAPPING_FILE_NAME("id-to-wikipedia.tsv", Source.WIKIDATA, FileType.RESULTS, false, false, false),
 
-	// TODO: Create property names files from dump / not in meta
-	ID_TO_WIKIPEDIA_PROPERTY_MAPPING_FILE_NAME(
-			"property_names.tsv",
-			Source.WIKIDATA,
-			FileType.META,
-			false,
-			false,
-			false),
-	WIKIDATA_TEMPORAL_PROPERTY_LIST_FILE_NAME(
-			"temporal_property_names.tsv",
-			Source.WIKIDATA,
-			FileType.META,
-			false,
-			false,
-			false),
 	WIKIDATA_LABELS("labels.tsv", Source.WIKIDATA, FileType.RESULTS, false, false, false),
 	WIKIDATA_LABELS_PROPERTIES("property_labels.tsv", Source.WIKIDATA, FileType.RESULTS, false, false, false),
 	WIKIDATA_DESCRIPTIONS("descriptions.tsv", Source.WIKIDATA, FileType.RESULTS, false, false, false),
@@ -85,6 +70,13 @@ public enum FileName {
 	WIKIDATA_PROPERTY_NAMES("property_names.tsv", Source.WIKIDATA, FileType.RESULTS, false, false, false),
 	WIKIDATA_EVENTS("event_instances.tsv", Source.WIKIDATA, FileType.RESULTS, false, false, false),
 	WIKIDATA_LOCATIONS("wikidata_locations.tsv", Source.WIKIDATA, FileType.RESULTS, false, false, false),
+	WIKIDATA_TEMPORAL_PROPERTY_LIST_FILE_NAME(
+			"temporal_property_names.tsv",
+			Source.WIKIDATA,
+			FileType.META,
+			false,
+			false,
+			false),
 	WIKIDATA_LOCATION_PROPERTY_NAMES(
 			"property_names_locations.tsv",
 			Source.WIKIDATA,
@@ -158,10 +150,28 @@ public enum FileName {
 
 	ALL_TTL_EVENTS_WITH_TEXTS_PREVIEW("events_preview.nq", Source.ALL, FileType.RESULTS, false, false, false),
 	ALL_TTL_ENTITIES_WITH_TEXTS_PREVIEW("entities_preview.nq", Source.ALL, FileType.RESULTS, false, false, false),
-	ALL_TTL_EVENTS_BASE_RELATIONS_PREVIEW("relations_base_preview.nq", Source.ALL, FileType.RESULTS, false, false, false),
-	ALL_TTL_EVENTS_LINK_RELATIOINS_PREVIEW("relations_links_preview.nq", Source.ALL, FileType.RESULTS, false, false, false),
+	ALL_TTL_EVENTS_BASE_RELATIONS_PREVIEW(
+			"relations_base_preview.nq",
+			Source.ALL,
+			FileType.RESULTS,
+			false,
+			false,
+			false),
+	ALL_TTL_EVENTS_LINK_RELATIOINS_PREVIEW(
+			"relations_links_preview.nq",
+			Source.ALL,
+			FileType.RESULTS,
+			false,
+			false,
+			false),
 	ALL_TTL_PROPERTY_LABELS_PREVIEW("property_labels_preview.nq", Source.ALL, FileType.RESULTS, false, false, false),
-	ALL_TTL_EVENTS_OTHER_RELATIONS_PREVIEW("relations_other_preview.nq", Source.ALL, FileType.RESULTS, false, false, false),
+	ALL_TTL_EVENTS_OTHER_RELATIONS_PREVIEW(
+			"relations_other_preview.nq",
+			Source.ALL,
+			FileType.RESULTS,
+			false,
+			false,
+			false),
 
 	/**
 	 * Event pages with times
