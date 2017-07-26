@@ -1,7 +1,7 @@
 # EventKG
 [http://eventkg.l3s.uni-hannover.de/](http://eventkg.l3s.uni-hannover.de/)
 
-MultiWiki is a graphical Web user interface that presents semantic-based text passage extraction and alignment across the interlingual article pairs in Wikipedia. This approach enables identification and interlinking of text passages written in different languages and containing overlapping information with respect to a common topic. Semantic-based text passage alignment can enable Wikipedia editors and readers to better understand language-specific context of entities and events, provide valuable insides in cultural differences, and build a basis for qualitative analysis of Wikipedia articles.
+The EventKG is a novel multilingual resource incorporating event-centric information extracted from several large-scale knowledge graphs such as Wikidata, DBpedia and YAGO, as well as less structured sources such as Wikipedia Current Events and Wikipedia event lists in five languages. The EventKG is an extensible event-centric resource modeled in RDF. It relies on Open Data and best practices to make event data spread across different sources available through a common representation and reusable for a variety of novel algorithms and real-world applications.
 
 #### Configuration
 
@@ -25,6 +25,9 @@ wikidata_meta_files	wikidata_meta_files
 Export the Pipeline class as exectuable jar and start the data download using:
 
 ```java -jar Pipeline.jar path_to_config_file.txt 1```
+
+Run the first steps of extraction:
+
 ```java -jar Pipeline.jar path_to_config_file.txt 2,3```
 
 Specify the language in the Dumper class and export it as Jar. Run the extraction from the Wikipedia dump files for each language:
