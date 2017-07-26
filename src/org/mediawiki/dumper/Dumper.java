@@ -90,7 +90,7 @@ import org.mediawiki.importer.XmlDumpWriter0_10;
 import de.l3s.eventkg.meta.Language;
 import de.l3s.eventkg.pipeline.Config;
 import de.l3s.eventkg.wikipedia.RedirectsTableCreator;
-import de.l3s.eventkg.wikipedia.mwdumper.articleprocessing.EventKBExtractor;
+import de.l3s.eventkg.wikipedia.mwdumper.articleprocessing.EventKGExtractor;
 
 class Dumper {
 
@@ -267,7 +267,7 @@ class Dumper {
 			}
 
 			// TODO: Configure language in params
-			return new EventKBExtractor(param, language, fileEvents, fileFirstSentences, fileLinkSets, fileLinkCounts,
+			return new EventKGExtractor(param, language, fileEvents, fileFirstSentences, fileLinkSets, fileLinkCounts,
 					redirects);
 		} else {
 			throw new IllegalArgumentException("Output format not known: " + format);

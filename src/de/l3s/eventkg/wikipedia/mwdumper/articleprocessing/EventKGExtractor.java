@@ -14,7 +14,7 @@ import org.mediawiki.importer.Wikiinfo;
 
 import de.l3s.eventkg.meta.Language;
 
-public class EventKBExtractor implements DumpWriter {
+public class EventKGExtractor implements DumpWriter {
 
 	String pageTitle = "";
 	int _targetPageId;
@@ -39,7 +39,7 @@ public class EventKBExtractor implements DumpWriter {
 	public void close() throws IOException {
 	}
 
-	public EventKBExtractor(String pageId, Language language, BufferedWriter fileEvents,
+	public EventKGExtractor(String pageId, Language language, BufferedWriter fileEvents,
 			BufferedWriter fileFirstSentences, BufferedWriter fileLinkSets, BufferedWriter fileLinkCounts,
 			Map<String, String> redirects) {
 		this._targetPageId = Integer.parseInt(pageId);

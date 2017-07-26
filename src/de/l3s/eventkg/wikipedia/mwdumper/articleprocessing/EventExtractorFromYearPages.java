@@ -5,6 +5,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -43,6 +44,7 @@ public class EventExtractorFromYearPages {
 	private SimpleDateFormat dateFormat;
 
 	private String regexMonth;
+	private String regexWeekdays;
 
 	private String hyphensOr;
 
@@ -53,6 +55,7 @@ public class EventExtractorFromYearPages {
 	private List<DatePattern> datePatterns;
 
 	private Map<String, String> redirects;
+	private HashSet<Pattern> dateTemplatePatterns;
 
 	public static void main(String[] args) throws IOException {
 
@@ -70,6 +73,7 @@ public class EventExtractorFromYearPages {
 		enMap.put(35375, "123");
 		enMap.put(160795, "1988");
 		enMap.put(53347099, "Green Light (Lorde song)");
+		enMap.put(2646680, "1989 in British music");
 		exampleTexts.put(Language.EN, enMap);
 
 		Map<Integer, String> deMap = new HashMap<Integer, String>();
@@ -90,7 +94,8 @@ public class EventExtractorFromYearPages {
 		frMap.put(32864, "Ronald Reagan");
 		frMap.put(3506, "1957");
 		frMap.put(5335, "2014");
-		frMap.put(7716597, "Septembre 2014");
+		frMap.put(5335, "2014");
+		frMap.put(3627989, "2009 en Palestine");
 		exampleTexts.put(Language.FR, frMap);
 
 		Map<Integer, String> ptMap = new HashMap<Integer, String>();
@@ -100,8 +105,8 @@ public class EventExtractorFromYearPages {
 		ptMap.put(28422, "2017");
 		exampleTexts.put(Language.PT, ptMap);
 
-		Language language = Language.PT;
-		int id = 28422;
+		Language language = Language.FR;
+		int id = 3627989;
 
 		String text = IOUtils.toString(
 				TextExtractorNew.class.getResourceAsStream("/resource/wikipage/" + language.getLanguage() + "/" + id),
@@ -153,6 +158,7 @@ public class EventExtractorFromYearPages {
 		this.monthNames = WikiWords.getInstance().getMonthNames(language);
 
 		this.regexMonth = WikiWords.getInstance().getMonthRegex(language);
+		this.regexWeekdays = WikiWords.getInstance().getWeekdayRegex(language);
 		String regexMonth1 = "(?<m1>" + this.regexMonth.substring(1);
 
 		String regexDay1 = "(?<d1>[1-3]?[0-9])";
@@ -315,6 +321,12 @@ public class EventExtractorFromYearPages {
 			this.datePatterns.add(
 					new DatePattern(Pattern.compile("^(?<y1>" + regexYear + ")"), false, false, false, false, true));
 
+		this.dateTemplatePatterns = new HashSet<Pattern>();
+		Pattern dateTemplatePattern1 = Pattern
+				.compile("^\\{\\{date\\|" + regexDay1 + "\\|" + regexMonth1 + "\\|(?<y1>" + regexYear + ")\\}\\}");
+		this.dateTemplatePatterns.add(dateTemplatePattern1);
+		this.datePatterns.add(new DatePattern(dateTemplatePattern1, true, false, true, false, true));
+
 		if (language == Language.EN) {
 
 			String regexDayMonth1 = regexDay1 + " " + regexMonth1;
@@ -362,8 +374,10 @@ public class EventExtractorFromYearPages {
 			this.datePatterns.add(new DatePattern(datePatternDay, true, false, false, false));
 
 			dateLinkResolvers.add(Pattern.compile("\\[\\[" + regexMonth1 + " " + regexDay1 + "\\|(?<r>[^\\]]*)\\]\\]"));
+			dateLinkResolvers.add(Pattern.compile("\\[\\[" + regexDay1 + " " + regexMonth1 + "\\|(?<r>[^\\]]*)\\]\\]"));
 			dateLinkResolvers.add(Pattern.compile("\\[\\[(?<r>" + regexMonth1 + " " + regexDay1 + ")\\]\\]"));
-			dateLinkResolvers.add(Pattern.compile("\\[\\[(?<r>" + year + ")\\]\\]"));
+			dateLinkResolvers.add(Pattern.compile("\\[\\[(?<r>" + regexDay1 + " " + regexMonth1 + ")\\]\\]"));
+			dateLinkResolvers.add(Pattern.compile("\\[\\[(?<r>" + regexYear + ")\\]\\]"));
 		} else if (language == Language.DE) {
 
 			String regexDayMonth1 = regexDay1 + "\\. " + regexMonth1;
@@ -389,7 +403,7 @@ public class EventExtractorFromYearPages {
 			dateLinkResolvers
 					.add(Pattern.compile("\\[\\[" + regexDay1 + "\\. " + regexMonth1 + "\\|(?<r>[^\\]]*)\\]\\]"));
 			dateLinkResolvers.add(Pattern.compile("\\[\\[(?<r>" + regexDay1 + "\\. " + regexMonth1 + ")\\]\\]"));
-			dateLinkResolvers.add(Pattern.compile("\\[\\[(?<r>" + year + ")\\]\\]"));
+			dateLinkResolvers.add(Pattern.compile("\\[\\[(?<r>" + regexYear + ")\\]\\]"));
 		} else if (language == Language.FR) {
 
 			String regexDayMonth1 = regexDay1 + " " + regexMonth1;
@@ -410,7 +424,7 @@ public class EventExtractorFromYearPages {
 			dateLinkResolvers.add(Pattern.compile("\\[\\[" + regexDay1 + " " + regexMonth1 + "\\|(?<r>[^\\]]*)\\]\\]"));
 			dateLinkResolvers.add(Pattern.compile("\\[\\[(?<r>" + regexDay1 + " " + regexMonth1 + ")\\]\\]"));
 			dateLinkResolvers.add(Pattern.compile("\\[\\[" + regexMonth1 + " " + year + "\\|(?<r>[^\\]]*)\\]\\]"));
-			dateLinkResolvers.add(Pattern.compile("\\[\\[(?<r>" + year + ")\\]\\]"));
+			dateLinkResolvers.add(Pattern.compile("\\[\\[(?<r>" + regexYear + ")\\]\\]"));
 		} else if (language == Language.PT) {
 
 			String regexDayMonth1 = regexDay1 + "º? de " + regexMonth1;
@@ -424,7 +438,7 @@ public class EventExtractorFromYearPages {
 			dateLinkResolvers
 					.add(Pattern.compile("\\[\\[" + regexDay1 + " de " + regexMonth1 + "\\|(?<r>[^\\]]*)\\]\\]"));
 			dateLinkResolvers.add(Pattern.compile("\\[\\[(?<r>" + regexDay1 + " de " + regexMonth1 + ")\\]\\]"));
-			dateLinkResolvers.add(Pattern.compile("\\[\\[(?<r>" + year + ")\\]\\]"));
+			dateLinkResolvers.add(Pattern.compile("\\[\\[(?<r>" + regexYear + ")\\]\\]"));
 		} else if (language == Language.RU) {
 
 			String regexDayMonth1 = regexDay1 + " " + regexMonth1;
@@ -734,6 +748,10 @@ public class EventExtractorFromYearPages {
 		}
 
 		line = removeDateLinks(line);
+
+		// remove leading weekdays
+		line = line.replaceAll("^" + regexWeekdays, "");
+
 		line = cleanupText(line);
 
 		node.setOriginalLine(line);
@@ -741,11 +759,13 @@ public class EventExtractorFromYearPages {
 
 		String textPart = line;
 
-		for (DatePattern datePattern : this.datePatterns) {
+		System.out.println(line);
 
+		for (DatePattern datePattern : this.datePatterns) {
+			// System.out.println(datePattern.getPattern());
 			MatcherResult mRes = match(datePattern.getPattern(), line);
 			if (mRes.getDatePart() != null) {
-
+				System.out.println("MATCH");
 				if (this.year != null && (datePattern.hasM1() || !datePattern.hasM2()))
 					date.resetMonths();
 
@@ -826,11 +846,10 @@ public class EventExtractorFromYearPages {
 	private String cleanupText(String line) {
 		line = line.replaceAll("'''", "");
 		line = line.replaceAll("''", "");
-		return line;
+		return line.trim();
 	}
 
 	private String removeDateLinks(String line) {
-
 		for (Pattern dateLinkResolver : this.dateLinkResolvers) {
 			Matcher matcher = dateLinkResolver.matcher(line);
 
@@ -863,7 +882,7 @@ public class EventExtractorFromYearPages {
 			return text;
 
 		text = ReferenceAndTemplateRemover.getInstance(language).removeReferences(text);
-		text = ReferenceAndTemplateRemover.getInstance(language).removeTemplates(text);
+		text = ReferenceAndTemplateRemover.getInstance(language).removeTemplates(text, this.dateTemplatePatterns);
 
 		return text;
 	}

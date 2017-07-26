@@ -1,7 +1,9 @@
 package de.l3s.eventkg.wikipedia.mwdumper.articleprocessing;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -397,6 +399,10 @@ public class ReferenceAndTemplateRemover {
 	}
 
 	public String removeTemplates(String text) {
+		return removeTemplates(text, new HashSet<Pattern>());
+	}
+
+	public String removeTemplates(String text, Set<Pattern> allowedPatterns) {
 
 		Matcher mComment = this.commentPattern.matcher(text);
 		StringBuffer sbComment = new StringBuffer();
@@ -422,6 +428,13 @@ public class ReferenceAndTemplateRemover {
 				String succ;
 				String pref = "";
 				String groupText = m.group();
+
+				for (Pattern p : allowedPatterns) {
+					if (p.matcher(groupText).matches()) {
+						continue;
+					}
+				}
+
 				if (m.start() >= 3 && !(pref = text.substring(m.start() - 3, m.start())).endsWith("\n")
 						&& (pref = pref.trim()).length() == 3) {
 					pref = pref.substring(0, 2);

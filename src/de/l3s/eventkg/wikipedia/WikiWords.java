@@ -26,7 +26,9 @@ public class WikiWords {
 	private Map<Language, Set<String>> eventsLabels;
 
 	private Map<Language, List<Set<String>>> monthNames;
+	private Map<Language, List<Set<String>>> weekdayNames;
 	private Map<Language, String> monthRegex;
+	private Map<Language, String> weekdayRegex;
 
 	private Map<Language, Set<Pattern>> eventCategoryRegexes;
 
@@ -502,19 +504,35 @@ public class WikiWords {
 
 			this.imageLabels.put(Language.EN, new HashSet<String>());
 			this.imageLabels.get(Language.EN).add("Image");
+			this.imageLabels.get(Language.EN).add("File");
 
 			this.imageLabels.put(Language.DE, new HashSet<String>());
+			// https://de.wikipedia.org/wiki/Hilfe:Bilder
+			// "Der erste Parameter enthält den Namensraum Datei: und dann den
+			// Dateinamen des Bildes. Bild: anstatt Datei: ist veraltet, wird
+			// aber von der MediaWiki-Software ebenso wie die englischen
+			// Begriffe File: und Image: erkannt."
 			this.imageLabels.get(Language.DE).add("Datei");
 			this.imageLabels.get(Language.DE).add("File");
+			this.imageLabels.get(Language.DE).add("Bild");
+			this.imageLabels.get(Language.DE).add("Image");
 
 			this.imageLabels.put(Language.PT, new HashSet<String>());
 			this.imageLabels.get(Language.PT).add("Imagem");
+			this.imageLabels.get(Language.PT).add("Ficheiro");
+			this.imageLabels.get(Language.PT).add("Arquivo");
+			this.imageLabels.get(Language.PT).add("File");
+			this.imageLabels.get(Language.PT).add("Image");
 
 			this.imageLabels.put(Language.RU, new HashSet<String>());
 			this.imageLabels.get(Language.RU).add("Файл");
+			this.imageLabels.get(Language.RU).add("File");
+			this.imageLabels.get(Language.RU).add("Image");
 
 			this.imageLabels.put(Language.FR, new HashSet<String>());
 			this.imageLabels.get(Language.FR).add("Fichier");
+			this.imageLabels.get(Language.FR).add("File");
+			this.imageLabels.get(Language.FR).add("Image");
 		}
 
 		return imageLabels.get(language);
@@ -619,7 +637,7 @@ public class WikiWords {
 		List<Set<String>> monthNamesOfLanguage = new ArrayList<Set<String>>();
 		this.monthNames.put(language, monthNamesOfLanguage);
 
-		List<String> monthNamesSeparated = getMonthNamesSemicoloSeparated(language);
+		List<String> monthNamesSeparated = getMonthNamesSemicolonSeparated(language);
 
 		for (int i = 0; i < 12; i++) {
 			Set<String> monthNameOptions = new HashSet<String>();
@@ -629,6 +647,29 @@ public class WikiWords {
 		}
 
 		return monthNamesOfLanguage;
+	}
+
+	public List<Set<String>> getWeekdayNames(Language language) {
+
+		if (this.weekdayNames == null)
+			this.weekdayNames = new HashMap<Language, List<Set<String>>>();
+
+		if (this.weekdayNames.containsKey(language))
+			return this.weekdayNames.get(language);
+
+		List<Set<String>> weekdayNamesOfLanguage = new ArrayList<Set<String>>();
+		this.weekdayNames.put(language, weekdayNamesOfLanguage);
+
+		List<String> weekdayNamesSeparated = getWeekdayNamesSemicolonSeparated(language);
+
+		for (int i = 0; i < 7; i++) {
+			Set<String> weekdayNameOptions = new HashSet<String>();
+			for (String name : weekdayNamesSeparated.get(i).split(";"))
+				weekdayNameOptions.add(name);
+			weekdayNamesOfLanguage.add(weekdayNameOptions);
+		}
+
+		return weekdayNamesOfLanguage;
 	}
 
 	public String getMonthRegex(Language language) {
@@ -649,7 +690,25 @@ public class WikiWords {
 		return this.monthRegex.get(language);
 	}
 
-	private List<String> getMonthNamesSemicoloSeparated(Language language) {
+	public String getWeekdayRegex(Language language) {
+
+		if (this.weekdayRegex == null)
+			this.weekdayRegex = new HashMap<Language, String>();
+		if (!this.weekdayRegex.containsKey(language)) {
+
+			List<String> regexParts = new ArrayList<String>();
+
+			for (Set<String> names : getWeekdayNames(language)) {
+				regexParts.add("(" + StringUtils.join(names, "|") + ")");
+			}
+
+			this.weekdayRegex.put(language, "(" + StringUtils.join(regexParts, "|") + ")");
+		}
+
+		return this.weekdayRegex.get(language);
+	}
+
+	private List<String> getMonthNamesSemicolonSeparated(Language language) {
 
 		List<String> monthNamesOfLanguage = new ArrayList<String>();
 
@@ -728,6 +787,62 @@ public class WikiWords {
 		}
 
 		return monthNamesOfLanguage;
+	}
+
+	private List<String> getWeekdayNamesSemicolonSeparated(Language language) {
+
+		List<String> weekdayNamesOfLanguage = new ArrayList<String>();
+
+		if (language == Language.EN) {
+			new ArrayList<String>();
+			weekdayNamesOfLanguage.add("Monday");
+			weekdayNamesOfLanguage.add("Tuesday");
+			weekdayNamesOfLanguage.add("Wednesday");
+			weekdayNamesOfLanguage.add("Thursday");
+			weekdayNamesOfLanguage.add("Friday");
+			weekdayNamesOfLanguage.add("Saturday");
+			weekdayNamesOfLanguage.add("Sunday");
+		} else if (language == Language.DE) {
+			new ArrayList<String>();
+			weekdayNamesOfLanguage.add("Montag");
+			weekdayNamesOfLanguage.add("Dienstag");
+			weekdayNamesOfLanguage.add("Mittwoch");
+			weekdayNamesOfLanguage.add("Donnerstag");
+			weekdayNamesOfLanguage.add("Freitag");
+			weekdayNamesOfLanguage.add("Samstag;Sonnabend");
+			weekdayNamesOfLanguage.add("Sonntag");
+		} else if (language == Language.RU) {
+			new ArrayList<String>();
+			weekdayNamesOfLanguage.add("понедельник");
+			weekdayNamesOfLanguage.add("вторник");
+			weekdayNamesOfLanguage.add("среда");
+			weekdayNamesOfLanguage.add("четверг");
+			weekdayNamesOfLanguage.add("пятница");
+			weekdayNamesOfLanguage.add("суббота");
+			weekdayNamesOfLanguage.add("воскресенье");
+		} else if (language == Language.FR) {
+			new ArrayList<String>();
+			weekdayNamesOfLanguage.add("lundi;Lundi");
+			weekdayNamesOfLanguage.add("mardi;Mardi");
+			weekdayNamesOfLanguage.add("mercredi;Mercredi");
+			weekdayNamesOfLanguage.add("jeudi;Jeudi");
+			weekdayNamesOfLanguage.add("vendredi;Vendredi");
+			weekdayNamesOfLanguage.add("samedi;Samedi");
+			weekdayNamesOfLanguage.add("dimanche;Dimanche");
+		} else if (language == Language.PT) {
+			new ArrayList<String>();
+			weekdayNamesOfLanguage.add("segunda-feira;Segunda-feira");
+			weekdayNamesOfLanguage.add("terça-feira;Terça-feira");
+			weekdayNamesOfLanguage.add("quarta-feira;Quarta-feira");
+			weekdayNamesOfLanguage.add("quinta-feira;Quinta-feira");
+			weekdayNamesOfLanguage.add("sexta-feira;Sexta-feira");
+			weekdayNamesOfLanguage.add("sábado;Sábado");
+			weekdayNamesOfLanguage.add("domingo;Domingo");
+		} else {
+			System.out.println("Month names: Language not supported.");
+		}
+
+		return weekdayNamesOfLanguage;
 	}
 
 	public Set<String> getListPrefixes(Language language) {

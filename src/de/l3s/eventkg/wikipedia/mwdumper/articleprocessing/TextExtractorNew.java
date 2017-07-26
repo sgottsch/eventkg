@@ -92,6 +92,8 @@ public class TextExtractorNew {
 		deMap.put(302, "Assoziativgesetz");
 		deMap.put(163, "Aikidō");
 		deMap.put(83544, "Schlacht um Verdun");
+		deMap.put(1082774, "Skulpturenmeile (Hannover)");
+		deMap.put(1624, "Freie Demokratische Partei");
 		exampleTexts.put(Language.DE, deMap);
 
 		Map<Integer, String> ruMap = new HashMap<Integer, String>();
@@ -111,7 +113,7 @@ public class TextExtractorNew {
 		exampleTexts.put(Language.PT, ptMap);
 
 		Language language = Language.DE;
-		int id = 83544;
+		int id = 1624;
 
 		String text = IOUtils.toString(
 				TextExtractorNew.class.getResourceAsStream("/resource/wikipage/" + language.getLanguage() + "/" + id),
@@ -123,7 +125,7 @@ public class TextExtractorNew {
 		extr.extractLinks();
 
 		System.out.println(extr.output.getFirstSentence());
-
+		System.out.println(extr.output.getLinkSetsInLines());
 		// for (Set<Link> links : extr.output.getLinksInCommonSentences()) {
 		// Set<String> linkNames = new HashSet<String>();
 		// for (Link link : links)
@@ -183,7 +185,7 @@ public class TextExtractorNew {
 
 		this.extractLinksFromParagraphs(this.articleParagraph);
 		this.createCSVString(this.articleParagraph);
-		resolveLinkMap();
+		resolveLinkMapStrict();
 		extractSentencesAndLinks();
 	}
 
@@ -369,6 +371,10 @@ public class TextExtractorNew {
 				if (linkName == null)
 					continue;
 
+				// don't consider links of the page to itself
+				if (linkName.replaceAll(" ", "_").equals(this.pageTitle.replaceAll(" ", "_")))
+					continue;
+
 				int lengthOfRemovedPart = insertedAnchorText.length() - m.group().length();
 
 				Link link = null;
@@ -518,6 +524,76 @@ public class TextExtractorNew {
 		}
 
 		return enrichedLinks;
+	}
+
+	public void resolveLinkMapStrict() {
+
+		// Stricter version of the link resolver.
+		// Only add anchor_text -> link, if
+		// anchor_text = link
+		// no ambiguity & anchor_text != link & [anchor_text|link] appears more
+		// than once
+		// ambiguity & anchor_text != link & [anchor_text|link] appears more
+		// often than [anchor_text|other_link]
+
+		resolvedLinkMap = new HashMap<String, String>();
+
+		anchorTextsToLinkNames.remove(this.pageTitle);
+
+		for (String anchorText : anchorTextsToLinkNames.keySet()) {
+			if (anchorTextsToLinkNames.get(anchorText).size() > 1) {
+				Integer highestCount = null;
+				boolean strictlyHigher = false;
+				String linkNameWithHighestCount = null;
+				for (String linkName : anchorTextsToLinkNames.get(anchorText).keySet()) {
+					if (linkName.equals(anchorText.replaceAll(" ", "_"))) {
+						// anchor text = entity label
+						resolvedLinkMap.put(anchorText, linkName);
+						break;
+					}
+					if (highestCount == null || anchorTextsToLinkNames.get(anchorText).get(linkName) > highestCount) {
+						if (highestCount != null)
+							strictlyHigher = false;
+						highestCount = anchorTextsToLinkNames.get(anchorText).get(linkName);
+						linkNameWithHighestCount = linkName;
+					}
+				}
+
+				// in case of break above -> don't put here
+				if (!resolvedLinkMap.containsKey(anchorText)) {
+					if (strictlyHigher)
+						resolvedLinkMap.put(anchorText, linkNameWithHighestCount);
+				}
+			} else {
+				// only one element
+				for (String linkName : anchorTextsToLinkNames.get(anchorText).keySet()) {
+
+					// to add some trust: if the anchor text appears only once
+					// and anchor and link text are not the same: ignore it
+					if (anchorTextsToLinkNames.get(anchorText).get(linkName) == 1
+							&& !linkName.equals(anchorText.replaceAll(" ", "_")))
+						continue;
+
+					resolvedLinkMap.put(anchorText, linkName);
+				}
+			}
+		}
+
+		anchorTextSortedByLengthDecreasing = new ArrayList<String>();
+		anchorTextSortedByLengthDecreasing.addAll(resolvedLinkMap.keySet());
+		Collections.sort(anchorTextSortedByLengthDecreasing, new Comparator<String>() {
+
+			@Override
+			public int compare(String o1, String o2) {
+				if (o1.length() > o2.length())
+					return -1;
+				else if (o1.length() < o2.length())
+					return 1;
+				return 0;
+			}
+
+		});
+
 	}
 
 	public void resolveLinkMap() {
