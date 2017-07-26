@@ -771,9 +771,9 @@ public class WikiWords {
 		} else if (language == Language.PT) {
 			new ArrayList<String>();
 			monthNamesOfLanguage.add("Janeiro;janeiro");
-			monthNamesOfLanguage.add("Fevereiro;Fevereiro");
-			monthNamesOfLanguage.add("Março;Março");
-			monthNamesOfLanguage.add("Abril;Abril");
+			monthNamesOfLanguage.add("Fevereiro;fevereiro");
+			monthNamesOfLanguage.add("Março;março");
+			monthNamesOfLanguage.add("Abril;abril");
 			monthNamesOfLanguage.add("Maio;maio");
 			monthNamesOfLanguage.add("Junho;junho");
 			monthNamesOfLanguage.add("Julho;julho");

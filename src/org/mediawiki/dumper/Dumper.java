@@ -96,7 +96,7 @@ class Dumper {
 
 	// TODO: Cut it to the actual needs of EventKG. Integrate it in the
 	// pipeline. Put language as parameter. Just use the existing MWDumper maven
-	// repo and wrap own stuff arount it.
+	// repo and wrap own stuff around it.
 
 	public static void main(String[] args) throws IOException, ParseException {
 		InputStream input = null;

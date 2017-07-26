@@ -103,10 +103,11 @@ public class EventExtractorFromYearPages {
 		ptMap.put(24532, "2007");
 		ptMap.put(29071, "3 a.C.");
 		ptMap.put(28422, "2017");
+		ptMap.put(1989, "1897");
 		exampleTexts.put(Language.PT, ptMap);
 
-		Language language = Language.FR;
-		int id = 3627989;
+		Language language = Language.PT;
+		int id = 1989;
 
 		String text = IOUtils.toString(
 				TextExtractorNew.class.getResourceAsStream("/resource/wikipage/" + language.getLanguage() + "/" + id),
@@ -427,17 +428,15 @@ public class EventExtractorFromYearPages {
 			dateLinkResolvers.add(Pattern.compile("\\[\\[(?<r>" + regexYear + ")\\]\\]"));
 		} else if (language == Language.PT) {
 
-			String regexDayMonth1 = regexDay1 + "º? de " + regexMonth1;
-
+			String regexDayMonth1 = "(Em )?" + regexDay1 + "º? de " + regexMonth1;
 			Pattern datePatternDayDayMonth = Pattern
 					.compile("^" + regexDay1 + " (a|e) " + regexDay2 + " de " + regexMonth1);
 			this.datePatterns.add(new DatePattern(datePatternDayDayMonth, true, true, true, false));
 			Pattern datePatternDayMonth = Pattern.compile("^" + regexDayMonth1);
 			this.datePatterns.add(new DatePattern(datePatternDayMonth, true, false, true, false));
 
-			dateLinkResolvers
-					.add(Pattern.compile("\\[\\[" + regexDay1 + " de " + regexMonth1 + "\\|(?<r>[^\\]]*)\\]\\]"));
-			dateLinkResolvers.add(Pattern.compile("\\[\\[(?<r>" + regexDay1 + " de " + regexMonth1 + ")\\]\\]"));
+			dateLinkResolvers.add(Pattern.compile("\\[\\[" + regexDayMonth1 + "\\|(?<r>[^\\]]*)\\]\\]"));
+			dateLinkResolvers.add(Pattern.compile("\\[\\[(?<r>" + regexDayMonth1 + ")\\]\\]"));
 			dateLinkResolvers.add(Pattern.compile("\\[\\[(?<r>" + regexYear + ")\\]\\]"));
 		} else if (language == Language.RU) {
 
@@ -751,6 +750,9 @@ public class EventExtractorFromYearPages {
 
 		// remove leading weekdays
 		line = line.replaceAll("^" + regexWeekdays, "");
+		// remove leading "?" for unknown exact dates as in " ? - Conquista do
+		// Japão na Coreia."
+		line = line.replaceAll("^\\?", "");
 
 		line = cleanupText(line);
 
