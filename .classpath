@@ -16,5 +16,6 @@
 			<attribute name="maven.pomderived" value="true"/>
 		</attributes>
 	</classpathentry>
+	<classpathentry kind="lib" path="libs/mwdumper-1.25.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>

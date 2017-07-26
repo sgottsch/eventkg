@@ -13,6 +13,9 @@ import org.mediawiki.importer.Siteinfo;
 import org.mediawiki.importer.Wikiinfo;
 
 import de.l3s.eventkg.meta.Language;
+import de.l3s.eventkg.wikipedia.mwdumper.articleprocessing.EventExtractorFromYearPages;
+import de.l3s.eventkg.wikipedia.mwdumper.articleprocessing.Output;
+import de.l3s.eventkg.wikipedia.mwdumper.articleprocessing.TextExtractorNew;
 
 public class EventKGExtractor implements DumpWriter {
 
@@ -35,7 +38,6 @@ public class EventKGExtractor implements DumpWriter {
 
 	protected static final DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd_HH:mm:ss.S");
 
-	@Override
 	public void close() throws IOException {
 	}
 
@@ -52,19 +54,15 @@ public class EventKGExtractor implements DumpWriter {
 		// this._pageIdsWithEvents = pageIdsWithEvents;
 	}
 
-	@Override
 	public void writeStartWiki(Wikiinfo info) throws IOException {
 	}
 
-	@Override
 	public void writeEndWiki() throws IOException {
 	}
 
-	@Override
 	public void writeSiteinfo(Siteinfo info) throws IOException {
 	}
 
-	@Override
 	public void writeStartPage(Page page) throws IOException {
 		this.empty = true;
 		this._pageId = page.Id;
@@ -74,7 +72,6 @@ public class EventKGExtractor implements DumpWriter {
 		}
 	}
 
-	@Override
 	public void writeEndPage() throws IOException {
 		if (this._pageId == this._targetPageId || this._targetPageId == -1) {
 			this.fileEvents.flush();
@@ -85,7 +82,6 @@ public class EventKGExtractor implements DumpWriter {
 		this.pageIsMainArticle = false;
 	}
 
-	@Override
 	public void writeRevision(Revision revision) throws IOException {
 
 		if (this.pageIsMainArticle) {

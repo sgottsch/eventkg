@@ -19,21 +19,28 @@ dbpedia	2016-10
 wikidata	20170424
 wikidata_meta_files	wikidata_meta_files
 ```
+Currently, the five languages English (en), German (de), Russian (ru), French (fr), and Portuguese (pt) are supported.
 
 #### Run the extraction
 
-Export the Pipeline class as exectuable jar and start the data download using:
+The EventKG extraction pipeline consists of several steps described in the following. Consider that some of these step require some time and resources (e.g. for the data download, for processing the big Wikidata dump file, and for processing the Wikipedia XML files).
+
+1. Export the Pipeline class (`de.l3s.eventkg.pipeline.Pipeline`) as executable jar (`Pipeline.jar`).
+
+2. Start the data download using:
 
 ```java -jar Pipeline.jar path_to_config_file.txt 1```
 
-Run the first steps of extraction:
+3. Run the first steps of extraction:
 
 ```java -jar Pipeline.jar path_to_config_file.txt 2,3```
 
-Specify the language in the Dumper class and export it as Jar. Run the extraction from the Wikipedia dump files for each language:
+4. Export the Dumper class (`de.l3s.eventkg.wikipedia.mwdumper.Dumper`) as Jar (`Dumper.jar`). Run the extraction from the Wikipedia dump files for each language by running the following command (here for Portuguese, replace `pt` with other languages if needed). [GNU parallel](https://www.gnu.org/software/parallel/) is required.
 
-```nohup parallel -j9 "bzip2 -dc {} | java -jar -Xmx6G -Xss40m Dumper.jar --format=eventkb:-1" :::: data/raw_data/wikipedia/fr/dump_file_list.txt 2> log_dumper.txt```
+```nohup parallel -j9 "bzip2 -dc {} | java -jar -Xmx6G -Xss40m Dumper.jar path_to_config_file.txt pt" :::: data/raw_data/wikipedia/pt/dump_file_list.txt 2> log_dumper.txt```
 
-Start the final steps of extraction:
+5. Start the final steps of extraction:
 
 ```java -jar Pipeline.jar path_to_config_file.txt 4,5```
+
+6. The resulting *.nq* files are put into the folder `data/results/all`.
