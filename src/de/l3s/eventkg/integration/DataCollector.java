@@ -27,6 +27,11 @@ public class DataCollector extends Extractor {
 
 	private Set<Event> uniqueEvents = new HashSet<Event>();
 
+	/**
+	 * Set of entities which may never be interpreted as events.
+	 */
+	private Set<Entity> blacklistEvents = new HashSet<Entity>();
+
 	private WikidataIdMappings wikidataIdMappings;
 
 	public static void main(String[] args) {
@@ -52,6 +57,10 @@ public class DataCollector extends Extractor {
 		collectEvents();
 		System.out.println("Collect \"part of\" relations.");
 		collectPartOfs();
+		System.out.println("Collect \"follows\" relations.");
+		collectPreviousEvents();
+		System.out.println("Collect \"followed by\" relations.");
+		collectNextEvents();
 		System.out.println("Collect event times.");
 		collectTimes();
 		System.out.println("Collect event locations.");
@@ -269,6 +278,10 @@ public class DataCollector extends Extractor {
 
 	private void collectEvents() {
 
+		// Load event blacklists first, so they can be ignored later
+		System.out.println("loadDBpediaBlacklistEvents.");
+		loadDBpediaBlacklistEvents();
+
 		System.out.println("loadWikidataEvents.");
 		loadWikidataEvents();
 		System.out.println("loadDBpediaEvents.");
@@ -313,6 +326,16 @@ public class DataCollector extends Extractor {
 		collectPartOfsWikidata();
 		collectPartOfsDBpedia();
 		writePartOfsToFile();
+	}
+
+	private void collectPreviousEvents() {
+		collectPreviousEventsWikidata();
+		collectPreviousEventsDBpedia();
+	}
+
+	private void collectNextEvents() {
+		collectNextEventsWikidata();
+		collectNextEventsDBpedia();
 	}
 
 	private void writePartOfsToFile() {
@@ -741,6 +764,94 @@ public class DataCollector extends Extractor {
 		}
 	}
 
+	private void collectPreviousEventsDBpedia() {
+
+		for (Language language : this.languages) {
+
+			BufferedReader br = null;
+			try {
+				try {
+					br = FileLoader.getReader(FileName.DBPEDIA_DBO_PREVIOUS_EVENTS, language);
+				} catch (FileNotFoundException e1) {
+					e1.printStackTrace();
+				}
+
+				String line;
+				while ((line = br.readLine()) != null) {
+
+					String[] parts = line.split("\t");
+
+					String wikipedia1Label = parts[0].substring(parts[0].lastIndexOf("/") + 1, parts[0].length() - 1)
+							.replaceAll(" ", "_");
+					String wikipedia2Label = parts[2].substring(parts[2].lastIndexOf("/") + 1, parts[2].length() - 1)
+							.replaceAll(" ", "_");
+
+					Event event1 = findEvent(language, wikipedia1Label);
+					Event event2 = findEvent(language, wikipedia2Label);
+
+					if (event1 != null && event2 != null) {
+						event1.addPreviousEvent(event2, DataSets.getInstance().getDataSet(language, Source.DBPEDIA));
+						event2.addNextEvent(event1, DataSets.getInstance().getDataSet(language, Source.DBPEDIA));
+					}
+
+				}
+			} catch (IOException e) {
+				e.printStackTrace();
+			} finally {
+				try {
+					br.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+
+		}
+	}
+
+	private void collectNextEventsDBpedia() {
+
+		for (Language language : this.languages) {
+
+			BufferedReader br = null;
+			try {
+				try {
+					br = FileLoader.getReader(FileName.DBPEDIA_DBO_NEXT_EVENTS, language);
+				} catch (FileNotFoundException e1) {
+					e1.printStackTrace();
+				}
+
+				String line;
+				while ((line = br.readLine()) != null) {
+
+					String[] parts = line.split("\t");
+
+					String wikipedia1Label = parts[0].substring(parts[0].lastIndexOf("/") + 1, parts[0].length() - 1)
+							.replaceAll(" ", "_");
+					String wikipedia2Label = parts[2].substring(parts[2].lastIndexOf("/") + 1, parts[2].length() - 1)
+							.replaceAll(" ", "_");
+
+					Event event1 = findEvent(language, wikipedia1Label);
+					Event event2 = findEvent(language, wikipedia2Label);
+
+					if (event1 != null && event2 != null) {
+						event1.addNextEvent(event2, DataSets.getInstance().getDataSet(language, Source.DBPEDIA));
+						event2.addPreviousEvent(event1, DataSets.getInstance().getDataSet(language, Source.DBPEDIA));
+					}
+
+				}
+			} catch (IOException e) {
+				e.printStackTrace();
+			} finally {
+				try {
+					br.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+
+		}
+	}
+
 	private void collectPartOfsWikidata() {
 
 		BufferedReader br = null;
@@ -767,6 +878,86 @@ public class DataCollector extends Extractor {
 
 				event1.addParent(event2, DataSets.getInstance().getDataSetWithoutLanguage(Source.WIKIDATA));
 				event2.addChild(event1, DataSets.getInstance().getDataSetWithoutLanguage(Source.WIKIDATA));
+
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				br.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+
+	}
+
+	private void collectNextEventsWikidata() {
+
+		BufferedReader br = null;
+		try {
+			try {
+				br = FileLoader.getReader(FileName.WIKIDATA_FOLLOWED_BY);
+			} catch (FileNotFoundException e1) {
+				e1.printStackTrace();
+			}
+
+			String line;
+			while ((line = br.readLine()) != null) {
+
+				String[] parts = line.split("\t");
+
+				String wikidataId1 = parts[0];
+				String wikidataId2 = parts[2];
+
+				Event event1 = findEventFromWikidataId(wikidataId1);
+				Event event2 = findEventFromWikidataId(wikidataId2);
+
+				if (event1 == null || event2 == null)
+					continue;
+
+				event1.addNextEvent(event2, DataSets.getInstance().getDataSetWithoutLanguage(Source.WIKIDATA));
+				event2.addPreviousEvent(event1, DataSets.getInstance().getDataSetWithoutLanguage(Source.WIKIDATA));
+
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				br.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+
+	}
+
+	private void collectPreviousEventsWikidata() {
+
+		BufferedReader br = null;
+		try {
+			try {
+				br = FileLoader.getReader(FileName.WIKIDATA_FOLLOWS);
+			} catch (FileNotFoundException e1) {
+				e1.printStackTrace();
+			}
+
+			String line;
+			while ((line = br.readLine()) != null) {
+
+				String[] parts = line.split("\t");
+
+				String wikidataId1 = parts[0];
+				String wikidataId2 = parts[2];
+
+				Event event1 = findEventFromWikidataId(wikidataId1);
+				Event event2 = findEventFromWikidataId(wikidataId2);
+
+				if (event1 == null || event2 == null)
+					continue;
+
+				event1.addPreviousEvent(event2, DataSets.getInstance().getDataSetWithoutLanguage(Source.WIKIDATA));
+				event2.addNextEvent(event1, DataSets.getInstance().getDataSetWithoutLanguage(Source.WIKIDATA));
 
 			}
 		} catch (IOException e) {
@@ -833,6 +1024,56 @@ public class DataCollector extends Extractor {
 
 	}
 
+	private void loadDBpediaBlacklistEvents() {
+		for (Language language : this.languages) {
+
+			int numberOfDBpediaEvents = 0;
+
+			BufferedReader br = null;
+			try {
+				try {
+					br = FileLoader.getReader(FileName.DBPEDIA_DBO_NO_EVENTS_FILE_NAME, language);
+				} catch (FileNotFoundException e1) {
+					e1.printStackTrace();
+				}
+
+				String line;
+				while ((line = br.readLine()) != null) {
+
+					String wikiLabel = line.split(Config.TAB)[0].replaceAll(" ", "_");
+
+					// Fix some errors in the data where the entity label is
+					// e.g.
+					// "Netherlands_at_the_1924_Summer_Olympics__June_9,_1924__1",
+					// which should just be
+					// "Netherlands_at_the_1924_Summer_Olympics"
+					if (wikiLabel.contains("__"))
+						continue;
+					// wikiLabel = wikiLabel.substring(0,
+					// wikiLabel.indexOf("__"));
+
+					if (wikiLabel.startsWith("List_of_") || wikiLabel.startsWith("Lists_of_"))
+						continue;
+
+					Entity noEvent = createBlacklistEvent(language, wikiLabel, "loadDBpediaBlacklistEvents");
+					if (noEvent != null)
+						numberOfDBpediaEvents += 1;
+				}
+			} catch (IOException e) {
+				e.printStackTrace();
+			} finally {
+				try {
+					br.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+
+			System.out.println("Number of blacklist events extracted from DBpedia (" + language.getLanguageLowerCase()
+					+ "): " + numberOfDBpediaEvents);
+		}
+	}
+
 	private Event createEvent(Language language, String wikipediaLabel, String comment) {
 
 		Entity entity = getEntity(language, wikipediaLabel);
@@ -843,6 +1084,10 @@ public class DataCollector extends Extractor {
 			return null;
 		}
 
+		// ignore if it's a blacklist event
+		if (blacklistEvents.contains(entity))
+			return null;
+
 		if (entity.getEventEntity() != null)
 			return entity.getEventEntity();
 
@@ -851,6 +1096,21 @@ public class DataCollector extends Extractor {
 		uniqueEvents.add(newEvent);
 
 		return newEvent;
+	}
+
+	private Entity createBlacklistEvent(Language language, String wikipediaLabel, String comment) {
+
+		Entity entity = getEntity(language, wikipediaLabel);
+
+		if (entity == null) {
+			// System.out.println("Missing entity for Wikipedia label: " +
+			// language + " - " + wikipediaLabel);
+			return null;
+		}
+
+		blacklistEvents.add(entity);
+
+		return entity;
 	}
 
 	private Event findEvent(Language language, String wikipediaLabel) {

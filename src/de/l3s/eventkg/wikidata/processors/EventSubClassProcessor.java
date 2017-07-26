@@ -27,22 +27,30 @@ public class EventSubClassProcessor implements EntityDocumentDumpProcessor {
 	static final String instanceOfPropertyId = "P31";
 	static final String subClassPropertyId = "P279";
 	static final String partOfPropertyId = "P361";
+	static final String followsPropertyId = "P155";
+	static final String followedByPropertyId = "P156";
 
 	int itemsWithInstanceOfCount = 0;
 	int itemsWithSubClassCount = 0;
 	int itemsWithPartOfCount = 0;
+	int itemsWithFollowsCount = 0;
+	int itemsWithFollowedByCount = 0;
 
 	int itemCount = 0;
 
 	PrintStream outInstanceOf;
 	PrintStream outSubClass;
 	PrintStream outPartOf;
+	PrintStream outFollows;
+	PrintStream outFollowedBy;
 
 	public EventSubClassProcessor() throws IOException {
 		// open files for writing results
 		outInstanceOf = FileLoader.getPrintStream(FileName.WIKIDATA_INSTANCE_OF);
 		outSubClass = FileLoader.getPrintStream(FileName.WIKIDATA_SUBCLASS_OF);
 		outPartOf = FileLoader.getPrintStream(FileName.WIKIDATA_PART_OF);
+		outFollows = FileLoader.getPrintStream(FileName.WIKIDATA_FOLLOWS);
+		outFollowedBy = FileLoader.getPrintStream(FileName.WIKIDATA_FOLLOWED_BY);
 	}
 
 	@Override
@@ -157,6 +165,72 @@ public class EventSubClassProcessor implements EntityDocumentDumpProcessor {
 			}
 		}
 
+		if (itemDocument.hasStatement(followsPropertyId)) {
+
+			StatementGroup statements = itemDocument.findStatementGroup(followsPropertyId);
+
+			if (statements != null) {
+				for (Statement statement : statements) {
+
+					if (statement.getClaim() != null && statement.getClaim().getMainSnak() != null
+							&& statement.getClaim().getMainSnak().getValue() != null) {
+
+						String id = ((ItemIdValue) statement.getClaim().getMainSnak().getValue()).getId();
+
+						if (id != null) {
+							this.itemsWithFollowsCount++;
+							outFollows.print(itemDocument.getItemId().getId());
+							outFollows.print(TAB);
+							outFollows.print(csvEscape(itemDocument.findLabel("en")));
+							outFollows.print(TAB);
+							outFollows.print(csvEscape(id));
+							outFollows.print(TAB);
+							SiteLink enwiki = itemDocument.getSiteLinks().get("enwiki");
+							if (enwiki != null) {
+								outFollows.print(csvEscape(enwiki.getPageTitle()));
+							} else {
+								outFollows.print("\\N");
+							}
+							outFollows.println();
+						}
+					}
+				}
+			}
+		}
+
+		if (itemDocument.hasStatement(followedByPropertyId)) {
+
+			StatementGroup statements = itemDocument.findStatementGroup(followedByPropertyId);
+
+			if (statements != null) {
+				for (Statement statement : statements) {
+
+					if (statement.getClaim() != null && statement.getClaim().getMainSnak() != null
+							&& statement.getClaim().getMainSnak().getValue() != null) {
+
+						String id = ((ItemIdValue) statement.getClaim().getMainSnak().getValue()).getId();
+
+						if (id != null) {
+							this.itemsWithFollowedByCount++;
+							outFollowedBy.print(itemDocument.getItemId().getId());
+							outFollowedBy.print(TAB);
+							outFollowedBy.print(csvEscape(itemDocument.findLabel("en")));
+							outFollowedBy.print(TAB);
+							outFollowedBy.print(csvEscape(id));
+							outFollowedBy.print(TAB);
+							SiteLink enwiki = itemDocument.getSiteLinks().get("enwiki");
+							if (enwiki != null) {
+								outFollowedBy.print(csvEscape(enwiki.getPageTitle()));
+							} else {
+								outFollowedBy.print("\\N");
+							}
+							outFollowedBy.println();
+						}
+					}
+				}
+			}
+		}
+
 		// Print progress every 100,000 items:
 		if (this.itemCount % 100000 == 0) {
 			printStatus();
@@ -198,6 +272,10 @@ public class EventSubClassProcessor implements EntityDocumentDumpProcessor {
 				+ this.itemCount + " items.");
 		System.out.println("Part of: Found " + this.itemsWithPartOfCount + " matching items after scanning "
 				+ this.itemCount + " items.");
+		System.out.println("Follows: Found " + this.itemsWithFollowsCount + " matching items after scanning "
+				+ this.itemCount + " items.");
+		System.out.println("Followed by: Found " + this.itemsWithFollowedByCount + " matching items after scanning "
+				+ this.itemCount + " items.");
 	}
 
 	public void close() {
@@ -205,6 +283,8 @@ public class EventSubClassProcessor implements EntityDocumentDumpProcessor {
 		this.outInstanceOf.close();
 		this.outSubClass.close();
 		this.outPartOf.close();
+		this.outFollows.close();
+		this.outFollowedBy.close();
 	}
 
 	@Override

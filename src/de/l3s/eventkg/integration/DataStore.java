@@ -14,6 +14,7 @@ import de.l3s.eventkg.integration.model.relation.EndTime;
 import de.l3s.eventkg.integration.model.relation.GenericRelation;
 import de.l3s.eventkg.integration.model.relation.Label;
 import de.l3s.eventkg.integration.model.relation.Location;
+import de.l3s.eventkg.integration.model.relation.PropertyLabel;
 import de.l3s.eventkg.integration.model.relation.StartTime;
 import de.l3s.eventkg.meta.Source;
 
@@ -38,6 +39,8 @@ public class DataStore {
 	private Set<GenericRelation> linkRelations = new HashSet<GenericRelation>();
 
 	private Set<Label> labels = new HashSet<Label>();
+
+	private Set<PropertyLabel> propertyLabels = new HashSet<PropertyLabel>();
 
 	private Map<Source, DataSet> dataSets = new HashMap<Source, DataSet>();
 
@@ -135,6 +138,14 @@ public class DataStore {
 
 	public void removeEntity(Entity entity) {
 		this.entities.remove(entity);
+	}
+
+	public void addPropertyLabel(PropertyLabel propertyLabel) {
+		this.propertyLabels.add(propertyLabel);
+	}
+
+	public Set<PropertyLabel> getPropertyLabels() {
+		return propertyLabels;
 	}
 
 }

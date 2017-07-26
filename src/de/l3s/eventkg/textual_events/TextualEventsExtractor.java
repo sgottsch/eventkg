@@ -566,6 +566,10 @@ public class TextualEventsExtractor extends Extractor {
 					endDate, wikipediaPage);
 			this.textualEvents.add(textualEvent);
 
+			if (!this.eventsByDates.containsKey(startDate + endDate))
+				this.eventsByDates.put(startDate + endDate, new HashSet<TextualEvent>());
+			this.eventsByDates.get(startDate + endDate).add(textualEvent);
+
 			if (storyEntity != null && storyEntity.getEventEntity() != null)
 				textualEvent.setMainEvent(storyEntity.getEventEntity());
 

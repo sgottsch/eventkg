@@ -19,6 +19,12 @@ public class Event extends Entity {
 	private Set<Event> parents;
 	private Map<Event, Set<DataSet>> parentsWithDataSets = new HashMap<Event, Set<DataSet>>();
 
+	private Set<Event> nextEvents;
+	private Map<Event, Set<DataSet>> nextEventsWithDataSets = new HashMap<Event, Set<DataSet>>();
+
+	private Set<Event> previousEvents;
+	private Map<Event, Set<DataSet>> previousEventsWithDataSets = new HashMap<Event, Set<DataSet>>();
+
 	private Set<Entity> locations;
 	private Map<Entity, Set<DataSet>> locationsWithDataSets = new HashMap<Entity, Set<DataSet>>();
 
@@ -37,6 +43,8 @@ public class Event extends Entity {
 		super(wikidataId);
 		this.children = new HashSet<Event>();
 		this.parents = new HashSet<Event>();
+		this.nextEvents = new HashSet<Event>();
+		this.previousEvents = new HashSet<Event>();
 		this.locations = new HashSet<Entity>();
 		setEvent(true);
 	}
@@ -45,6 +53,8 @@ public class Event extends Entity {
 		super(language, wikipediaLabel);
 		this.children = new HashSet<Event>();
 		this.parents = new HashSet<Event>();
+		this.nextEvents = new HashSet<Event>();
+		this.previousEvents = new HashSet<Event>();
 		this.locations = new HashSet<Entity>();
 		setEvent(true);
 	}
@@ -53,6 +63,8 @@ public class Event extends Entity {
 		super(language, wikipediaLabel, wikidataId);
 		this.children = new HashSet<Event>();
 		this.parents = new HashSet<Event>();
+		this.nextEvents = new HashSet<Event>();
+		this.previousEvents = new HashSet<Event>();
 		this.locations = new HashSet<Entity>();
 		setEvent(true);
 	}
@@ -65,6 +77,8 @@ public class Event extends Entity {
 
 		this.children = new HashSet<Event>();
 		this.parents = new HashSet<Event>();
+		this.nextEvents = new HashSet<Event>();
+		this.previousEvents = new HashSet<Event>();
 		this.locations = new HashSet<Entity>();
 		setEvent(true);
 		entity.setEventEntity(this);
@@ -86,6 +100,22 @@ public class Event extends Entity {
 		this.parents = parents;
 	}
 
+	public Set<Event> getNextEvents() {
+		return nextEvents;
+	}
+
+	public void setNextEvents(Set<Event> nextEvents) {
+		this.nextEvents = nextEvents;
+	}
+
+	public Set<Event> getPreviousEvents() {
+		return previousEvents;
+	}
+
+	public void setPreviousEvents(Set<Event> previousEvents) {
+		this.previousEvents = previousEvents;
+	}
+
 	public void addParent(Event event, DataSet dataSet) {
 		this.parents.add(event);
 		if (!this.parentsWithDataSets.containsKey(event))
@@ -98,6 +128,20 @@ public class Event extends Entity {
 		if (!this.childrenWithDataSets.containsKey(event))
 			childrenWithDataSets.put(event, new HashSet<DataSet>());
 		this.childrenWithDataSets.get(event).add(dataSet);
+	}
+
+	public void addNextEvent(Event event, DataSet dataSet) {
+		this.nextEvents.add(event);
+		if (!this.nextEventsWithDataSets.containsKey(event))
+			nextEventsWithDataSets.put(event, new HashSet<DataSet>());
+		this.nextEventsWithDataSets.get(event).add(dataSet);
+	}
+
+	public void addPreviousEvent(Event event, DataSet dataSet) {
+		this.previousEvents.add(event);
+		if (!this.previousEventsWithDataSets.containsKey(event))
+			previousEventsWithDataSets.put(event, new HashSet<DataSet>());
+		this.previousEventsWithDataSets.get(event).add(dataSet);
 	}
 
 	public Date getStartTime() {

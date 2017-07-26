@@ -18,6 +18,8 @@ import de.l3s.eventkg.util.FileName;
 public class DBpediaPartOfLoader extends Extractor {
 
 	private PrintWriter resultsWriter;
+	private PrintWriter resultsWriterPreviousEvents;
+	private PrintWriter resultsWriterNextEvents;
 
 	public DBpediaPartOfLoader(List<Language> languages) {
 		super("DBpediaPartOfLoader", Source.DBPEDIA, "?", languages);
@@ -32,12 +34,16 @@ public class DBpediaPartOfLoader extends Extractor {
 	public void run(Language language) {
 
 		Set<String> targetProperties = loadPartOfProperties();
+		Set<String> targetPropertiesNext = loadNextEventProperties();
+		Set<String> targetPropertiesPrevious = loadPreviousEventProperties();
 		// Set<String> targetEvents = loadTargetEvents();
 
 		Set<String> foundEvents = new HashSet<String>();
 
 		try {
 			resultsWriter = FileLoader.getWriter(FileName.DBPEDIA_DBO_EVENT_PARTS, language);
+			resultsWriterPreviousEvents = FileLoader.getWriter(FileName.DBPEDIA_DBO_PREVIOUS_EVENTS, language);
+			resultsWriterNextEvents = FileLoader.getWriter(FileName.DBPEDIA_DBO_NEXT_EVENTS, language);
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		}
@@ -58,7 +64,8 @@ public class DBpediaPartOfLoader extends Extractor {
 				String[] parts = line.split(" ");
 				String property = parts[1];
 
-				if (targetProperties.contains(property)) {
+				if (targetProperties.contains(property) || targetPropertiesNext.contains(property)
+						|| targetPropertiesPrevious.contains(property)) {
 
 					String object = parts[2];
 					String subject = parts[0];
@@ -67,7 +74,14 @@ public class DBpediaPartOfLoader extends Extractor {
 
 					if (foundEvents.contains(fileLine))
 						continue;
-					resultsWriter.write(fileLine + "\n");
+
+					if (targetProperties.contains(property))
+						resultsWriter.write(fileLine + "\n");
+					else if (targetPropertiesNext.contains(property))
+						resultsWriterNextEvents.write(fileLine + "\n");
+					else if (targetPropertiesPrevious.contains(property))
+						resultsWriterPreviousEvents.write(fileLine + "\n");
+
 					foundEvents.add(fileLine);
 				}
 
@@ -116,7 +130,7 @@ public class DBpediaPartOfLoader extends Extractor {
 	// return targetEvents;
 	// }
 
-	private Set<String> loadPartOfProperties() {
+	public static Set<String> loadPartOfProperties() {
 
 		// Search for properties that are part of partOf property. Do this with
 		// SPARQL ("?subProperty rdfs:subPropertyOf* dbo:isPartOf "). Full
@@ -130,6 +144,23 @@ public class DBpediaPartOfLoader extends Extractor {
 		targetProperties.add("<http://dbpedia.org/ontology/isPartOfWineRegion>");
 		targetProperties.add("<http://dbpedia.org/ontology/isPartOfAnatomicalStructure>");
 
+		return targetProperties;
+	}
+
+	public static Set<String> loadPreviousEventProperties() {
+		Set<String> targetProperties = new HashSet<String>();
+		targetProperties.add("<http://dbpedia.org/ontology/previousEvent>");
+		// Eurovision Song Contest has "previousWork" instead of "previousEvent"
+		targetProperties.add("<http://dbpedia.org/ontology/previousWork>");
+		return targetProperties;
+	}
+
+	public static Set<String> loadNextEventProperties() {
+		Set<String> targetProperties = new HashSet<String>();
+		targetProperties.add("<http://dbpedia.org/ontology/followingEvent>");
+		// Eurovision Song Contest has "subsequentWork" instead of
+		// "followingEvent"
+		targetProperties.add("<http://dbpedia.org/ontology/subsequentWork>");
 		return targetProperties;
 	}
 

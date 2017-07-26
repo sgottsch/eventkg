@@ -32,7 +32,11 @@ public class DBpediaEventRelationsExtractor extends Extractor {
 
 	public void run(Language language) {
 
-		Set<String> locationProperties = DBpediaEventLocationsExtractor.loadLocationProperties();
+		Set<String> forbiddenProperties = DBpediaEventLocationsExtractor.loadLocationProperties();
+		forbiddenProperties.addAll(DBpediaPartOfLoader.loadPartOfProperties());
+		forbiddenProperties.addAll(DBpediaPartOfLoader.loadNextEventProperties());
+		forbiddenProperties.addAll(DBpediaPartOfLoader.loadPreviousEventProperties());
+
 		BufferedReader br = null;
 
 		try {
@@ -51,7 +55,7 @@ public class DBpediaEventRelationsExtractor extends Extractor {
 
 				// TODO: ignore even more
 				// ignore locations
-				if (locationProperties.contains(property)) {
+				if (forbiddenProperties.contains(property)) {
 					continue;
 				}
 				if (property.equals("rdf-schema#seeAlso") || property.equals("owl#differentFrom"))
@@ -59,7 +63,7 @@ public class DBpediaEventRelationsExtractor extends Extractor {
 
 				if (!subject.contains("resource"))
 					continue;
-				
+
 				try {
 					subject = subject.substring(subject.lastIndexOf("resource/") + 9, subject.lastIndexOf(">"));
 					object = object.substring(object.lastIndexOf("/") + 1, object.lastIndexOf(">"));

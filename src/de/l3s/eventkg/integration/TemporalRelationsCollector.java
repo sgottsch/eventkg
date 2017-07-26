@@ -6,10 +6,8 @@ import java.io.IOException;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import de.l3s.eventkg.integration.WikidataIdMappings.TemporalPropertyType;
@@ -17,6 +15,7 @@ import de.l3s.eventkg.integration.model.Entity;
 import de.l3s.eventkg.integration.model.Relation;
 import de.l3s.eventkg.integration.model.relation.GenericRelation;
 import de.l3s.eventkg.integration.model.relation.Prefix;
+import de.l3s.eventkg.integration.model.relation.PropertyLabel;
 import de.l3s.eventkg.meta.Language;
 import de.l3s.eventkg.meta.Source;
 import de.l3s.eventkg.pipeline.Config;
@@ -63,6 +62,9 @@ public class TemporalRelationsCollector extends Extractor {
 		// try {
 		// PrintWriter writer =
 		// FileLoader.getWriter(FileName.ALL_TEMPORAL_RELATIONS);
+
+		Set<String> wikidataRelationsWhoseLabelsWereStored = new HashSet<String>();
+
 		for (Relation relation : relations) {
 
 			Prefix prefix = null;
@@ -126,16 +128,22 @@ public class TemporalRelationsCollector extends Extractor {
 			if (genericRelation.getDataSet() == null)
 				System.out.println("NO DATASET: " + relation.getSourceLanguage() + " " + relation.getSource());
 			DataStore.getInstance().addGenericRelation(genericRelation);
-			// Wikidata: Add labels
+
+			// Wikidata: Collect property labels
 			if (relation.getSource() == Source.WIKIDATA) {
-				Map<Language, String> propertyLabels = new HashMap<Language, String>();
-				for (Language language : this.languages) {
-					if (allEventPagesDataSet.getWikidataIdMappings().getWikidataPropertysByID(language,
-							relation.getProperty()) != null)
-						propertyLabels.put(language, allEventPagesDataSet.getWikidataIdMappings()
-								.getWikidataPropertysByID(language, relation.getProperty()));
+				if (!wikidataRelationsWhoseLabelsWereStored.contains(relation.getProperty())) {
+					for (Language language : this.languages) {
+						if (allEventPagesDataSet.getWikidataIdMappings().getWikidataPropertysByID(language,
+								relation.getProperty()) != null) {
+							DataStore.getInstance()
+									.addPropertyLabel(new PropertyLabel(prefix, relation.getProperty(),
+											allEventPagesDataSet.getWikidataIdMappings()
+													.getWikidataPropertysByID(language, relation.getProperty()),
+											language, genericRelation.getDataSet()));
+						}
+					}
+					wikidataRelationsWhoseLabelsWereStored.add(relation.getProperty());
 				}
-				genericRelation.setPropertyLabels(propertyLabels);
 			}
 
 			if (relation.getEntity1().getEventEntity() != null) {

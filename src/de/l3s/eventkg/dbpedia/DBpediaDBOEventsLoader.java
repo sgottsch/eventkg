@@ -18,6 +18,7 @@ import de.l3s.eventkg.util.FileName;
 public class DBpediaDBOEventsLoader extends Extractor {
 
 	private PrintWriter resultsWriter;
+	private PrintWriter resultsWriterBlacklist;
 
 	public DBpediaDBOEventsLoader(List<Language> languages) {
 		super("DBpediaDBOEventsLoader", Source.DBPEDIA, "?", languages);
@@ -33,9 +34,11 @@ public class DBpediaDBOEventsLoader extends Extractor {
 
 		Set<String> foundEvents = new HashSet<String>();
 		Set<String> targetObjects = loadEventObjects();
+		Set<String> blacklistObjects = loadBlacklistObjects();
 
 		try {
 			resultsWriter = FileLoader.getWriter(FileName.DBPEDIA_DBO_EVENTS_FILE_NAME, language);
+			resultsWriterBlacklist = FileLoader.getWriter(FileName.DBPEDIA_DBO_NO_EVENTS_FILE_NAME, language);
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		}
@@ -56,7 +59,7 @@ public class DBpediaDBOEventsLoader extends Extractor {
 				String[] parts = line.split(" ");
 				String object = parts[2];
 
-				if (targetObjects.contains(object)) {
+				if (targetObjects.contains(object) || blacklistObjects.contains(object)) {
 
 					String subject = parts[0];
 					String property = parts[1];
@@ -71,7 +74,11 @@ public class DBpediaDBOEventsLoader extends Extractor {
 					if (foundEvents.contains(fileLine))
 						continue;
 
-					resultsWriter.write(fileLine + Config.NL);
+					if (blacklistObjects.contains(object))
+						resultsWriterBlacklist.write(fileLine + Config.NL);
+					else
+						resultsWriter.write(fileLine + Config.NL);
+
 					foundEvents.add(fileLine);
 				}
 
@@ -101,4 +108,17 @@ public class DBpediaDBOEventsLoader extends Extractor {
 		return targetProperties;
 	}
 
+	public static Set<String> loadBlacklistObjects() {
+
+		// create a set of entities that cannot be events. This e.g. applies to
+		// football leagues which are seen as events in the French DBpedia, but
+		// nowhere else (English DBpedia has them as Organization).
+
+		Set<String> blacklistObjects = new HashSet<String>();
+
+		blacklistObjects.add("<http://dbpedia.org/ontology/Organisation>");
+		blacklistObjects.add("<http://schema.org/Organization>");
+
+		return blacklistObjects;
+	}
 }

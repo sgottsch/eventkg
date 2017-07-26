@@ -78,6 +78,8 @@ public enum FileName {
 	WIKIDATA_ALIASES_PROPERTIES("property_aliases.tsv", Source.WIKIDATA, FileType.RESULTS, false, false, false),
 	WIKIDATA_TEMPORAL_PROPERTIES("temporal_properties.tsv", Source.WIKIDATA, FileType.RESULTS, false, false, false),
 	WIKIDATA_PART_OF("partof-data.tsv", Source.WIKIDATA, FileType.RESULTS, false, false, false),
+	WIKIDATA_FOLLOWS("follows-data.tsv", Source.WIKIDATA, FileType.RESULTS, false, false, false),
+	WIKIDATA_FOLLOWED_BY("followedby-data.tsv", Source.WIKIDATA, FileType.RESULTS, false, false, false),
 	WIKIDATA_SUBCLASS_OF("subclass-data.tsv", Source.WIKIDATA, FileType.RESULTS, false, false, false),
 	WIKIDATA_INSTANCE_OF("instanceof-data.tsv", Source.WIKIDATA, FileType.RESULTS, false, false, false),
 	WIKIDATA_PROPERTY_NAMES("property_names.tsv", Source.WIKIDATA, FileType.RESULTS, false, false, false),
@@ -118,7 +120,10 @@ public enum FileName {
 
 	// DBpedia
 	DBPEDIA_DBO_EVENTS_FILE_NAME("dbpedia_events.tsv", Source.DBPEDIA, FileType.RESULTS, false, false, false),
+	DBPEDIA_DBO_NO_EVENTS_FILE_NAME("dbpedia_no_events.tsv", Source.DBPEDIA, FileType.RESULTS, false, false, false),
 	DBPEDIA_DBO_EVENT_PARTS("dbpedia_event_parts.tsv", Source.DBPEDIA, FileType.RESULTS, false, false, false),
+	DBPEDIA_DBO_PREVIOUS_EVENTS("dbpedia_previous_events.tsv", Source.DBPEDIA, FileType.RESULTS, false, false, false),
+	DBPEDIA_DBO_NEXT_EVENTS("dbpedia_next_events.tsv", Source.DBPEDIA, FileType.RESULTS, false, false, false),
 	DBPEDIA_DBO_LOCATIONS("dbpedia_all_locations.tsv", Source.DBPEDIA, FileType.RESULTS, false, false, false),
 
 	/**
@@ -148,12 +153,14 @@ public enum FileName {
 	ALL_TTL_EVENTS_BASE_RELATIONS("relations_base.nq", Source.ALL, FileType.RESULTS, false, false, false),
 	ALL_TTL_EVENTS_LINK_RELATIOINS("relations_links.nq", Source.ALL, FileType.RESULTS, false, false, false),
 	ALL_TTL_EVENTS_OTHER_RELATIONS("relations_other.nq", Source.ALL, FileType.RESULTS, false, false, false),
+	ALL_TTL_PROPERTY_LABELS("property_labels.nq", Source.ALL, FileType.RESULTS, false, false, false),
 	ALL_TTL_DATASETS("graphs.ttl", Source.ALL, FileType.RESULTS, false, false, false),
 
 	ALL_TTL_EVENTS_WITH_TEXTS_PREVIEW("events_preview.nq", Source.ALL, FileType.RESULTS, false, false, false),
 	ALL_TTL_ENTITIES_WITH_TEXTS_PREVIEW("entities_preview.nq", Source.ALL, FileType.RESULTS, false, false, false),
 	ALL_TTL_EVENTS_BASE_RELATIONS_PREVIEW("relations_base_preview.nq", Source.ALL, FileType.RESULTS, false, false, false),
 	ALL_TTL_EVENTS_LINK_RELATIOINS_PREVIEW("relations_links_preview.nq", Source.ALL, FileType.RESULTS, false, false, false),
+	ALL_TTL_PROPERTY_LABELS_PREVIEW("property_labels_preview.nq", Source.ALL, FileType.RESULTS, false, false, false),
 	ALL_TTL_EVENTS_OTHER_RELATIONS_PREVIEW("relations_other_preview.nq", Source.ALL, FileType.RESULTS, false, false, false),
 
 	/**

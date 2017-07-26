@@ -46,11 +46,17 @@ public class RelationsToEventPagesProcessor implements EntityDocumentDumpProcess
 	}
 
 	private void loadForbiddenPropertyIds() {
+
 		this.forbiddenPropertyIds = new HashSet<String>();
 		this.forbiddenPropertyIds.addAll(loadPropertyIds(FileName.WIKIDATA_LOCATION_PROPERTY_NAMES));
 		this.forbiddenPropertyIds.addAll(loadPropertyIds(FileName.WIKIDATA_EXTERNAL_IDS_PROPERTY_NAMES));
 		this.forbiddenPropertyIds.addAll(loadPropertyIds(FileName.WIKIDATA_TEMPORAL_PROPERTY_LIST_FILE_NAME));
+
+		// ignore properties like
+		// P856 official website (not used)
+		// P361 part of (already covered)
 		this.forbiddenPropertyIds.addAll(loadPropertyIds(FileName.WIKIDATA_MANUAL_FORBIDDEN_PROPERTY_NAMES));
+
 		this.temporalPropertyIds = new HashSet<String>();
 		this.temporalPropertyIds.addAll(loadPropertyIds(FileName.WIKIDATA_TEMPORAL_PROPERTY_LIST_FILE_NAME));
 	}

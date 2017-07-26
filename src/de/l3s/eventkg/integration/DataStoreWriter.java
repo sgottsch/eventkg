@@ -16,6 +16,7 @@ import de.l3s.eventkg.integration.model.relation.GenericRelation;
 import de.l3s.eventkg.integration.model.relation.Label;
 import de.l3s.eventkg.integration.model.relation.Location;
 import de.l3s.eventkg.integration.model.relation.Prefix;
+import de.l3s.eventkg.integration.model.relation.PropertyLabel;
 import de.l3s.eventkg.integration.model.relation.StartTime;
 import de.l3s.eventkg.meta.Language;
 import de.l3s.eventkg.meta.Source;
@@ -49,8 +50,41 @@ public class DataStoreWriter {
 		writeBaseRelations();
 		System.out.println("writeOtherRelations");
 		writeOtherRelations();
+		System.out.println("writePropertyLabels");
+		writePropertyLabels();
 		System.out.println("writeLinkRelations");
 		writeLinkRelations();
+	}
+
+	private void writePropertyLabels() {
+		PrintWriter writer = null;
+		PrintWriter writerPreview = null;
+		try {
+			writer = FileLoader.getWriter(FileName.ALL_TTL_PROPERTY_LABELS);
+			writerPreview = FileLoader.getWriter(FileName.ALL_TTL_PROPERTY_LABELS_PREVIEW);
+			List<Prefix> prefixes = new ArrayList<Prefix>();
+			prefixes.add(Prefix.RDF);
+			prefixes.add(Prefix.EVENT_KG_SCHEMA);
+			for (String line : createIntro(prefixes)) {
+				writer.write(line + Config.NL);
+				writerPreview.write(line + Config.NL);
+			}
+
+			int lineNo = 0;
+			for (PropertyLabel propertyLabel : dataStore.getPropertyLabels()) {
+				lineNo += 1;
+				writeTriple(writer, writerPreview, lineNo,
+						propertyLabel.getPrefix().getAbbr() + propertyLabel.getProperty(),
+						Prefix.RDF.getAbbr() + "label", propertyLabel.getLabel(), true, propertyLabel.getDataSet(),
+						propertyLabel.getLanguage());
+			}
+
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} finally {
+			writer.close();
+			writerPreview.close();
+		}
 	}
 
 	private void writeDataSets() {
@@ -483,11 +517,14 @@ public class DataStoreWriter {
 					writeTriple(writer, writerPreview, lineNo, relationId, Prefix.SCHEMA_ORG.getAbbr() + "endTime",
 							standardFormat.format(relation.getEndTime()), false, relation.getDataSet());
 
-				if (relation.getPropertyLabels() != null) {
-					for (Language language : relation.getPropertyLabels().keySet())
-						writeTriple(writer, writerPreview, lineNo, relationId, Prefix.RDF.getAbbr() + "label",
-								relation.getPropertyLabels().get(language), true, relation.getDataSet(), language);
-				}
+				// if (relation.getPropertyLabels() != null) {
+				// for (Language language :
+				// relation.getPropertyLabels().keySet())
+				// writeTriple(writer, writerPreview, lineNo, relationId,
+				// Prefix.RDF.getAbbr() + "label",
+				// relation.getPropertyLabels().get(language), true,
+				// relation.getDataSet(), language);
+				// }
 
 				relationNo += 1;
 			}

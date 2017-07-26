@@ -1,10 +1,8 @@
 package de.l3s.eventkg.integration.model.relation;
 
 import java.util.Date;
-import java.util.Map;
 
 import de.l3s.eventkg.integration.model.Entity;
-import de.l3s.eventkg.meta.Language;
 import de.l3s.eventkg.meta.Source;
 
 public class GenericRelation extends RelationWithSource {
@@ -19,7 +17,7 @@ public class GenericRelation extends RelationWithSource {
 
 	private Double weight;
 
-	private Map<Language, String> propertyLabels;
+//	private Map<Language, String> propertyLabels;
 
 	private Date startTime;
 
@@ -66,13 +64,13 @@ public class GenericRelation extends RelationWithSource {
 		this.weight = weight;
 	}
 
-	public Map<Language, String> getPropertyLabels() {
-		return propertyLabels;
-	}
-
-	public void setPropertyLabels(Map<Language, String> propertyLabels) {
-		this.propertyLabels = propertyLabels;
-	}
+	// public Map<Language, String> getPropertyLabels() {
+	// return propertyLabels;
+	// }
+	//
+	// public void setPropertyLabels(Map<Language, String> propertyLabels) {
+	// this.propertyLabels = propertyLabels;
+	// }
 
 	public Prefix getPrefix() {
 		return prefix;
