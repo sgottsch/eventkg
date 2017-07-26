@@ -761,13 +761,10 @@ public class EventExtractorFromYearPages {
 
 		String textPart = line;
 
-		System.out.println(line);
-
 		for (DatePattern datePattern : this.datePatterns) {
 			// System.out.println(datePattern.getPattern());
 			MatcherResult mRes = match(datePattern.getPattern(), line);
 			if (mRes.getDatePart() != null) {
-				System.out.println("MATCH");
 				if (this.year != null && (datePattern.hasM1() || !datePattern.hasM2()))
 					date.resetMonths();
 
