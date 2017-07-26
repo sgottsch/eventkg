@@ -1160,20 +1160,6 @@ public class DataCollector extends Extractor {
 		return newEvent;
 	}
 
-	private Event findEventByWikidataId(String wikidataId) {
-
-		Entity entity = getEntityFromWikidataId(wikidataId);
-
-		if (entity == null) {
-			return null;
-		}
-
-		if (entity.getEventEntity() != null)
-			return entity.getEventEntity();
-
-		return null;
-	}
-
 	private Entity getEntity(Language language, String wikipediaLabel) {
 		return this.wikidataIdMappings.getEntityByWikipediaLabel(language, wikipediaLabel);
 	}
@@ -1182,6 +1168,7 @@ public class DataCollector extends Extractor {
 		return this.wikidataIdMappings.getEntityByWikidataId(wikidataId);
 	}
 
+	@SuppressWarnings("unused")
 	private void loadWCEEvents() {
 		BufferedReader br = null;
 		try {

@@ -25,8 +25,7 @@ public class YAGOEventCategoryFinder {
 	public static void main(String[] args) {
 		YAGOEventCategoryFinder eventFinder = new YAGOEventCategoryFinder();
 		eventFinder.findEventCategories();
-		// eventFinder.findTopCategories();
-
+		eventFinder.findTopCategories();
 	}
 
 	private void findTopCategories() {

@@ -468,7 +468,7 @@ public class EventExtractorFromYearPages {
 		for (String line : this.text.split("\n")) {
 
 			line = line.trim();
-			String lineText = StringUtils.strip(line, "= ");
+			// String lineText = StringUtils.strip(line, "= ");
 
 			// if (line.replace(" ", "").trim().startsWith("==") &&
 			// !line.replace(" ", "").trim().startsWith("===")) {

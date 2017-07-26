@@ -1,11 +1,11 @@
 # EventKG
-[http://eventkg.l3s.uni-hannover.de/](http://eventkg.l3s.uni-hannover.de/)
+[eventkg.l3s.uni-hannover.de](http://eventkg.l3s.uni-hannover.de/)
 
 The EventKG is a novel multilingual resource incorporating event-centric information extracted from several large-scale knowledge graphs such as Wikidata, DBpedia and YAGO, as well as less structured sources such as Wikipedia Current Events and Wikipedia event lists in five languages. The EventKG is an extensible event-centric resource modeled in RDF. It relies on Open Data and best practices to make event data spread across different sources available through a common representation and reusable for a variety of novel algorithms and real-world applications.
 
 #### Configuration
 
-Create a configuration file like the following to state where to store your EventKG version, from which languages and dumps to extract.:
+Create a configuration file like the following to state where to store your EventKG version, and the languages and dumps to be used for extraction:
 
 ```
 data_folder	/home/....../data
@@ -17,9 +17,11 @@ ruwiki	20170420
 ptwiki	20170420
 dbpedia	2016-10
 wikidata	20170424
-wikidata_meta_files	wikidata_meta_files
 ```
 Currently, the five languages English (en), German (de), Russian (ru), French (fr), and Portuguese (pt) are supported.
+Timestamps of current Wikipedia dumps can be found on [https://dumps.wikimedia.org/enwiki](https://dumps.wikimedia.org/enwiki/). Usually, the dump dates are consistent between languages. The chosen dump needs to say "Dump complete" on the dump's website.
+Wikidata dumps are listed on [https://dumps.wikimedia.org/wikidatawiki/entities/](https://dumps.wikimedia.org/wikidatawiki/entities/). There is one dump for each language.
+DBpedia is dumped for all languages at once. The newest dump is listed on the top of [http://wiki.dbpedia.org/datasets](http://wiki.dbpedia.org/datasets).
 
 #### Run the extraction
 
@@ -43,4 +45,4 @@ The EventKG extraction pipeline consists of several steps described in the follo
 
 ```java -jar Pipeline.jar path_to_config_file.txt 4,5```
 
-6. The resulting *.nq* files are put into the folder `data/results/all`.
+6. The resulting *.nq* files can be found in the folder `data/results/all`.

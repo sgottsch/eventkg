@@ -145,74 +145,7 @@ public class TemporalRelationsCollector extends Extractor {
 					wikidataRelationsWhoseLabelsWereStored.add(relation.getProperty());
 				}
 			}
-
-			if (relation.getEntity1().getEventEntity() != null) {
-
-				String time1 = "\\N";
-				if (relation.getStartTime() != null)
-					time1 = FileLoader.PARSE_DATE_FORMAT.format(relation.getStartTime());
-				String time2 = "\\N";
-				if (relation.getEndTime() != null) {
-					time2 = FileLoader.PARSE_DATE_FORMAT.format(relation.getEndTime());
-				}
-
-				if (relation.getProperty() == null) {
-					System.out.println("PROP IS NULL: " + relation.getSource());
-					continue;
-				}
-
-				// writer.write(relation.getEntity1().getWikidataId());
-				// writer.write(Config.TAB);
-				// writer.write(relation.getEntity1().getWikipediaLabelsString(languages));
-				// writer.write(Config.TAB);
-				//
-				// writer.write(relation.getProperty());
-				// writer.write(Config.TAB);
-				// writer.write(relation.getEntity2().getWikidataId());
-				// writer.write(Config.TAB);
-				// writer.write(relation.getEntity2().getWikipediaLabelsString(languages));
-				// writer.write(Config.TAB);
-				// writer.write(time1);
-				// writer.write(Config.TAB);
-				// writer.write(time2);
-				// writer.write(Config.TAB);
-				// writer.write(relation.getSource().toString());
-				// writer.write(Config.NL);
-
-			}
-
-			if (relation.getEntity2().getEventEntity() != null) {
-				String time1 = "\\N";
-				if (relation.getStartTime() != null)
-					time1 = FileLoader.PARSE_DATE_FORMAT.format(relation.getStartTime());
-				String time2 = "\\N";
-				if (relation.getEndTime() != null) {
-					time2 = FileLoader.PARSE_DATE_FORMAT.format(relation.getEndTime());
-				}
-
-				// writer.write(relation.getEntity2().getWikidataId());
-				// writer.write(Config.TAB);
-				// writer.write(relation.getEntity2().getWikipediaLabelsString(languages));
-				// writer.write(Config.TAB);
-				// writer.write(relation.getProperty() + "^-1");
-				// writer.write(Config.TAB);
-				// writer.write(relation.getEntity1().getWikidataId());
-				// writer.write(Config.TAB);
-				// writer.write(relation.getEntity1().getWikipediaLabelsString(languages));
-				// writer.write(Config.TAB);
-				// writer.write(time1);
-				// writer.write(Config.TAB);
-				// writer.write(time2);
-				// writer.write(Config.TAB);
-				// writer.write(relation.getSource().toString());
-				// writer.write(Config.NL);
-			}
-
 		}
-
-		// } catch (FileNotFoundException e) {
-		// e.printStackTrace();
-		// }
 
 	}
 
@@ -561,6 +494,7 @@ public class TemporalRelationsCollector extends Extractor {
 		}
 	}
 
+	@SuppressWarnings("unused")
 	private void loadWCE() {
 		FileName fileName = FileName.WCE_EVENT_RELATIONS;
 		BufferedReader br = null;
@@ -603,24 +537,6 @@ public class TemporalRelationsCollector extends Extractor {
 			}
 		}
 	}
-
-	// private Entity buildEntity(String entityLabel, String wikidataId) {
-	//
-	// entityLabel = entityLabel.replaceAll(" ", "_");
-	//
-	// if (this.allEventPagesDataSet.getEvents().containsKey(entityLabel)) {
-	// return this.allEventPagesDataSet.getEvents().get(entityLabel);
-	// }
-	//
-	// if (this.entities.containsKey(entityLabel)) {
-	// return this.entities.get(entityLabel);
-	// }
-	//
-	// Entity entity = new Entity(entityLabel, wikidataId);
-	// this.entities.put(entityLabel, entity);
-	//
-	// return entity;
-	// }
 
 	private Entity buildEntity(Language language, String wikipediaLabel) {
 		return this.allEventPagesDataSet.getWikidataIdMappings().getEntityByWikipediaLabel(language, wikipediaLabel);

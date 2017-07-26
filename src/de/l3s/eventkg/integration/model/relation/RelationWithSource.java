@@ -1,8 +1,6 @@
 package de.l3s.eventkg.integration.model.relation;
 
 import de.l3s.eventkg.integration.model.Entity;
-import de.l3s.eventkg.meta.Language;
-import de.l3s.eventkg.meta.Source;
 
 public abstract class RelationWithSource {
 

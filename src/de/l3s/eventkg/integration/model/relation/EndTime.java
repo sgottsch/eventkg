@@ -3,7 +3,6 @@ package de.l3s.eventkg.integration.model.relation;
 import java.util.Date;
 
 import de.l3s.eventkg.integration.model.Event;
-import de.l3s.eventkg.meta.Language;
 import de.l3s.eventkg.meta.Source;
 
 public class EndTime extends RelationWithSource {

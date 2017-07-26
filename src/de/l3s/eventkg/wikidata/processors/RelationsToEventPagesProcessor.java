@@ -7,14 +7,12 @@ import java.io.PrintStream;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.wikidata.wdtk.datamodel.helpers.DataFormatter;
 import org.wikidata.wdtk.datamodel.interfaces.EntityDocumentDumpProcessor;
 import org.wikidata.wdtk.datamodel.interfaces.ItemDocument;
 import org.wikidata.wdtk.datamodel.interfaces.ItemIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyDocument;
 import org.wikidata.wdtk.datamodel.interfaces.Statement;
 import org.wikidata.wdtk.datamodel.interfaces.StatementGroup;
-import org.wikidata.wdtk.datamodel.interfaces.TimeValue;
 
 import de.l3s.eventkg.integration.AllEventPagesDataSet;
 import de.l3s.eventkg.util.FileLoader;
@@ -139,28 +137,9 @@ public class RelationsToEventPagesProcessor implements EntityDocumentDumpProcess
 		}
 	}
 
-	private String transformToTimeString(TimeValue value) {
-		// return value.getYear() + "-" + value.getMonth() + "-" +
-		// value.getDay() + "-" + value.getHour() + "-"
-		// + value.getMinute() + "-" + value.getSecond();
-		return DataFormatter.formatTimeISO8601(value);
-	}
-
 	@Override
 	public void processPropertyDocument(PropertyDocument propertyDocument) {
 		// Nothing to do
-	}
-
-	private String csvEscape(String string) {
-		if (string == null)
-			return "\\N";
-		else
-			return string.replaceAll("\t", "   ");
-		// if (string == null) {
-		// return "\"\"";
-		// } else {
-		// return "\"" + string.replace("\"", "\"\"") + "\"";
-		// }
 	}
 
 	public void printStatus() {

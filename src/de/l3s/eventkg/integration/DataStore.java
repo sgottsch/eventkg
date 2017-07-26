@@ -1,14 +1,11 @@
 package de.l3s.eventkg.integration;
 
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
 
 import de.l3s.eventkg.integration.model.Entity;
 import de.l3s.eventkg.integration.model.Event;
 import de.l3s.eventkg.integration.model.relation.Alias;
-import de.l3s.eventkg.integration.model.relation.DataSet;
 import de.l3s.eventkg.integration.model.relation.Description;
 import de.l3s.eventkg.integration.model.relation.EndTime;
 import de.l3s.eventkg.integration.model.relation.GenericRelation;
@@ -16,7 +13,6 @@ import de.l3s.eventkg.integration.model.relation.Label;
 import de.l3s.eventkg.integration.model.relation.Location;
 import de.l3s.eventkg.integration.model.relation.PropertyLabel;
 import de.l3s.eventkg.integration.model.relation.StartTime;
-import de.l3s.eventkg.meta.Source;
 
 public class DataStore {
 
@@ -41,8 +37,6 @@ public class DataStore {
 	private Set<Label> labels = new HashSet<Label>();
 
 	private Set<PropertyLabel> propertyLabels = new HashSet<PropertyLabel>();
-
-	private Map<Source, DataSet> dataSets = new HashMap<Source, DataSet>();
 
 	private static DataStore instance;
 

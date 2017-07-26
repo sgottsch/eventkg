@@ -1,9 +1,7 @@
 package de.l3s.eventkg.textual_events;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -381,77 +379,6 @@ public class TextualEventsExtractor extends Extractor {
 
 	private double minJaccard(Set<?> set1, Set<?> set2) {
 		return Sets.intersection(set1, set2).size() / Math.min(set1.size(), set2.size());
-	}
-
-	private void writeResults() {
-
-		System.out.println("Write results: Textual events.");
-		PrintWriter writer = null;
-		try {
-			writer = FileLoader.getWriter(FileName.ALL_TEXTUAL_EVENTS);
-
-			for (TextualEvent event : this.textualEvents) {
-				writer.write(event.getId());
-				writer.write(Config.TAB);
-				writer.write(event.getLanguage().getLanguageLowerCase());
-				writer.write(Config.TAB);
-				writer.write(event.getSource().toString());
-				writer.write(Config.TAB);
-				writer.write(event.getStartDate());
-				writer.write(Config.TAB);
-				writer.write(event.getEndDate());
-				writer.write(Config.TAB);
-				writer.write(event.getText());
-				writer.write(Config.NL);
-			}
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		} finally {
-			writer.close();
-		}
-
-		System.out.println("Write results: Textual events to entities.");
-		PrintWriter writer2 = null;
-		try {
-			writer2 = FileLoader.getWriter(FileName.ALL_TEXTUAL_EVENTS_ENTITIES);
-
-			for (TextualEvent event : this.textualEvents) {
-				for (Entity entity : event.getRelatedEntities()) {
-					writer2.write(event.getId());
-					writer2.write(Config.TAB);
-					writer2.write(entity.getWikidataId());
-
-					writer2.write(Config.TAB);
-					writer2.write(entity.getWikipediaLabelsString(languages));
-					writer2.write(Config.NL);
-				}
-			}
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		} finally {
-			writer2.close();
-		}
-
-		System.out.println("Write results: Textual events to entities.");
-		PrintWriter writer3 = null;
-		try {
-			writer3 = FileLoader.getWriter(FileName.ALL_TEXTUAL_EVENTS_EVENTS);
-
-			for (Event event : this.eventsToTextualEvents.keySet()) {
-				for (TextualEvent textualEvent : this.eventsToTextualEvents.get(event)) {
-					writer3.write(event.getWikidataId());
-					writer3.write(Config.TAB);
-					writer3.write(event.getWikipediaLabelsString(languages));
-					writer3.write(Config.TAB);
-					writer3.write(textualEvent.getId());
-					writer3.write(Config.NL);
-				}
-			}
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		} finally {
-			writer2.close();
-		}
 	}
 
 	private void processFile(File file, Language language) {
