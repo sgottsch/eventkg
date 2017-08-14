@@ -11,7 +11,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import de.l3s.eventkg.integration.WikidataIdMappings.TemporalPropertyType;
 import de.l3s.eventkg.integration.model.Entity;
 import de.l3s.eventkg.integration.model.Event;
 import de.l3s.eventkg.integration.model.relation.DataSet;
@@ -22,6 +21,7 @@ import de.l3s.eventkg.integration.model.relation.Prefix;
 import de.l3s.eventkg.integration.model.relation.StartTime;
 import de.l3s.eventkg.meta.Language;
 import de.l3s.eventkg.meta.Source;
+import de.l3s.eventkg.pipeline.Config.TimeSymbol;
 import de.l3s.eventkg.util.FileLoader;
 import de.l3s.eventkg.util.FileName;
 import de.l3s.eventkg.util.TimeTransformer;
@@ -109,9 +109,15 @@ public class AllEventPagesDataSet {
 	}
 
 	private void loadEventTimes() {
+
+		// "event.setStartTime()" is needed for the matching of textual to named
+		// events. To this end, collect times by trust of the source. The last
+		// one should be the most trustworthy and overwrite the others.
+
+		collectTimesDBpedia();
 		collectTimesYAGO();
 		collectTimesWikidata();
-		loadEventTimesIntegrated();
+		// loadEventTimesIntegrated();
 	}
 
 	private void collectTimesYAGO() {
@@ -130,29 +136,36 @@ public class AllEventPagesDataSet {
 
 				String wikipediaLabel = parts[0].substring(1, parts[0].length() - 1).replaceAll(" ", "_");
 
-				Event event = getEventByWikipediaLabel(Language.EN, wikipediaLabel);
+				Entity entity = this.wikidataIdMappings.getEntityByWikipediaLabel(Language.EN, wikipediaLabel);
 
-				if (event == null)
+				if (entity == null)
 					continue;
 
-				String property = parts[1];
+				Event event = null;
+				if (entity.getEventEntity() != null) {
+					entity = entity.getEventEntity();
+					event = entity.getEventEntity();
+				}
+
 				String timeString = parts[2];
+				TimeSymbol type = TimeSymbol.fromString(parts[3]);
 
 				try {
 					Date date1 = TimeTransformer.generateEarliestTimeFromXsd(timeString);
 					Date date1L = TimeTransformer.generateLatestTimeFromXsd(timeString);
-					event.setStartTime(date1);
 
-					DataStore.getInstance().addStartTime(
-							new StartTime(event, DataSets.getInstance().getDataSetWithoutLanguage(Source.YAGO), date1));
+					if (type == TimeSymbol.START_TIME || type == TimeSymbol.START_AND_END_TIME) {
+						if (event != null)
+							event.setStartTime(date1);
+						DataStore.getInstance().addStartTime(new StartTime(entity,
+								DataSets.getInstance().getDataSetWithoutLanguage(Source.YAGO), date1));
+					}
 
-					// there are two properties only: happenedOnDate and
-					// startedOnDate. If startedOnDate, leave the end time null.
-					// update: Added endedOnDate
-					if (!property.equals("<startedOnDate>")) {
-						DataStore.getInstance().addEndTime(new EndTime(event,
+					if (type == TimeSymbol.END_TIME || type == TimeSymbol.START_AND_END_TIME) {
+						if (event != null)
+							event.setEndTime(date1L);
+						DataStore.getInstance().addEndTime(new EndTime(entity,
 								DataSets.getInstance().getDataSetWithoutLanguage(Source.YAGO), date1L));
-						event.setEndTime(date1L);
 					}
 
 				} catch (ParseException e) {
@@ -202,18 +215,18 @@ public class AllEventPagesDataSet {
 				String propertyWikidataId = parts[1];
 				String timeString = parts[2];
 
-				TemporalPropertyType type = wikidataIdMappings.getWikidataTemporalPropertyTypeById(propertyWikidataId);
+				TimeSymbol type = wikidataIdMappings.getWikidataTemporalPropertyTypeById(propertyWikidataId);
 
 				try {
 
-					if (type == TemporalPropertyType.START || type == TemporalPropertyType.BOTH) {
+					if (type == TimeSymbol.START_TIME || type == TimeSymbol.START_AND_END_TIME) {
 						Date dateEarliest = TimeTransformer.generateEarliestTimeForWikidata(timeString);
 						if (event != null)
 							event.setStartTime(dateEarliest);
 						DataStore.getInstance().addStartTime(new StartTime(entity,
 								DataSets.getInstance().getDataSetWithoutLanguage(Source.WIKIDATA), dateEarliest));
 					}
-					if (type == TemporalPropertyType.END || type == TemporalPropertyType.BOTH) {
+					if (type == TimeSymbol.END_TIME || type == TimeSymbol.START_AND_END_TIME) {
 						Date dateLatest = TimeTransformer.generateLatestTimeForWikidata(timeString);
 						if (event != null)
 							event.setEndTime(dateLatest);
@@ -236,11 +249,71 @@ public class AllEventPagesDataSet {
 			}
 		}
 
-		// collectTimesWikidataStart();
-		// collectTimesWikidataEnd();
-		// collectTimesWikidataPoint();
 	}
 
+	private void collectTimesDBpedia() {
+
+		for (Language language : this.languages) {
+
+			BufferedReader br = null;
+			try {
+				br = FileLoader.getReader(FileName.DBPEDIA_TIMES, language);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+
+			String line;
+			try {
+				while ((line = br.readLine()) != null) {
+
+					String[] parts = line.split("\t");
+
+					String wikipediaLabel = parts[0];
+					String timeString = parts[2];
+
+					TimeSymbol type = TimeSymbol.fromString(parts[3]);
+
+					// event: happening time. entity: existence time
+					Entity entity = this.wikidataIdMappings.getEntityByWikipediaLabel(language, wikipediaLabel);
+					Event event = null;
+
+					if (entity == null)
+						continue;
+
+					if (entity.getEventEntity() != null) {
+						entity = entity.getEventEntity();
+						event = entity.getEventEntity();
+					}
+
+					Date date;
+					try {
+						date = TimeTransformer.generateTimeForDBpedia(timeString);
+
+						if (type == TimeSymbol.START_TIME || type == TimeSymbol.START_AND_END_TIME) {
+							if (event != null)
+								event.setStartTime(date);
+							DataStore.getInstance().addStartTime(new StartTime(entity,
+									DataSets.getInstance().getDataSet(language, Source.DBPEDIA), date));
+						}
+						if (type == TimeSymbol.END_TIME || type == TimeSymbol.START_AND_END_TIME) {
+							if (event != null)
+								event.setEndTime(date);
+							DataStore.getInstance().addEndTime(new EndTime(entity,
+									DataSets.getInstance().getDataSet(language, Source.DBPEDIA), date));
+						}
+
+					} catch (ParseException e) {
+						e.printStackTrace();
+					}
+
+				}
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+
+	// TODO: REMOVE?
 	private void loadEventTimesIntegrated() {
 		BufferedReader br = null;
 

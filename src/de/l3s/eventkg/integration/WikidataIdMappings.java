@@ -11,6 +11,7 @@ import java.util.Set;
 
 import de.l3s.eventkg.integration.model.Entity;
 import de.l3s.eventkg.meta.Language;
+import de.l3s.eventkg.pipeline.Config.TimeSymbol;
 import de.l3s.eventkg.util.FileLoader;
 import de.l3s.eventkg.util.FileName;
 import de.l3s.eventkg.wikipedia.WikiWords;
@@ -28,7 +29,7 @@ public class WikidataIdMappings {
 
 	// private Set<String> wikidataIdsThatHaveLabels = new HashSet<String>();
 
-	private Map<String, TemporalPropertyType> temporalPropertyIds;
+	private Map<String, TimeSymbol> temporalPropertyIds;
 
 	public WikidataIdMappings(List<Language> languages) {
 		this.languages = languages;
@@ -220,12 +221,12 @@ public class WikidataIdMappings {
 		return this.wikidataPropertysByIDs.get(language).get(propertyId);
 	}
 
-	public TemporalPropertyType getWikidataTemporalPropertyTypeById(String propertyId) {
+	public TimeSymbol getWikidataTemporalPropertyTypeById(String propertyId) {
 		return this.temporalPropertyIds.get(propertyId);
 	}
 
 	public void loadTemporalProperties() {
-		this.temporalPropertyIds = new HashMap<String, TemporalPropertyType>();
+		this.temporalPropertyIds = new HashMap<String, TimeSymbol>();
 
 		BufferedReader br = null;
 		try {
@@ -240,25 +241,8 @@ public class WikidataIdMappings {
 
 				String[] parts = line.split("\t");
 				String id = parts[0];
-				String type = parts[2];
 
-				TemporalPropertyType propType = null;
-				switch (type) {
-				case "n":
-					propType = TemporalPropertyType.NONE;
-					break;
-				case "s":
-					propType = TemporalPropertyType.START;
-					break;
-				case "e":
-					propType = TemporalPropertyType.END;
-					break;
-				case "b":
-					propType = TemporalPropertyType.BOTH;
-					break;
-				default:
-					break;
-				}
+				TimeSymbol propType = TimeSymbol.fromString(parts[2]);
 
 				this.temporalPropertyIds.put(id, propType);
 			}
@@ -283,13 +267,6 @@ public class WikidataIdMappings {
 
 	public Map<String, Entity> getEntitiesByWikidataIds() {
 		return entitiesByWikidataIds;
-	}
-
-	public enum TemporalPropertyType {
-		START,
-		END,
-		NONE,
-		BOTH;
 	}
 
 	// public Set<String> getWikidataIdsThatHaveLabels() {

@@ -12,13 +12,13 @@ import java.util.List;
 import java.util.Set;
 
 import de.l3s.eventkg.dbpedia.DBpediaAllLocationsLoader;
-import de.l3s.eventkg.integration.WikidataIdMappings.TemporalPropertyType;
 import de.l3s.eventkg.integration.model.Entity;
 import de.l3s.eventkg.integration.model.Event;
 import de.l3s.eventkg.integration.model.relation.DataSet;
 import de.l3s.eventkg.meta.Language;
 import de.l3s.eventkg.meta.Source;
 import de.l3s.eventkg.pipeline.Config;
+import de.l3s.eventkg.pipeline.Config.TimeSymbol;
 import de.l3s.eventkg.pipeline.Extractor;
 import de.l3s.eventkg.util.FileLoader;
 import de.l3s.eventkg.util.FileName;
@@ -46,7 +46,7 @@ public class DataCollector extends Extractor {
 		DataCollector dc = new DataCollector(languages);
 		dc.init();
 		dc.collectEvents();
-		dc.collectTimes();
+		// dc.collectTimes();
 	}
 
 	public DataCollector(List<Language> languages) {
@@ -64,8 +64,8 @@ public class DataCollector extends Extractor {
 		collectPreviousEvents();
 		System.out.println("Collect \"followed by\" relations.");
 		collectNextEvents();
-		System.out.println("Collect event times.");
-		collectTimes();
+		// System.out.println("Collect event times.");
+		// collectTimes();
 		System.out.println("Collect event locations.");
 		collectLocations();
 		System.out.println("Collect entity sub/parent locations.");
@@ -88,8 +88,8 @@ public class DataCollector extends Extractor {
 		collectEvents();
 		System.out.println("Collect \"part of\" relations.");
 		collectPartOfs();
-		System.out.println("Collect event times.");
-		collectTimes();
+		// System.out.println("Collect event times.");
+		// collectTimes();
 		System.out.println("Collect event locations.");
 		collectLocations();
 	}
@@ -432,6 +432,8 @@ public class DataCollector extends Extractor {
 					String wikipediaLabel = parts[0];
 					String timeString = parts[2];
 
+					TimeSymbol dateType = TimeSymbol.fromString(parts[3]);
+
 					Event event = findEvent(Language.EN, wikipediaLabel);
 
 					if (event == null)
@@ -569,16 +571,16 @@ public class DataCollector extends Extractor {
 				String propertyWikidataId = parts[1];
 				String timeString = parts[2];
 
-				TemporalPropertyType type = wikidataIdMappings.getWikidataTemporalPropertyTypeById(propertyWikidataId);
+				TimeSymbol type = wikidataIdMappings.getWikidataTemporalPropertyTypeById(propertyWikidataId);
 
 				try {
 
-					if (type == TemporalPropertyType.START || type == TemporalPropertyType.BOTH) {
+					if (type == TimeSymbol.START_TIME || type == TimeSymbol.START_AND_END_TIME) {
 						Date dateEarliest = TimeTransformer.generateEarliestTimeForWikidata(timeString);
 						if (event != null)
 							event.setStartTime(dateEarliest);
 					}
-					if (type == TemporalPropertyType.END || type == TemporalPropertyType.BOTH) {
+					if (type == TimeSymbol.END_TIME || type == TimeSymbol.START_AND_END_TIME) {
 						Date dateLatest = TimeTransformer.generateLatestTimeForWikidata(timeString);
 						if (event != null)
 							event.setEndTime(dateLatest);

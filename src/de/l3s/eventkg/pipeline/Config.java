@@ -16,6 +16,33 @@ public class Config {
 	public static final String SUB_LOCATION_SYMBOL = "s";
 	public static final String PARENT_LOCATION_SYMBOL = "p";
 
+	public enum TimeSymbol {
+
+		START_TIME("s"),
+		END_TIME("e"),
+		NO_TIME("n"),
+		START_AND_END_TIME("b"); // both
+
+		private String timeSymbol;
+
+		TimeSymbol(String timeSymbol) {
+			this.timeSymbol = timeSymbol;
+		}
+
+		public String getTimeSymbol() {
+			return timeSymbol;
+		}
+
+		public static TimeSymbol fromString(String symbolString) {
+			for (TimeSymbol symbol : TimeSymbol.values()) {
+				if (symbol.getTimeSymbol().equals(symbolString)) {
+					return symbol;
+				}
+			}
+			return null;
+		}
+	}
+
 	private static Map<String, String> properties;
 
 	public static String getValue(String propertyName) {

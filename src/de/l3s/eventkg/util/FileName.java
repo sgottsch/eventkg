@@ -243,6 +243,7 @@ public enum FileName {
 	 * YAGO facts describing other facts (by reification), e.g. validity times
 	 */
 	YAGO_META_FACTS("yagoMetaFacts.ttl", Source.YAGO, FileType.RAW_DATA, false, false, false),
+	YAGO_TIME_PROPERTIES("time_properties.tsv", Source.YAGO, FileType.META, false, false, false),
 
 	// Wikipedia Current Events
 	WCE_EVENTS_FOLDER("events_", Source.WCE, FileType.RAW_DATA, true, false, false),

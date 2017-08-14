@@ -68,6 +68,10 @@ public class RawDataDownLoader {
 					RawDataDownLoader.class.getResource("/resource/meta_data/wikidata/"
 							+ FileName.WIKIDATA_SUB_LOCATION_PROPERTY_NAMES.getFileName()),
 					new File(metaDataPath + "wikidata/" + FileName.WIKIDATA_SUB_LOCATION_PROPERTY_NAMES.getFileName()));
+			FileUtils.copyURLToFile(
+					RawDataDownLoader.class
+							.getResource("/resource/meta_data/yago/" + FileName.YAGO_TIME_PROPERTIES.getFileName()),
+					new File(metaDataPath + "yago/" + FileName.YAGO_TIME_PROPERTIES.getFileName()));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

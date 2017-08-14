@@ -10,7 +10,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import de.l3s.eventkg.integration.WikidataIdMappings.TemporalPropertyType;
 import de.l3s.eventkg.integration.model.Entity;
 import de.l3s.eventkg.integration.model.Relation;
 import de.l3s.eventkg.integration.model.relation.GenericRelation;
@@ -19,6 +18,7 @@ import de.l3s.eventkg.integration.model.relation.PropertyLabel;
 import de.l3s.eventkg.meta.Language;
 import de.l3s.eventkg.meta.Source;
 import de.l3s.eventkg.pipeline.Config;
+import de.l3s.eventkg.pipeline.Config.TimeSymbol;
 import de.l3s.eventkg.pipeline.Extractor;
 import de.l3s.eventkg.util.FileLoader;
 import de.l3s.eventkg.util.FileName;
@@ -324,10 +324,10 @@ public class TemporalRelationsCollector extends Extractor {
 
 					props.add(propertyWikidataId);
 
-					TemporalPropertyType type = this.allEventPagesDataSet.getWikidataIdMappings()
+					TimeSymbol type = this.allEventPagesDataSet.getWikidataIdMappings()
 							.getWikidataTemporalPropertyTypeById(propertyWikidataId);
 
-					if (type == TemporalPropertyType.START || type == TemporalPropertyType.BOTH) {
+					if (type == TimeSymbol.START_TIME || type == TimeSymbol.START_AND_END_TIME) {
 						Date startTime;
 						try {
 							startTime = TimeTransformer.generateEarliestTimeForWikidata(timeString);
@@ -337,7 +337,7 @@ public class TemporalRelationsCollector extends Extractor {
 							e.printStackTrace();
 						}
 					}
-					if (type == TemporalPropertyType.END || type == TemporalPropertyType.BOTH) {
+					if (type == TimeSymbol.END_TIME || type == TimeSymbol.START_AND_END_TIME) {
 						Date endTime;
 						try {
 							endTime = TimeTransformer.generateLatestTimeForWikidata(timeString);

@@ -4,13 +4,16 @@ import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import de.l3s.eventkg.meta.Language;
 import de.l3s.eventkg.meta.Source;
 import de.l3s.eventkg.pipeline.Config;
+import de.l3s.eventkg.pipeline.Config.TimeSymbol;
 import de.l3s.eventkg.pipeline.Extractor;
 import de.l3s.eventkg.util.FileLoader;
 import de.l3s.eventkg.util.FileName;
@@ -31,8 +34,7 @@ public class DBpediaTimesExtractor extends Extractor {
 
 	public void run(Language language) {
 
-		Set<String> targetProperties = loadTimeProperties();
-		// Set<String> targetEvents = loadTargetEvents();
+		Map<String, TimeSymbol> targetProperties = loadTimeProperties();
 
 		Set<String> foundEvents = new HashSet<String>();
 
@@ -64,7 +66,7 @@ public class DBpediaTimesExtractor extends Extractor {
 				// !targetEvents.contains(subject))
 				// continue;
 
-				if (targetProperties.contains(property)) {
+				if (targetProperties.containsKey(property)) {
 
 					String timeString = parts[2];
 					String subject = parts[0];
@@ -76,7 +78,8 @@ public class DBpediaTimesExtractor extends Extractor {
 
 					subject = subject.substring(subject.lastIndexOf("resource/") + 9, subject.lastIndexOf(">"));
 
-					String fileLine = subject + Config.TAB + property + Config.TAB + timeString;
+					String fileLine = subject + Config.TAB + property + Config.TAB + timeString + Config.TAB
+							+ targetProperties.get(property).getTimeSymbol();
 
 					if (foundEvents.contains(fileLine))
 						continue;
@@ -98,11 +101,15 @@ public class DBpediaTimesExtractor extends Extractor {
 
 	}
 
-	public static Set<String> loadTimeProperties() {
+	private static Map<String, TimeSymbol> loadTimeProperties() {
 
-		Set<String> targetProperties = new HashSet<String>();
+		// Extract this from a meta file
 
-		targetProperties.add("<http://dbpedia.org/ontology/date>");
+		Map<String, TimeSymbol> targetProperties = new HashMap<String, TimeSymbol>();
+
+		targetProperties.put("<http://dbpedia.org/ontology/date>", TimeSymbol.START_AND_END_TIME);
+		targetProperties.put("<http://dbpedia.org/ontology/birthDate>", TimeSymbol.START_TIME);
+		targetProperties.put("<http://dbpedia.org/ontology/deathDate>", TimeSymbol.END_TIME);
 
 		return targetProperties;
 	}
