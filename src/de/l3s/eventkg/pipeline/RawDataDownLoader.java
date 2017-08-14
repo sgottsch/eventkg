@@ -42,6 +42,7 @@ public class RawDataDownLoader {
 
 	public void copyMetaFiles() {
 
+		System.out.println("Copy meta files.");
 		// Currently, we only have meta files for Wikidata
 
 		try {
@@ -63,6 +64,10 @@ public class RawDataDownLoader {
 							+ FileName.WIKIDATA_TEMPORAL_PROPERTY_LIST_FILE_NAME.getFileName()),
 					new File(metaDataPath + "wikidata/"
 							+ FileName.WIKIDATA_TEMPORAL_PROPERTY_LIST_FILE_NAME.getFileName()));
+			FileUtils.copyURLToFile(
+					RawDataDownLoader.class.getResource("/resource/meta_data/wikidata/"
+							+ FileName.WIKIDATA_SUB_LOCATION_PROPERTY_NAMES.getFileName()),
+					new File(metaDataPath + "wikidata/" + FileName.WIKIDATA_SUB_LOCATION_PROPERTY_NAMES.getFileName()));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -179,6 +184,11 @@ public class RawDataDownLoader {
 	}
 
 	private void downloadWikidataFile() {
+
+		this.dataPath = Config.getValue("data_folder");
+		this.metaDataPath = this.dataPath + FileLoader.ONLINE_META_FOLDER_SUFFIX;
+		this.dataPath = this.dataPath + FileLoader.ONLINE_RAW_DATA_FOLDER_SUFFIX;
+
 		downloadFile("https://dumps.wikimedia.org/wikidatawiki/entities/" + Config.getValue("wikidata") + "/wikidata-"
 				+ Config.getValue("wikidata") + "-all.json.gz", this.dataPath + "wikidata/dump.json.gz");
 	}
@@ -289,8 +299,6 @@ public class RawDataDownLoader {
 
 	private File downloadFile(String url, String targetPath) {
 
-		System.out.println("Download file " + url + " to " + targetPath + ".");
-
 		URL website = null;
 		try {
 			website = new URL(url);
@@ -299,20 +307,35 @@ public class RawDataDownLoader {
 		}
 		FileOutputStream fos = null;
 
-		try {
-			ReadableByteChannel rbc = Channels.newChannel(website.openStream());
-			fos = new FileOutputStream(targetPath);
-			fos.getChannel().transferFrom(rbc, 0, Long.MAX_VALUE);
+		boolean succ = false;
+		while (!succ) {
+			System.out.println("Download file " + url + " to " + targetPath + ".");
 
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		} finally {
 			try {
-				fos.close();
-			} catch (IOException e) {
+				ReadableByteChannel rbc = Channels.newChannel(website.openStream());
+				fos = new FileOutputStream(targetPath);
+				fos.getChannel().transferFrom(rbc, 0, Long.MAX_VALUE);
+				succ = true;
+			} catch (FileNotFoundException e) {
 				e.printStackTrace();
+			} catch (IOException e) {
+				if (e.getMessage().contains("response code: 503")) {
+					// if server is overload: wait for 5 seconds and re-try
+					System.out.println(e.getMessage());
+					try {
+						Thread.sleep(5000);
+					} catch (InterruptedException e1) {
+						e1.printStackTrace();
+					}
+				} else
+					e.printStackTrace();
+			} finally {
+				try {
+					if (fos != null)
+						fos.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
 			}
 		}
 

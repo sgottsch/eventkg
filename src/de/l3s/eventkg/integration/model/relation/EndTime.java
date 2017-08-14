@@ -2,7 +2,7 @@ package de.l3s.eventkg.integration.model.relation;
 
 import java.util.Date;
 
-import de.l3s.eventkg.integration.model.Event;
+import de.l3s.eventkg.integration.model.Entity;
 import de.l3s.eventkg.meta.Source;
 
 public class EndTime extends RelationWithSource {
@@ -11,9 +11,12 @@ public class EndTime extends RelationWithSource {
 
 	private Source source;
 
-	public EndTime(Event subject, DataSet dataSet, Date startTime) {
+	public EndTime(Entity subject, DataSet dataSet, Date endTime) {
 		super(subject, dataSet);
-		this.endTime = startTime;
+		this.endTime = endTime;
+		if (subject.getEventEntity() != null) {
+			subject.getEventEntity().addEndTime(endTime, dataSet);
+		}
 	}
 
 	public Date getEndTime() {

@@ -15,6 +15,7 @@ import org.wikidata.wdtk.datamodel.interfaces.MonolingualTextValue;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyDocument;
 
 import de.l3s.eventkg.meta.Language;
+import de.l3s.eventkg.pipeline.Config;
 import de.l3s.eventkg.util.FileLoader;
 import de.l3s.eventkg.util.FileName;
 
@@ -25,8 +26,6 @@ import de.l3s.eventkg.util.FileName;
  * <item-id> <item-wiki-alias1-lang> <item-wiki-alias2-lang> ...
  */
 public class PropertyNamesProcessor implements EntityDocumentDumpProcessor {
-
-	public static final String TAB = "\t";
 
 	private int itemCount = 0;
 	private int itemCountProperties = 0;
@@ -48,10 +47,12 @@ public class PropertyNamesProcessor implements EntityDocumentDumpProcessor {
 		this.outAliasesProperties = new HashMap<Language, PrintStream>();
 
 		for (Language language : this.languages) {
-			this.outLabelsProperties.put(language, FileLoader.getPrintStream(FileName.WIKIDATA_LABELS_PROPERTIES, language));
+			this.outLabelsProperties.put(language,
+					FileLoader.getPrintStream(FileName.WIKIDATA_LABELS_PROPERTIES, language));
 			this.outDescriptionsProperties.put(language,
 					FileLoader.getPrintStream(FileName.WIKIDATA_DESCRIPTIONS_PROPERTIES, language));
-			this.outAliasesProperties.put(language, FileLoader.getPrintStream(FileName.WIKIDATA_ALIASES_PROPERTIES, language));
+			this.outAliasesProperties.put(language,
+					FileLoader.getPrintStream(FileName.WIKIDATA_ALIASES_PROPERTIES, language));
 		}
 	}
 
@@ -75,8 +76,8 @@ public class PropertyNamesProcessor implements EntityDocumentDumpProcessor {
 			MonolingualTextValue labelValue = propertyDocument.getLabels().get(language.getLanguageLowerCase());
 
 			if (labelValue != null) {
-				outLabelsProperties.get(language)
-						.println(propertyDocument.getPropertyId().getId() + TAB + csvEscape(labelValue.getText()));
+				outLabelsProperties.get(language).println(
+						propertyDocument.getPropertyId().getId() + Config.TAB + csvEscape(labelValue.getText()));
 			}
 
 			List<String> aliases = new ArrayList<String>();
@@ -87,8 +88,8 @@ public class PropertyNamesProcessor implements EntityDocumentDumpProcessor {
 				}
 			}
 			if (!aliases.isEmpty())
-				outAliasesProperties.get(language)
-						.println(propertyDocument.getPropertyId().getId() + TAB + StringUtils.join(aliases, TAB) + "");
+				outAliasesProperties.get(language).println(propertyDocument.getPropertyId().getId() + Config.TAB
+						+ StringUtils.join(aliases, Config.TAB) + "");
 
 			String description = null;
 			MonolingualTextValue descriptionValue = propertyDocument.getDescriptions()
@@ -98,7 +99,7 @@ public class PropertyNamesProcessor implements EntityDocumentDumpProcessor {
 			}
 			if (description != null)
 				outDescriptionsProperties.get(language)
-						.println(propertyDocument.getPropertyId().getId() + TAB + csvEscape(description));
+						.println(propertyDocument.getPropertyId().getId() + Config.TAB + csvEscape(description));
 		}
 	}
 

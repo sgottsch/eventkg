@@ -9,6 +9,27 @@ SELECT ?property ?propertyLabel WHERE {
 	}           
 }
 
+# Properties that could be mapped to so:containedInPlace 
+	SELECT ?property ?propertyLabel WHERE {
+	  ?property wdt:P1647* wd:P361 . # P1647: subproperty of, P361: part of
+	  ?property wdt:P1647* wd:P276 . # P1647: subproperty of, P276: location
+		SERVICE wikibase:label {
+			bd:serviceParam wikibase:language "en" .
+		}           
+	}
+	
+# Properties that could be mapped to so:containsPlace
+
+	SELECT ?property ?propertyLabel WHERE {
+      ?property wdt:P1696 ?property2 . # P1696: inverse of
+	  ?property2 wdt:P1647* wd:P131 . # P1647: subproperty of, P361: part of
+	  ?property2 wdt:P1647* wd:P276 . # P1647: subproperty of, P276: location
+		SERVICE wikibase:label {
+			bd:serviceParam wikibase:language "en" .
+		}           
+	}
+
+
 --- Others (not needed any more) ---
 
 # All properties with their names

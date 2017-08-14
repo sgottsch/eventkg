@@ -285,6 +285,23 @@ public class DataStoreWriter {
 				writeTriple(writer, writerPreview, lineNo, entity.getId(), Prefix.RDF.getAbbr() + "type",
 						Prefix.EVENT_KG_SCHEMA.getAbbr() + "Entity", false, null);
 
+				if (entity.isLocation()) {
+					writeTriple(writer, writerPreview, lineNo, entity.getId(), Prefix.RDF.getAbbr() + "type",
+							Prefix.EVENT_KG_SCHEMA.getAbbr() + "Location", false, null);
+
+					for (Entity subLocation : entity.getSubLocations()) {
+						writeTriple(writer, writerPreview, lineNo, entity.getId(),
+								Prefix.SCHEMA_ORG.getAbbr() + "subLocation",
+								Prefix.EVENT_KG_RESOURCE.getAbbr() + subLocation.getId(), false, null);
+					}
+					for (Entity parentLocation : entity.getParentLocations()) {
+						writeTriple(writer, writerPreview, lineNo, entity.getId(),
+								Prefix.SCHEMA_ORG.getAbbr() + "parentLocation",
+								Prefix.EVENT_KG_RESOURCE.getAbbr() + parentLocation.getId(), false, null);
+					}
+
+				}
+
 				if (entity.getWikidataId() != null)
 					writeTriple(writer, writerPreview, lineNo, entity.getId(), Prefix.DCTERMS.getAbbr() + "relation",
 							"<" + Prefix.WIKIDATA_ENTITY.getUrlPrefix() + entity.getWikidataId() + ">", false,
@@ -385,10 +402,6 @@ public class DataStoreWriter {
 
 			lineNo = 0;
 			for (StartTime startTime : dataStore.getStartTimes()) {
-				// TODO: Why null here?
-				if (startTime.getStartTime() == null)
-					continue;
-
 				lineNo += 1;
 				writeTriple(writer, writerPreview, lineNo, startTime.getSubject().getId(),
 						Prefix.SCHEMA_ORG.getAbbr() + "startTime", standardFormat.format(startTime.getStartTime()),
@@ -397,8 +410,6 @@ public class DataStoreWriter {
 
 			lineNo = 0;
 			for (EndTime endTime : dataStore.getEndTimes()) {
-				if (endTime.getEndTime() == null)
-					continue;
 				lineNo += 1;
 				writeTriple(writer, writerPreview, lineNo, endTime.getSubject().getId(),
 						Prefix.SCHEMA_ORG.getAbbr() + "endTime", standardFormat.format(endTime.getEndTime()), false,

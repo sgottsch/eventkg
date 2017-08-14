@@ -118,6 +118,7 @@ public class DBpediaAllLocationsLoader extends Extractor {
 			String line;
 			while ((line = br.readLine()) != null) {
 				Entity entity = mappings.getEntityByWikidataId(line);
+				entity.setLocation(true);
 				entities.add(entity);
 			}
 

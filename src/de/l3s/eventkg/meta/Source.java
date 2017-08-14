@@ -2,6 +2,13 @@ package de.l3s.eventkg.meta;
 
 public enum Source {
 
-	YAGO, WIKIDATA, DBPEDIA, WCE, WIKIPEDIA, ALL;
+	YAGO,
+	WIKIDATA,
+	DBPEDIA,
+	WCE,
+	WIKIPEDIA,
+	ALL,
+	INTEGRATED,
+	INTEGR_LOC_MIN;
 
 }

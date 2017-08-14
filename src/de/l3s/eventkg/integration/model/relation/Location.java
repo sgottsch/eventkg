@@ -17,6 +17,7 @@ public class Location extends RelationWithSource {
 		super(subject, dataSet);
 		this.location = location;
 		this.language = language;
+		subject.addLocation(location, dataSet);
 	}
 
 	public Entity getLocation() {

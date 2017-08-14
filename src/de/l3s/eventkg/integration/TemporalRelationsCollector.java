@@ -477,7 +477,7 @@ public class TemporalRelationsCollector extends Extractor {
 
 						buildRelation(entity1, entity2, null, null, property, Source.DBPEDIA, language);
 					} catch (ArrayIndexOutOfBoundsException e) {
-						// TODO: Why? foaf homepage
+						// problems if foaf homepage
 						// System.out.println("Warning: " + line);
 						continue;
 					}

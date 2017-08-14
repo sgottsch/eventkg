@@ -14,9 +14,10 @@ import de.l3s.eventkg.pipeline.Config;
 import de.l3s.eventkg.pipeline.Extractor;
 import de.l3s.eventkg.wikidata.processors.EventSubClassProcessor;
 import de.l3s.eventkg.wikidata.processors.FactsWithTemporalSnaksProcessor;
+import de.l3s.eventkg.wikidata.processors.LocationsExtractor;
+import de.l3s.eventkg.wikidata.processors.SubLocationsExtractor;
 import de.l3s.eventkg.wikidata.processors.TemporalPropertiesExtractor;
 import de.l3s.eventkg.wikidata.processors.TitlesAndDescriptionsExtractor;
-import de.l3s.eventkg.wikidata.processors.WikidataLocationsExtractor;
 
 /**
  * Runs through the Wikidata dump file to extract: <br>
@@ -52,9 +53,17 @@ public class WikidataExtractionWithoutEventPages extends Extractor {
 		}
 
 		// Locations
-		WikidataLocationsExtractor locationsExtractor = null;
+		LocationsExtractor locationsExtractor = null;
 		try {
-			locationsExtractor = new WikidataLocationsExtractor();
+			locationsExtractor = new LocationsExtractor();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+		// Sub/Parent Locations
+		SubLocationsExtractor subLocationsExtractor = null;
+		try {
+			subLocationsExtractor = new SubLocationsExtractor();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -86,6 +95,7 @@ public class WikidataExtractionWithoutEventPages extends Extractor {
 		processors.add(idToWikipediaMappingExtractor);
 		processors.add(temporalPropertiesExtractor);
 		processors.add(locationsExtractor);
+		processors.add(subLocationsExtractor);
 		processors.add(subclassPropertiesProcessor);
 		processors.add(factsWithTemporalSnaksProcessor);
 

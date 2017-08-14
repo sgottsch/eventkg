@@ -11,6 +11,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import de.l3s.eventkg.dbpedia.DBpediaAllLocationsLoader;
 import de.l3s.eventkg.integration.WikidataIdMappings.TemporalPropertyType;
 import de.l3s.eventkg.integration.model.Entity;
 import de.l3s.eventkg.integration.model.Event;
@@ -33,6 +34,8 @@ public class DataCollector extends Extractor {
 	private Set<Entity> blacklistEvents = new HashSet<Entity>();
 
 	private WikidataIdMappings wikidataIdMappings;
+
+	private Set<Entity> locations;
 
 	public static void main(String[] args) {
 		List<Language> languages = new ArrayList<Language>();
@@ -65,6 +68,9 @@ public class DataCollector extends Extractor {
 		collectTimes();
 		System.out.println("Collect event locations.");
 		collectLocations();
+		System.out.println("Collect entity sub/parent locations.");
+		collectSubLocations();
+
 		// System.out.println("Example.");
 		// dataCollector.test("German_intervention_against_ISIL");
 	}
@@ -93,6 +99,36 @@ public class DataCollector extends Extractor {
 		collectLocationsDBpedia();
 		collectLocationsWikidata();
 		writeLocationsToFile();
+	}
+
+	private void collectSubLocations() {
+		collectSubLocationsWikidata();
+		minimizeLocation();
+		writeSubLocationsToFile();
+	}
+
+	private void writeSubLocationsToFile() {
+		PrintWriter writer = null;
+		try {
+			writer = FileLoader.getWriter(FileName.ALL_LOCATIONS);
+			for (Entity location : this.locations) {
+				for (Entity subLocation : location.getSubLocations()) {
+					writer.write(location.getWikidataId());
+					writer.write(Config.TAB);
+					writer.write(location.getWikipediaLabelsString(this.languages));
+					writer.write(Config.TAB);
+					writer.write(subLocation.getWikidataId());
+					writer.write(Config.TAB);
+					writer.write(subLocation.getWikipediaLabelsString(this.languages));
+					writer.write(Config.NL);
+				}
+			}
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} finally {
+			writer.close();
+		}
+
 	}
 
 	private void writeLocationsToFile() {
@@ -513,10 +549,22 @@ public class DataCollector extends Extractor {
 
 				String entityWikidataId = parts[0];
 
-				Event event = findEventFromWikidataId(entityWikidataId);
+				// event: happening time. entity: existence time
+				Entity entity = getEntityFromWikidataId(entityWikidataId);
+				Event event = null;
 
-				if (event == null)
+				if (entity == null)
 					continue;
+
+				if (entity.getEventEntity() != null) {
+					entity = entity.getEventEntity();
+					event = entity.getEventEntity();
+				}
+
+				// Event event = findEventFromWikidataId(entityWikidataId);
+				//
+				// if (event == null)
+				// continue;
 
 				String propertyWikidataId = parts[1];
 				String timeString = parts[2];
@@ -527,11 +575,13 @@ public class DataCollector extends Extractor {
 
 					if (type == TemporalPropertyType.START || type == TemporalPropertyType.BOTH) {
 						Date dateEarliest = TimeTransformer.generateEarliestTimeForWikidata(timeString);
-						event.setStartTime(dateEarliest);
+						if (event != null)
+							event.setStartTime(dateEarliest);
 					}
 					if (type == TemporalPropertyType.END || type == TemporalPropertyType.BOTH) {
 						Date dateLatest = TimeTransformer.generateLatestTimeForWikidata(timeString);
-						event.setEndTime(dateLatest);
+						if (event != null)
+							event.setEndTime(dateLatest);
 					}
 
 				} catch (ParseException e) {
@@ -1282,6 +1332,96 @@ public class DataCollector extends Extractor {
 		}
 
 		System.out.println("Number of events extracted from Wikidata: " + numberOfWikidataEvents);
+	}
+
+	private void collectSubLocationsWikidata() {
+
+		System.out.println("collectSubLocationsWikidata");
+
+		this.locations = DBpediaAllLocationsLoader.loadLocationEntities(this.wikidataIdMappings);
+
+		BufferedReader br = null;
+		try {
+			try {
+				br = FileLoader.getReader(FileName.WIKIDATA_SUB_LOCATIONS);
+			} catch (FileNotFoundException e1) {
+				e1.printStackTrace();
+			}
+
+			String line;
+			while ((line = br.readLine()) != null) {
+				String[] parts = line.split("\t");
+
+				String type = parts[0];
+				String entity1WikidataId = parts[1];
+				String entity2WikidataId = parts[3];
+
+				Entity location1 = getEntityFromWikidataId(entity1WikidataId);
+				Entity location2 = getEntityFromWikidataId(entity2WikidataId);
+
+				if (location1.isLocation() && location2.isLocation()) {
+					if (type.equals(Config.SUB_LOCATION_SYMBOL)) {
+						location2.addParentLocation(location1);
+					} else if (type.equals(Config.PARENT_LOCATION_SYMBOL)) {
+						location1.addParentLocation(location2);
+					}
+				}
+
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				br.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+
+	private void minimizeLocation() {
+
+		// transitive parents
+		for (Entity location : this.locations) {
+			collectAllParents(location, location.getParentLocations());
+			// no self loops!
+			location.getAllParentLocations().remove(location);
+		}
+
+		// if we have
+		// Brandenburger Tor, parentLocation: Berlin
+		// and
+		// Brandenburger Tor, parentLocation: Germany
+		// only keep Berlin
+
+		for (Entity startLocation : this.locations) {
+			// union of all the parent locations of each location
+			Set<Entity> allParentLocations = new HashSet<Entity>();
+			for (Entity parentLocation : startLocation.getParentLocations())
+				allParentLocations.addAll(parentLocation.getAllParentLocations());
+
+			// only keep those locations which are not in that union
+			startLocation.getParentLocations().removeAll(allParentLocations);
+		}
+
+		// // use symmetry for sub locations
+		// for (Entity startLocation : this.locations) {
+		// for (Entity parent : startLocation.getParentLocations()) {
+		// parent.addSubLocation(startLocation);
+		// }
+		// }
+
+	}
+
+	public static void collectAllParents(Entity location, Set<Entity> parents) {
+
+		for (Entity parent : parents) {
+			if (!location.getAllParentLocations().contains(parent)) {
+				location.addAllParentLocation(parent);
+				collectAllParents(location, parent.getAllParentLocations());
+			}
+		}
+
 	}
 
 }

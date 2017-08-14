@@ -30,7 +30,7 @@ public class EventsFromFileFinder extends Extractor {
 	private PrintWriter resultsWriter;
 
 	public static void main(String[] args) {
-		Config.init("config_eventkb_local.txt");
+		Config.init(args[0]);
 		List<Language> ls = new ArrayList<Language>();
 		ls.add(Language.EN);
 		EventsFromFileFinder ff = new EventsFromFileFinder(ls);
@@ -108,6 +108,9 @@ public class EventsFromFileFinder extends Extractor {
 		forbiddenClasses.add("Q17442446"); // Wikimedia internal stuff
 		forbiddenClasses.add("Q12139612"); // enumeration
 		forbiddenClasses.add("Q20202269"); // music term
+		forbiddenClasses.add("Q7366"); // song
+		forbiddenClasses.add("Q155171"); // cover version
+		forbiddenClasses.add("Q816829"); // periodization
 
 		Set<String> allClasses = new HashSet<String>();
 

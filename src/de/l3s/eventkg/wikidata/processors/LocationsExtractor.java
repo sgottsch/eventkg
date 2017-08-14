@@ -15,12 +15,11 @@ import org.wikidata.wdtk.datamodel.interfaces.SiteLink;
 import org.wikidata.wdtk.datamodel.interfaces.Statement;
 import org.wikidata.wdtk.datamodel.interfaces.StatementGroup;
 
+import de.l3s.eventkg.pipeline.Config;
 import de.l3s.eventkg.util.FileLoader;
 import de.l3s.eventkg.util.FileName;
 
-public class WikidataLocationsExtractor implements EntityDocumentDumpProcessor {
-
-	public static final String TAB = "\t";
+public class LocationsExtractor implements EntityDocumentDumpProcessor {
 
 	private int itemsWithLocationCount = 0;
 
@@ -29,14 +28,6 @@ public class WikidataLocationsExtractor implements EntityDocumentDumpProcessor {
 	private PrintStream outLocations;
 
 	private Set<String> locationPropertyIds;
-
-	// All time properties:
-	// SELECT ?property ?propertyLabel
-	// WHERE {
-	// ?property a wikibase:Property .
-	// ?property ?l wd:Q18636219
-	// SERVICE wikibase:label { bd:serviceParam wikibase:language "en". }
-	// }
 
 	private void loadLocationPropertyIds() {
 
@@ -69,7 +60,7 @@ public class WikidataLocationsExtractor implements EntityDocumentDumpProcessor {
 
 	}
 
-	public WikidataLocationsExtractor() throws IOException {
+	public LocationsExtractor() throws IOException {
 		// open files for writing results
 		outLocations = FileLoader.getPrintStream(FileName.WIKIDATA_LOCATIONS);
 		loadLocationPropertyIds();
@@ -101,13 +92,13 @@ public class WikidataLocationsExtractor implements EntityDocumentDumpProcessor {
 							if (id != null) {
 								this.itemsWithLocationCount++;
 								outLocations.print(itemDocument.getItemId().getId());
-								outLocations.print(TAB);
+								outLocations.print(Config.TAB);
 								outLocations.print(csvEscape(itemDocument.findLabel("en")));
-								outLocations.print(TAB);
+								outLocations.print(Config.TAB);
 								outLocations.print(csvEscape(id));
-								outLocations.print(TAB);
+								outLocations.print(Config.TAB);
 								outLocations.print(locationPropertyId);
-								outLocations.print(TAB);
+								outLocations.print(Config.TAB);
 								SiteLink enwiki = itemDocument.getSiteLinks().get("enwiki");
 								if (enwiki != null) {
 									outLocations.print(csvEscape(enwiki.getPageTitle()));

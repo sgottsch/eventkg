@@ -70,6 +70,7 @@ public enum FileName {
 	WIKIDATA_PROPERTY_NAMES("property_names.tsv", Source.WIKIDATA, FileType.RESULTS, false, false, false),
 	WIKIDATA_EVENTS("event_instances.tsv", Source.WIKIDATA, FileType.RESULTS, false, false, false),
 	WIKIDATA_LOCATIONS("wikidata_locations.tsv", Source.WIKIDATA, FileType.RESULTS, false, false, false),
+	WIKIDATA_SUB_LOCATIONS("wikidata_sub_locations.tsv", Source.WIKIDATA, FileType.RESULTS, false, false, false),
 	WIKIDATA_TEMPORAL_PROPERTY_LIST_FILE_NAME(
 			"temporal_property_names.tsv",
 			Source.WIKIDATA,
@@ -79,6 +80,13 @@ public enum FileName {
 			false),
 	WIKIDATA_LOCATION_PROPERTY_NAMES(
 			"property_names_locations.tsv",
+			Source.WIKIDATA,
+			FileType.META,
+			false,
+			false,
+			false),
+	WIKIDATA_SUB_LOCATION_PROPERTY_NAMES(
+			"properties_sublocations.tsv",
 			Source.WIKIDATA,
 			FileType.META,
 			false,
@@ -187,6 +195,7 @@ public enum FileName {
 	 * Event pages with the events' locations
 	 */
 	ALL_LOCATIONS("all_event_locations.tsv", Source.ALL, FileType.RESULTS, false, false, false),
+	ALL_SUB_LOCATIONS("all_sub_locations.tsv", Source.ALL, FileType.RESULTS, false, false, false),
 
 	ALL_TEMPORAL_RELATIONS("all_temporal_relations.tsv", Source.ALL, FileType.RESULTS, false, false, false),
 

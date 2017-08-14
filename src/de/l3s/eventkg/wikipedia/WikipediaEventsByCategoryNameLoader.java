@@ -16,10 +16,10 @@ import de.l3s.eventkg.pipeline.Extractor;
 import de.l3s.eventkg.util.FileLoader;
 import de.l3s.eventkg.util.FileName;
 
-public class WikipediaEventsLoader extends Extractor {
+public class WikipediaEventsByCategoryNameLoader extends Extractor {
 
-	public WikipediaEventsLoader(List<Language> languages) {
-		super("WikipediaEventsLoader", Source.DBPEDIA,
+	public WikipediaEventsByCategoryNameLoader(List<Language> languages) {
+		super("WikipediaEventsLoader", Source.WIKIPEDIA,
 				"Load Wikipedia pages representing events according to their category names (e.g. English Wikipedia pages in the categiory \"November_1963_events\").",
 				languages);
 	}

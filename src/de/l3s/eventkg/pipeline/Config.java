@@ -13,6 +13,9 @@ public class Config {
 	public static final String NL = "\n";
 	public static final String SEP = " ";
 
+	public static final String SUB_LOCATION_SYMBOL = "s";
+	public static final String PARENT_LOCATION_SYMBOL = "p";
+
 	private static Map<String, String> properties;
 
 	public static String getValue(String propertyName) {

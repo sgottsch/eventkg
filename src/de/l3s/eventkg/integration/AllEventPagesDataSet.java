@@ -187,10 +187,17 @@ public class AllEventPagesDataSet {
 
 				String entityWikidataId = parts[0];
 
-				Event event = getEventByWikidataId(entityWikidataId);
+				// event: happening time. entity: existence time
+				Entity entity = this.wikidataIdMappings.getEntityByWikidataId(entityWikidataId);
+				Event event = null;
 
-				if (event == null)
+				if (entity == null)
 					continue;
+
+				if (entity.getEventEntity() != null) {
+					entity = entity.getEventEntity();
+					event = entity.getEventEntity();
+				}
 
 				String propertyWikidataId = parts[1];
 				String timeString = parts[2];
@@ -201,14 +208,16 @@ public class AllEventPagesDataSet {
 
 					if (type == TemporalPropertyType.START || type == TemporalPropertyType.BOTH) {
 						Date dateEarliest = TimeTransformer.generateEarliestTimeForWikidata(timeString);
-						event.setStartTime(dateEarliest);
-						DataStore.getInstance().addStartTime(new StartTime(event,
+						if (event != null)
+							event.setStartTime(dateEarliest);
+						DataStore.getInstance().addStartTime(new StartTime(entity,
 								DataSets.getInstance().getDataSetWithoutLanguage(Source.WIKIDATA), dateEarliest));
 					}
 					if (type == TemporalPropertyType.END || type == TemporalPropertyType.BOTH) {
 						Date dateLatest = TimeTransformer.generateLatestTimeForWikidata(timeString);
-						event.setEndTime(dateLatest);
-						DataStore.getInstance().addEndTime(new EndTime(event,
+						if (event != null)
+							event.setEndTime(dateLatest);
+						DataStore.getInstance().addEndTime(new EndTime(entity,
 								DataSets.getInstance().getDataSetWithoutLanguage(Source.WIKIDATA), dateLatest));
 					}
 

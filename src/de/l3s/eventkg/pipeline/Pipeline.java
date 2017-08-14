@@ -17,7 +17,10 @@ import de.l3s.eventkg.integration.AllEventPagesDataSet;
 import de.l3s.eventkg.integration.DataCollector;
 import de.l3s.eventkg.integration.DataSets;
 import de.l3s.eventkg.integration.DataStoreWriter;
+import de.l3s.eventkg.integration.LocationsIntegrator;
+import de.l3s.eventkg.integration.SubLocationsCollector;
 import de.l3s.eventkg.integration.TemporalRelationsCollector;
+import de.l3s.eventkg.integration.TimesIntegrator;
 import de.l3s.eventkg.meta.Language;
 import de.l3s.eventkg.meta.Source;
 import de.l3s.eventkg.textual_events.TextualEventsExtractor;
@@ -25,7 +28,7 @@ import de.l3s.eventkg.wikidata.WikidataExtractionWithEventPages;
 import de.l3s.eventkg.wikidata.WikidataExtractionWithoutEventPages;
 import de.l3s.eventkg.wikidata.misc.EventsFromFileFinder;
 import de.l3s.eventkg.wikipedia.LabelsAndDescriptionsExtractor;
-import de.l3s.eventkg.wikipedia.WikipediaEventsLoader;
+import de.l3s.eventkg.wikipedia.WikipediaEventsByCategoryNameLoader;
 import de.l3s.eventkg.wikipedia.WikipediaLinkCountsExtractor;
 import de.l3s.eventkg.wikipedia.WikipediaLinkSetsExtractor;
 import de.l3s.eventkg.yago.YAGOEventLocationsExtractor;
@@ -93,8 +96,8 @@ public class Pipeline {
 
 	private void download() {
 		RawDataDownLoader downloader = new RawDataDownLoader(languages);
-		downloader.createFolders();
-		downloader.copyMetaFiles();
+		//downloader.createFolders();
+		//downloader.copyMetaFiles();
 		downloader.downloadFiles();
 	}
 
@@ -118,7 +121,7 @@ public class Pipeline {
 		extractors.add(new DBpediaPartOfLoader(languages));
 
 		// Wikipedia
-		extractors.add(new WikipediaEventsLoader(languages));
+		extractors.add(new WikipediaEventsByCategoryNameLoader(languages));
 
 		// Wikidata
 		extractors.add(new WikidataExtractionWithoutEventPages(languages));
@@ -171,6 +174,9 @@ public class Pipeline {
 		extractors.add(new LabelsAndDescriptionsExtractor(languages, getAllEventPagesDataSet())); //
 		extractors.add(new TextualEventsExtractor(languages, getAllEventPagesDataSet()));
 		extractors.add(new TemporalRelationsCollector(languages, getAllEventPagesDataSet())); //
+		extractors.add(new SubLocationsCollector(languages, getAllEventPagesDataSet())); //
+		extractors.add(new TimesIntegrator(languages));
+		extractors.add(new LocationsIntegrator(languages));
 
 		for (Extractor extractor : extractors) {
 			System.out.println(extractor.getName() + ", " + extractor.getSource() + " - " + extractor.getDescription());

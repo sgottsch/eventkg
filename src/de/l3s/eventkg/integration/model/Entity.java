@@ -2,8 +2,10 @@ package de.l3s.eventkg.integration.model;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -19,7 +21,14 @@ public class Entity {
 
 	private boolean isEvent = false;
 
+	private Set<Entity> subLocations = new HashSet<Entity>();
+
+	private Set<Entity> parentLocations = new HashSet<Entity>();
+	private Set<Entity> allParentLocations = new HashSet<Entity>();
+
 	private Event eventEntity;
+
+	private boolean isLocation = false;
 
 	public Entity(String wikidataId) {
 		super();
@@ -90,6 +99,38 @@ public class Entity {
 
 	public Map<Language, String> getWikipediaLabels() {
 		return wikipediaLabels;
+	}
+
+	public Set<Entity> getSubLocations() {
+		return subLocations;
+	}
+
+	public void addSubLocation(Entity subLocation) {
+		this.subLocations.add(subLocation);
+	}
+
+	public Set<Entity> getParentLocations() {
+		return parentLocations;
+	}
+
+	public void addParentLocation(Entity parentLocation) {
+		this.parentLocations.add(parentLocation);
+	}
+
+	public boolean isLocation() {
+		return isLocation;
+	}
+
+	public void setLocation(boolean isLocation) {
+		this.isLocation = isLocation;
+	}
+
+	public Set<Entity> getAllParentLocations() {
+		return allParentLocations;
+	}
+
+	public void addAllParentLocation(Entity allParentLocation) {
+		this.allParentLocations.add(allParentLocation);
 	}
 
 }
