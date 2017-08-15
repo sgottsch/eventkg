@@ -5,15 +5,16 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.Locale;
 
 public class TimeTransformer {
 
-	private static SimpleDateFormat xsdDateFormat = new SimpleDateFormat("G yyyy-MM-dd");
+	private static SimpleDateFormat xsdDateFormat = new SimpleDateFormat("G yyyy-MM-dd", Locale.ENGLISH);
 	// private static SimpleDateFormat wikidataDateFormat = new
 	// SimpleDateFormat("yyyyyyyyyyy-MM-dd'T'hh:mm:ss");
-	private static SimpleDateFormat wikidataDateFormat = new SimpleDateFormat("G yyyyyyyyyyy-MM-dd");
+	private static SimpleDateFormat wikidataDateFormat = new SimpleDateFormat("G yyyyyyyyyyy-MM-dd", Locale.ENGLISH);
 
-	private static SimpleDateFormat dbPediaDateFormat = new SimpleDateFormat("G yyyy-MM-dd");
+	private static SimpleDateFormat dbPediaDateFormat = new SimpleDateFormat("G yyyy-MM-dd", Locale.ENGLISH);
 
 	public static void main(String[] args) throws ParseException {
 		// System.out.println(new Date(Long.MAX_VALUE).toString());

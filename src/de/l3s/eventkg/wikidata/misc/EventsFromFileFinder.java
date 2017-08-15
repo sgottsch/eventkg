@@ -19,7 +19,6 @@ import de.l3s.eventkg.pipeline.Config;
 import de.l3s.eventkg.pipeline.Extractor;
 import de.l3s.eventkg.util.FileLoader;
 import de.l3s.eventkg.util.FileName;
-import de.l3s.eventkg.wikidata.processors.EventSubClassProcessor;
 
 /**
  * Given the "subclass of" and "instance of" relations extracted from the
@@ -112,20 +111,36 @@ public class EventsFromFileFinder extends Extractor {
 		forbiddenClasses.add("Q155171"); // cover version
 		forbiddenClasses.add("Q816829"); // periodization
 
+		// Avoid cities as events: municipality ... self-governance ...
+		// administration ... assembly ... meeting ... event
+		forbiddenClasses.add("Q1752346"); // assembly
+		forbiddenClasses.add("Q43229"); // organization
+		forbiddenClasses.add("Q2495862"); // Congress
+
 		Set<String> allClasses = new HashSet<String>();
 
+		boolean printTree = false;
+
 		boolean changed = true;
-		// String indent = "";
+		String indent = "";
+
 		while (changed) {
 			Set<String> newTargetClasses = new HashSet<String>();
 			for (String id : targetClasses) {
-				// System.out.println(indent + id + Config.TAB +
-				// labels.get(id));
+
+				if (printTree) {
+					System.out.println(indent + id + Config.TAB + labels.get(id));
+				}
+
 				if (subClasses.containsKey(id)) {
 					newTargetClasses.addAll(subClasses.get(id));
-					// for (String childId : subClasses.get(id))
-					// System.out.println(indent + "- " + childId + Config.TAB +
-					// labels.get(childId));
+
+					if (printTree) {
+						for (String childId : subClasses.get(id))
+							System.out.println(
+									indent + "- " + childId + Config.TAB + labels.get(childId) + " | parent: " + id);
+					}
+
 				}
 			}
 			// System.out.println(targetClasses);
@@ -133,14 +148,18 @@ public class EventsFromFileFinder extends Extractor {
 			newTargetClasses.removeAll(forbiddenClasses);
 			targetClasses = newTargetClasses;
 
-			// for (String id : newTargetClasses) {
-			// System.out.println(indent + labels.get(id) + "\t" + id);
-			// }
+			if (printTree) {
+				for (String id : newTargetClasses) {
+					System.out.println(indent + labels.get(id) + "\t" + id);
+				}
+			}
 
 			changed = !Sets.difference(newTargetClasses, allClasses).isEmpty();
 
 			allClasses.addAll(newTargetClasses);
-			// indent += "\t";
+
+			if (printTree)
+				indent += "\t";
 		}
 
 		return allClasses;
@@ -165,7 +184,7 @@ public class EventsFromFileFinder extends Extractor {
 			String line;
 			while ((line = br.readLine()) != null) {
 
-				String[] parts = line.split(EventSubClassProcessor.TAB);
+				String[] parts = line.split(Config.TAB);
 
 				String parentClass = parts[2];
 
@@ -175,11 +194,7 @@ public class EventsFromFileFinder extends Extractor {
 					String labelEn = parts[1];
 					String wikiLabelEn = parts[3];
 
-					// if (labelEn.equals("\\N"))
-					// continue;
-
-					resultsWriter.write(id + EventSubClassProcessor.TAB + labelEn + EventSubClassProcessor.TAB
-							+ wikiLabelEn + "\n");
+					resultsWriter.write(id + Config.TAB + labelEn + Config.TAB + wikiLabelEn + "\n");
 				}
 
 			}

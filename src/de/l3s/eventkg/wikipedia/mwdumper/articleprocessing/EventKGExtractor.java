@@ -13,9 +13,6 @@ import org.mediawiki.importer.Siteinfo;
 import org.mediawiki.importer.Wikiinfo;
 
 import de.l3s.eventkg.meta.Language;
-import de.l3s.eventkg.wikipedia.mwdumper.articleprocessing.EventExtractorFromYearPages;
-import de.l3s.eventkg.wikipedia.mwdumper.articleprocessing.Output;
-import de.l3s.eventkg.wikipedia.mwdumper.articleprocessing.TextExtractorNew;
 
 public class EventKGExtractor implements DumpWriter {
 
@@ -85,7 +82,8 @@ public class EventKGExtractor implements DumpWriter {
 	public void writeRevision(Revision revision) throws IOException {
 
 		if (this.pageIsMainArticle) {
-			System.out.println(String.valueOf(this._pageId) + ": " + this.pageTitle);
+			// System.out.println(String.valueOf(this._pageId) + ": " +
+			// this.pageTitle);
 
 			TextExtractorNew extractor = new TextExtractorNew(revision.Text, this._pageId, true, language,
 					this.pageTitle, redirects);

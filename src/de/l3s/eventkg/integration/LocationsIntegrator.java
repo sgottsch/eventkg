@@ -29,7 +29,7 @@ public class LocationsIntegrator extends Extractor {
 		for (Event event : DataStore.getInstance().getEvents()) {
 			for (Entity location : event.getLocations()) {
 				DataStore.getInstance().addLocation(new Location(event,
-						DataSets.getInstance().getDataSetWithoutLanguage(Source.INTEGRATED), location, null));
+						DataSets.getInstance().getDataSetWithoutLanguage(Source.INTEGRATED_LOC_1), location, null));
 			}
 		}
 	}
@@ -60,7 +60,7 @@ public class LocationsIntegrator extends Extractor {
 
 			for (Entity location : locations) {
 				DataStore.getInstance().addLocation(new Location(event,
-						DataSets.getInstance().getDataSetWithoutLanguage(Source.INTEGR_LOC_MIN), location, null));
+						DataSets.getInstance().getDataSetWithoutLanguage(Source.INTEGRATED_LOC_2), location, null));
 			}
 		}
 	}

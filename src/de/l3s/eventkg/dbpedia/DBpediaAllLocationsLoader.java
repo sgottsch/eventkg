@@ -87,6 +87,7 @@ public class DBpediaAllLocationsLoader extends Extractor {
 			}
 		}
 
+		System.out.println("locationEntities: " + locationEntities.size());
 	}
 
 	private void writeResults() {

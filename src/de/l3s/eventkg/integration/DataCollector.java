@@ -4,9 +4,7 @@ import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.text.ParseException;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -18,11 +16,9 @@ import de.l3s.eventkg.integration.model.relation.DataSet;
 import de.l3s.eventkg.meta.Language;
 import de.l3s.eventkg.meta.Source;
 import de.l3s.eventkg.pipeline.Config;
-import de.l3s.eventkg.pipeline.Config.TimeSymbol;
 import de.l3s.eventkg.pipeline.Extractor;
 import de.l3s.eventkg.util.FileLoader;
 import de.l3s.eventkg.util.FileName;
-import de.l3s.eventkg.util.TimeTransformer;
 
 public class DataCollector extends Extractor {
 
@@ -46,7 +42,6 @@ public class DataCollector extends Extractor {
 		DataCollector dc = new DataCollector(languages);
 		dc.init();
 		dc.collectEvents();
-		// dc.collectTimes();
 	}
 
 	public DataCollector(List<Language> languages) {
@@ -64,15 +59,10 @@ public class DataCollector extends Extractor {
 		collectPreviousEvents();
 		System.out.println("Collect \"followed by\" relations.");
 		collectNextEvents();
-		// System.out.println("Collect event times.");
-		// collectTimes();
 		System.out.println("Collect event locations.");
-		collectLocations();
+		collectEventLocations();
 		System.out.println("Collect entity sub/parent locations.");
 		collectSubLocations();
-
-		// System.out.println("Example.");
-		// dataCollector.test("German_intervention_against_ISIL");
 	}
 
 	private void init() {
@@ -88,13 +78,13 @@ public class DataCollector extends Extractor {
 		collectEvents();
 		System.out.println("Collect \"part of\" relations.");
 		collectPartOfs();
-		// System.out.println("Collect event times.");
-		// collectTimes();
 		System.out.println("Collect event locations.");
-		collectLocations();
+		collectEventLocations();
+		System.out.println("Collect entity sub/parent locations.");
+		collectSubLocations();
 	}
 
-	private void collectLocations() {
+	private void collectEventLocations() {
 		collectLocationsYAGO();
 		collectLocationsDBpedia();
 		collectLocationsWikidata();
@@ -103,16 +93,16 @@ public class DataCollector extends Extractor {
 
 	private void collectSubLocations() {
 		collectSubLocationsWikidata();
-		minimizeLocation();
+		minimizeSubLocations();
 		writeSubLocationsToFile();
 	}
 
 	private void writeSubLocationsToFile() {
 		PrintWriter writer = null;
 		try {
-			writer = FileLoader.getWriter(FileName.ALL_LOCATIONS);
-			for (Entity location : this.locations) {
-				for (Entity subLocation : location.getSubLocations()) {
+			writer = FileLoader.getWriter(FileName.ALL_SUB_LOCATIONS);
+			for (Entity subLocation : this.locations) {
+				for (Entity location : subLocation.getParentLocations()) {
 					writer.write(location.getWikidataId());
 					writer.write(Config.TAB);
 					writer.write(location.getWikipediaLabelsString(this.languages));
@@ -132,6 +122,11 @@ public class DataCollector extends Extractor {
 	}
 
 	private void writeLocationsToFile() {
+
+		System.out.println("writeLocationsToFile");
+
+		System.out.println("uniqueEvents: " + uniqueEvents.size());
+
 		PrintWriter writer = null;
 		try {
 			writer = FileLoader.getWriter(FileName.ALL_LOCATIONS);
@@ -403,250 +398,6 @@ public class DataCollector extends Extractor {
 
 	}
 
-	private void collectTimes() {
-		// Sort by trust: Wikidata with highest trust, overwrites others
-		collectTimesDBpedia();
-		collectTimesYAGO();
-		collectTimesWikidata();
-
-		writeDatesToFile();
-	}
-
-	private void collectTimesDBpedia() {
-
-		for (Language language : this.languages) {
-
-			BufferedReader br = null;
-			try {
-				br = FileLoader.getReader(FileName.DBPEDIA_TIMES, language);
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-
-			String line;
-			try {
-				while ((line = br.readLine()) != null) {
-
-					String[] parts = line.split("\t");
-
-					String wikipediaLabel = parts[0];
-					String timeString = parts[2];
-
-					TimeSymbol dateType = TimeSymbol.fromString(parts[3]);
-
-					Event event = findEvent(Language.EN, wikipediaLabel);
-
-					if (event == null)
-						continue;
-
-					Date date;
-					try {
-						date = TimeTransformer.generateTimeForDBpedia(timeString);
-
-						if (event.getStartTime() == null || event.getStartTime().after(date))
-							event.setStartTime(date);
-						if (event.getEndTime() == null || event.getEndTime().before(date))
-							event.setEndTime(date);
-					} catch (ParseException e) {
-						e.printStackTrace();
-					}
-
-				}
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		}
-	}
-
-	private void writeDatesToFile() {
-
-		PrintWriter writer = null;
-		try {
-			writer = FileLoader.getWriter(FileName.ALL_EVENT_TIMES);
-			for (Event event : uniqueEvents) {
-				if (event.getStartTime() != null || event.getEndTime() != null) {
-					String startTimeString = "\\N";
-					if (event.getStartTime() != null)
-						startTimeString = FileLoader.PARSE_DATE_FORMAT.format(event.getStartTime());
-					String endTimeString = "\\N";
-					if (event.getEndTime() != null)
-						endTimeString = FileLoader.PARSE_DATE_FORMAT.format(event.getEndTime());
-
-					writer.write(event.getWikidataId() + Config.TAB + event.getWikipediaLabelsString(this.languages)
-							+ Config.TAB + startTimeString + Config.TAB + endTimeString + Config.NL);
-				}
-			}
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		} finally {
-			writer.close();
-		}
-
-	}
-
-	private void collectTimesYAGO() {
-		BufferedReader br = null;
-		try {
-			try {
-				br = FileLoader.getReader(FileName.YAGO_EVENT_TIMES);
-			} catch (FileNotFoundException e1) {
-				e1.printStackTrace();
-			}
-
-			String line;
-			while ((line = br.readLine()) != null) {
-
-				String[] parts = line.split("\t");
-
-				String wikipediaLabel = parts[0].substring(1, parts[0].length() - 1).replaceAll(" ", "_");
-
-				Event event = createEvent(Language.EN, wikipediaLabel, "collectTimesYAGO");
-
-				if (event == null)
-					continue;
-
-				String property = parts[1];
-				String timeString = parts[2];
-
-				try {
-					Date date1 = TimeTransformer.generateEarliestTimeFromXsd(timeString);
-					Date date1L = TimeTransformer.generateLatestTimeFromXsd(timeString);
-					event.setStartTime(date1);
-
-					// there are two properties only: happenedOnDate and
-					// startedOnDate. If startedOnDate, leave the end time null.
-					// update: added endedOnDate
-					if (!property.equals("<startedOnDate>"))
-						event.setEndTime(date1L);
-				} catch (ParseException e) {
-					e.printStackTrace();
-				}
-
-			}
-		} catch (IOException e) {
-			e.printStackTrace();
-		} finally {
-			try {
-				br.close();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		}
-	}
-
-	private void collectTimesWikidata() {
-
-		BufferedReader br = null;
-		try {
-			try {
-				br = FileLoader.getReader(FileName.WIKIDATA_TEMPORAL_PROPERTIES);
-			} catch (FileNotFoundException e1) {
-				e1.printStackTrace();
-			}
-
-			String line;
-			while ((line = br.readLine()) != null) {
-
-				String[] parts = line.split("\t");
-
-				String entityWikidataId = parts[0];
-
-				// event: happening time. entity: existence time
-				Entity entity = getEntityFromWikidataId(entityWikidataId);
-				Event event = null;
-
-				if (entity == null)
-					continue;
-
-				if (entity.getEventEntity() != null) {
-					entity = entity.getEventEntity();
-					event = entity.getEventEntity();
-				}
-
-				// Event event = findEventFromWikidataId(entityWikidataId);
-				//
-				// if (event == null)
-				// continue;
-
-				String propertyWikidataId = parts[1];
-				String timeString = parts[2];
-
-				TimeSymbol type = wikidataIdMappings.getWikidataTemporalPropertyTypeById(propertyWikidataId);
-
-				try {
-
-					if (type == TimeSymbol.START_TIME || type == TimeSymbol.START_AND_END_TIME) {
-						Date dateEarliest = TimeTransformer.generateEarliestTimeForWikidata(timeString);
-						if (event != null)
-							event.setStartTime(dateEarliest);
-					}
-					if (type == TimeSymbol.END_TIME || type == TimeSymbol.START_AND_END_TIME) {
-						Date dateLatest = TimeTransformer.generateLatestTimeForWikidata(timeString);
-						if (event != null)
-							event.setEndTime(dateLatest);
-					}
-
-				} catch (ParseException e) {
-					e.printStackTrace();
-				}
-
-			}
-		} catch (IOException e) {
-			e.printStackTrace();
-		} finally {
-			try {
-				br.close();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		}
-
-		// collectTimesWikidataStart();
-		// collectTimesWikidataEnd();
-		// collectTimesWikidataPoint();
-	}
-
-	// private void collectTimesWikidataStart() {
-	// BufferedReader br = null;
-	// try {
-	// try {
-	// br = FileLoader.getReader(FileName.WIKIDATA_START_TIME);
-	// } catch (FileNotFoundException e1) {
-	// e1.printStackTrace();
-	// }
-	//
-	// String line;
-	// while ((line = br.readLine()) != null) {
-	//
-	// String[] parts = line.split("\t");
-	//
-	// Event event = findEventFromWikidataId(parts[0], parts[3]);
-	//
-	// if (event == null)
-	// continue;
-	//
-	// String timeString = parts[2];
-	//
-	// try {
-	// Date dateEarliest =
-	// TimeTransformer.generateEarliestTimeForWikidata(timeString);
-	// event.setStartTime(dateEarliest);
-	// } catch (ParseException e) {
-	// e.printStackTrace();
-	// }
-	//
-	// }
-	// } catch (IOException e) {
-	// e.printStackTrace();
-	// } finally {
-	// try {
-	// br.close();
-	// } catch (IOException e) {
-	// e.printStackTrace();
-	// }
-	// }
-	// }
-
 	private Event findEventFromWikidataId(String wikidataId) {
 
 		Entity entity = this.wikidataIdMappings.getEntityByWikidataId(wikidataId);
@@ -662,115 +413,6 @@ public class DataCollector extends Extractor {
 
 		return null;
 	}
-
-	// private Event findEventFromWikidataId(String wikidataId, String
-	// wikipediaLabel) {
-	//
-	// wikipediaLabel = wikipediaLabel.replaceAll(" ", "_");
-	//
-	// // first find event by Wikidata id, then Wikipedia label (it
-	// // could be that the Wikidata mapping was not created, because
-	// // the event is found in other sources.
-	// // String wikidataId = parts[0];
-	// if (!wikidataIdStringMapping.containsKey(wikidataId))
-	// return null;
-	//
-	// Event event =
-	// events.get(wikidataIdStringMapping.containsKey(wikidataId));
-	//
-	// if (event == null) {
-	// // String wikipediaLabel = parts[3].replaceAll(" ", "_");
-	// event = events.get(wikipediaLabel);
-	//
-	// if (event == null)
-	// return null;
-	// }
-	// return event;
-	// }
-
-	// private void collectTimesWikidataEnd() {
-	// BufferedReader br = null;
-	// try {
-	// try {
-	// br = FileLoader.getReader(FileName.WIKIDATA_END_TIME);
-	// } catch (FileNotFoundException e1) {
-	// e1.printStackTrace();
-	// }
-	//
-	// String line;
-	// while ((line = br.readLine()) != null) {
-	//
-	// String[] parts = line.split("\t");
-	//
-	// Event event = findEventFromWikidataId(parts[0], parts[3]);
-	//
-	// if (event == null)
-	// continue;
-	//
-	// String timeString = parts[2];
-	//
-	// try {
-	// Date date = TimeTransformer.generateLatestTimeForWikidata(timeString);
-	// event.setEndTime(date);
-	// } catch (ParseException e) {
-	// e.printStackTrace();
-	// }
-	//
-	// }
-	// } catch (IOException e) {
-	// e.printStackTrace();
-	// } finally {
-	// try {
-	// br.close();
-	// } catch (IOException e) {
-	// e.printStackTrace();
-	// }
-	// }
-	// }
-
-	// private void collectTimesWikidataPoint() {
-	// BufferedReader br = null;
-	// try {
-	// try {
-	// br = FileLoader.getReader(FileName.WIKIDATA_POINT_IN_TIME);
-	// } catch (FileNotFoundException e1) {
-	// e1.printStackTrace();
-	// }
-	//
-	// String line;
-	// while ((line = br.readLine()) != null) {
-	//
-	// String[] parts = line.split("\t");
-	//
-	// Event event = findEventFromWikidataId(parts[0], parts[3]);
-	//
-	// if (event == null)
-	// continue;
-	//
-	// String timeString = parts[2];
-	//
-	// try {
-	// Date dateEarliest =
-	// TimeTransformer.generateEarliestTimeForWikidata(timeString);
-	// Date dateLatest =
-	// TimeTransformer.generateLatestTimeForWikidata(timeString);
-	// event.setStartTime(dateEarliest);
-	// event.setEndTime(dateLatest);
-	// } catch (ParseException e) {
-	// e.printStackTrace();
-	// }
-	//
-	// }
-	// } catch (IOException e) {
-	// e.printStackTrace();
-	// } finally {
-	// try {
-	// br.close();
-	// } catch (IOException e) {
-	// e.printStackTrace();
-	// }
-	// }
-	// }
 
 	private void collectPartOfsDBpedia() {
 
@@ -1359,13 +1001,28 @@ public class DataCollector extends Extractor {
 				String entity2WikidataId = parts[3];
 
 				Entity location1 = getEntityFromWikidataId(entity1WikidataId);
+
+				if (location1 == null) {
+					// entity not found (no name in any of the given langauges)
+					continue;
+				}
+
 				Entity location2 = getEntityFromWikidataId(entity2WikidataId);
+				if (location2 == null) {
+					// entity not found (no name in any of the given langauges)
+					continue;
+				}
+
+				if (location1 == location2)
+					continue;
 
 				if (location1.isLocation() && location2.isLocation()) {
 					if (type.equals(Config.SUB_LOCATION_SYMBOL)) {
-						location2.addParentLocation(location1);
-					} else if (type.equals(Config.PARENT_LOCATION_SYMBOL)) {
 						location1.addParentLocation(location2);
+						location2.addSubLocation(location1);
+					} else if (type.equals(Config.PARENT_LOCATION_SYMBOL)) {
+						location2.addParentLocation(location1);
+						location1.addSubLocation(location2);
 					}
 				}
 
@@ -1381,7 +1038,7 @@ public class DataCollector extends Extractor {
 		}
 	}
 
-	private void minimizeLocation() {
+	private void minimizeSubLocations() {
 
 		// transitive parents
 		for (Entity location : this.locations) {
@@ -1394,7 +1051,9 @@ public class DataCollector extends Extractor {
 		// Brandenburger Tor, parentLocation: Berlin
 		// and
 		// Brandenburger Tor, parentLocation: Germany
-		// only keep Berlin
+		// and
+		// Berlin, parenLocation: Germany
+		// only keep row 1 & 3
 
 		for (Entity startLocation : this.locations) {
 			// union of all the parent locations of each location
@@ -1412,7 +1071,6 @@ public class DataCollector extends Extractor {
 		// parent.addSubLocation(startLocation);
 		// }
 		// }
-
 	}
 
 	public static void collectAllParents(Entity location, Set<Entity> parents) {

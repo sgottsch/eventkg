@@ -59,7 +59,9 @@ public class DBpediaDBOEventsLoader extends Extractor {
 				String[] parts = line.split(" ");
 				String object = parts[2];
 
-				if (targetObjects.contains(object) || blacklistObjects.contains(object)) {
+				boolean onBlackList = blacklistObjects.contains(object);
+
+				if (targetObjects.contains(object) || onBlackList) {
 
 					String subject = parts[0];
 					String property = parts[1];
@@ -74,7 +76,7 @@ public class DBpediaDBOEventsLoader extends Extractor {
 					if (foundEvents.contains(fileLine))
 						continue;
 
-					if (blacklistObjects.contains(object))
+					if (onBlackList)
 						resultsWriterBlacklist.write(fileLine + Config.NL);
 					else
 						resultsWriter.write(fileLine + Config.NL);

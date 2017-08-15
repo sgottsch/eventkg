@@ -67,27 +67,27 @@ public class Pipeline {
 
 		if (steps.contains(2)) {
 			System.out.println("Step 2: Start extraction -> Find event pages and extract relations.");
-			pipeline.pipelineStep1();
+			pipeline.pipelineStep2();
 		} else
 			System.out.println("Skip step 2: Start extraction -> Find event pages and extract relations.");
 
 		if (steps.contains(3)) {
 			System.out.println("Step 3: Integration step 1.");
-			pipeline.pipelineStep2();
+			pipeline.pipelineStep3();
 		} else
 			System.out.println("Skip step 3: Integration step 1.");
 
 		if (steps.contains(4)) {
 			System.out.println("Step 4: Continue extraction -> Extract relations between events.");
-			pipeline.pipelineStep3();
+			pipeline.pipelineStep4();
 		} else
 			System.out.println("Skip step 4: Continue extraction -> Extract relations between events.");
 
 		if (steps.contains(5)) {
 			System.out.println("Step 4: Integration step 2.");
-			pipeline.pipelineStep4();
+			pipeline.pipelineStep5();
 		} else
-			System.out.println("Skip step 4: Integration step 2.");
+			System.out.println("Skip step 5: Integration step 2.");
 	}
 
 	public Pipeline(List<Language> languages) {
@@ -96,12 +96,12 @@ public class Pipeline {
 
 	private void download() {
 		RawDataDownLoader downloader = new RawDataDownLoader(languages);
-		//downloader.createFolders();
-		//downloader.copyMetaFiles();
+		// downloader.createFolders();
+		// downloader.copyMetaFiles();
 		downloader.downloadFiles();
 	}
 
-	private void pipelineStep1() {
+	private void pipelineStep2() {
 
 		List<Extractor> extractors = new ArrayList<Extractor>();
 
@@ -133,10 +133,11 @@ public class Pipeline {
 		}
 	}
 
-	private void pipelineStep2() {
+	private void pipelineStep3() {
 
 		List<Extractor> extractors = new ArrayList<Extractor>();
 
+		extractors.add(new DBpediaAllLocationsLoader(languages, getAllEventPagesDataSet()));
 		// First step of integration
 		extractors.add(new DataCollector(languages));
 
@@ -146,11 +147,9 @@ public class Pipeline {
 		}
 	}
 
-	private void pipelineStep3() {
+	private void pipelineStep4() {
 
 		List<Extractor> extractors = new ArrayList<Extractor>();
-
-		extractors.add(new DBpediaAllLocationsLoader(languages, getAllEventPagesDataSet()));
 
 		// Collect relations from/to events
 		extractors.add(new WikidataExtractionWithEventPages(languages, getAllEventPagesDataSet()));
@@ -165,7 +164,7 @@ public class Pipeline {
 
 	}
 
-	private void pipelineStep4() {
+	private void pipelineStep5() {
 
 		List<Extractor> extractors = new ArrayList<Extractor>();
 		getAllEventPagesDataSet();

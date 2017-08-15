@@ -11,6 +11,7 @@ import org.wikidata.wdtk.datamodel.interfaces.SiteLink;
 import org.wikidata.wdtk.datamodel.interfaces.Statement;
 import org.wikidata.wdtk.datamodel.interfaces.StatementGroup;
 
+import de.l3s.eventkg.pipeline.Config;
 import de.l3s.eventkg.util.FileLoader;
 import de.l3s.eventkg.util.FileName;
 
@@ -21,8 +22,6 @@ import de.l3s.eventkg.util.FileName;
  * <item1> <partOf> <item2>
  */
 public class EventSubClassProcessor implements EntityDocumentDumpProcessor {
-
-	public static final String TAB = "\t";
 
 	static final String instanceOfPropertyId = "P31";
 	static final String subClassPropertyId = "P279";
@@ -81,11 +80,11 @@ public class EventSubClassProcessor implements EntityDocumentDumpProcessor {
 						if (id != null) {
 							this.itemsWithInstanceOfCount++;
 							outInstanceOf.print(itemDocument.getItemId().getId());
-							outInstanceOf.print(TAB);
+							outInstanceOf.print(Config.TAB);
 							outInstanceOf.print(csvEscape(itemDocument.findLabel("en")));
-							outInstanceOf.print(TAB);
+							outInstanceOf.print(Config.TAB);
 							outInstanceOf.print(csvEscape(id));
-							outInstanceOf.print(TAB);
+							outInstanceOf.print(Config.TAB);
 							SiteLink enwiki = itemDocument.getSiteLinks().get("enwiki");
 							if (enwiki != null) {
 								outInstanceOf.print(csvEscape(enwiki.getPageTitle()));
@@ -114,11 +113,11 @@ public class EventSubClassProcessor implements EntityDocumentDumpProcessor {
 						if (id != null) {
 							this.itemsWithSubClassCount++;
 							outSubClass.print(itemDocument.getItemId().getId());
-							outSubClass.print(TAB);
+							outSubClass.print(Config.TAB);
 							outSubClass.print(csvEscape(itemDocument.findLabel("en")));
-							outSubClass.print(TAB);
+							outSubClass.print(Config.TAB);
 							outSubClass.print(csvEscape(id));
-							outSubClass.print(TAB);
+							outSubClass.print(Config.TAB);
 							SiteLink enwiki = itemDocument.getSiteLinks().get("enwiki");
 							if (enwiki != null) {
 								outSubClass.print(csvEscape(enwiki.getPageTitle()));
@@ -147,11 +146,11 @@ public class EventSubClassProcessor implements EntityDocumentDumpProcessor {
 						if (id != null) {
 							this.itemsWithPartOfCount++;
 							outPartOf.print(itemDocument.getItemId().getId());
-							outPartOf.print(TAB);
+							outPartOf.print(Config.TAB);
 							outPartOf.print(csvEscape(itemDocument.findLabel("en")));
-							outPartOf.print(TAB);
+							outPartOf.print(Config.TAB);
 							outPartOf.print(csvEscape(id));
-							outPartOf.print(TAB);
+							outPartOf.print(Config.TAB);
 							SiteLink enwiki = itemDocument.getSiteLinks().get("enwiki");
 							if (enwiki != null) {
 								outPartOf.print(csvEscape(enwiki.getPageTitle()));
@@ -180,11 +179,11 @@ public class EventSubClassProcessor implements EntityDocumentDumpProcessor {
 						if (id != null) {
 							this.itemsWithFollowsCount++;
 							outFollows.print(itemDocument.getItemId().getId());
-							outFollows.print(TAB);
+							outFollows.print(Config.TAB);
 							outFollows.print(csvEscape(itemDocument.findLabel("en")));
-							outFollows.print(TAB);
+							outFollows.print(Config.TAB);
 							outFollows.print(csvEscape(id));
-							outFollows.print(TAB);
+							outFollows.print(Config.TAB);
 							SiteLink enwiki = itemDocument.getSiteLinks().get("enwiki");
 							if (enwiki != null) {
 								outFollows.print(csvEscape(enwiki.getPageTitle()));
@@ -213,11 +212,11 @@ public class EventSubClassProcessor implements EntityDocumentDumpProcessor {
 						if (id != null) {
 							this.itemsWithFollowedByCount++;
 							outFollowedBy.print(itemDocument.getItemId().getId());
-							outFollowedBy.print(TAB);
+							outFollowedBy.print(Config.TAB);
 							outFollowedBy.print(csvEscape(itemDocument.findLabel("en")));
-							outFollowedBy.print(TAB);
+							outFollowedBy.print(Config.TAB);
 							outFollowedBy.print(csvEscape(id));
-							outFollowedBy.print(TAB);
+							outFollowedBy.print(Config.TAB);
 							SiteLink enwiki = itemDocument.getSiteLinks().get("enwiki");
 							if (enwiki != null) {
 								outFollowedBy.print(csvEscape(enwiki.getPageTitle()));

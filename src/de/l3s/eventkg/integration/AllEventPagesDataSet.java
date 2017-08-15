@@ -313,60 +313,6 @@ public class AllEventPagesDataSet {
 		}
 	}
 
-	// TODO: REMOVE?
-	private void loadEventTimesIntegrated() {
-		BufferedReader br = null;
-
-		try {
-			br = FileLoader.getReader(FileName.ALL_EVENT_TIMES);
-
-			String line;
-			while ((line = br.readLine()) != null) {
-
-				String[] parts = line.split("\t");
-
-				String wikidataId = parts[0];
-
-				Event event = getEventByWikidataId(wikidataId);
-
-				if (event == null) {
-					continue;
-				}
-
-				if (!parts[2].equals("\\N")) {
-					try {
-						Date startTime = FileLoader.PARSE_DATE_FORMAT.parse(parts[2]);
-						// DataStore.getInstance().addStartTime(new
-						// StartTime(event, null, null, startTime));
-						event.setStartTime(startTime);
-					} catch (ParseException e) {
-						e.printStackTrace();
-					}
-				}
-				if (!parts[3].equals("\\N")) {
-					try {
-						Date endTime = FileLoader.PARSE_DATE_FORMAT.parse(parts[3]);
-						event.setEndTime(endTime);
-						// DataStore.getInstance().addEndTime(new EndTime(event,
-						// null, null, endTime));
-					} catch (ParseException e) {
-						e.printStackTrace();
-					}
-				}
-
-			}
-		} catch (IOException e) {
-			e.printStackTrace();
-		} finally {
-			try {
-				br.close();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		}
-
-	}
-
 	private void loadEventLocations() {
 		BufferedReader br = null;
 

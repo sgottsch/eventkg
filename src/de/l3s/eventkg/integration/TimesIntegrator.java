@@ -32,11 +32,105 @@ public class TimesIntegrator extends Extractor {
 	}
 
 	public void run() {
-		integrateTimes();
+		integrateTimesByTrust();
+		integrateTimesByTime();
 	}
 
-	private void integrateTimes() {
+	private void integrateTimesByTime() {
 
+		for (Event event : DataStore.getInstance().getEvents()) {
+
+			// take the earliest start time
+			if (event.getStartTimesWithDataSets() != null && !event.getStartTimesWithDataSets().isEmpty()) {
+				Date startTime = earliestStartTime(event.getStartTimesWithDataSets());
+				DataStore.getInstance().addStartTime(new StartTime(event,
+						DataSets.getInstance().getDataSetWithoutLanguage(Source.INTEGRATED_TIME_1), startTime));
+			}
+
+			// take the latest end time
+			if (event.getStartTimesWithDataSets() != null && !event.getStartTimesWithDataSets().isEmpty()) {
+				Date endTime = latestEndTime(event.getEndTimesWithDataSets());
+				DataStore.getInstance().addEndTime(new EndTime(event,
+						DataSets.getInstance().getDataSetWithoutLanguage(Source.INTEGRATED_TIME_1), endTime));
+			}
+
+		}
+
+	}
+
+	private Date earliestStartTime(Map<Date, Set<DataSet>> startTimesWithDataSets) {
+		Date earliestTime = null;
+
+		for (Date date : startTimesWithDataSets.keySet()) {
+			if (earliestTime == null || date.before(earliestTime))
+				earliestTime = date;
+		}
+
+		return earliestTime;
+	}
+
+	private Date latestEndTime(Map<Date, Set<DataSet>> endTimesWithDataSets) {
+		Date latestTime = null;
+
+		for (Date date : endTimesWithDataSets.keySet()) {
+			if (latestTime == null || date.after(latestTime))
+				latestTime = date;
+		}
+
+		return latestTime;
+	}
+
+	private void integrateTimesByTrust() {
+
+		initDataSetsByTrustWorthiness();
+
+		for (Event event : DataStore.getInstance().getEvents()) {
+
+			Date startTime = null;
+			if (event.getStartTimesWithDataSets() != null && !event.getStartTimesWithDataSets().isEmpty()) {
+				startTime = integrateTimesOfEvent(event.getStartTimesWithDataSets(), DateType.START, null);
+				DataStore.getInstance().addStartTime(new StartTime(event,
+						DataSets.getInstance().getDataSetWithoutLanguage(Source.INTEGRATED_TIME_1), startTime));
+			}
+
+			List<DataSet> dataSetsByTrustWorthinessCopy2 = new ArrayList<DataSet>();
+			dataSetsByTrustWorthinessCopy2.addAll(dataSetsByTrustWorthiness);
+
+			Date endTime = null;
+			Map<Date, Set<DataSet>> endTimesWithDataSetsDeepCopy = new HashMap<Date, Set<DataSet>>();
+			if (event.getEndTimesWithDataSets() != null) {
+				for (Date date : event.getEndTimesWithDataSets().keySet()) {
+					endTimesWithDataSetsDeepCopy.put(date, new HashSet<DataSet>());
+					for (DataSet dataSet : event.getEndTimesWithDataSets().get(date)) {
+						endTimesWithDataSetsDeepCopy.get(date).add(dataSet);
+					}
+
+				}
+			}
+
+			while (true) {
+				if (!endTimesWithDataSetsDeepCopy.isEmpty()) {
+
+					endTime = integrateTimesOfEvent(event.getEndTimesWithDataSets(), DateType.END, null);
+
+					if (startTime == null || endTime == null)
+						break;
+					else if (endTime.after(startTime))
+						break;
+					else
+						endTimesWithDataSetsDeepCopy.remove(endTime);
+
+				}
+			}
+
+			if (endTime != null)
+				DataStore.getInstance().addEndTime(new EndTime(event,
+						DataSets.getInstance().getDataSetWithoutLanguage(Source.INTEGRATED_TIME_1), endTime));
+
+		}
+	}
+
+	private void initDataSetsByTrustWorthiness() {
 		dataSetsByTrustWorthiness.add(DataSets.getInstance().getDataSetWithoutLanguage(Source.YAGO));
 		dataSetsByTrustWorthiness.add(DataSets.getInstance().getDataSetWithoutLanguage(Source.WCE));
 
@@ -57,25 +151,6 @@ public class TimesIntegrator extends Extractor {
 			dataSetsByTrustWorthiness.add(DataSets.getInstance().getDataSet(Language.EN, Source.DBPEDIA));
 
 		dataSetsByTrustWorthiness.add(DataSets.getInstance().getDataSetWithoutLanguage(Source.WIKIDATA));
-
-		for (Event event : DataStore.getInstance().getEvents()) {
-
-			if (event.getStartTimesWithDataSets() != null && !event.getStartTimesWithDataSets().isEmpty()) {
-				Date startTime = integrateTimesOfEvent(event.getStartTimesWithDataSets(), DateType.START, null);
-				DataStore.getInstance().addStartTime(new StartTime(event,
-						DataSets.getInstance().getDataSetWithoutLanguage(Source.INTEGRATED), startTime));
-			}
-
-			List<DataSet> dataSetsByTrustWorthinessCopy2 = new ArrayList<DataSet>();
-			dataSetsByTrustWorthinessCopy2.addAll(dataSetsByTrustWorthiness);
-
-			if (event.getEndTimesWithDataSets() != null && !event.getEndTimesWithDataSets().isEmpty()) {
-				Date endTime = integrateTimesOfEvent(event.getEndTimesWithDataSets(), DateType.END, null);
-				DataStore.getInstance().addEndTime(new EndTime(event,
-						DataSets.getInstance().getDataSetWithoutLanguage(Source.INTEGRATED), endTime));
-			}
-
-		}
 	}
 
 	private Date integrateTimesOfEvent(Map<Date, Set<DataSet>> timesWithDataSets, DateType dateType,
