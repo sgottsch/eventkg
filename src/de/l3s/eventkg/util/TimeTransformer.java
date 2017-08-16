@@ -21,6 +21,17 @@ public class TimeTransformer {
 		// System.out.println(generateEarliestTimeForWikidata("00000001969-01-01T00:00:00"));
 		// System.out.println(generateEarliestTimeForWikidata("+00000001969-00-00T00:00:00Z"));
 		System.out.println(generateTimeForDBpedia("\"1618-05-23\"^^<http://www.w3.org/2001/XMLSchema#date>"));
+		System.out.println(generateEarliestTimeForWikidata("+00000002006-08-15T00:00:00Z"));
+		System.out.println(dbPediaDateFormat.format(generateEarliestTimeForWikidata("-00000000300-00-00T00:00:00Z")));
+		System.out.println(dbPediaDateFormat.format(generateEarliestTimeForWikidata("+00000000300-00-00T00:00:00Z")));
+		System.out.println(dbPediaDateFormat.format(generateLatestTimeForWikidata("-00000000300-00-00T00:00:00Z")));
+		System.out.println(dbPediaDateFormat.format(generateLatestTimeForWikidata("+00000000300-00-00T00:00:00Z")));
+		System.out.println(dbPediaDateFormat.format(generateLatestTimeForWikidata("-00000002007-11-00T00:00:00Z")));
+		System.out.println(dbPediaDateFormat.format(generateLatestTimeForWikidata("+00000002007-11-00T00:00:00Z")));
+
+		System.out.println(dbPediaDateFormat
+				.format(generateEarliestTimeFromXsd("\"1618-##-##\"^^<http://www.w3.org/2001/XMLSchema#date>")));
+
 	}
 
 	public static Date generateTimeForDBpedia(String timeString) throws ParseException {
@@ -57,18 +68,9 @@ public class TimeTransformer {
 		// remove time, only keep date
 		timeString = timeString.substring(0, timeString.indexOf("T"));
 
-		if (era == 1)
-			timeString = timeString.replaceAll("-00-", "-01-");
-		else
-			timeString = timeString.replaceAll("-00-", "-12-");
+		timeString = timeString.replaceAll("-00-", "-01-");
 
-		if (era == 1)
-			timeString = timeString.replaceAll("-00", "-01");
-		else {
-			long year = Long.valueOf(timeString.substring(0, timeString.indexOf("-")));
-			int month = Integer.valueOf(timeString.substring(timeString.indexOf("-"), timeString.lastIndexOf("-")));
-			timeString = timeString.replaceAll("-00", "-" + String.valueOf(getLastDayInMonth(year, month, era)));
-		}
+		timeString = timeString.replaceAll("-00", "-01");
 
 		if (era == -1)
 			timeString = "BC " + timeString;
@@ -92,18 +94,11 @@ public class TimeTransformer {
 		// remove time, only keep date
 		timeString = timeString.substring(0, timeString.indexOf("T"));
 
-		if (era == 1)
-			timeString = timeString.replaceAll("-00-", "-12-");
-		else
-			timeString = timeString.replaceAll("-00-", "-01-");
+		timeString = timeString.replaceAll("-00-", "-12-");
 
-		if (era == 1) {
-			long year = Long.valueOf(timeString.substring(0, timeString.indexOf("-")));
-			int month = Integer.valueOf(timeString.substring(timeString.indexOf("-"), timeString.lastIndexOf("-")));
-			timeString = timeString.replaceAll("-00", "-" + String.valueOf(getLastDayInMonth(year, month, era)));
-		} else {
-			timeString = timeString.replaceAll("-00", "-01");
-		}
+		long year = Long.valueOf(timeString.substring(0, timeString.indexOf("-")));
+		int month = Integer.valueOf(timeString.substring(timeString.indexOf("-") + 1, timeString.lastIndexOf("-")));
+		timeString = timeString.replaceAll("-00", "-" + String.valueOf(getLastDayInMonth(year, month, era)));
 
 		if (era == -1)
 			timeString = "BC " + timeString;
@@ -144,18 +139,9 @@ public class TimeTransformer {
 				timeString = timeString.substring(0, 2) + "99" + timeString.substring(4);
 		}
 
-		if (era == 1)
-			timeString = timeString.replaceAll("-##-", "-01-");
-		else
-			timeString = timeString.replaceAll("-##-", "-12-");
+		timeString = timeString.replaceAll("-##-", "-01-");
 
-		if (era == 1)
-			timeString = timeString.replaceAll("-##", "-01");
-		else {
-			int year = Integer.valueOf(timeString.substring(0, timeString.indexOf("-")));
-			int month = Integer.valueOf(timeString.substring(5, 7));
-			timeString = timeString.replaceAll("-##", "-" + String.valueOf(getLastDayInMonth(year, month, era)));
-		}
+		timeString = timeString.replaceAll("-##", "-01");
 
 		if (era == -1)
 			timeString = "BC " + timeString;
@@ -197,17 +183,11 @@ public class TimeTransformer {
 				timeString = timeString.substring(0, 2) + "00" + timeString.substring(4);
 		}
 
-		if (era == 1)
-			timeString = timeString.replaceAll("-##-", "-12-");
-		else
-			timeString = timeString.replaceAll("-##-", "-01-");
+		timeString = timeString.replaceAll("-##-", "-12-");
 
-		if (era == 1) {
-			int year = Integer.valueOf(timeString.substring(0, timeString.indexOf("-")));
-			int month = Integer.valueOf(timeString.substring(5, 7));
-			timeString = timeString.replaceAll("-##", "-" + String.valueOf(getLastDayInMonth(year, month, era)));
-		} else
-			timeString = timeString.replaceAll("-##", "-01");
+		int year = Integer.valueOf(timeString.substring(0, timeString.indexOf("-")));
+		int month = Integer.valueOf(timeString.substring(5, 7));
+		timeString = timeString.replaceAll("-##", "-" + String.valueOf(getLastDayInMonth(year, month, era)));
 
 		if (era == -1)
 			timeString = "BC " + timeString;
