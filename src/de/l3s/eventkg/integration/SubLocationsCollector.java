@@ -3,6 +3,7 @@ package de.l3s.eventkg.integration;
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -15,7 +16,7 @@ import de.l3s.eventkg.util.FileName;
 
 public class SubLocationsCollector extends Extractor {
 
-	private Set<Entity> locations;
+	private Set<Entity> locations = new HashSet<Entity>();
 	private AllEventPagesDataSet allEventPagesDataSet;
 
 	public SubLocationsCollector(List<Language> languages, AllEventPagesDataSet allEventPagesDataSet) {
@@ -33,7 +34,7 @@ public class SubLocationsCollector extends Extractor {
 		BufferedReader br = null;
 		try {
 			try {
-				br = FileLoader.getReader(FileName.WIKIDATA_SUB_LOCATIONS);
+				br = FileLoader.getReader(FileName.ALL_SUB_LOCATIONS);
 			} catch (FileNotFoundException e1) {
 				e1.printStackTrace();
 			}
@@ -49,6 +50,9 @@ public class SubLocationsCollector extends Extractor {
 						.getEntityByWikidataId((entity1WikidataId));
 				Entity location2 = this.allEventPagesDataSet.getWikidataIdMappings()
 						.getEntityByWikidataId((entity2WikidataId));
+
+				this.locations.add(location1);
+				this.locations.add(location2);
 
 				location1.addSubLocation(location2);
 				location2.addParentLocation(location1);

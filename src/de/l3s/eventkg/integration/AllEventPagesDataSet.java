@@ -81,6 +81,7 @@ public class AllEventPagesDataSet {
 				}
 
 				Event event = new Event(entity);
+
 				events.add(event);
 				DataStore.getInstance().addEvent(event);
 
@@ -121,6 +122,9 @@ public class AllEventPagesDataSet {
 	}
 
 	private void collectTimesYAGO() {
+
+		System.out.println("collectTimesYAGO");
+
 		BufferedReader br = null;
 		try {
 			try {
@@ -143,9 +147,13 @@ public class AllEventPagesDataSet {
 
 				Event event = null;
 				if (entity.getEventEntity() != null) {
-					entity = entity.getEventEntity();
 					event = entity.getEventEntity();
+					entity = entity.getEventEntity();
 				}
+
+				// System.out.println("Event: " + event + " -");
+				// if(event!=null)
+				// System.out.println("not null");
 
 				String timeString = parts[2];
 				TimeSymbol type = TimeSymbol.fromString(parts[3]);
@@ -155,15 +163,23 @@ public class AllEventPagesDataSet {
 					Date date1L = TimeTransformer.generateLatestTimeFromXsd(timeString);
 
 					if (type == TimeSymbol.START_TIME || type == TimeSymbol.START_AND_END_TIME) {
-						if (event != null)
+
+						if (event != null) {
 							event.setStartTime(date1);
+							event.addStartTime(date1, DataSets.getInstance().getDataSetWithoutLanguage(Source.YAGO));
+						}
+
 						DataStore.getInstance().addStartTime(new StartTime(entity,
 								DataSets.getInstance().getDataSetWithoutLanguage(Source.YAGO), date1));
 					}
 
 					if (type == TimeSymbol.END_TIME || type == TimeSymbol.START_AND_END_TIME) {
-						if (event != null)
+
+						if (event != null) {
 							event.setEndTime(date1L);
+							event.addEndTime(date1L, DataSets.getInstance().getDataSetWithoutLanguage(Source.YAGO));
+						}
+
 						DataStore.getInstance().addEndTime(new EndTime(entity,
 								DataSets.getInstance().getDataSetWithoutLanguage(Source.YAGO), date1L));
 					}
@@ -208,8 +224,8 @@ public class AllEventPagesDataSet {
 					continue;
 
 				if (entity.getEventEntity() != null) {
-					entity = entity.getEventEntity();
 					event = entity.getEventEntity();
+					entity = entity.getEventEntity();
 				}
 
 				String propertyWikidataId = parts[1];
@@ -220,16 +236,27 @@ public class AllEventPagesDataSet {
 				try {
 
 					if (type == TimeSymbol.START_TIME || type == TimeSymbol.START_AND_END_TIME) {
+
 						Date dateEarliest = TimeTransformer.generateEarliestTimeForWikidata(timeString);
-						if (event != null)
+
+						if (event != null) {
 							event.setStartTime(dateEarliest);
+							event.addStartTime(dateEarliest,
+									DataSets.getInstance().getDataSetWithoutLanguage(Source.WIKIDATA));
+						}
+
 						DataStore.getInstance().addStartTime(new StartTime(entity,
 								DataSets.getInstance().getDataSetWithoutLanguage(Source.WIKIDATA), dateEarliest));
 					}
 					if (type == TimeSymbol.END_TIME || type == TimeSymbol.START_AND_END_TIME) {
 						Date dateLatest = TimeTransformer.generateLatestTimeForWikidata(timeString);
-						if (event != null)
+
+						if (event != null) {
 							event.setEndTime(dateLatest);
+							event.addEndTime(dateLatest,
+									DataSets.getInstance().getDataSetWithoutLanguage(Source.WIKIDATA));
+						}
+
 						DataStore.getInstance().addEndTime(new EndTime(entity,
 								DataSets.getInstance().getDataSetWithoutLanguage(Source.WIKIDATA), dateLatest));
 					}
@@ -281,8 +308,8 @@ public class AllEventPagesDataSet {
 						continue;
 
 					if (entity.getEventEntity() != null) {
-						entity = entity.getEventEntity();
 						event = entity.getEventEntity();
+						entity = entity.getEventEntity();
 					}
 
 					Date date;
@@ -290,14 +317,21 @@ public class AllEventPagesDataSet {
 						date = TimeTransformer.generateTimeForDBpedia(timeString);
 
 						if (type == TimeSymbol.START_TIME || type == TimeSymbol.START_AND_END_TIME) {
-							if (event != null)
+							if (event != null) {
 								event.setStartTime(date);
+								event.addStartTime(date, DataSets.getInstance().getDataSet(language, Source.DBPEDIA));
+							}
+
 							DataStore.getInstance().addStartTime(new StartTime(entity,
 									DataSets.getInstance().getDataSet(language, Source.DBPEDIA), date));
 						}
 						if (type == TimeSymbol.END_TIME || type == TimeSymbol.START_AND_END_TIME) {
-							if (event != null)
+
+							if (event != null) {
 								event.setEndTime(date);
+								event.addEndTime(date, DataSets.getInstance().getDataSet(language, Source.DBPEDIA));
+							}
+
 							DataStore.getInstance().addEndTime(new EndTime(entity,
 									DataSets.getInstance().getDataSet(language, Source.DBPEDIA), date));
 						}

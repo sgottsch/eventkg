@@ -54,7 +54,7 @@ public class TemporalRelationsCollector extends Extractor {
 		loadWikidata();
 		System.out.println("Load DBpedia.");
 		loadDBpedia();
-		System.out.println("Write.");
+		System.out.println("Collect triples.");
 		writeToFiles();
 	}
 

@@ -1,5 +1,6 @@
 package de.l3s.eventkg.integration;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -7,6 +8,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
@@ -17,8 +19,11 @@ import de.l3s.eventkg.integration.model.relation.StartTime;
 import de.l3s.eventkg.meta.Language;
 import de.l3s.eventkg.meta.Source;
 import de.l3s.eventkg.pipeline.Extractor;
+import edu.stanford.nlp.util.StringUtils;
 
 public class TimesIntegrator extends Extractor {
+
+	private SimpleDateFormat sdf = new SimpleDateFormat("G yyyy-MM-dd", Locale.ENGLISH);
 
 	List<DataSet> dataSetsByTrustWorthiness = new ArrayList<DataSet>();
 
@@ -32,8 +37,10 @@ public class TimesIntegrator extends Extractor {
 	}
 
 	public void run() {
-		integrateTimesByTrust();
+		System.out.println("integrateTimesByTime");
 		integrateTimesByTime();
+		System.out.println("integrateTimesByTrust");
+		integrateTimesByTrust();
 	}
 
 	private void integrateTimesByTime() {
@@ -82,9 +89,38 @@ public class TimesIntegrator extends Extractor {
 
 	private void integrateTimesByTrust() {
 
+		boolean print = false;
+
 		initDataSetsByTrustWorthiness();
 
+		int i = 0;
 		for (Event event : DataStore.getInstance().getEvents()) {
+
+			i += 1;
+
+			if (i % 100000 == 0 && !print)
+				System.out.println(i + "/" + DataStore.getInstance().getEvents().size());
+
+			if ((event.getStartTimesWithDataSets().isEmpty() || event.getStartTimesWithDataSets() == null)
+					&& (event.getEndTimesWithDataSets().isEmpty() || event.getEndTimesWithDataSets() == null))
+				continue;
+
+			if (print) {
+				System.out.println("");
+				System.out.println(i + "/" + DataStore.getInstance().getEvents().size() + ": " + event.getWikidataId()
+						+ " / " + event.getWikipediaLabel(Language.EN));
+			}
+
+			if (print) {
+				List<String> beforeStartDates = new ArrayList<String>();
+				for (Date d : event.getStartTimesWithDataSets().keySet()) {
+					List<String> dataSets = new ArrayList<String>();
+					for (DataSet ds : event.getStartTimesWithDataSets().get(d))
+						dataSets.add(ds.getId());
+					beforeStartDates.add(sdf.format(d) + "/" + StringUtils.join(dataSets, " "));
+				}
+				System.out.println("Before, start: " + StringUtils.join(beforeStartDates, " "));
+			}
 
 			Date startTime = null;
 			if (event.getStartTimesWithDataSets() != null && !event.getStartTimesWithDataSets().isEmpty()) {
@@ -92,6 +128,9 @@ public class TimesIntegrator extends Extractor {
 				DataStore.getInstance().addStartTime(new StartTime(event,
 						DataSets.getInstance().getDataSetWithoutLanguage(Source.INTEGRATED_TIME_1), startTime));
 			}
+
+			if (print && startTime != null)
+				System.out.println("After, start: " + sdf.format(startTime));
 
 			List<DataSet> dataSetsByTrustWorthinessCopy2 = new ArrayList<DataSet>();
 			dataSetsByTrustWorthinessCopy2.addAll(dataSetsByTrustWorthiness);
@@ -108,20 +147,37 @@ public class TimesIntegrator extends Extractor {
 				}
 			}
 
+			if (print) {
+				List<String> beforeEndDates = new ArrayList<String>();
+				for (Date d : event.getEndTimesWithDataSets().keySet()) {
+					List<String> dataSets = new ArrayList<String>();
+					for (DataSet ds : event.getEndTimesWithDataSets().get(d))
+						dataSets.add(ds.getId());
+					beforeEndDates.add(sdf.format(d) + "/" + StringUtils.join(dataSets, " "));
+				}
+				System.out.println("Before, end: " + StringUtils.join(beforeEndDates, " "));
+			}
+
 			while (true) {
 				if (!endTimesWithDataSetsDeepCopy.isEmpty()) {
 
-					endTime = integrateTimesOfEvent(event.getEndTimesWithDataSets(), DateType.END, null);
+					endTime = integrateTimesOfEvent(endTimesWithDataSetsDeepCopy, DateType.END, null);
 
 					if (startTime == null || endTime == null)
 						break;
-					else if (endTime.after(startTime))
+					else if (!endTime.before(startTime))
 						break;
-					else
+					else {
 						endTimesWithDataSetsDeepCopy.remove(endTime);
+						endTime = null;
+					}
 
-				}
+				} else
+					break;
 			}
+
+			if (print && endTime != null)
+				System.out.println("After, end: " + sdf.format(endTime));
 
 			if (endTime != null)
 				DataStore.getInstance().addEndTime(new EndTime(event,
@@ -157,6 +213,7 @@ public class TimesIntegrator extends Extractor {
 			List<DataSet> dataSetsByTrustWorthinessCopy) {
 
 		Date dateCase1And2 = getDateCase1And2(timesWithDataSets);
+
 		if (dateCase1And2 != null)
 			return dateCase1And2;
 
@@ -182,6 +239,7 @@ public class TimesIntegrator extends Extractor {
 		}
 
 		Date dateCase3 = getDateCase1And2(timesWithDataSetsWithoutYearStart);
+
 		if (dateCase3 != null)
 			return dateCase3;
 
@@ -206,27 +264,61 @@ public class TimesIntegrator extends Extractor {
 			dataSetsByTrustWorthinessCopy.addAll(dataSetsByTrustWorthiness);
 		}
 
+		DataSet dataSetToRemove = null;
+		Set<Date> datesOfThatDataset = new HashSet<Date>();
+		Set<DataSet> dataSetsToRemoveFromDataSetList = new HashSet<DataSet>();
+
 		for (Iterator<DataSet> it = dataSetsByTrustWorthinessCopy.iterator(); it.hasNext();) {
 			DataSet dataSet = it.next();
-			it.remove();
-			boolean foundDataSet = false;
+
+			if (dataSetToRemove == null)
+				dataSetsToRemoveFromDataSetList.add(dataSet);
+
 			for (Date date : timesWithDataSets.keySet()) {
 				for (DataSet dataSetOfDate : timesWithDataSets.get(date)) {
 
-					if (dataSetOfDate == dataSet) {
-						foundDataSet = true;
-						continue;
+					if (dataSetOfDate == dataSet && dataSetToRemove == null) {
+						dataSetToRemove = dataSet;
+					}
+
+					if (dataSetToRemove != null && dataSetOfDate == dataSetToRemove) {
+						datesOfThatDataset.add(date);
 					}
 
 				}
-				timesWithoutDataSet.get(date).remove(dataSet);
-				if (timesWithoutDataSet.get(date).isEmpty())
-					timesWithoutDataSet.keySet().remove(date);
 			}
-
-			if (foundDataSet)
-				break;
 		}
+
+		// collect all dates from that data set and remove the latest (start) or
+		// earliest (end)
+		Date dateToRemove = null;
+
+		if (dateType == DateType.START) {
+			for (Date date : datesOfThatDataset) {
+				if (dateToRemove == null)
+					dateToRemove = date;
+				else if (date.after(dateToRemove))
+					dateToRemove = date;
+			}
+		} else if (dateType == DateType.END) {
+			for (Date date : datesOfThatDataset) {
+				if (dateToRemove == null)
+					dateToRemove = date;
+				else if (date.before(dateToRemove))
+					dateToRemove = date;
+			}
+		}
+
+		timesWithoutDataSet.get(dateToRemove).remove(dataSetToRemove);
+
+		if (datesOfThatDataset.size() > 1) {
+			dataSetsToRemoveFromDataSetList.remove(dataSetToRemove);
+		}
+
+		dataSetsByTrustWorthinessCopy.removeAll(dataSetsToRemoveFromDataSetList);
+
+		if (timesWithoutDataSet.get(dateToRemove).isEmpty())
+			timesWithoutDataSet.keySet().remove(dateToRemove);
 
 		return integrateTimesOfEvent(timesWithoutDataSet, dateType, dataSetsByTrustWorthinessCopy);
 	}
@@ -255,6 +347,7 @@ public class TimesIntegrator extends Extractor {
 	}
 
 	private Date getDateCase1And2(Map<Date, Set<DataSet>> timesWithDataSets) {
+
 		// case 1: just one time given -> take that
 		// case 2: all times are equal -> take that
 

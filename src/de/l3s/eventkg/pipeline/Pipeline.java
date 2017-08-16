@@ -84,7 +84,7 @@ public class Pipeline {
 			System.out.println("Skip step 4: Continue extraction -> Extract relations between events.");
 
 		if (steps.contains(5)) {
-			System.out.println("Step 4: Integration step 2.");
+			System.out.println("Step 5: Integration step 2.");
 			pipeline.pipelineStep5();
 		} else
 			System.out.println("Skip step 5: Integration step 2.");
@@ -168,14 +168,14 @@ public class Pipeline {
 
 		List<Extractor> extractors = new ArrayList<Extractor>();
 		getAllEventPagesDataSet();
+		extractors.add(new TextualEventsExtractor(languages, getAllEventPagesDataSet()));
+		extractors.add(new SubLocationsCollector(languages, getAllEventPagesDataSet())); //
+		extractors.add(new LocationsIntegrator(languages));
+		extractors.add(new TemporalRelationsCollector(languages, getAllEventPagesDataSet())); //
+		extractors.add(new TimesIntegrator(languages));
 		extractors.add(new WikipediaLinkCountsExtractor(languages, getAllEventPagesDataSet())); //
 		extractors.add(new WikipediaLinkSetsExtractor(languages, getAllEventPagesDataSet())); //
 		extractors.add(new LabelsAndDescriptionsExtractor(languages, getAllEventPagesDataSet())); //
-		extractors.add(new TextualEventsExtractor(languages, getAllEventPagesDataSet()));
-		extractors.add(new TemporalRelationsCollector(languages, getAllEventPagesDataSet())); //
-		extractors.add(new SubLocationsCollector(languages, getAllEventPagesDataSet())); //
-		extractors.add(new TimesIntegrator(languages));
-		extractors.add(new LocationsIntegrator(languages));
 
 		for (Extractor extractor : extractors) {
 			System.out.println(extractor.getName() + ", " + extractor.getSource() + " - " + extractor.getDescription());

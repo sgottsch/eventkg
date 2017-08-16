@@ -20,11 +20,13 @@ public class LocationsIntegrator extends Extractor {
 	}
 
 	public void run() {
-		integrateLocations();
+		System.out.println("integrateLocationsByUnion");
+		integrateLocationsByUnion();
+		System.out.println("integrateLocationsMinimum");
 		integrateLocationsMinimum();
 	}
 
-	private void integrateLocations() {
+	private void integrateLocationsByUnion() {
 		// simply take the union of all locations per entity
 		for (Event event : DataStore.getInstance().getEvents()) {
 			for (Entity location : event.getLocations()) {
@@ -36,15 +38,32 @@ public class LocationsIntegrator extends Extractor {
 
 	private void integrateLocationsMinimum() {
 
+		int i = 0;
+
 		// simply take the union of all locations per entity
 		for (Event event : DataStore.getInstance().getEvents()) {
+
+			i += 1;
+
+			if (i % 10000 == 0)
+				System.out.println(i + "/" + DataStore.getInstance().getEvents().size());
 
 			Set<Entity> locations = new HashSet<Entity>();
 			locations.addAll(event.getLocations());
 
+			if (locations.isEmpty())
+				continue;
+
+			// List<String> beforeLocations = new ArrayList<String>();
+			// for (Entity location : locations)
+			// beforeLocations.add(location.getWikipediaLabel(Language.EN));
+			// System.out.println("Before: " + StringUtils.join(beforeLocations,
+			// " "));
+
 			boolean changed = true;
 
 			while (changed) {
+				changed = false;
 				Set<Entity> parentLocationsToRemove = new HashSet<Entity>();
 				for (Entity location : locations) {
 					Set<Entity> parentLocations = location.getAllParentLocations();
@@ -57,6 +76,14 @@ public class LocationsIntegrator extends Extractor {
 					locations.removeAll(parentLocationsToRemove);
 				}
 			}
+
+			// List<String> afterLocations = new ArrayList<String>();
+			// for (Entity location : locations)
+			// afterLocations.add(location.getWikipediaLabel(Language.EN));
+			// System.out.println("After: " + StringUtils.join(afterLocations, "
+			// "));
+			// if (beforeLocations.size() != afterLocations.size())
+			// System.out.println("\t => changed");
 
 			for (Entity location : locations) {
 				DataStore.getInstance().addLocation(new Location(event,
