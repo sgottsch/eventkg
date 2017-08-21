@@ -28,7 +28,6 @@ import de.l3s.eventkg.integration.model.relation.DataSet;
 import de.l3s.eventkg.integration.model.relation.Description;
 import de.l3s.eventkg.integration.model.relation.EndTime;
 import de.l3s.eventkg.integration.model.relation.GenericRelation;
-import de.l3s.eventkg.integration.model.relation.Location;
 import de.l3s.eventkg.integration.model.relation.Prefix;
 import de.l3s.eventkg.integration.model.relation.StartTime;
 import de.l3s.eventkg.meta.Language;
@@ -92,11 +91,11 @@ public class TextualEventsExtractor extends Extractor {
 		}
 
 		System.out.println("Number of extracted Wikipedia events: " + numberOfExtractedWikiEvents + " / "
-				+ this.textualEvents.size());
+				+ this.textualEvents.size() + ".");
 
 		System.out.println("Load WCE events.");
 		loadWCEEvents();
-		System.out.println("Total: " + this.textualEvents.size());
+		System.out.println("Total: " + this.textualEvents.size() + ".");
 
 		mergeEvents();
 
@@ -113,7 +112,7 @@ public class TextualEventsExtractor extends Extractor {
 
 		Set<Set<TextualEvent>> mergedEvents = new HashSet<Set<TextualEvent>>();
 
-		System.out.println("mergeEvents");
+		System.out.println("Merge textual events and named events.");
 
 		for (String date : this.eventsByDates.keySet()) {
 			Set<TextualEvent> doneEvents = new HashSet<TextualEvent>();
@@ -263,7 +262,7 @@ public class TextualEventsExtractor extends Extractor {
 				DataStore.getInstance().addDescription(description);
 			}
 
-			event.setURLs(urls);
+			event.setOtherURLs(urls);
 
 			// add links
 			for (Language language : relatedEntities.keySet()) {
@@ -275,9 +274,10 @@ public class TextualEventsExtractor extends Extractor {
 			}
 
 			// add locations
-			for (Entity entity : relatedLocations.keySet()) {
-				DataStore.getInstance().addLocation(new Location(event, relatedLocations.get(entity), entity, null));
-			}
+			// for (Entity entity : relatedLocations.keySet()) {
+			// DataStore.getInstance().addLocation(new Location(event,
+			// relatedLocations.get(entity), entity, null));
+			// }
 
 			Set<DataSet> dataSets = new HashSet<DataSet>();
 			for (TextualEvent eventInCluster : cluster) {

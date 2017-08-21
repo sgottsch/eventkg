@@ -168,6 +168,12 @@ public class DataStoreWriter {
 								"<" + url + ">", false, null);
 				}
 
+				if (event.getOtherUrls() != null) {
+					for (String otherUrl : event.getOtherUrls())
+						writeTriple(writer, writerPreview, lineNo, event.getId(),
+								Prefix.EVENT_KG_SCHEMA.getAbbr() + "extractedFrom", "<" + otherUrl + ">", false, null);
+				}
+
 				Prefix prefix = null;
 				for (Language language : event.getWikipediaLabels().keySet()) {
 					switch (language) {
@@ -196,7 +202,7 @@ public class DataStoreWriter {
 				}
 			}
 
-			System.out.println("labels: " + dataStore.getLabels().size());
+			System.out.println("#labels: " + dataStore.getLabels().size() + ".");
 			lineNo = 0;
 			for (Label label : dataStore.getLabels()) {
 				if (label.getSubject().isEvent() || label.getSubject().getEventEntity() != null) {
@@ -207,7 +213,7 @@ public class DataStoreWriter {
 				}
 			}
 
-			System.out.println("aliases: " + dataStore.getAliases().size());
+			System.out.println("#aliases: " + dataStore.getAliases().size() + ".");
 			lineNo = 0;
 			for (Alias alias : dataStore.getAliases()) {
 				if (alias.getSubject().isEvent() || alias.getSubject().getEventEntity() != null) {
@@ -220,7 +226,7 @@ public class DataStoreWriter {
 				}
 			}
 
-			System.out.println("descriptions: " + dataStore.getDescriptions().size());
+			System.out.println("#descriptions: " + dataStore.getDescriptions().size() + ".");
 			lineNo = 0;
 			for (Description description : dataStore.getDescriptions()) {
 				if (description.getSubject() == null)
@@ -288,18 +294,6 @@ public class DataStoreWriter {
 				if (entity.isLocation()) {
 					writeTriple(writer, writerPreview, lineNo, entity.getId(), Prefix.RDF.getAbbr() + "type",
 							Prefix.EVENT_KG_SCHEMA.getAbbr() + "Location", false, null);
-
-					for (Entity subLocation : entity.getSubLocations()) {
-						writeTriple(writer, writerPreview, lineNo, entity.getId(),
-								Prefix.SCHEMA_ORG.getAbbr() + "subLocation",
-								Prefix.EVENT_KG_RESOURCE.getAbbr() + subLocation.getId(), false, null);
-					}
-					for (Entity parentLocation : entity.getParentLocations()) {
-						writeTriple(writer, writerPreview, lineNo, entity.getId(),
-								Prefix.SCHEMA_ORG.getAbbr() + "parentLocation",
-								Prefix.EVENT_KG_RESOURCE.getAbbr() + parentLocation.getId(), false, null);
-					}
-
 				}
 
 				if (entity.getWikidataId() != null)
@@ -402,6 +396,16 @@ public class DataStoreWriter {
 
 			lineNo = 0;
 			for (StartTime startTime : dataStore.getStartTimes()) {
+
+				if (startTime.getStartTime() == null) {
+					// TODO: Why?
+					System.out.println("Start time is null: " + startTime.getSubject().getId() + ", "
+							+ startTime.getSubject().getWikidataId() + ", " + startTime.getDataSet());
+					if (startTime.getDataSet() != null)
+						System.out.println("   " + startTime.getDataSet().getId());
+					continue;
+				}
+
 				lineNo += 1;
 				writeTriple(writer, writerPreview, lineNo, startTime.getSubject().getId(),
 						Prefix.SCHEMA_ORG.getAbbr() + "startTime", standardFormat.format(startTime.getStartTime()),
@@ -410,10 +414,63 @@ public class DataStoreWriter {
 
 			lineNo = 0;
 			for (EndTime endTime : dataStore.getEndTimes()) {
+
+				if (endTime.getEndTime() == null) {
+					// TODO: Why?
+					System.out.println("End time is null: " + endTime.getSubject().getId() + ", "
+							+ endTime.getSubject().getWikidataId() + ", " + endTime.getDataSet());
+					if (endTime.getDataSet() != null)
+						System.out.println("   " + endTime.getDataSet().getId());
+					continue;
+				}
+
 				lineNo += 1;
 				writeTriple(writer, writerPreview, lineNo, endTime.getSubject().getId(),
 						Prefix.SCHEMA_ORG.getAbbr() + "endTime", standardFormat.format(endTime.getEndTime()), false,
 						endTime.getDataSet(), null);
+			}
+
+			lineNo = 0;
+
+			for (Entity entity : dataStore.getEntities()) {
+
+				if (entity.isEvent() || entity.getEventEntity() != null)
+					continue;
+
+				if (entity.isLocation()) {
+
+					// don't write sub locations - it's symmetric to parent
+					// location
+					// for (Entity subLocation : entity.getSubLocations()) {
+					// if (subLocation.getId() == null)
+					// System.out.println("S NULL: " +
+					// subLocation.getWikidataId() + " / "
+					// + subLocation.getWikipediaLabel(Language.EN) + " - " +
+					// entity.isEvent());
+					// else {
+					// lineNo += 1;
+					// writeTriple(writer, writerPreview, lineNo,
+					// entity.getId(),
+					// Prefix.SCHEMA_ORG.getAbbr() + "subLocation",
+					// subLocation.getId(), false, null);
+					// }
+					// }
+
+					for (Entity parentLocation : entity.getParentLocations()) {
+						if (parentLocation.getId() == null)
+							System.out.println("P NULL: " + parentLocation.getWikidataId() + " / "
+									+ parentLocation.getWikipediaLabel(Language.EN) + " - " + entity.isEvent());
+						else {
+							lineNo += 1;
+							writeTriple(writer, writerPreview, lineNo, entity.getId(),
+									Prefix.SCHEMA_ORG.getAbbr() + "parentLocation", parentLocation.getId(), false,
+									null);
+						}
+
+					}
+
+				}
+
 			}
 
 		} catch (FileNotFoundException e) {

@@ -14,9 +14,7 @@ public class StartTime extends RelationWithSource {
 	public StartTime(Entity subject, DataSet dataSet, Date startTime) {
 		super(subject, dataSet);
 		this.startTime = startTime;
-		if (subject.getEventEntity() != null) {
-			subject.getEventEntity().addStartTime(startTime, dataSet);
-		}
+		subject.addStartTime(startTime, dataSet);
 	}
 
 	public Date getStartTime() {

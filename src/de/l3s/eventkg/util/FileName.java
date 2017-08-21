@@ -148,38 +148,20 @@ public enum FileName {
 	 */
 	ALL_EVENT_PAGES("all_event_pages.tsv", Source.ALL, FileType.RESULTS, false, false, false),
 
-	ALL_TTL_EVENTS_WITH_TEXTS("events.nq", Source.ALL, FileType.RESULTS, false, false, false),
-	ALL_TTL_ENTITIES_WITH_TEXTS("entities.nq", Source.ALL, FileType.RESULTS, false, false, false),
-	ALL_TTL_EVENTS_BASE_RELATIONS("relations_base.nq", Source.ALL, FileType.RESULTS, false, false, false),
-	ALL_TTL_EVENTS_LINK_RELATIOINS("relations_links.nq", Source.ALL, FileType.RESULTS, false, false, false),
-	ALL_TTL_EVENTS_OTHER_RELATIONS("relations_other.nq", Source.ALL, FileType.RESULTS, false, false, false),
-	ALL_TTL_PROPERTY_LABELS("property_labels.nq", Source.ALL, FileType.RESULTS, false, false, false),
-	ALL_TTL_DATASETS("graphs.ttl", Source.ALL, FileType.RESULTS, false, false, false),
+	ALL_TTL_EVENTS_WITH_TEXTS("events.nq", FileType.OUTPUT, false, false, false),
+	ALL_TTL_ENTITIES_WITH_TEXTS("entities.nq", FileType.OUTPUT, false, false, false),
+	ALL_TTL_EVENTS_BASE_RELATIONS("relations_base.nq", FileType.OUTPUT, false, false, false),
+	ALL_TTL_EVENTS_LINK_RELATIOINS("relations_links.nq", FileType.OUTPUT, false, false, false),
+	ALL_TTL_EVENTS_OTHER_RELATIONS("relations_other.nq", FileType.OUTPUT, false, false, false),
+	ALL_TTL_PROPERTY_LABELS("property_labels.nq", FileType.OUTPUT, false, false, false),
+	ALL_TTL_DATASETS("graphs.ttl", FileType.OUTPUT, false, false, false),
 
-	ALL_TTL_EVENTS_WITH_TEXTS_PREVIEW("events_preview.nq", Source.ALL, FileType.RESULTS, false, false, false),
-	ALL_TTL_ENTITIES_WITH_TEXTS_PREVIEW("entities_preview.nq", Source.ALL, FileType.RESULTS, false, false, false),
-	ALL_TTL_EVENTS_BASE_RELATIONS_PREVIEW(
-			"relations_base_preview.nq",
-			Source.ALL,
-			FileType.RESULTS,
-			false,
-			false,
-			false),
-	ALL_TTL_EVENTS_LINK_RELATIOINS_PREVIEW(
-			"relations_links_preview.nq",
-			Source.ALL,
-			FileType.RESULTS,
-			false,
-			false,
-			false),
-	ALL_TTL_PROPERTY_LABELS_PREVIEW("property_labels_preview.nq", Source.ALL, FileType.RESULTS, false, false, false),
-	ALL_TTL_EVENTS_OTHER_RELATIONS_PREVIEW(
-			"relations_other_preview.nq",
-			Source.ALL,
-			FileType.RESULTS,
-			false,
-			false,
-			false),
+	ALL_TTL_EVENTS_WITH_TEXTS_PREVIEW("events_preview.nq", FileType.OUTPUT_PREVIEW, false, false, false),
+	ALL_TTL_ENTITIES_WITH_TEXTS_PREVIEW("entities_preview.nq", FileType.OUTPUT_PREVIEW, false, false, false),
+	ALL_TTL_EVENTS_BASE_RELATIONS_PREVIEW("relations_base_preview.nq", FileType.OUTPUT_PREVIEW, false, false, false),
+	ALL_TTL_EVENTS_LINK_RELATIOINS_PREVIEW("relations_links_preview.nq", FileType.OUTPUT_PREVIEW, false, false, false),
+	ALL_TTL_PROPERTY_LABELS_PREVIEW("property_labels_preview.nq", FileType.OUTPUT_PREVIEW, false, false, false),
+	ALL_TTL_EVENTS_OTHER_RELATIONS_PREVIEW("relations_other_preview.nq", FileType.OUTPUT_PREVIEW, false, false, false),
 
 	/**
 	 * Event pages with times
@@ -282,6 +264,15 @@ public enum FileName {
 	// this.isFolder = false;
 	// }
 
+	FileName(String fileName, FileType fileType, boolean isFolder, boolean hasColumnNamesInFirstLine,
+			boolean isGZipped) {
+		this.fileName = fileName;
+		this.fileType = fileType;
+		this.isFolder = isFolder;
+		this.isGZipped = isGZipped;
+		this.hasColumnNamesInFirstLine = hasColumnNamesInFirstLine;
+	}
+
 	FileName(String fileName, Source source, FileType fileType, boolean isFolder, boolean hasColumnNamesInFirstLine,
 			boolean isGZipped) {
 		this.source = source;
@@ -312,6 +303,14 @@ public enum FileName {
 		return this.fileType == FileType.META;
 	}
 
+	public boolean isOutputData() {
+		return this.fileType == FileType.OUTPUT;
+	}
+
+	public boolean isOutputPreviewData() {
+		return this.fileType == FileType.OUTPUT_PREVIEW;
+	}
+
 	public boolean isFolder() {
 		return isFolder;
 	}
@@ -327,7 +326,9 @@ public enum FileName {
 	private enum FileType {
 		RAW_DATA,
 		RESULTS,
-		META;
+		META,
+		OUTPUT,
+		OUTPUT_PREVIEW;
 	}
 
 }

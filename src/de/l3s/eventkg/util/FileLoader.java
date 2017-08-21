@@ -24,6 +24,8 @@ public class FileLoader {
 	public static final String ONLINE_RESULTS_FOLDER_SUFFIX = "results/";
 	public static final String ONLINE_RAW_DATA_FOLDER_SUFFIX = "raw_data/";
 	public static final String ONLINE_META_FOLDER_SUFFIX = "meta/";
+	public static final String ONLINE_OUTPUT_FOLDER_SUFFIX = "output/";
+	public static final String ONLINE_OUTPUT_PREVIEW_FOLDER_SUFFIX = "output_preview/";
 
 	public static SimpleDateFormat PARSE_DATE_FORMAT = new SimpleDateFormat("G yyyy-MM-dd");
 	public static SimpleDateFormat PRINT_DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd");
@@ -53,7 +55,6 @@ public class FileLoader {
 	}
 
 	public static BufferedReader getReader(FileName fileName, Language language) throws IOException {
-		System.out.println(getPath(fileName, language));
 		BufferedReader br = null;
 		if (fileName.isGZipped())
 			br = new BufferedReader(
@@ -117,11 +118,17 @@ public class FileLoader {
 			path = Config.getValue("data_folder") + ONLINE_RESULTS_FOLDER_SUFFIX;
 		else if (fileName.isMetaData())
 			path = Config.getValue("data_folder") + ONLINE_META_FOLDER_SUFFIX;
+		else if (fileName.isOutputData())
+			path = Config.getValue("data_folder") + ONLINE_OUTPUT_FOLDER_SUFFIX;
+		else if (fileName.isOutputPreviewData())
+			path = Config.getValue("data_folder") + ONLINE_OUTPUT_PREVIEW_FOLDER_SUFFIX;
 
-		if (language == null) {
-			path = path + fileName.getSource().name().toLowerCase();
-		} else {
-			path = path + fileName.getSource().name().toLowerCase() + "/" + language.getLanguage();
+		if (fileName.getSource() != null) {
+			if (language == null) {
+				path = path + fileName.getSource().name().toLowerCase();
+			} else {
+				path = path + fileName.getSource().name().toLowerCase() + "/" + language.getLanguage();
+			}
 		}
 
 		if (!fileName.isFolder()) {

@@ -20,21 +20,22 @@ public class LocationsIntegrator extends Extractor {
 	}
 
 	public void run() {
-		System.out.println("integrateLocationsByUnion");
-		integrateLocationsByUnion();
+		// System.out.println("integrateLocationsByUnion");
+		// integrateLocationsByUnion();
 		System.out.println("integrateLocationsMinimum");
 		integrateLocationsMinimum();
 	}
 
-	private void integrateLocationsByUnion() {
-		// simply take the union of all locations per entity
-		for (Event event : DataStore.getInstance().getEvents()) {
-			for (Entity location : event.getLocations()) {
-				DataStore.getInstance().addLocation(new Location(event,
-						DataSets.getInstance().getDataSetWithoutLanguage(Source.INTEGRATED_LOC_1), location, null));
-			}
-		}
-	}
+	// private void integrateLocationsByUnion() {
+	// // simply take the union of all locations per entity
+	// for (Event event : DataStore.getInstance().getEvents()) {
+	// for (Entity location : event.getLocations()) {
+	// DataStore.getInstance().addLocation(new Location(event,
+	// DataSets.getInstance().getDataSetWithoutLanguage(Source.INTEGRATED_LOC_2),
+	// location, null));
+	// }
+	// }
+	// }
 
 	private void integrateLocationsMinimum() {
 
@@ -87,7 +88,7 @@ public class LocationsIntegrator extends Extractor {
 
 			for (Entity location : locations) {
 				DataStore.getInstance().addLocation(new Location(event,
-						DataSets.getInstance().getDataSetWithoutLanguage(Source.INTEGRATED_LOC_2), location, null));
+						DataSets.getInstance().getDataSetWithoutLanguage(Source.INTEGRATED_LOC), location, null));
 			}
 		}
 	}

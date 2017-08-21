@@ -51,6 +51,8 @@ public class DataCollector extends Extractor {
 	public void run(String[] args) {
 		System.out.println("Load Wikidata ID mapping.");
 		init();
+		System.out.println("Collect entity sub/parent locations.");
+		collectSubLocations();
 		System.out.println("Collect event pages.");
 		collectEvents();
 		System.out.println("Collect \"part of\" relations.");
@@ -61,8 +63,6 @@ public class DataCollector extends Extractor {
 		collectNextEvents();
 		System.out.println("Collect event locations.");
 		collectEventLocations();
-		System.out.println("Collect entity sub/parent locations.");
-		collectSubLocations();
 	}
 
 	private void init() {
@@ -74,14 +74,14 @@ public class DataCollector extends Extractor {
 	public void run() {
 		System.out.println("Load Wikidata ID mapping.");
 		init();
+		System.out.println("Collect entity sub/parent locations.");
+		collectSubLocations();
 		System.out.println("Collect event pages.");
 		collectEvents();
 		System.out.println("Collect \"part of\" relations.");
 		collectPartOfs();
 		System.out.println("Collect event locations.");
 		collectEventLocations();
-		System.out.println("Collect entity sub/parent locations.");
-		collectSubLocations();
 	}
 
 	private void collectEventLocations() {
@@ -312,6 +312,10 @@ public class DataCollector extends Extractor {
 		// Load event blacklists first, so they can be ignored later
 		System.out.println("loadDBpediaBlacklistEvents.");
 		loadDBpediaBlacklistEvents();
+		System.out.println("loadLocationsBlacklistEvents.");
+		loadLocationsBlacklistEvents();
+		// System.out.println("loadWikidataBlacklistEvents.");
+		// loadWikidataBlacklistEvents();
 
 		System.out.println("loadWikidataEvents.");
 		loadWikidataEvents();
@@ -768,6 +772,79 @@ public class DataCollector extends Extractor {
 		}
 	}
 
+	private void loadLocationsBlacklistEvents() {
+
+		// Locations may never be events.
+
+		Set<String> wikidataBlackListEvents = new HashSet<String>();
+
+		BufferedReader br = null;
+		try {
+			try {
+				br = FileLoader.getReader(FileName.DBPEDIA_DBO_LOCATIONS);
+			} catch (FileNotFoundException e1) {
+				e1.printStackTrace();
+			}
+
+			String line;
+			while ((line = br.readLine()) != null) {
+				createBlacklistEventByWikidataID(line, "loadLocationsBlacklistEvents");
+
+				wikidataBlackListEvents.add(line);
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				br.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+
+		System.out.println(
+				"Number of blacklist events extracted from DBpedia locations : " + wikidataBlackListEvents.size());
+	}
+
+	@SuppressWarnings("unused")
+	private void loadWikidataBlacklistEvents() {
+
+		// Locations may never be events.
+
+		Set<String> wikidataBlackListEvents = new HashSet<String>();
+
+		BufferedReader br = null;
+		try {
+			try {
+				br = FileLoader.getReader(FileName.ALL_SUB_LOCATIONS);
+			} catch (FileNotFoundException e1) {
+				e1.printStackTrace();
+			}
+
+			String line;
+			while ((line = br.readLine()) != null) {
+
+				String[] parts = line.split(Config.TAB);
+
+				createBlacklistEventByWikidataID(parts[0], "loadWikidataBlacklistEvents");
+				createBlacklistEventByWikidataID(parts[2], "loadWikidataBlacklistEvents");
+
+				wikidataBlackListEvents.add(parts[0]);
+				wikidataBlackListEvents.add(parts[2]);
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				br.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+
+		System.out.println("Number of blacklist events extracted from Wikidata : " + wikidataBlackListEvents.size());
+	}
+
 	private Event createEvent(Language language, String wikipediaLabel, String comment) {
 
 		Entity entity = getEntity(language, wikipediaLabel);
@@ -790,6 +867,21 @@ public class DataCollector extends Extractor {
 		uniqueEvents.add(newEvent);
 
 		return newEvent;
+	}
+
+	private Entity createBlacklistEventByWikidataID(String wikidataId, String comment) {
+
+		Entity entity = getEntityFromWikidataId(wikidataId);
+
+		if (entity == null) {
+			// System.out.println("Missing entity for Wikipedia label: " +
+			// language + " - " + wikipediaLabel);
+			return null;
+		}
+
+		blacklistEvents.add(entity);
+
+		return entity;
 	}
 
 	private Entity createBlacklistEvent(Language language, String wikipediaLabel, String comment) {
@@ -841,6 +933,9 @@ public class DataCollector extends Extractor {
 		// entity);
 		// }
 		// }
+
+		if (blacklistEvents.contains(entity))
+			return null;
 
 		if (entity == null)
 			return null;

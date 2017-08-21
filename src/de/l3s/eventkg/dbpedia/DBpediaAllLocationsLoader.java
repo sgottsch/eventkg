@@ -87,7 +87,50 @@ public class DBpediaAllLocationsLoader extends Extractor {
 			}
 		}
 
-		System.out.println("locationEntities: " + locationEntities.size());
+		System.out.println("locationEntities " + language + " I: " + locationEntities.size());
+
+		// any object in place relation is a location as well
+		try {
+			br = FileLoader.getReader(FileName.DBPEDIA_MAPPINGS, language);
+
+			String line;
+			while ((line = br.readLine()) != null) {
+
+				String[] parts = line.split(" ");
+
+				if (parts[1].equals("<http://dbpedia.org/ontology/place>")) {
+
+					String object = parts[2];
+					if (!object.contains("resource"))
+						continue;
+
+					try {
+						object = object.substring(object.lastIndexOf("resource/") + 9, object.lastIndexOf(">"));
+					} catch (StringIndexOutOfBoundsException e) {
+						continue;
+					}
+
+					Entity entity = allEventPagesDataSet.getWikidataIdMappings().getEntityByWikipediaLabel(language,
+							object);
+
+					if (entity != null) {
+						this.locationEntities.add(entity);
+					}
+
+				}
+			}
+
+		} catch (IOException e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				br.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+
+		System.out.println("locationEntities " + language + " II: " + locationEntities.size());
 	}
 
 	private void writeResults() {

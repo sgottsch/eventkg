@@ -14,9 +14,7 @@ public class EndTime extends RelationWithSource {
 	public EndTime(Entity subject, DataSet dataSet, Date endTime) {
 		super(subject, dataSet);
 		this.endTime = endTime;
-		if (subject.getEventEntity() != null) {
-			subject.getEventEntity().addEndTime(endTime, dataSet);
-		}
+		subject.addEndTime(endTime, dataSet);
 	}
 
 	public Date getEndTime() {

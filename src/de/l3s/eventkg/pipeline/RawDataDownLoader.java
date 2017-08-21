@@ -102,6 +102,9 @@ public class RawDataDownLoader {
 		(new File(dataPath + "results/yago/")).mkdirs();
 		(new File(dataPath + "results/wce/")).mkdirs();
 		(new File(dataPath + "results/all/")).mkdirs();
+		
+		(new File(dataPath + "output/")).mkdirs();
+		(new File(dataPath + "output_preview/")).mkdirs();
 
 		for (Language language : languages) {
 			(new File(dataPath + "raw_data/dbpedia/" + language.getLanguage())).mkdirs();

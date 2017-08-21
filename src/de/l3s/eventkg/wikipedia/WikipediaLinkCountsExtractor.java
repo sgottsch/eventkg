@@ -140,6 +140,8 @@ public class WikipediaLinkCountsExtractor extends Extractor {
 
 	private void processFile(File file, Language language) {
 
+		System.out.println("Process file " + file.getName() + ".");
+
 		try {
 			String content = FileLoader.readFile(file);
 
@@ -185,9 +187,8 @@ public class WikipediaLinkCountsExtractor extends Extractor {
 			e.printStackTrace();
 		}
 
-		System.out.println(this.linksToCounts.size());
-		System.out.println(this.linkedByCounts.size());
-
+		// System.out.println(this.linksToCounts.size());
+		// System.out.println(this.linkedByCounts.size());
 	}
 
 }

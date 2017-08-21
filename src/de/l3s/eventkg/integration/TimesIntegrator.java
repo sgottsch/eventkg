@@ -12,6 +12,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
+import de.l3s.eventkg.integration.model.Entity;
 import de.l3s.eventkg.integration.model.Event;
 import de.l3s.eventkg.integration.model.relation.DataSet;
 import de.l3s.eventkg.integration.model.relation.EndTime;
@@ -37,28 +38,32 @@ public class TimesIntegrator extends Extractor {
 	}
 
 	public void run() {
-		System.out.println("integrateTimesByTime");
+		System.out.println("Integrate times by earliest and latest time.");
 		integrateTimesByTime();
-		System.out.println("integrateTimesByTrust");
+		System.out.println("Integrate times by majority/trust.");
 		integrateTimesByTrust();
 	}
 
 	private void integrateTimesByTime() {
 
-		for (Event event : DataStore.getInstance().getEvents()) {
+		for (Entity entity : DataStore.getInstance().getEntities()) {
 
 			// take the earliest start time
-			if (event.getStartTimesWithDataSets() != null && !event.getStartTimesWithDataSets().isEmpty()) {
-				Date startTime = earliestStartTime(event.getStartTimesWithDataSets());
-				DataStore.getInstance().addStartTime(new StartTime(event,
-						DataSets.getInstance().getDataSetWithoutLanguage(Source.INTEGRATED_TIME_1), startTime));
+			if (entity.getStartTimesWithDataSets() != null && !entity.getStartTimesWithDataSets().isEmpty()) {
+				Date startTime = earliestStartTime(entity.getStartTimesWithDataSets());
+				if (startTime == null)
+					System.out.println("Start time null: integrateTimesByTime - " + entity.getWikidataId());
+				DataStore.getInstance().addStartTime(new StartTime(entity,
+						DataSets.getInstance().getDataSetWithoutLanguage(Source.INTEGRATED_TIME_2), startTime));
 			}
 
 			// take the latest end time
-			if (event.getStartTimesWithDataSets() != null && !event.getStartTimesWithDataSets().isEmpty()) {
-				Date endTime = latestEndTime(event.getEndTimesWithDataSets());
-				DataStore.getInstance().addEndTime(new EndTime(event,
-						DataSets.getInstance().getDataSetWithoutLanguage(Source.INTEGRATED_TIME_1), endTime));
+			if (entity.getEndTimesWithDataSets() != null && !entity.getEndTimesWithDataSets().isEmpty()) {
+				Date endTime = latestEndTime(entity.getEndTimesWithDataSets());
+				if (endTime == null)
+					System.out.println("End time null: integrateTimesByTime" + entity.getWikidataId());
+				DataStore.getInstance().addEndTime(new EndTime(entity,
+						DataSets.getInstance().getDataSetWithoutLanguage(Source.INTEGRATED_TIME_2), endTime));
 			}
 
 		}
@@ -80,6 +85,8 @@ public class TimesIntegrator extends Extractor {
 		Date latestTime = null;
 
 		for (Date date : endTimesWithDataSets.keySet()) {
+			if (date == null)
+				System.out.println("input end date is null");
 			if (latestTime == null || date.after(latestTime))
 				latestTime = date;
 		}
@@ -97,9 +104,6 @@ public class TimesIntegrator extends Extractor {
 		for (Event event : DataStore.getInstance().getEvents()) {
 
 			i += 1;
-
-			if (i % 100000 == 0 && !print)
-				System.out.println(i + "/" + DataStore.getInstance().getEvents().size());
 
 			if ((event.getStartTimesWithDataSets().isEmpty() || event.getStartTimesWithDataSets() == null)
 					&& (event.getEndTimesWithDataSets().isEmpty() || event.getEndTimesWithDataSets() == null))
@@ -125,8 +129,9 @@ public class TimesIntegrator extends Extractor {
 			Date startTime = null;
 			if (event.getStartTimesWithDataSets() != null && !event.getStartTimesWithDataSets().isEmpty()) {
 				startTime = integrateTimesOfEvent(event.getStartTimesWithDataSets(), DateType.START, null);
-				DataStore.getInstance().addStartTime(new StartTime(event,
-						DataSets.getInstance().getDataSetWithoutLanguage(Source.INTEGRATED_TIME_1), startTime));
+				if (startTime != null)
+					DataStore.getInstance().addStartTime(new StartTime(event,
+							DataSets.getInstance().getDataSetWithoutLanguage(Source.INTEGRATED_TIME), startTime));
 			}
 
 			if (print && startTime != null)
@@ -181,7 +186,7 @@ public class TimesIntegrator extends Extractor {
 
 			if (endTime != null)
 				DataStore.getInstance().addEndTime(new EndTime(event,
-						DataSets.getInstance().getDataSetWithoutLanguage(Source.INTEGRATED_TIME_1), endTime));
+						DataSets.getInstance().getDataSetWithoutLanguage(Source.INTEGRATED_TIME), endTime));
 
 		}
 	}

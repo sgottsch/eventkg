@@ -28,17 +28,13 @@ public class Event extends Entity {
 	private Set<Entity> locations = new HashSet<Entity>();;
 	private Map<Entity, Set<DataSet>> locationsWithDataSets = new HashMap<Entity, Set<DataSet>>();
 
-	private Set<Date> startTimes = new HashSet<Date>();;
-	private Map<Date, Set<DataSet>> startTimesWithDataSets = new HashMap<Date, Set<DataSet>>();
-
-	private Set<Date> endTimes = new HashSet<Date>();;
-	private Map<Date, Set<DataSet>> endTimesWithDataSets = new HashMap<Date, Set<DataSet>>();
-
 	private Date startTime;
 
 	private Date endTime;
 
 	private Set<String> urls;
+
+	private Set<String> otherUrls;
 
 	public Event() {
 		super(null);
@@ -180,20 +176,6 @@ public class Event extends Entity {
 		this.locationsWithDataSets.get(location).add(dataSet);
 	}
 
-	public void addStartTime(Date startTime, DataSet dataSet) {
-		this.startTimes.add(startTime);
-		if (!this.startTimesWithDataSets.containsKey(startTime))
-			startTimesWithDataSets.put(startTime, new HashSet<DataSet>());
-		this.startTimesWithDataSets.get(startTime).add(dataSet);
-	}
-
-	public void addEndTime(Date endTime, DataSet dataSet) {
-		this.endTimes.add(endTime);
-		if (!this.endTimesWithDataSets.containsKey(endTime))
-			endTimesWithDataSets.put(endTime, new HashSet<DataSet>());
-		this.endTimesWithDataSets.get(endTime).add(dataSet);
-	}
-
 	public Set<Entity> getLocations() {
 		return locations;
 	}
@@ -210,28 +192,20 @@ public class Event extends Entity {
 		this.urls = urls;
 	}
 
+	public Set<String> getOtherUrls() {
+		return otherUrls;
+	}
+
+	public void setOtherURLs(Set<String> otherUrls) {
+		this.otherUrls = otherUrls;
+	}
+
 	public Map<Event, Set<DataSet>> getChildrenWithDataSets() {
 		return childrenWithDataSets;
 	}
 
 	public Map<Event, Set<DataSet>> getParentsWithDataSets() {
 		return parentsWithDataSets;
-	}
-
-	public Set<Date> getStartTimes() {
-		return startTimes;
-	}
-
-	public Map<Date, Set<DataSet>> getStartTimesWithDataSets() {
-		return startTimesWithDataSets;
-	}
-
-	public Set<Date> getEndTimes() {
-		return endTimes;
-	}
-
-	public Map<Date, Set<DataSet>> getEndTimesWithDataSets() {
-		return endTimesWithDataSets;
 	}
 
 }

@@ -300,7 +300,7 @@ public class TemporalRelationsCollector extends Extractor {
 	private void loadWikidataTemporalRelations() {
 		FileName fileName = FileName.WIKIDATA_TEMPORAL_FACTS;
 		BufferedReader br = null;
-		Set<String> props = new HashSet<String>();
+
 		try {
 			try {
 				br = FileLoader.getReader(fileName);
@@ -321,8 +321,6 @@ public class TemporalRelationsCollector extends Extractor {
 
 					String propertyWikidataId = parts[1];
 					String timeString = parts[2];
-
-					props.add(propertyWikidataId);
 
 					TimeSymbol type = this.allEventPagesDataSet.getWikidataIdMappings()
 							.getWikidataTemporalPropertyTypeById(propertyWikidataId);
@@ -389,13 +387,12 @@ public class TemporalRelationsCollector extends Extractor {
 				e.printStackTrace();
 			}
 		}
-		System.out.println(props);
 	}
 
 	private void loadWikidataAtemporalRelations() {
 		FileName fileName = FileName.WIKIDATA_EVENT_RELATIONS;
 		BufferedReader br = null;
-		Set<String> props = new HashSet<String>();
+
 		try {
 			try {
 				br = FileLoader.getReader(fileName);
@@ -431,7 +428,6 @@ public class TemporalRelationsCollector extends Extractor {
 				e.printStackTrace();
 			}
 		}
-		System.out.println(props);
 	}
 
 	private Entity buildEntityByWikidataId(String entityWikidataId) {

@@ -1,6 +1,7 @@
 package de.l3s.eventkg.integration.model;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -9,6 +10,7 @@ import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
 
+import de.l3s.eventkg.integration.model.relation.DataSet;
 import de.l3s.eventkg.meta.Language;
 
 public class Entity {
@@ -25,6 +27,12 @@ public class Entity {
 
 	private Set<Entity> parentLocations = new HashSet<Entity>();
 	private Set<Entity> allParentLocations = new HashSet<Entity>();
+
+	private Set<Date> startTimes = new HashSet<Date>();;
+	private Map<Date, Set<DataSet>> startTimesWithDataSets = new HashMap<Date, Set<DataSet>>();
+
+	private Set<Date> endTimes = new HashSet<Date>();;
+	private Map<Date, Set<DataSet>> endTimesWithDataSets = new HashMap<Date, Set<DataSet>>();
 
 	private Event eventEntity;
 
@@ -131,6 +139,36 @@ public class Entity {
 
 	public void addAllParentLocation(Entity allParentLocation) {
 		this.allParentLocations.add(allParentLocation);
+	}
+
+	public void addStartTime(Date startTime, DataSet dataSet) {
+		this.startTimes.add(startTime);
+		if (!this.startTimesWithDataSets.containsKey(startTime))
+			startTimesWithDataSets.put(startTime, new HashSet<DataSet>());
+		this.startTimesWithDataSets.get(startTime).add(dataSet);
+	}
+
+	public void addEndTime(Date endTime, DataSet dataSet) {
+		this.endTimes.add(endTime);
+		if (!this.endTimesWithDataSets.containsKey(endTime))
+			endTimesWithDataSets.put(endTime, new HashSet<DataSet>());
+		this.endTimesWithDataSets.get(endTime).add(dataSet);
+	}
+
+	public Set<Date> getStartTimes() {
+		return startTimes;
+	}
+
+	public Map<Date, Set<DataSet>> getStartTimesWithDataSets() {
+		return startTimesWithDataSets;
+	}
+
+	public Set<Date> getEndTimes() {
+		return endTimes;
+	}
+
+	public Map<Date, Set<DataSet>> getEndTimesWithDataSets() {
+		return endTimesWithDataSets;
 	}
 
 }

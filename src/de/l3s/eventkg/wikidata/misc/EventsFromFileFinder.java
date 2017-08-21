@@ -117,6 +117,14 @@ public class EventsFromFileFinder extends Extractor {
 		forbiddenClasses.add("Q43229"); // organization
 		forbiddenClasses.add("Q2495862"); // Congress
 
+		forbiddenClasses.add("Q23893363"); // erroneous entry?, parent of
+											// cultural heritage
+		forbiddenClasses.add("Q17633526"); // Wikinews article
+		forbiddenClasses.add("Q65943"); // theorem
+
+		forbiddenClasses.add("Q14795564"); // determinator for date of periodic
+											// occurrence
+
 		Set<String> allClasses = new HashSet<String>();
 
 		boolean printTree = false;
@@ -194,7 +202,8 @@ public class EventsFromFileFinder extends Extractor {
 					String labelEn = parts[1];
 					String wikiLabelEn = parts[3];
 
-					resultsWriter.write(id + Config.TAB + labelEn + Config.TAB + wikiLabelEn + "\n");
+					resultsWriter.write(id + Config.TAB + labelEn + Config.TAB + wikiLabelEn + Config.TAB + parentClass
+							+ Config.NL);
 				}
 
 			}

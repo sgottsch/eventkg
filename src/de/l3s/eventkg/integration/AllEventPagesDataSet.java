@@ -162,7 +162,7 @@ public class AllEventPagesDataSet {
 					Date date1 = TimeTransformer.generateEarliestTimeFromXsd(timeString);
 					Date date1L = TimeTransformer.generateLatestTimeFromXsd(timeString);
 
-					if (type == TimeSymbol.START_TIME || type == TimeSymbol.START_AND_END_TIME) {
+					if (date1 != null && (type == TimeSymbol.START_TIME || type == TimeSymbol.START_AND_END_TIME)) {
 
 						if (event != null) {
 							event.setStartTime(date1);
@@ -173,7 +173,7 @@ public class AllEventPagesDataSet {
 								DataSets.getInstance().getDataSetWithoutLanguage(Source.YAGO), date1));
 					}
 
-					if (type == TimeSymbol.END_TIME || type == TimeSymbol.START_AND_END_TIME) {
+					if (date1L != null && (type == TimeSymbol.END_TIME || type == TimeSymbol.START_AND_END_TIME)) {
 
 						if (event != null) {
 							event.setEndTime(date1L);
@@ -239,26 +239,33 @@ public class AllEventPagesDataSet {
 
 						Date dateEarliest = TimeTransformer.generateEarliestTimeForWikidata(timeString);
 
-						if (event != null) {
-							event.setStartTime(dateEarliest);
-							event.addStartTime(dateEarliest,
-									DataSets.getInstance().getDataSetWithoutLanguage(Source.WIKIDATA));
-						}
+						if (dateEarliest != null) {
 
-						DataStore.getInstance().addStartTime(new StartTime(entity,
-								DataSets.getInstance().getDataSetWithoutLanguage(Source.WIKIDATA), dateEarliest));
+							if (event != null) {
+								event.setStartTime(dateEarliest);
+								event.addStartTime(dateEarliest,
+										DataSets.getInstance().getDataSetWithoutLanguage(Source.WIKIDATA));
+							}
+
+							DataStore.getInstance().addStartTime(new StartTime(entity,
+									DataSets.getInstance().getDataSetWithoutLanguage(Source.WIKIDATA), dateEarliest));
+
+						}
 					}
 					if (type == TimeSymbol.END_TIME || type == TimeSymbol.START_AND_END_TIME) {
 						Date dateLatest = TimeTransformer.generateLatestTimeForWikidata(timeString);
 
-						if (event != null) {
-							event.setEndTime(dateLatest);
-							event.addEndTime(dateLatest,
-									DataSets.getInstance().getDataSetWithoutLanguage(Source.WIKIDATA));
-						}
+						if (dateLatest != null) {
 
-						DataStore.getInstance().addEndTime(new EndTime(entity,
-								DataSets.getInstance().getDataSetWithoutLanguage(Source.WIKIDATA), dateLatest));
+							if (event != null) {
+								event.setEndTime(dateLatest);
+								event.addEndTime(dateLatest,
+										DataSets.getInstance().getDataSetWithoutLanguage(Source.WIKIDATA));
+							}
+
+							DataStore.getInstance().addEndTime(new EndTime(entity,
+									DataSets.getInstance().getDataSetWithoutLanguage(Source.WIKIDATA), dateLatest));
+						}
 					}
 
 				} catch (ParseException e) {

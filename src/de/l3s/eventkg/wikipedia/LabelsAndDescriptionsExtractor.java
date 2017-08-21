@@ -304,7 +304,7 @@ public class LabelsAndDescriptionsExtractor extends Extractor {
 
 	private void processFile(File file, Language language) {
 
-		System.out.println("PROCESS FILE " + file.getName());
+		System.out.println("Process file " + file.getName() + ".");
 
 		try {
 			String content = FileLoader.readFile(file);
@@ -323,8 +323,6 @@ public class LabelsAndDescriptionsExtractor extends Extractor {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-
-		System.out.println(this.sentences.get(language).size());
 
 	}
 
