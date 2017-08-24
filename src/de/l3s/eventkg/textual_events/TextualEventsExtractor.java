@@ -14,10 +14,6 @@ import java.util.Set;
 
 import com.google.common.collect.Sets;
 
-import de.l3s.eventkg.currentevents.EventsFromFileExtractor;
-import de.l3s.eventkg.currentevents.model.WCEEntity;
-import de.l3s.eventkg.currentevents.model.WCEEvent;
-import de.l3s.eventkg.dbpedia.DBpediaAllLocationsLoader;
 import de.l3s.eventkg.integration.AllEventPagesDataSet;
 import de.l3s.eventkg.integration.DataSets;
 import de.l3s.eventkg.integration.DataStore;
@@ -34,9 +30,13 @@ import de.l3s.eventkg.meta.Language;
 import de.l3s.eventkg.meta.Source;
 import de.l3s.eventkg.pipeline.Config;
 import de.l3s.eventkg.pipeline.Extractor;
+import de.l3s.eventkg.source.currentevents.EventsFromFileExtractor;
+import de.l3s.eventkg.source.currentevents.model.WCEEntity;
+import de.l3s.eventkg.source.currentevents.model.WCEEvent;
+import de.l3s.eventkg.source.dbpedia.DBpediaAllLocationsLoader;
+import de.l3s.eventkg.source.wikipedia.model.LinksToCount;
 import de.l3s.eventkg.util.FileLoader;
 import de.l3s.eventkg.util.FileName;
-import de.l3s.eventkg.wikipedia.model.LinksToCount;
 
 public class TextualEventsExtractor extends Extractor {
 

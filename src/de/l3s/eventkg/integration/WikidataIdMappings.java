@@ -12,9 +12,9 @@ import java.util.Set;
 import de.l3s.eventkg.integration.model.Entity;
 import de.l3s.eventkg.meta.Language;
 import de.l3s.eventkg.pipeline.Config.TimeSymbol;
+import de.l3s.eventkg.source.wikipedia.WikiWords;
 import de.l3s.eventkg.util.FileLoader;
 import de.l3s.eventkg.util.FileName;
-import de.l3s.eventkg.wikipedia.WikiWords;
 
 public class WikidataIdMappings {
 

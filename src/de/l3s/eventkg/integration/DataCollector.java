@@ -9,7 +9,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import de.l3s.eventkg.dbpedia.DBpediaAllLocationsLoader;
 import de.l3s.eventkg.integration.model.Entity;
 import de.l3s.eventkg.integration.model.Event;
 import de.l3s.eventkg.integration.model.relation.DataSet;
@@ -17,6 +16,7 @@ import de.l3s.eventkg.meta.Language;
 import de.l3s.eventkg.meta.Source;
 import de.l3s.eventkg.pipeline.Config;
 import de.l3s.eventkg.pipeline.Extractor;
+import de.l3s.eventkg.source.dbpedia.DBpediaAllLocationsLoader;
 import de.l3s.eventkg.util.FileLoader;
 import de.l3s.eventkg.util.FileName;
 
@@ -754,8 +754,11 @@ public class DataCollector extends Extractor {
 						continue;
 
 					Entity noEvent = createBlacklistEvent(language, wikiLabel, "loadDBpediaBlacklistEvents");
-					if (noEvent != null)
+					if (noEvent != null) {
 						numberOfDBpediaEvents += 1;
+						if (noEvent.getWikidataId().equals(("Q362")))
+							System.out.println("loadDBpediaBlacklistEvents: " + line);
+					}
 				}
 			} catch (IOException e) {
 				e.printStackTrace();
@@ -781,7 +784,7 @@ public class DataCollector extends Extractor {
 		BufferedReader br = null;
 		try {
 			try {
-				br = FileLoader.getReader(FileName.DBPEDIA_DBO_LOCATIONS);
+				br = FileLoader.getReader(FileName.DBPEDIA_ALL_LOCATIONS);
 			} catch (FileNotFoundException e1) {
 				e1.printStackTrace();
 			}
@@ -878,6 +881,9 @@ public class DataCollector extends Extractor {
 			// language + " - " + wikipediaLabel);
 			return null;
 		}
+
+		if (entity.getWikidataId().equals(("Q362")))
+			System.out.println("createBlacklistEventByWikidataID: " + wikidataId + " | " + comment);
 
 		blacklistEvents.add(entity);
 

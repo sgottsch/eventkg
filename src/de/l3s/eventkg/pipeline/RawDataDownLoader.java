@@ -102,7 +102,7 @@ public class RawDataDownLoader {
 		(new File(dataPath + "results/yago/")).mkdirs();
 		(new File(dataPath + "results/wce/")).mkdirs();
 		(new File(dataPath + "results/all/")).mkdirs();
-		
+
 		(new File(dataPath + "output/")).mkdirs();
 		(new File(dataPath + "output_preview/")).mkdirs();
 
@@ -207,6 +207,7 @@ public class RawDataDownLoader {
 		urls.add("instance_types_transitive_$lang$.ttl.bz2");
 		urls.add("mappingbased_objects_$lang$.ttl.bz2");
 		urls.add("mappingbased_literals_$lang$.ttl.bz2");
+		urls.add("geonames_links_$lang$.ttl.bz2");
 
 		for (Language language : this.languages) {
 			for (String urlString : urls) {

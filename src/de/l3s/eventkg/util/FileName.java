@@ -124,7 +124,7 @@ public enum FileName {
 	DBPEDIA_DBO_EVENT_PARTS("dbpedia_event_parts.tsv", Source.DBPEDIA, FileType.RESULTS, false, false, false),
 	DBPEDIA_DBO_PREVIOUS_EVENTS("dbpedia_previous_events.tsv", Source.DBPEDIA, FileType.RESULTS, false, false, false),
 	DBPEDIA_DBO_NEXT_EVENTS("dbpedia_next_events.tsv", Source.DBPEDIA, FileType.RESULTS, false, false, false),
-	DBPEDIA_DBO_LOCATIONS("dbpedia_all_locations.tsv", Source.DBPEDIA, FileType.RESULTS, false, false, false),
+	DBPEDIA_ALL_LOCATIONS("dbpedia_all_locations.tsv", Source.DBPEDIA, FileType.RESULTS, false, false, false),
 
 	/**
 	 * Entities with locations, using "dbo:place".
@@ -211,6 +211,7 @@ public enum FileName {
 			false,
 			false,
 			false),
+	DBPEDIA_GEONAMES_LINKS("geonames_links_$lang$.ttl", Source.DBPEDIA, FileType.RAW_DATA, false, false, false),
 
 	// YAGO
 	YAGO_TAXONOMY("yagoTaxonomy.ttl", Source.YAGO, FileType.RAW_DATA, false, false, false),

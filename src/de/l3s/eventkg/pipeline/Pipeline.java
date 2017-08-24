@@ -5,14 +5,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import de.l3s.eventkg.currentevents.CurrentEventsRelationsExtraction;
-import de.l3s.eventkg.currentevents.EventsFromFileExtractor;
-import de.l3s.eventkg.dbpedia.DBpediaAllLocationsLoader;
-import de.l3s.eventkg.dbpedia.DBpediaDBOEventsLoader;
-import de.l3s.eventkg.dbpedia.DBpediaEventLocationsExtractor;
-import de.l3s.eventkg.dbpedia.DBpediaEventRelationsExtractor;
-import de.l3s.eventkg.dbpedia.DBpediaPartOfLoader;
-import de.l3s.eventkg.dbpedia.DBpediaTimesExtractor;
 import de.l3s.eventkg.integration.AllEventPagesDataSet;
 import de.l3s.eventkg.integration.DataCollector;
 import de.l3s.eventkg.integration.DataSets;
@@ -23,17 +15,25 @@ import de.l3s.eventkg.integration.TemporalRelationsCollector;
 import de.l3s.eventkg.integration.TimesIntegrator;
 import de.l3s.eventkg.meta.Language;
 import de.l3s.eventkg.meta.Source;
+import de.l3s.eventkg.source.currentevents.CurrentEventsRelationsExtraction;
+import de.l3s.eventkg.source.currentevents.EventsFromFileExtractor;
+import de.l3s.eventkg.source.dbpedia.DBpediaAllLocationsLoader;
+import de.l3s.eventkg.source.dbpedia.DBpediaDBOEventsLoader;
+import de.l3s.eventkg.source.dbpedia.DBpediaEventLocationsExtractor;
+import de.l3s.eventkg.source.dbpedia.DBpediaEventRelationsExtractor;
+import de.l3s.eventkg.source.dbpedia.DBpediaPartOfLoader;
+import de.l3s.eventkg.source.dbpedia.DBpediaTimesExtractor;
+import de.l3s.eventkg.source.wikidata.WikidataExtractionWithEventPages;
+import de.l3s.eventkg.source.wikidata.WikidataExtractionWithoutEventPages;
+import de.l3s.eventkg.source.wikidata.misc.EventsFromFileFinder;
+import de.l3s.eventkg.source.wikipedia.LabelsAndDescriptionsExtractor;
+import de.l3s.eventkg.source.wikipedia.WikipediaEventsByCategoryNameLoader;
+import de.l3s.eventkg.source.wikipedia.WikipediaLinkCountsExtractor;
+import de.l3s.eventkg.source.wikipedia.WikipediaLinkSetsExtractor;
+import de.l3s.eventkg.source.yago.YAGOEventLocationsExtractor;
+import de.l3s.eventkg.source.yago.YAGOEventRelationsExtractor;
+import de.l3s.eventkg.source.yago.YAGOEventTimeExtractor;
 import de.l3s.eventkg.textual_events.TextualEventsExtractor;
-import de.l3s.eventkg.wikidata.WikidataExtractionWithEventPages;
-import de.l3s.eventkg.wikidata.WikidataExtractionWithoutEventPages;
-import de.l3s.eventkg.wikidata.misc.EventsFromFileFinder;
-import de.l3s.eventkg.wikipedia.LabelsAndDescriptionsExtractor;
-import de.l3s.eventkg.wikipedia.WikipediaEventsByCategoryNameLoader;
-import de.l3s.eventkg.wikipedia.WikipediaLinkCountsExtractor;
-import de.l3s.eventkg.wikipedia.WikipediaLinkSetsExtractor;
-import de.l3s.eventkg.yago.YAGOEventLocationsExtractor;
-import de.l3s.eventkg.yago.YAGOEventRelationsExtractor;
-import de.l3s.eventkg.yago.YAGOEventTimeExtractor;
 
 public class Pipeline {
 
@@ -210,8 +210,7 @@ public class Pipeline {
 		DataSets.getInstance().addDataSetWithoutLanguage(Source.YAGO,
 				"https://www.mpi-inf.mpg.de/de/departments/databases-and-information-systems/research/yago-naga/yago/downloads/");
 		DataSets.getInstance().addDataSet(Language.EN, Source.WCE, "http://wikitimes.l3s.de/Resource.jsp");
-		DataSets.getInstance().addDataSetWithoutLanguage(Source.INTEGRATED_TIME,
-				"http://eventkg.l3s.uni-hannover.de/");
+		DataSets.getInstance().addDataSetWithoutLanguage(Source.INTEGRATED_TIME, "http://eventkg.l3s.uni-hannover.de/");
 		DataSets.getInstance().addDataSetWithoutLanguage(Source.INTEGRATED_TIME_2,
 				"http://eventkg.l3s.uni-hannover.de/");
 		DataSets.getInstance().addDataSetWithoutLanguage(Source.INTEGRATED_LOC, "http://eventkg.l3s.uni-hannover.de/");
