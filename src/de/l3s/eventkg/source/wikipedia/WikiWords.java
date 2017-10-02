@@ -708,7 +708,7 @@ public class WikiWords {
 		return this.weekdayRegex.get(language);
 	}
 
-	private List<String> getMonthNamesSemicolonSeparated(Language language) {
+	List<String> getMonthNamesSemicolonSeparated(Language language) {
 
 		List<String> monthNamesOfLanguage = new ArrayList<String>();
 

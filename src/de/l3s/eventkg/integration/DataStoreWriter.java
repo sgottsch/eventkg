@@ -463,7 +463,7 @@ public class DataStoreWriter {
 						else {
 							lineNo += 1;
 							writeTriple(writer, writerPreview, lineNo, entity.getId(),
-									Prefix.SCHEMA_ORG.getAbbr() + "parentLocation", parentLocation.getId(), false,
+									Prefix.SCHEMA_ORG.getAbbr() + "containedInPlace", parentLocation.getId(), false,
 									null);
 						}
 
@@ -511,17 +511,18 @@ public class DataStoreWriter {
 					object = object.getEventEntity();
 
 				writeTriple(writer, writerPreview, lineNo, relationId, Prefix.RDF.getAbbr() + "type",
-						Prefix.EVENT_KG_SCHEMA.getAbbr() + "Relation", false, relation.getDataSet());
+						Prefix.EVENT_KG_SCHEMA.getAbbr() + "LinkRelation", false, relation.getDataSet());
 				writeTriple(writer, writerPreview, lineNo, relationId,
 						Prefix.EVENT_KG_SCHEMA.getAbbr() + "relationSubject", relation.getSubject().getId(), false,
 						relation.getDataSet());
 				writeTriple(writer, writerPreview, lineNo, relationId,
 						Prefix.EVENT_KG_SCHEMA.getAbbr() + "relationObject", object.getId(), false,
 						relation.getDataSet());
-				writeTriple(writer, writerPreview, lineNo, relationId, Prefix.EVENT_KG_SCHEMA.getAbbr() + "relation",
+				writeTriple(writer, writerPreview, lineNo, relationId, Prefix.EVENT_KG_SCHEMA.getAbbr() + "property",
 						relation.getPrefix().getAbbr() + relation.getProperty(), false, relation.getDataSet());
-				writeTriple(writer, writerPreview, lineNo, relationId, Prefix.EVENT_KG_SCHEMA.getAbbr() + "strength",
-						"\"" + String.valueOf(relation.getWeight()) + "\"^^xsd:double", false, relation.getDataSet());
+				writeTriple(writer, writerPreview, lineNo, relationId, Prefix.EVENT_KG_SCHEMA.getAbbr() + "number_of_links",
+						"\"" + String.valueOf(relation.getWeight().intValue()) + "\"^^xsd:nonNegativeInteger", false,
+						relation.getDataSet());
 
 				relationNo += 1;
 			}
@@ -575,7 +576,7 @@ public class DataStoreWriter {
 				writeTriple(writer, writerPreview, lineNo, relationId,
 						Prefix.EVENT_KG_SCHEMA.getAbbr() + "relationObject", object.getId(), false,
 						relation.getDataSet());
-				writeTriple(writer, writerPreview, lineNo, relationId, Prefix.EVENT_KG_SCHEMA.getAbbr() + "relation",
+				writeTriple(writer, writerPreview, lineNo, relationId, Prefix.EVENT_KG_SCHEMA.getAbbr() + "property",
 						relation.getPrefix().getAbbr() + relation.getProperty(), false, relation.getDataSet());
 
 				if (relation.getStartTime() != null)

@@ -69,6 +69,7 @@ public enum FileName {
 	WIKIDATA_INSTANCE_OF("instanceof-data.tsv", Source.WIKIDATA, FileType.RESULTS, false, false, false),
 	WIKIDATA_PROPERTY_NAMES("property_names.tsv", Source.WIKIDATA, FileType.RESULTS, false, false, false),
 	WIKIDATA_EVENTS("event_instances.tsv", Source.WIKIDATA, FileType.RESULTS, false, false, false),
+	WIKIDATA_NO_EVENTS("no_event_instances.tsv", Source.WIKIDATA, FileType.RESULTS, false, false, false),
 	WIKIDATA_LOCATIONS("wikidata_locations.tsv", Source.WIKIDATA, FileType.RESULTS, false, false, false),
 	WIKIDATA_SUB_LOCATIONS("wikidata_sub_locations.tsv", Source.WIKIDATA, FileType.RESULTS, false, false, false),
 	WIKIDATA_TEMPORAL_PROPERTY_LIST_FILE_NAME(

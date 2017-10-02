@@ -19,6 +19,7 @@ import de.l3s.eventkg.pipeline.Extractor;
 import de.l3s.eventkg.source.dbpedia.DBpediaAllLocationsLoader;
 import de.l3s.eventkg.util.FileLoader;
 import de.l3s.eventkg.util.FileName;
+import edu.stanford.nlp.util.StringUtils;
 
 public class DataCollector extends Extractor {
 
@@ -314,8 +315,8 @@ public class DataCollector extends Extractor {
 		loadDBpediaBlacklistEvents();
 		System.out.println("loadLocationsBlacklistEvents.");
 		loadLocationsBlacklistEvents();
-		// System.out.println("loadWikidataBlacklistEvents.");
-		// loadWikidataBlacklistEvents();
+		System.out.println("loadWikidataBlacklistEvents.");
+		loadWikidataBlacklistEvents();
 
 		System.out.println("loadWikidataEvents.");
 		loadWikidataEvents();
@@ -332,22 +333,16 @@ public class DataCollector extends Extractor {
 			writer = FileLoader.getWriter(FileName.ALL_EVENT_PAGES);
 			for (Event event : uniqueEvents) {
 
-				if (event.getWikidataId() == null) {
-					// TODO
-					// System.out.println("Missing Wikidata id: " +
-					// event.getWikipediaLabelsString(this.languages));
+				if (event.getWikidataId() == null)
 					continue;
-				}
 
 				writer.write(event.getWikidataId());
 				writer.write(Config.TAB);
 				writer.write(event.getWikipediaLabelsString(this.languages));
 				writer.write(Config.TAB);
-				// TODO
-				// if (event.getWikidataId() != null)
-				// writer.write(event.getWikidataId());
-				// else
-				// writer.write("\\N");
+				writer.write(StringUtils.join(event.getEventInstanceComments(), " | "));
+				writer.write(Config.TAB);
+
 				writer.write(Config.NL);
 			}
 		} catch (FileNotFoundException e) {
@@ -702,7 +697,8 @@ public class DataCollector extends Extractor {
 					if (wikiLabel.startsWith("List_of_") || wikiLabel.startsWith("Lists_of_"))
 						continue;
 
-					Event event = createEvent(language, wikiLabel, "loadDBpediaEvents");
+					Event event = createEvent(language, wikiLabel,
+							"DBpedia, " + language + " (" + line.split(Config.TAB)[2] + ")");
 					if (event != null)
 						numberOfDBpediaEvents += 1;
 				}
@@ -809,7 +805,6 @@ public class DataCollector extends Extractor {
 				"Number of blacklist events extracted from DBpedia locations : " + wikidataBlackListEvents.size());
 	}
 
-	@SuppressWarnings("unused")
 	private void loadWikidataBlacklistEvents() {
 
 		// Locations may never be events.
@@ -819,7 +814,7 @@ public class DataCollector extends Extractor {
 		BufferedReader br = null;
 		try {
 			try {
-				br = FileLoader.getReader(FileName.ALL_SUB_LOCATIONS);
+				br = FileLoader.getReader(FileName.WIKIDATA_NO_EVENTS);
 			} catch (FileNotFoundException e1) {
 				e1.printStackTrace();
 			}
@@ -830,10 +825,7 @@ public class DataCollector extends Extractor {
 				String[] parts = line.split(Config.TAB);
 
 				createBlacklistEventByWikidataID(parts[0], "loadWikidataBlacklistEvents");
-				createBlacklistEventByWikidataID(parts[2], "loadWikidataBlacklistEvents");
-
 				wikidataBlackListEvents.add(parts[0]);
-				wikidataBlackListEvents.add(parts[2]);
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -862,10 +854,16 @@ public class DataCollector extends Extractor {
 		if (blacklistEvents.contains(entity))
 			return null;
 
-		if (entity.getEventEntity() != null)
+		if (entity.getEventEntity() != null) {
+			if (comment != null)
+				entity.getEventEntity().addEventInstanceComment(comment);
 			return entity.getEventEntity();
+		}
 
 		Event newEvent = new Event(entity);
+
+		if (comment != null)
+			newEvent.addEventInstanceComment(comment);
 
 		uniqueEvents.add(newEvent);
 
@@ -946,10 +944,17 @@ public class DataCollector extends Extractor {
 		if (entity == null)
 			return null;
 
-		if (entity.getEventEntity() != null)
+		if (entity.getEventEntity() != null) {
+			if (comment != null)
+				entity.getEventEntity().addEventInstanceComment(comment);
 			return entity.getEventEntity();
+		}
 
 		Event newEvent = new Event(entity);
+
+		if (comment != null)
+			newEvent.addEventInstanceComment(comment);
+
 		uniqueEvents.add(newEvent);
 
 		return newEvent;
@@ -980,7 +985,7 @@ public class DataCollector extends Extractor {
 
 				wikiLabel = wikiLabel.replaceAll(" ", "_");
 
-				createEvent(Language.EN, wikiLabel, "loadWCEEvents");
+				createEvent(Language.EN, wikiLabel, "WCE event");
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -1016,7 +1021,8 @@ public class DataCollector extends Extractor {
 					if (wikiLabel.startsWith("List_of_") || wikiLabel.startsWith("Lists_of_"))
 						continue;
 
-					Event event = createEvent(language, wikiLabel, "loadWikipediaEvents");
+					Event event = createEvent(language, wikiLabel,
+							"Wikipedia, " + language + " (" + line.split(Config.TAB)[1] + ")");
 					if (event != null)
 						numberOfWikipediaEvents += 1;
 				}
@@ -1062,7 +1068,8 @@ public class DataCollector extends Extractor {
 				if (wikiLabel.startsWith("List_of_") || wikiLabel.startsWith("Lists_of_"))
 					continue;
 
-				Event event = createEventByWikidataId(parts[0], "loadWikidataEvents");
+				Event event = createEventByWikidataId(parts[0], "Wikidata (" + line.split(Config.TAB)[3] + ")");
+
 				if (event != null)
 					numberOfWikidataEvents += 1;
 			}

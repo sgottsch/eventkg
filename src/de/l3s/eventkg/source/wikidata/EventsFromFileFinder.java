@@ -1,4 +1,4 @@
-package de.l3s.eventkg.source.wikidata.misc;
+package de.l3s.eventkg.source.wikidata;
 
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
@@ -27,6 +27,7 @@ import de.l3s.eventkg.util.FileName;
 public class EventsFromFileFinder extends Extractor {
 
 	private PrintWriter resultsWriter;
+	private PrintWriter blacklistResultsWriter;
 
 	public static void main(String[] args) {
 		Config.init(args[0]);
@@ -43,11 +44,11 @@ public class EventsFromFileFinder extends Extractor {
 	}
 
 	public void run() {
-		Set<String> eventClasses = extractSubClass();
+		Set<String> eventClasses = extractSubClasses();
 		extractEventInstances(eventClasses);
 	}
 
-	private Set<String> extractSubClass() {
+	private Set<String> extractSubClasses() {
 
 		Map<String, Set<String>> subClasses = new HashMap<String, Set<String>>();
 
@@ -121,6 +122,7 @@ public class EventsFromFileFinder extends Extractor {
 											// cultural heritage
 		forbiddenClasses.add("Q17633526"); // Wikinews article
 		forbiddenClasses.add("Q65943"); // theorem
+		forbiddenClasses.add("Q49703"); // sacrament
 
 		forbiddenClasses.add("Q14795564"); // determinator for date of periodic
 											// occurrence
@@ -175,8 +177,12 @@ public class EventsFromFileFinder extends Extractor {
 
 	private void extractEventInstances(Set<String> eventClasses) {
 
+		Set<String> blacklistClasses = new HashSet<String>();
+		blacklistClasses.add("Q14795564"); // determinator for date of periodic
+
 		try {
 			resultsWriter = FileLoader.getWriter(FileName.WIKIDATA_EVENTS);
+			blacklistResultsWriter = FileLoader.getWriter(FileName.WIKIDATA_NO_EVENTS);
 		} catch (FileNotFoundException e2) {
 			e2.printStackTrace();
 		}
@@ -196,6 +202,15 @@ public class EventsFromFileFinder extends Extractor {
 
 				String parentClass = parts[2];
 
+				if (blacklistClasses.contains(parentClass)) {
+					String id = parts[0];
+					String labelEn = parts[1];
+					String wikiLabelEn = parts[3];
+
+					blacklistResultsWriter.write(id + Config.TAB + labelEn + Config.TAB + wikiLabelEn + Config.TAB
+							+ parentClass + Config.NL);
+				}
+
 				if (eventClasses.contains(parentClass)) {
 
 					String id = parts[0];
@@ -213,6 +228,7 @@ public class EventsFromFileFinder extends Extractor {
 			try {
 				br.close();
 				resultsWriter.close();
+				blacklistResultsWriter.close();
 			} catch (IOException e) {
 				e.printStackTrace();
 			}

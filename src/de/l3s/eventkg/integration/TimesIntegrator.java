@@ -13,7 +13,6 @@ import java.util.Map;
 import java.util.Set;
 
 import de.l3s.eventkg.integration.model.Entity;
-import de.l3s.eventkg.integration.model.Event;
 import de.l3s.eventkg.integration.model.relation.DataSet;
 import de.l3s.eventkg.integration.model.relation.EndTime;
 import de.l3s.eventkg.integration.model.relation.StartTime;
@@ -46,7 +45,11 @@ public class TimesIntegrator extends Extractor {
 
 	private void integrateTimesByTime() {
 
-		for (Entity entity : DataStore.getInstance().getEntities()) {
+		Set<Entity> entitiesAndEvents = new HashSet<Entity>();
+		entitiesAndEvents.addAll(DataStore.getInstance().getEntities());
+		entitiesAndEvents.addAll(DataStore.getInstance().getEvents());
+
+		for (Entity entity : entitiesAndEvents) {
 
 			// take the earliest start time
 			if (entity.getStartTimesWithDataSets() != null && !entity.getStartTimesWithDataSets().isEmpty()) {
@@ -100,26 +103,30 @@ public class TimesIntegrator extends Extractor {
 
 		initDataSetsByTrustWorthiness();
 
+		Set<Entity> entitiesAndEvents = new HashSet<Entity>();
+		entitiesAndEvents.addAll(DataStore.getInstance().getEntities());
+		entitiesAndEvents.addAll(DataStore.getInstance().getEvents());
+
 		int i = 0;
-		for (Event event : DataStore.getInstance().getEvents()) {
+		for (Entity entity : entitiesAndEvents) {
 
 			i += 1;
 
-			if ((event.getStartTimesWithDataSets().isEmpty() || event.getStartTimesWithDataSets() == null)
-					&& (event.getEndTimesWithDataSets().isEmpty() || event.getEndTimesWithDataSets() == null))
+			if ((entity.getStartTimesWithDataSets().isEmpty() || entity.getStartTimesWithDataSets() == null)
+					&& (entity.getEndTimesWithDataSets().isEmpty() || entity.getEndTimesWithDataSets() == null))
 				continue;
 
 			if (print) {
 				System.out.println("");
-				System.out.println(i + "/" + DataStore.getInstance().getEvents().size() + ": " + event.getWikidataId()
-						+ " / " + event.getWikipediaLabel(Language.EN));
+				System.out.println(i + "/" + DataStore.getInstance().getEvents().size() + ": " + entity.getWikidataId()
+						+ " / " + entity.getWikipediaLabel(Language.EN));
 			}
 
 			if (print) {
 				List<String> beforeStartDates = new ArrayList<String>();
-				for (Date d : event.getStartTimesWithDataSets().keySet()) {
+				for (Date d : entity.getStartTimesWithDataSets().keySet()) {
 					List<String> dataSets = new ArrayList<String>();
-					for (DataSet ds : event.getStartTimesWithDataSets().get(d))
+					for (DataSet ds : entity.getStartTimesWithDataSets().get(d))
 						dataSets.add(ds.getId());
 					beforeStartDates.add(sdf.format(d) + "/" + StringUtils.join(dataSets, " "));
 				}
@@ -127,10 +134,10 @@ public class TimesIntegrator extends Extractor {
 			}
 
 			Date startTime = null;
-			if (event.getStartTimesWithDataSets() != null && !event.getStartTimesWithDataSets().isEmpty()) {
-				startTime = integrateTimesOfEvent(event.getStartTimesWithDataSets(), DateType.START, null);
+			if (entity.getStartTimesWithDataSets() != null && !entity.getStartTimesWithDataSets().isEmpty()) {
+				startTime = integrateTimesOfEvent(entity.getStartTimesWithDataSets(), DateType.START, null);
 				if (startTime != null)
-					DataStore.getInstance().addStartTime(new StartTime(event,
+					DataStore.getInstance().addStartTime(new StartTime(entity,
 							DataSets.getInstance().getDataSetWithoutLanguage(Source.INTEGRATED_TIME), startTime));
 			}
 
@@ -142,10 +149,10 @@ public class TimesIntegrator extends Extractor {
 
 			Date endTime = null;
 			Map<Date, Set<DataSet>> endTimesWithDataSetsDeepCopy = new HashMap<Date, Set<DataSet>>();
-			if (event.getEndTimesWithDataSets() != null) {
-				for (Date date : event.getEndTimesWithDataSets().keySet()) {
+			if (entity.getEndTimesWithDataSets() != null) {
+				for (Date date : entity.getEndTimesWithDataSets().keySet()) {
 					endTimesWithDataSetsDeepCopy.put(date, new HashSet<DataSet>());
-					for (DataSet dataSet : event.getEndTimesWithDataSets().get(date)) {
+					for (DataSet dataSet : entity.getEndTimesWithDataSets().get(date)) {
 						endTimesWithDataSetsDeepCopy.get(date).add(dataSet);
 					}
 
@@ -154,9 +161,9 @@ public class TimesIntegrator extends Extractor {
 
 			if (print) {
 				List<String> beforeEndDates = new ArrayList<String>();
-				for (Date d : event.getEndTimesWithDataSets().keySet()) {
+				for (Date d : entity.getEndTimesWithDataSets().keySet()) {
 					List<String> dataSets = new ArrayList<String>();
-					for (DataSet ds : event.getEndTimesWithDataSets().get(d))
+					for (DataSet ds : entity.getEndTimesWithDataSets().get(d))
 						dataSets.add(ds.getId());
 					beforeEndDates.add(sdf.format(d) + "/" + StringUtils.join(dataSets, " "));
 				}
@@ -185,7 +192,7 @@ public class TimesIntegrator extends Extractor {
 				System.out.println("After, end: " + sdf.format(endTime));
 
 			if (endTime != null)
-				DataStore.getInstance().addEndTime(new EndTime(event,
+				DataStore.getInstance().addEndTime(new EndTime(entity,
 						DataSets.getInstance().getDataSetWithoutLanguage(Source.INTEGRATED_TIME), endTime));
 
 		}

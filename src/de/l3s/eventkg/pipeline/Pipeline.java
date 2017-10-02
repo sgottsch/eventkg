@@ -23,9 +23,9 @@ import de.l3s.eventkg.source.dbpedia.DBpediaEventLocationsExtractor;
 import de.l3s.eventkg.source.dbpedia.DBpediaEventRelationsExtractor;
 import de.l3s.eventkg.source.dbpedia.DBpediaPartOfLoader;
 import de.l3s.eventkg.source.dbpedia.DBpediaTimesExtractor;
+import de.l3s.eventkg.source.wikidata.EventsFromFileFinder;
 import de.l3s.eventkg.source.wikidata.WikidataExtractionWithEventPages;
 import de.l3s.eventkg.source.wikidata.WikidataExtractionWithoutEventPages;
-import de.l3s.eventkg.source.wikidata.misc.EventsFromFileFinder;
 import de.l3s.eventkg.source.wikipedia.LabelsAndDescriptionsExtractor;
 import de.l3s.eventkg.source.wikipedia.WikipediaEventsByCategoryNameLoader;
 import de.l3s.eventkg.source.wikipedia.WikipediaLinkCountsExtractor;
@@ -125,7 +125,6 @@ public class Pipeline {
 
 		// Wikidata
 		extractors.add(new WikidataExtractionWithoutEventPages(languages));
-		extractors.add(new EventsFromFileFinder(languages));
 
 		for (Extractor extractor : extractors) {
 			System.out.println(extractor.getName() + ", " + extractor.getSource() + " - " + extractor.getDescription());
@@ -137,6 +136,7 @@ public class Pipeline {
 
 		List<Extractor> extractors = new ArrayList<Extractor>();
 
+		extractors.add(new EventsFromFileFinder(languages));
 		extractors.add(new DBpediaAllLocationsLoader(languages, getAllEventPagesDataSet()));
 		// First step of integration
 		extractors.add(new DataCollector(languages));
@@ -184,6 +184,8 @@ public class Pipeline {
 
 		DataStoreWriter outputWriter = new DataStoreWriter();
 		outputWriter.write();
+
+		System.out.println("Done.");
 	}
 
 	private AllEventPagesDataSet getAllEventPagesDataSet() {

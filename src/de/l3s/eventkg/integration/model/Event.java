@@ -36,6 +36,8 @@ public class Event extends Entity {
 
 	private Set<String> otherUrls;
 
+	private Set<String> eventInstanceComments = new HashSet<String>();
+
 	public Event() {
 		super(null);
 		setEvent(true);
@@ -206,6 +208,14 @@ public class Event extends Entity {
 
 	public Map<Event, Set<DataSet>> getParentsWithDataSets() {
 		return parentsWithDataSets;
+	}
+
+	public Set<String> getEventInstanceComments() {
+		return eventInstanceComments;
+	}
+
+	public void addEventInstanceComment(String eventInstanceComment) {
+		this.eventInstanceComments.add(eventInstanceComment);
 	}
 
 }
