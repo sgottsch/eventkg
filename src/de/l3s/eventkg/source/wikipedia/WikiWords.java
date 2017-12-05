@@ -17,6 +17,7 @@ public class WikiWords {
 
 	private Map<Language, Set<String>> forbiddenLinks;
 	private Map<Language, Set<String>> forbiddenInternalLinks;
+	private Map<Language, Set<String>> titlesNotToTranslate;
 
 	private Map<Language, Set<String>> fileLabels;
 	private Map<Language, String> categoryLabels;
@@ -288,58 +289,75 @@ public class WikiWords {
 		return this.forbiddenLinks.get(language);
 	}
 
-	public static Set<String> getTitlesOfParagraphsNotToTranslate(Language language) {
-		HashSet<String> titlesNotToTranslate = new HashSet<String>();
-		if (language == Language.DE) {
-			titlesNotToTranslate.add("Ver\u00f6ffentlichungen");
-			titlesNotToTranslate.add("Literatur");
-			titlesNotToTranslate.add("Weblinks");
-			titlesNotToTranslate.add("Einzelnachweise");
-			titlesNotToTranslate.add("Werke");
-			titlesNotToTranslate.add("Werke (Auswahl)");
-		} else if (language == Language.NL) {
-			titlesNotToTranslate.add("Zie ook");
-			titlesNotToTranslate.add("Externe links");
-			titlesNotToTranslate.add("Literatuur");
-			titlesNotToTranslate.add("Bronnen, noten en referenties");
-		} else if (language == Language.PT) {
-			titlesNotToTranslate.add("Ver tamb\u00e9m");
-			titlesNotToTranslate.add("Refer\u00eancias");
-			titlesNotToTranslate.add("Liga\u00e7\u00f5es externas");
-			titlesNotToTranslate.add("Notas");
-			titlesNotToTranslate.add("Bibliografia");
-		} else if (language == Language.EN) {
-			titlesNotToTranslate.add("See also");
-			titlesNotToTranslate.add("References");
-			titlesNotToTranslate.add("External links");
-			titlesNotToTranslate.add("Further reading");
-			titlesNotToTranslate.add("Bibliography");
-		} else if (language == Language.RU) {
-			titlesNotToTranslate.add("\u0421\u043c. \u0442\u0430\u043a\u0436\u0435");
-			titlesNotToTranslate.add("\u041f\u0440\u0438\u043c\u0435\u0447\u0430\u043d\u0438\u044f");
-			titlesNotToTranslate.add("\u0412\u043d\u0435\u0448\u043d\u0438\u0435 \u0441\u0441\u044b\u043b\u043a\u0438");
-			titlesNotToTranslate.add("\u0421\u0441\u044b\u043b\u043a\u0438");
-			titlesNotToTranslate.add("\u0413\u0430\u043b\u0435\u0440\u0435\u044f");
-		} else if (language == Language.FR) {
-			titlesNotToTranslate.add("Voir aussi");
-			titlesNotToTranslate.add("Annexes");
-			titlesNotToTranslate.add("Notes et r\u00e9f\u00e9rences");
-			titlesNotToTranslate.add("R\u00e9f\u00e9rences");
-			titlesNotToTranslate.add("Compl\u00e9ments");
-		} else if (language == Language.IT) {
-			titlesNotToTranslate.add("Bibliografia");
-			titlesNotToTranslate.add("Altri progetti");
-			titlesNotToTranslate.add("Documentari");
-			titlesNotToTranslate.add("Note");
-			titlesNotToTranslate.add("Collegamenti esterni");
-			titlesNotToTranslate.add("Voci correlate");
-		} else if (language == Language.ES) {
-			titlesNotToTranslate.add("V\u00e9ase tambi\u00e9n");
-			titlesNotToTranslate.add("Referencias");
-			titlesNotToTranslate.add("Bibliograf\u00eda");
-			titlesNotToTranslate.add("Enlaces externos");
+	public Set<String> getTitlesOfParagraphsNotToTranslate(Language language) {
+		// TODO: Decode
+
+		if (this.titlesNotToTranslate == null) {
+
+			this.titlesNotToTranslate = new HashMap<Language, Set<String>>();
+
+			this.titlesNotToTranslate.put(Language.DE, new HashSet<String>());
+			titlesNotToTranslate.get(Language.DE).add("Ver\u00f6ffentlichungen");
+			titlesNotToTranslate.get(Language.DE).add("Veröffentlichungen");
+			titlesNotToTranslate.get(Language.DE).add("Literatur");
+			titlesNotToTranslate.get(Language.DE).add("Weblinks");
+			titlesNotToTranslate.get(Language.DE).add("Siehe auch");
+			titlesNotToTranslate.get(Language.DE).add("Einzelnachweise");
+			titlesNotToTranslate.get(Language.DE).add("Werke");
+			titlesNotToTranslate.get(Language.DE).add("Werke (Auswahl)");
+
+			this.titlesNotToTranslate.put(Language.NL, new HashSet<String>());
+			titlesNotToTranslate.get(Language.NL).add("Zie ook");
+			titlesNotToTranslate.get(Language.NL).add("Externe links");
+			titlesNotToTranslate.get(Language.NL).add("Literatuur");
+			titlesNotToTranslate.get(Language.NL).add("Bronnen, noten en referenties");
+
+			this.titlesNotToTranslate.put(Language.PT, new HashSet<String>());
+			titlesNotToTranslate.get(Language.PT).add("Ver tamb\u00e9m");
+			titlesNotToTranslate.get(Language.PT).add("Refer\u00eancias");
+			titlesNotToTranslate.get(Language.PT).add("Liga\u00e7\u00f5es externas");
+			titlesNotToTranslate.get(Language.PT).add("Notas");
+			titlesNotToTranslate.get(Language.PT).add("Bibliografia");
+
+			this.titlesNotToTranslate.put(Language.EN, new HashSet<String>());
+			titlesNotToTranslate.get(Language.EN).add("See also");
+			titlesNotToTranslate.get(Language.EN).add("References");
+			titlesNotToTranslate.get(Language.EN).add("External links");
+			titlesNotToTranslate.get(Language.EN).add("Further reading");
+			titlesNotToTranslate.get(Language.EN).add("Bibliography");
+
+			this.titlesNotToTranslate.put(Language.RU, new HashSet<String>());
+			titlesNotToTranslate.get(Language.RU).add("\u0421\u043c. \u0442\u0430\u043a\u0436\u0435");
+			titlesNotToTranslate.get(Language.RU).add("\u041f\u0440\u0438\u043c\u0435\u0447\u0430\u043d\u0438\u044f");
+			titlesNotToTranslate.get(Language.RU)
+					.add("\u0412\u043d\u0435\u0448\u043d\u0438\u0435 \u0441\u0441\u044b\u043b\u043a\u0438");
+			titlesNotToTranslate.get(Language.RU).add("\u0421\u0441\u044b\u043b\u043a\u0438");
+			titlesNotToTranslate.get(Language.RU).add("\u0413\u0430\u043b\u0435\u0440\u0435\u044f");
+			titlesNotToTranslate.get(Language.RU).add("Галерея");
+
+			this.titlesNotToTranslate.put(Language.FR, new HashSet<String>());
+			titlesNotToTranslate.get(Language.FR).add("Voir aussi");
+			titlesNotToTranslate.get(Language.FR).add("Annexes");
+			titlesNotToTranslate.get(Language.FR).add("Notes et r\u00e9f\u00e9rences");
+			titlesNotToTranslate.get(Language.FR).add("R\u00e9f\u00e9rences");
+			titlesNotToTranslate.get(Language.FR).add("Compl\u00e9ments");
+
+			this.titlesNotToTranslate.put(Language.IT, new HashSet<String>());
+			titlesNotToTranslate.get(Language.IT).add("Bibliografia");
+			titlesNotToTranslate.get(Language.IT).add("Altri progetti");
+			titlesNotToTranslate.get(Language.IT).add("Documentari");
+			titlesNotToTranslate.get(Language.IT).add("Note");
+			titlesNotToTranslate.get(Language.IT).add("Collegamenti esterni");
+			titlesNotToTranslate.get(Language.IT).add("Voci correlate");
+
+			this.titlesNotToTranslate.put(Language.ES, new HashSet<String>());
+			titlesNotToTranslate.get(Language.ES).add("V\u00e9ase tambi\u00e9n");
+			titlesNotToTranslate.get(Language.ES).add("Referencias");
+			titlesNotToTranslate.get(Language.ES).add("Bibliograf\u00eda");
+			titlesNotToTranslate.get(Language.ES).add("Enlaces externos");
 		}
-		return titlesNotToTranslate;
+
+		return titlesNotToTranslate.get(language);
 	}
 
 	public static String getTOCName(Language language) {

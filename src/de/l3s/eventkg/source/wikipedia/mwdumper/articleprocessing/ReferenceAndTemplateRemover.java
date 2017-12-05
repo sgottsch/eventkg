@@ -435,24 +435,63 @@ public class ReferenceAndTemplateRemover {
 					}
 				}
 
-				if (m.start() >= 3 && !(pref = text.substring(m.start() - 3, m.start())).endsWith("\n")
-						&& (pref = pref.trim()).length() == 3) {
-					pref = pref.substring(0, 2);
-				}
-				if (text.length() >= m.end() + 6
-						&& ((succ = text.substring(m.end(), m.end() + 6)).toLowerCase().equals("</ref>")
-								|| succ.toLowerCase().equals("</Ref>"))) {
-					String refString = REF_BEGIN_STRING + groupText.substring(2, groupText.length() - 2)
-							+ REF_END_STRING;
-					refString = Matcher.quoteReplacement(refString);
-					m.appendReplacement(sb, refString);
+				// special case: "lang" template. The purpose of this template
+				// is to
+				// indicate that a span of text belongs to a particular
+				// language. Replace template with the text.
+				if (groupText.toLowerCase().startsWith("{{lang")) {
+					// e.g. "{{lang|fr|[[Abitibi-Témiscamingue|Abitibi]]}}" ->
+					// extract "[[Abitibi-Témiscamingue|Abitibi]]"
+					String newText = groupText.substring(groupText.indexOf("|") + 1);
+					newText = newText.substring(newText.indexOf("|") + 1);
+					newText = newText.replaceAll("}}", "");
+					m.appendReplacement(sb, newText);
 					changed = true;
-					continue;
+				} else if (groupText.toLowerCase().startsWith("{{as of")) {
+					// e.g. {{as of|2014}} -> extract As of 2014
+					groupText = groupText.replaceAll(" ", "");
+					String newText = "As of ";
+					String[] parts = groupText.split("\\|");
+					if (parts.length >= 2)
+						newText += parts[1];
+					if (parts.length >= 3)
+						newText += "-" + parts[2];
+					if (parts.length >= 4)
+						newText += "-" + parts[3];
+					newText = newText.replace("}}", "");
+					m.appendReplacement(sb, newText);
+					changed = true;
+				} else if (groupText.toLowerCase().startsWith("{{nihongo")) {
+					// e.g. "{{lang|fr|[[Abitibi-Témiscamingue|Abitibi]]}}" ->
+					// extract "[[Abitibi-Témiscamingue|Abitibi]]"
+					String newText = groupText.substring(groupText.indexOf("|") + 1);
+					newText = newText.substring(0, newText.indexOf("|"));
+					newText = newText.replaceAll("}}", "");
+					newText = newText.replaceAll("\\{\\{", "");
+					m.appendReplacement(sb, newText);
+					changed = true;
+				} else {
+
+					if (m.start() >= 3 && !(pref = text.substring(m.start() - 3, m.start())).endsWith("\n")
+							&& (pref = pref.trim()).length() == 3) {
+						pref = pref.substring(0, 2);
+					}
+					if (text.length() >= m.end() + 6
+							&& ((succ = text.substring(m.end(), m.end() + 6)).toLowerCase().equals("</ref>")
+									|| succ.toLowerCase().equals("</Ref>"))) {
+						String refString = REF_BEGIN_STRING + groupText.substring(2, groupText.length() - 2)
+								+ REF_END_STRING;
+						refString = Matcher.quoteReplacement(refString);
+						m.appendReplacement(sb, refString);
+						changed = true;
+						continue;
+					}
+					if (pref.equals("=="))
+						continue;
+					m.appendReplacement(sb, "");
+					changed = true;
 				}
-				if (pref.equals("=="))
-					continue;
-				m.appendReplacement(sb, "");
-				changed = true;
+
 			}
 			m.appendTail(sb);
 			text = sb.toString();

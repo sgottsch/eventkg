@@ -17,15 +17,19 @@ public class RedirectsTableCreator {
 
 		Config.init("config_eventkb_local.txt");
 
-		Map<Integer, String> redirectsWithIds = loadRedirects(Language.DE);
-		System.out.println(redirectsWithIds.keySet().size());
-		addLabelsToRedirects(redirectsWithIds, Language.DE);
+		// Map<Integer, String> redirectsWithIds = loadRedirects(Language.DE);
+		// System.out.println(redirectsWithIds.keySet().size());
+		// addLabelsToRedirects(redirectsWithIds, Language.DE);
+
+		Map<String, String> redirects = getRedirects(Language.DE);
+
+		System.out.println("Merkel: " + redirects.get("Merkel"));
 	}
 
 	public static Map<String, String> getRedirects(Language language) {
 		System.out.println("Load redirects.");
 		Map<Integer, String> redirectsWithIds = loadRedirects(language);
-		System.out.println("Load labels of redirect pages.");
+		System.out.println(redirectsWithIds.keySet().size() + " redirects. Load labels of redirect pages.");
 		Map<String, String> redirects = addLabelsToRedirects(redirectsWithIds, language);
 		System.out.println("Done loading redirects.");
 		return redirects;

@@ -329,7 +329,7 @@ public class TemporalRelationsCollector extends Extractor {
 						Date startTime;
 						try {
 							startTime = TimeTransformer.generateEarliestTimeForWikidata(timeString);
-							if (previousRelation != null)
+							if (previousRelation != null && startTime != null)
 								previousRelation.setStartTime(startTime);
 						} catch (ParseException e) {
 							e.printStackTrace();
@@ -339,7 +339,7 @@ public class TemporalRelationsCollector extends Extractor {
 						Date endTime;
 						try {
 							endTime = TimeTransformer.generateLatestTimeForWikidata(timeString);
-							if (previousRelation != null)
+							if (previousRelation != null && endTime != null)
 								previousRelation.setEndTime(endTime);
 						} catch (ParseException e) {
 							e.printStackTrace();

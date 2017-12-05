@@ -17,20 +17,49 @@ public class TimeTransformer {
 	private static SimpleDateFormat dbPediaDateFormat = new SimpleDateFormat("G yyyy-MM-dd", Locale.ENGLISH);
 
 	public static void main(String[] args) throws ParseException {
+
 		// System.out.println(new Date(Long.MAX_VALUE).toString());
 		// System.out.println(generateEarliestTimeForWikidata("00000001969-01-01T00:00:00"));
 		// System.out.println(generateEarliestTimeForWikidata("+00000001969-00-00T00:00:00Z"));
-		System.out.println(generateTimeForDBpedia("\"1618-05-23\"^^<http://www.w3.org/2001/XMLSchema#date>"));
-		System.out.println(generateEarliestTimeForWikidata("+00000002006-08-15T00:00:00Z"));
-		System.out.println(dbPediaDateFormat.format(generateEarliestTimeForWikidata("-00000000300-00-00T00:00:00Z")));
-		System.out.println(dbPediaDateFormat.format(generateEarliestTimeForWikidata("+00000000300-00-00T00:00:00Z")));
-		System.out.println(dbPediaDateFormat.format(generateLatestTimeForWikidata("-00000000300-00-00T00:00:00Z")));
-		System.out.println(dbPediaDateFormat.format(generateLatestTimeForWikidata("+00000000300-00-00T00:00:00Z")));
-		System.out.println(dbPediaDateFormat.format(generateLatestTimeForWikidata("-00000002007-11-00T00:00:00Z")));
-		System.out.println(dbPediaDateFormat.format(generateLatestTimeForWikidata("+00000002007-11-00T00:00:00Z")));
+		// System.out.println(generateTimeForDBpedia("\"1618-05-23\"^^<http://www.w3.org/2001/XMLSchema#date>"));
 
-		System.out.println(dbPediaDateFormat
-				.format(generateEarliestTimeFromXsd("\"1618-##-##\"^^<http://www.w3.org/2001/XMLSchema#date>")));
+		// +00000002003-06-01T00:00:00Z
+
+		// System.out.println(generateEarliestTimeForWikidata("10;+00000002003-06-01T00:00:00Z"));
+		// System.out.println(generateLatestTimeForWikidata("10;+00000002003-06-01T00:00:00Z"));
+		//
+		// System.out.println(generateEarliestTimeForWikidata("9;+00000002003-01-01T00:00:00Z"));
+		// System.out.println(generateLatestTimeForWikidata("9;+00000002003-01-01T00:00:00Z"));
+		//
+		// System.out.println(generateEarliestTimeForWikidata("8;+00000001980-01-01T00:00:00Z"));
+		// System.out.println(generateLatestTimeForWikidata("8;+00000001900-01-01T00:00:00Z"));
+
+		// System.out.println(generateLatestTimeForWikidata("7;-00000002500-00-00T00:00:00Z"));
+
+		System.out.println(generateEarliestTimeForWikidata("8;+00000001940-01-01T00:00:00Z"));
+		System.out.println(generateLatestTimeForWikidata("8;+00000001940-01-01T00:00:00Z"));
+		System.out.println("---");
+		System.out.println(generateEarliestTimeForWikidata("8;-00000001940-01-01T00:00:00Z"));
+		System.out.println(generateLatestTimeForWikidata("8;-00000001940-01-01T00:00:00Z"));
+
+		// System.out.println(generateEarliestTimeForWikidata("7;-00000001178-00-00T00:00:00Z"));
+		// System.out.println(generateLatestTimeForWikidata("7;-00000001178-00-00T00:00:00Z"));
+		// System.out.println(generateEarliestTimeForWikidata("8;+00000001980-01-01T00:00:00Z"));
+		// System.out.println(generateLatestTimeForWikidata("8;+00000001980-01-01T00:00:00Z"));
+		// System.out.println(generateEarliestTimeForWikidata("3;-13798000000-00-00T00:00:00Z"));
+		// System.out.println(generateLatestTimeForWikidata("3;-13798000000-00-00T00:00:00Z"));
+
+		// System.out.println(generateEarliestTimeForWikidata("11;+00000002006-08-15T00:00:00Z"));
+		// System.out.println(generateLatestTimeForWikidata("9;+00000002006-00-00T00:00:00Z"));
+		// System.out.println(dbPediaDateFormat.format(generateEarliestTimeForWikidata("11;-00000000300-00-00T00:00:00Z")));
+		// System.out.println(dbPediaDateFormat.format(generateEarliestTimeForWikidata("11;+00000000300-00-00T00:00:00Z")));
+		// System.out.println(dbPediaDateFormat.format(generateLatestTimeForWikidata("11;-00000000300-00-00T00:00:00Z")));
+		// System.out.println(dbPediaDateFormat.format(generateLatestTimeForWikidata("11;+00000000300-00-00T00:00:00Z")));
+		// System.out.println(dbPediaDateFormat.format(generateLatestTimeForWikidata("11;-00000002007-11-00T00:00:00Z")));
+		// System.out.println(dbPediaDateFormat.format(generateLatestTimeForWikidata("11;+00000002007-11-00T00:00:00Z")));
+		//
+		// System.out.println(dbPediaDateFormat
+		// .format(generateEarliestTimeFromXsd("\"1618-##-##\"^^<http://www.w3.org/2001/XMLSchema#date>")));
 
 	}
 
@@ -54,16 +83,60 @@ public class TimeTransformer {
 		return dbPediaDateFormat.parse(timeString);
 	}
 
-	public static Date generateEarliestTimeForWikidata(String timeString) throws ParseException {
+	public static Date generateEarliestTimeForWikidata(String timeAndPrecisionString) throws ParseException {
 
-		// ignore empty dates
-		if (timeString.startsWith("00000000000"))
-			return null;
+		// in the case of BC, we need to swap earliest and latest.
+		// Example
+		// the decade of "1940"
+		// a) 1940 AD
+		// Jan 1, 1940 - Dec 31, 1949
+		// b) 1940 BC
+		// Jan 1, 1949 - Dec 31, 1940
+
+		String timeString = timeAndPrecisionString.split(";")[1];
 
 		int era = 1;
 		if (timeString.startsWith("-"))
 			era = -1;
 		timeString = timeString.substring(1);
+
+		if (era == 1) {
+			return generateEarliestTimeForWikidata(timeAndPrecisionString, 1);
+		} else {
+			Date date1 = generateEarliestTimeForWikidata(timeAndPrecisionString, -1);
+			if (date1 == null)
+				return null;
+			Calendar calendar1 = new GregorianCalendar();
+			calendar1.setTime(date1);
+			int day = calendar1.get(Calendar.DAY_OF_MONTH);
+			int month = calendar1.get(Calendar.MONTH) + 1;
+
+			Date date2 = generateLatestTimeForWikidata(timeAndPrecisionString, -1);
+			if (date2 == null)
+				return null;
+			Calendar calendar2 = new GregorianCalendar();
+			calendar2.setTime(date2);
+			int year = calendar2.get(Calendar.YEAR);
+
+			// day and month from earliest. Year from latest.
+			return wikidataDateFormat.parse("BC " + year + "-" + month + "-" + day);
+		}
+	}
+
+	public static Date generateEarliestTimeForWikidata(String timeAndPrecisionString, int era) throws ParseException {
+
+		String timeString = timeAndPrecisionString.split(";")[1];
+		timeString = timeString.substring(1);
+		int precision = Integer.valueOf(timeAndPrecisionString.split(";")[0]);
+
+		// we do not need to care about the precision. Because the beginning is
+		// always the given date. It does not matter whether it happened on the
+		// first day or it is just the notation for a whole month (which is
+		// also the first day in the start time)
+
+		// ignore empty dates
+		if (precision < 6 || timeString.startsWith("00000000000"))
+			return null;
 
 		// remove time, only keep date
 		timeString = timeString.substring(0, timeString.indexOf("T"));
@@ -80,25 +153,108 @@ public class TimeTransformer {
 		return wikidataDateFormat.parse(timeString);
 	}
 
-	public static Date generateLatestTimeForWikidata(String timeString) throws ParseException {
+	public static Date generateLatestTimeForWikidata(String timeAndPrecisionString) throws ParseException {
 
-		// ignore empty dates
-		if (timeString.startsWith("00000000000"))
-			return null;
+		// in the case of BC, we need to swap earliest and latest.
+		// Example
+		// the decade of "1940"
+		// a) 1940 AD
+		// Jan 1, 1940 - Dec 31, 1949
+		// b) 1940 BC
+		// Jan 1, 1949 - Dec 31, 1940
+
+		String timeString = timeAndPrecisionString.split(";")[1];
 
 		int era = 1;
 		if (timeString.startsWith("-"))
 			era = -1;
 		timeString = timeString.substring(1);
 
+		if (era == 1) {
+			return generateLatestTimeForWikidata(timeAndPrecisionString, 1);
+		} else {
+			Date date1 = generateLatestTimeForWikidata(timeAndPrecisionString, -1);
+			if (date1 == null)
+				return null;
+			Calendar calendar1 = new GregorianCalendar();
+			calendar1.setTime(date1);
+			int day = calendar1.get(Calendar.DAY_OF_MONTH);
+			int month = calendar1.get(Calendar.MONTH) + 1;
+
+			Date date2 = generateEarliestTimeForWikidata(timeAndPrecisionString, -1);
+			if (date2 == null)
+				return null;
+			Calendar calendar2 = new GregorianCalendar();
+			calendar2.setTime(date2);
+			int year = calendar2.get(Calendar.YEAR);
+
+			// day and month from earliest. Year from latest.
+			return wikidataDateFormat.parse("BC " + year + "-" + month + "-" + day);
+		}
+
+	}
+
+	public static Date generateLatestTimeForWikidata(String timeAndPrecisionString, int era) throws ParseException {
+
+		// System.out.println("\n---\ngenerateLatestTimeForWikidata: " +
+		// timeAndPrecisionString + "\n");
+
+		String timeString = timeAndPrecisionString.split(";")[1];
+		timeString = timeString.substring(1);
+		int precision = Integer.valueOf(timeAndPrecisionString.split(";")[0]);
+
+		// precision values
+		// 0: billion years
+		// 1: hundred million years
+		// 2-5: ...
+		// 6: millenia
+		// 7: century
+		// 8: decade
+		// 9: year
+		// 10: month
+		// 11: day
+		// 12: hour
+		// 13: minute
+		// 14: seconds
+
+		// ignore empty dates
+		if (precision < 6 || timeString.startsWith("00000000000"))
+			return null;
+
 		// remove time, only keep date
 		timeString = timeString.substring(0, timeString.indexOf("T"));
-
+		// replace "00" month with december
 		timeString = timeString.replaceAll("-00-", "-12-");
+		if (precision < 10)
+			timeString = timeString.replaceAll("-01-", "-12-");
 
 		long year = Long.valueOf(timeString.substring(0, timeString.indexOf("-")));
 		int month = Integer.valueOf(timeString.substring(timeString.indexOf("-") + 1, timeString.lastIndexOf("-")));
-		timeString = timeString.replaceAll("-00", "-" + String.valueOf(getLastDayInMonth(year, month, era)));
+		// if no month is given: take the last possible one
+
+		// ripple through the year. Start at the right. If precision is bad,
+		// replace last number with a 9
+		int placeFromRight = 1;
+		boolean changed = true;
+		int currentPrecision = 8;
+
+		while (changed) {
+			changed = false;
+			if (getNthLastDigit(year, placeFromRight) == 0 && precision <= currentPrecision) {
+				year = year + (long) (Math.pow(10, placeFromRight - 1) * 9);
+				changed = true;
+			}
+			currentPrecision -= 1;
+			placeFromRight += 1;
+		}
+
+		// day
+		timeString = timeString.replaceAll("-00$", "-" + String.valueOf(getLastDayInMonth(year, month, era)));
+		if (precision < 11)
+			timeString = timeString.replaceAll("-01$", "-" + String.valueOf(getLastDayInMonth(year, month, era)));
+
+		// replace year of time string with new year
+		timeString = year + "-" + timeString.substring(timeString.indexOf("-") + 1);
 
 		if (era == -1)
 			timeString = "BC " + timeString;
@@ -106,6 +262,10 @@ public class TimeTransformer {
 			timeString = "AD " + timeString;
 
 		return wikidataDateFormat.parse(timeString);
+	}
+
+	private static long getNthLastDigit(long number, int n) {
+		return (long) (Math.abs(number) / Math.pow(10, n - 1)) % 10;
 	}
 
 	public static Date generateEarliestTimeFromXsd(String timeString) throws ParseException {

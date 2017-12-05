@@ -27,6 +27,9 @@ public class TimesIntegrator extends Extractor {
 
 	List<DataSet> dataSetsByTrustWorthiness = new ArrayList<DataSet>();
 
+	private Map<Entity, Set<StartTime>> newStartTimes = new HashMap<Entity, Set<StartTime>>();
+	private Map<Entity, Set<EndTime>> newEndTimes = new HashMap<Entity, Set<EndTime>>();
+
 	public TimesIntegrator(List<Language> languages) {
 		super("TimesIntegrator", Source.ALL, "Integrate start and end times into a common graph.", languages);
 	}
@@ -41,9 +44,36 @@ public class TimesIntegrator extends Extractor {
 		integrateTimesByTime();
 		System.out.println("Integrate times by majority/trust.");
 		integrateTimesByTrust();
+
+		// Important: add new integrated times when both itnegrations are
+		// finished. Otherwise, the second procedure could be influenced by the
+		// first one.
+		addIntegratedTimesToDataStore();
+	}
+
+	private void addIntegratedTimesToDataStore() {
+
+		for (Entity entity : this.newStartTimes.keySet()) {
+			for (StartTime newStartTime : this.newStartTimes.get(entity)) {
+				DataStore.getInstance().addStartTime(newStartTime);
+				entity.addStartTime(newStartTime.getStartTime(), newStartTime.getDataSet());
+				entity.getStartTimesWithDataSets().get(newStartTime.getStartTime()).add(newStartTime.getDataSet());
+			}
+		}
+
+		for (Entity entity : this.newEndTimes.keySet()) {
+			for (EndTime newEndTime : this.newEndTimes.get(entity)) {
+				DataStore.getInstance().addEndTime(newEndTime);
+				entity.addEndTime(newEndTime.getEndTime(), newEndTime.getDataSet());
+				entity.getEndTimesWithDataSets().get(newEndTime.getEndTime()).add(newEndTime.getDataSet());
+			}
+		}
 	}
 
 	private void integrateTimesByTime() {
+
+		// strategy: Take the earliest start and the latest end time from all
+		// sources
 
 		Set<Entity> entitiesAndEvents = new HashSet<Entity>();
 		entitiesAndEvents.addAll(DataStore.getInstance().getEntities());
@@ -56,8 +86,9 @@ public class TimesIntegrator extends Extractor {
 				Date startTime = earliestStartTime(entity.getStartTimesWithDataSets());
 				if (startTime == null)
 					System.out.println("Start time null: integrateTimesByTime - " + entity.getWikidataId());
-				DataStore.getInstance().addStartTime(new StartTime(entity,
-						DataSets.getInstance().getDataSetWithoutLanguage(Source.INTEGRATED_TIME_2), startTime));
+
+				addTemporaryStartTime(entity,
+						DataSets.getInstance().getDataSetWithoutLanguage(Source.INTEGRATED_TIME_2), startTime);
 			}
 
 			// take the latest end time
@@ -65,8 +96,9 @@ public class TimesIntegrator extends Extractor {
 				Date endTime = latestEndTime(entity.getEndTimesWithDataSets());
 				if (endTime == null)
 					System.out.println("End time null: integrateTimesByTime" + entity.getWikidataId());
-				DataStore.getInstance().addEndTime(new EndTime(entity,
-						DataSets.getInstance().getDataSetWithoutLanguage(Source.INTEGRATED_TIME_2), endTime));
+
+				addTemporaryEndTime(entity, DataSets.getInstance().getDataSetWithoutLanguage(Source.INTEGRATED_TIME_2),
+						endTime);
 			}
 
 		}
@@ -98,6 +130,9 @@ public class TimesIntegrator extends Extractor {
 	}
 
 	private void integrateTimesByTrust() {
+
+		// strategy: first priority: dates mentioned in multiple sources
+		// 2nd prio: Dates mentioned by more trustful source.
 
 		boolean print = false;
 
@@ -137,8 +172,8 @@ public class TimesIntegrator extends Extractor {
 			if (entity.getStartTimesWithDataSets() != null && !entity.getStartTimesWithDataSets().isEmpty()) {
 				startTime = integrateTimesOfEvent(entity.getStartTimesWithDataSets(), DateType.START, null);
 				if (startTime != null)
-					DataStore.getInstance().addStartTime(new StartTime(entity,
-							DataSets.getInstance().getDataSetWithoutLanguage(Source.INTEGRATED_TIME), startTime));
+					addTemporaryStartTime(entity,
+							DataSets.getInstance().getDataSetWithoutLanguage(Source.INTEGRATED_TIME), startTime);
 			}
 
 			if (print && startTime != null)
@@ -192,8 +227,8 @@ public class TimesIntegrator extends Extractor {
 				System.out.println("After, end: " + sdf.format(endTime));
 
 			if (endTime != null)
-				DataStore.getInstance().addEndTime(new EndTime(entity,
-						DataSets.getInstance().getDataSetWithoutLanguage(Source.INTEGRATED_TIME), endTime));
+				addTemporaryEndTime(entity, DataSets.getInstance().getDataSetWithoutLanguage(Source.INTEGRATED_TIME),
+						endTime);
 
 		}
 	}
@@ -201,6 +236,10 @@ public class TimesIntegrator extends Extractor {
 	private void initDataSetsByTrustWorthiness() {
 		dataSetsByTrustWorthiness.add(DataSets.getInstance().getDataSetWithoutLanguage(Source.YAGO));
 		dataSetsByTrustWorthiness.add(DataSets.getInstance().getDataSetWithoutLanguage(Source.WCE));
+
+		// TODO: Not working? Check example
+		// "Withdrawal_of_U.S._troops_from_Iraq"@en:
+		// http://eventkginterface.l3s.uni-hannover.de/sparql?default-graph-uri=&query=PREFIX+eventKG-s%3A+%3Chttp%3A%2F%2FeventKG.l3s.uni-hannover.de%2Fschema%2F%3E%0D%0APREFIX+rdf%3A+%3Chttp%3A%2F%2Fwww.w3.org%2F1999%2F02%2F22-rdf-syntax-ns%23%3E%0D%0APREFIX+so%3A+%3Chttp%3A%2F%2Fschema.org%2F%3E%0D%0A%0D%0ASELECT+%3Fstart+%3Fg%0D%0AWHERE%0D%0A%7B%0D%0A+%3Fevent+rdf%3Atype+eventKG-s%3AEvent+.%0D%0A+%3Fevent+rdf%3Alabel+%22Withdrawal_of_U.S._troops_from_Iraq%22%40en+.%0D%0AGRAPH+%3Fg+%7B%3Fevent+so%3AstartTime+%3Fstart.%7D%0D%0A%7D%0D%0A&format=text%2Fhtml&timeout=0&debug=on
 
 		for (Language language : this.languages) {
 			if (language != Language.EN)
@@ -369,4 +408,28 @@ public class TimesIntegrator extends Extractor {
 		}
 		return null;
 	}
+
+	private void addTemporaryStartTime(Entity entity, DataSet dataSet, Date startTime) {
+
+		System.out.println("add start: " + dataSet.getSource() + "\t" + startTime);
+
+		StartTime newStartTime = new StartTime(entity, dataSet, startTime);
+		if (!this.newStartTimes.containsKey(entity))
+			this.newStartTimes.put(entity, new HashSet<StartTime>());
+
+		this.newStartTimes.get(entity).add(newStartTime);
+		entity.getStartTimes().remove(newStartTime);
+		entity.getStartTimesWithDataSets().get(startTime).remove(dataSet);
+	}
+
+	private void addTemporaryEndTime(Entity entity, DataSet dataSet, Date endTime) {
+		EndTime newEndTime = new EndTime(entity, dataSet, endTime);
+		if (!this.newEndTimes.containsKey(entity))
+			this.newEndTimes.put(entity, new HashSet<EndTime>());
+
+		this.newEndTimes.get(entity).add(newEndTime);
+		entity.getEndTimes().remove(newEndTime);
+		entity.getEndTimesWithDataSets().get(endTime).remove(dataSet);
+	}
+
 }

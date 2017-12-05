@@ -80,7 +80,7 @@ public class TemporalPropertiesExtractor implements EntityDocumentDumpProcessor 
 		// return value.getYear() + "-" + value.getMonth() + "-" +
 		// value.getDay() + "-" + value.getHour() + "-"
 		// + value.getMinute() + "-" + value.getSecond();
-		return DataFormatter.formatTimeISO8601(value);
+		return value.getPrecision() + ";" + DataFormatter.formatTimeISO8601(value);
 	}
 
 	@Override

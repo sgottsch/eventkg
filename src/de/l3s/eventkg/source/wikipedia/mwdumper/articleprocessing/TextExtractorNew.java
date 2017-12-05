@@ -84,6 +84,9 @@ public class TextExtractorNew {
 		enMap.put(2604, "Abated");
 		enMap.put(18224, "Known Space");
 		enMap.put(18749714, "International rankings of Costa Rica");
+		enMap.put(1223569, "William Griffiths (VC)");
+		enMap.put(26913444, "Ajloun National Private University");
+		enMap.put(2102605, "Jun Akiyama");
 		exampleTexts.put(Language.EN, enMap);
 
 		Map<Integer, String> deMap = new HashMap<Integer, String>();
@@ -112,8 +115,8 @@ public class TextExtractorNew {
 		ptMap.put(327699, "Lista de filmes de terror");
 		exampleTexts.put(Language.PT, ptMap);
 
-		Language language = Language.DE;
-		int id = 1624;
+		Language language = Language.EN;
+		int id = 26913444;
 
 		String text = IOUtils.toString(
 				TextExtractorNew.class.getResourceAsStream("/resource/wikipage/" + language.getLanguage() + "/" + id),
@@ -132,6 +135,14 @@ public class TextExtractorNew {
 		// linkNames.add(link.getName());
 		// System.out.println(StringUtils.join(linkNames, " "));
 		// }
+
+		for (Sentence sentence : extr.sentences) {
+			System.out.println(sentence.getText());
+			for (Link link : sentence.getLinks()) {
+				System.out.println(
+						"\t" + link.getName() + " | " + sentence.getText().substring(link.getStart(), link.getEnd()));
+			}
+		}
 
 		int high = 0;
 		String str = null;
@@ -290,9 +301,7 @@ public class TextExtractorNew {
 					}
 					levelBefore = level;
 					title = title.replaceAll("=+$", "").trim();
-					// TODO: Language
-					if (title.equals("See also") || title.equals("References") || title.equals("Further reading")
-							|| title.equals("External links"))
+					if (WikiWords.getInstance().getTitlesOfParagraphsNotToTranslate(language).contains(title))
 						break;
 					// if (title.equals("Images"))
 					// continue;
@@ -313,6 +322,15 @@ public class TextExtractorNew {
 					}
 					if (line.startsWith("[[" + WikiWords.getInstance().getCategoryLabel(language) + ":"))
 						break;
+
+					// Lists should consistently start with "* "
+					if (line.startsWith("*") && line.charAt(1) != ' ')
+						line = "* " + line.substring(1);
+					if (line.startsWith("#") && line.charAt(1) != ' ')
+						line = "# " + line.substring(1);
+					if (line.startsWith(";") && line.charAt(1) != ' ')
+						line = "; " + line.substring(1);
+
 					Paragraph pParagraph = new Paragraph(line, "P", id);
 					id += 1;
 					currentParagraph.addSubParagraph(pParagraph);
@@ -333,6 +351,7 @@ public class TextExtractorNew {
 	}
 
 	private void extractLinksFromParagraph(Paragraph paragraph) {
+
 		boolean changed = true;
 		while (changed) {
 			changed = false;
@@ -362,6 +381,7 @@ public class TextExtractorNew {
 					anchorText = linkName.substring(linkName.indexOf("|") + 1, linkName.length());
 					linkName = linkName.substring(0, linkName.indexOf("|"));
 				}
+
 				String insertedAnchorText = Matcher.quoteReplacement(anchorText);
 				m.appendReplacement(sb, insertedAnchorText);
 				if (linkName.equals("#"))
@@ -380,7 +400,9 @@ public class TextExtractorNew {
 				Link link = null;
 				try {
 					link = new Link(linkName, m.start() + offset, m.start() + offset + insertedAnchorText.length());
+
 					link.setAnchorText(insertedAnchorText);
+
 					if (!link.getName().contains("#"))
 						paragraph.addLink(link);
 				} catch (Exception e) {
@@ -440,6 +462,7 @@ public class TextExtractorNew {
 
 			List<Span> spans = splitIntoSentenceSpans(paragraph.getText());
 
+			int offset = 0;
 			for (Span span : spans) {
 
 				String text = span.getCoveredText(paragraph.getText()).toString();
@@ -451,6 +474,8 @@ public class TextExtractorNew {
 					Link link = it.next();
 					if (link.getStart() >= span.getStart() && link.getEnd() <= span.getEnd()) {
 						sentence.addLink(link);
+						link.setStart(link.getStart() + offset);
+						link.setEnd(link.getEnd() + offset);
 						it.remove();
 						linksInSentence.add(link);
 					}
@@ -470,6 +495,10 @@ public class TextExtractorNew {
 
 				for (Link link : linksInSentence)
 					output.addLinkEnriched(link.getName());
+
+				offset -= text.length() + 1;
+				// offset=-span.getStart();
+				// System.out.println(offset+"//"+span.getStart()+"//"+span.getEnd());
 			}
 
 			// TODO: Merge sentences for each link that is still in
@@ -691,12 +720,12 @@ public class TextExtractorNew {
 		}
 
 		String textOfFirstSentence = sentences.get(0).getText();
-		textOfFirstSentence = removeBrackets(textOfFirstSentence).trim();
+		textOfFirstSentence = removeBrackets(textOfFirstSentence, sentences.get(0)).trim();
 
 		// remove any " " in the first sentence
 		boolean changed = true;
 		while (changed) {
-			String newText = textOfFirstSentence.replaceAll("  ", " ");
+			String newText = textOfFirstSentence.replaceAll(" ", " ");
 			if (!newText.equals(textOfFirstSentence)) {
 				changed = true;
 				textOfFirstSentence = newText;
@@ -704,13 +733,12 @@ public class TextExtractorNew {
 				changed = false;
 		}
 		textOfFirstSentence = textOfFirstSentence.replaceAll(" ,", ",");
-
 		sentences.get(0).setText(textOfFirstSentence);
 
 		output.setFirstSentence(sentences.get(0).getText());
 	}
 
-	private String removeBrackets(String text) {
+	private String removeBrackets(String text, Sentence sentence) {
 
 		// remove all brackets and their content (e.g. "(abc)" from text. But
 		// don't remove it if it is part of the page title!
@@ -726,6 +754,8 @@ public class TextExtractorNew {
 
 		Matcher m = patternRoundBrackets.matcher(text);
 
+		Set<Integer> removedPositions = new HashSet<Integer>();
+
 		StringBuffer sb = new StringBuffer();
 		groupsLoop: while (m.find()) {
 			if (!forbiddenPositions.isEmpty()) {
@@ -733,11 +763,29 @@ public class TextExtractorNew {
 					if (forbiddenPositions.contains(i)) {
 						continue groupsLoop;
 					}
+					removedPositions.add(i);
 				}
 			}
 			m.appendReplacement(sb, Matcher.quoteReplacement(""));
 		}
 		m.appendTail(sb);
+		text = sb.toString();
+
+		// after removing bracket, avoid the case of " , "
+		Matcher m2 = Pattern.compile(" , ").matcher(text);
+		sb = new StringBuffer();
+		commaLoop: while (m2.find()) {
+			if (!forbiddenPositions.isEmpty()) {
+				for (int i = m2.start(); i < m2.start() + m2.group().length(); i++) {
+					if (forbiddenPositions.contains(i)) {
+						continue commaLoop;
+					}
+					removedPositions.add(i);
+				}
+			}
+			m2.appendReplacement(sb, Matcher.quoteReplacement(", "));
+		}
+		m2.appendTail(sb);
 		text = sb.toString();
 
 		m = patternSquareBrackets.matcher(text);
@@ -755,6 +803,32 @@ public class TextExtractorNew {
 		}
 		m.appendTail(sb);
 		text = sb.toString();
+
+		// correct links
+		for (Iterator<Link> it = sentence.getLinks().iterator(); it.hasNext();) {
+			Link link = it.next();
+
+			// remove link if its text was removed
+			Set<Integer> linkPositions = new HashSet<Integer>();
+
+			for (int i = link.getStart(); i < link.getEnd(); i++)
+				linkPositions.add(i);
+
+			if (Sets.intersects(linkPositions, removedPositions)) {
+				it.remove();
+			} else {
+				// shift the link to the left, if something was removed in front
+				int offset = 0;
+				for (int i = 0; i < link.getStart(); i++) {
+					if (removedPositions.contains(i))
+						offset += 1;
+				}
+
+				link.setStart(link.getStart() - offset);
+				link.setEnd(link.getEnd() - offset);
+			}
+
+		}
 
 		return text;
 	}
