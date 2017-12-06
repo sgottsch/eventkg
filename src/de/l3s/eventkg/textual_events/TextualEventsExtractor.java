@@ -24,8 +24,9 @@ import de.l3s.eventkg.integration.model.relation.DataSet;
 import de.l3s.eventkg.integration.model.relation.Description;
 import de.l3s.eventkg.integration.model.relation.EndTime;
 import de.l3s.eventkg.integration.model.relation.GenericRelation;
-import de.l3s.eventkg.integration.model.relation.Prefix;
 import de.l3s.eventkg.integration.model.relation.StartTime;
+import de.l3s.eventkg.integration.model.relation.prefix.PrefixEnum;
+import de.l3s.eventkg.integration.model.relation.prefix.PrefixList;
 import de.l3s.eventkg.meta.Language;
 import de.l3s.eventkg.meta.Source;
 import de.l3s.eventkg.pipeline.Config;
@@ -248,8 +249,9 @@ public class TextualEventsExtractor extends Extractor {
 				if (namedEvent == null) {
 					// completely new event
 				} else {
-					GenericRelation relation = new GenericRelation(event, dataSet, Prefix.SCHEMA_ORG, "subEvent",
-							namedEvent, null, false);
+					GenericRelation relation = new GenericRelation(event, dataSet,
+							PrefixList.getInstance().getPrefix(PrefixEnum.SCHEMA_ORG), "subEvent", namedEvent, null,
+							false);
 					DataStore.getInstance().addGenericRelation(relation);
 				}
 			}

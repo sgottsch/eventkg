@@ -4,7 +4,8 @@ import de.l3s.eventkg.integration.DataSets;
 import de.l3s.eventkg.integration.model.Entity;
 import de.l3s.eventkg.integration.model.Event;
 import de.l3s.eventkg.integration.model.relation.GenericRelation;
-import de.l3s.eventkg.integration.model.relation.Prefix;
+import de.l3s.eventkg.integration.model.relation.prefix.PrefixEnum;
+import de.l3s.eventkg.integration.model.relation.prefix.PrefixList;
 import de.l3s.eventkg.meta.Language;
 import de.l3s.eventkg.meta.Source;
 
@@ -45,7 +46,7 @@ public class LinkedByCount {
 	public GenericRelation toGenericRelation() {
 		// we only store links where at least one event is involved
 		return new GenericRelation(event, DataSets.getInstance().getDataSet(this.language, Source.WIKIPEDIA),
-				Prefix.EVENT_KG_SCHEMA, "linked_by", entity, (double) count, false);
+				PrefixList.getInstance().getPrefix(PrefixEnum.EVENT_KG_SCHEMA), "linked_by", entity, (double) count, false);
 	}
 
 }

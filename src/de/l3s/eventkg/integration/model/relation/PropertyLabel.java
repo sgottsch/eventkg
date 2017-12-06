@@ -1,5 +1,6 @@
 package de.l3s.eventkg.integration.model.relation;
 
+import de.l3s.eventkg.integration.model.relation.prefix.Prefix;
 import de.l3s.eventkg.meta.Language;
 
 /**

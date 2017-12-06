@@ -13,8 +13,10 @@ import java.util.Set;
 import de.l3s.eventkg.integration.model.Entity;
 import de.l3s.eventkg.integration.model.Relation;
 import de.l3s.eventkg.integration.model.relation.GenericRelation;
-import de.l3s.eventkg.integration.model.relation.Prefix;
 import de.l3s.eventkg.integration.model.relation.PropertyLabel;
+import de.l3s.eventkg.integration.model.relation.prefix.Prefix;
+import de.l3s.eventkg.integration.model.relation.prefix.PrefixEnum;
+import de.l3s.eventkg.integration.model.relation.prefix.PrefixList;
 import de.l3s.eventkg.meta.Language;
 import de.l3s.eventkg.meta.Source;
 import de.l3s.eventkg.pipeline.Config;
@@ -73,13 +75,13 @@ public class TemporalRelationsCollector extends Extractor {
 			// TODO: Find better solution
 			switch (relation.getSource()) {
 			case WIKIDATA:
-				prefix = Prefix.WIKIDATA_PROPERTY;
+				prefix = PrefixList.getInstance().getPrefix(PrefixEnum.WIKIDATA_PROPERTY);
 				break;
 			case YAGO:
-				prefix = Prefix.YAGO;
+				prefix = PrefixList.getInstance().getPrefix(PrefixEnum.YAGO);
 				break;
 			case DBPEDIA: {
-				prefix = Prefix.DBPEDIA_ONTOLOGY;
+				prefix = PrefixList.getInstance().getPrefix(PrefixEnum.DBPEDIA_ONTOLOGY);
 
 				// TODO: Maybe add the DBpedia "Infobox Properties Mapped"
 				// file to get language-specific properties.
@@ -113,10 +115,10 @@ public class TemporalRelationsCollector extends Extractor {
 			}
 
 			if (relation.getProperty().startsWith("rdf-schema#")) {
-				prefix = Prefix.RDFS;
+				prefix = PrefixList.getInstance().getPrefix(PrefixEnum.RDFS);
 				relation.setProperty(relation.getProperty().substring(relation.getProperty().indexOf("#") + 1));
 			} else if (relation.getProperty().startsWith("owl#")) {
-				prefix = Prefix.OWL;
+				prefix = PrefixList.getInstance().getPrefix(PrefixEnum.OWL);
 				relation.setProperty(relation.getProperty().substring(relation.getProperty().indexOf("#") + 1));
 			}
 

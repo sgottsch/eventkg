@@ -17,8 +17,9 @@ import de.l3s.eventkg.integration.model.relation.DataSet;
 import de.l3s.eventkg.integration.model.relation.EndTime;
 import de.l3s.eventkg.integration.model.relation.GenericRelation;
 import de.l3s.eventkg.integration.model.relation.Location;
-import de.l3s.eventkg.integration.model.relation.Prefix;
 import de.l3s.eventkg.integration.model.relation.StartTime;
+import de.l3s.eventkg.integration.model.relation.prefix.PrefixEnum;
+import de.l3s.eventkg.integration.model.relation.prefix.PrefixList;
 import de.l3s.eventkg.meta.Language;
 import de.l3s.eventkg.meta.Source;
 import de.l3s.eventkg.pipeline.Config.TimeSymbol;
@@ -454,8 +455,8 @@ public class AllEventPagesDataSet {
 				String dataSetId = parts[4];
 				DataSet dataSet = DataSets.getInstance().getDataSetById(dataSetId);
 
-				GenericRelation relation = new GenericRelation(event2, dataSet, Prefix.SCHEMA_ORG, "subEvent", event1,
-						null, false);
+				GenericRelation relation = new GenericRelation(event2, dataSet,
+						PrefixList.getInstance().getPrefix(PrefixEnum.SCHEMA_ORG), "subEvent", event1, null, false);
 				DataStore.getInstance().addGenericRelation(relation);
 
 			}

@@ -3,6 +3,7 @@ package de.l3s.eventkg.integration.model.relation;
 import java.util.Date;
 
 import de.l3s.eventkg.integration.model.Entity;
+import de.l3s.eventkg.integration.model.relation.prefix.Prefix;
 import de.l3s.eventkg.meta.Source;
 
 public class GenericRelation extends RelationWithSource {

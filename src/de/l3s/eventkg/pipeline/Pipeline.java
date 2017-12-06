@@ -13,6 +13,7 @@ import de.l3s.eventkg.integration.LocationsIntegrator;
 import de.l3s.eventkg.integration.SubLocationsCollector;
 import de.l3s.eventkg.integration.TemporalRelationsCollector;
 import de.l3s.eventkg.integration.TimesIntegrator;
+import de.l3s.eventkg.integration.model.relation.prefix.PrefixList;
 import de.l3s.eventkg.meta.Language;
 import de.l3s.eventkg.meta.Source;
 import de.l3s.eventkg.source.currentevents.CurrentEventsRelationsExtraction;
@@ -183,7 +184,7 @@ public class Pipeline {
 			extractor.run();
 		}
 
-		DataStoreWriter outputWriter = new DataStoreWriter();
+		DataStoreWriter outputWriter = new DataStoreWriter(languages);
 		outputWriter.write();
 
 		System.out.println("Done.");
@@ -219,5 +220,7 @@ public class Pipeline {
 		DataSets.getInstance().addDataSetWithoutLanguage(Source.INTEGRATED_LOC, "http://eventkg.l3s.uni-hannover.de/");
 		// DataSets.getInstance().addDataSetWithoutLanguage(Source.INTEGRATED_LOC_2,
 		// "http://eventkg.l3s.uni-hannover.de/");
+
+		PrefixList.getInstance().init(languages);
 	}
 }
