@@ -249,7 +249,7 @@ public class TextualEventsExtractor extends Extractor {
 					// completely new event
 				} else {
 					GenericRelation relation = new GenericRelation(event, dataSet, Prefix.SCHEMA_ORG, "subEvent",
-							namedEvent, null);
+							namedEvent, null, false);
 					DataStore.getInstance().addGenericRelation(relation);
 				}
 			}

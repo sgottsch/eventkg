@@ -17,19 +17,24 @@ public class GenericRelation extends RelationWithSource {
 
 	private Double weight;
 
-//	private Map<Language, String> propertyLabels;
+	// private Map<Language, String> propertyLabels;
 
 	private Date startTime;
 
 	private Date endTime;
 
+	// if the relation is neither temporal nor involves at least one event, mark
+	// it here
+	private boolean isEntityRelation;
+
 	public GenericRelation(Entity subject, DataSet dataSet, Prefix prefix, String property, Entity object,
-			Double weight) {
+			Double weight, boolean isEntityRelation) {
 		super(subject, dataSet);
 		this.property = property;
 		this.object = object;
 		this.weight = weight;
 		this.prefix = prefix;
+		this.isEntityRelation = isEntityRelation;
 	}
 
 	public String getProperty() {
@@ -94,6 +99,14 @@ public class GenericRelation extends RelationWithSource {
 
 	public void setEndTime(Date endTime) {
 		this.endTime = endTime;
+	}
+
+	public boolean isEntityRelation() {
+		return isEntityRelation;
+	}
+
+	public void setEntityRelation(boolean isEntityRelation) {
+		this.isEntityRelation = isEntityRelation;
 	}
 
 }

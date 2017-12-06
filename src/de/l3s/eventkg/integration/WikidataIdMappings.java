@@ -37,42 +37,55 @@ public class WikidataIdMappings {
 
 	public void load() {
 		loadWikidataIdMapping();
+		loadWikidataLabels();
 		loadWikidataPropertyIdMapping();
 		loadTemporalProperties();
 	}
 
-	// private void loadWikidataLabels() {
-	//
-	// for (Language language : this.languages) {
-	//
-	// BufferedReader br = null;
-	// try {
-	// br = FileLoader.getReader(FileName.WIKIDATA_LABELS, language);
-	//
-	// String line;
-	// while ((line = br.readLine()) != null) {
-	//
-	// String[] parts = line.split("\t");
-	//
-	// if(parts[0].equals("Q17703499"))
-	// System.out.println("STRANGE");
-	//
-	// wikidataIdsThatHaveLabels.add(parts[0]);
-	//
-	// }
-	// } catch (IOException e) {
-	// e.printStackTrace();
-	// } finally {
-	// try {
-	// br.close();
-	// } catch (IOException e) {
-	// e.printStackTrace();
-	// }
-	// }
-	//
-	// }
-	//
-	// }
+	private void loadWikidataLabels() {
+
+		for (Language language : this.languages) {
+
+			System.out
+					.println("Load Wikidata mapping for the " + language.getLanguageAdjective() + " Wikidata labels.");
+
+			BufferedReader br = null;
+			try {
+				br = FileLoader.getReader(FileName.WIKIDATA_LABELS, language);
+
+				String line;
+				while ((line = br.readLine()) != null) {
+
+					String[] parts = line.split("\t");
+
+					String wikidataId = parts[0];
+					String label = parts[1].trim();
+
+					if (label.isEmpty())
+						continue;
+
+					Entity entity = this.entitiesByWikidataIds.get(wikidataId);
+					if (entity == null) {
+						entity = new Entity(wikidataId);
+						DataStore.getInstance().addEntity(entity);
+						this.entitiesByWikidataIds.put(wikidataId, entity);
+					}
+
+					entity.addWikidataLabel(language, label);
+				}
+			} catch (IOException e) {
+				e.printStackTrace();
+			} finally {
+				try {
+					br.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+
+		}
+
+	}
 
 	private void loadWikidataIdMapping() {
 

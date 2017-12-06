@@ -22,6 +22,7 @@ import de.l3s.eventkg.integration.model.relation.StartTime;
 import de.l3s.eventkg.meta.Language;
 import de.l3s.eventkg.meta.Source;
 import de.l3s.eventkg.pipeline.Config.TimeSymbol;
+import de.l3s.eventkg.source.yago.util.YAGOLabelExtractor;
 import de.l3s.eventkg.util.FileLoader;
 import de.l3s.eventkg.util.FileName;
 import de.l3s.eventkg.util.TimeTransformer;
@@ -29,8 +30,10 @@ import de.l3s.eventkg.util.TimeTransformer;
 public class AllEventPagesDataSet {
 
 	private Map<Language, Map<String, Event>> eventsByWikipediaLabel;
-
 	private Map<String, Event> eventsByWikidataId;
+
+	private Map<String, Entity> entitiesWithExistenceTimeByWikidataId;
+	private Map<Language, Map<String, Entity>> entitiesWithExistenceTimeByWikipediaLabel;
 
 	private Set<Event> events;
 
@@ -101,12 +104,42 @@ public class AllEventPagesDataSet {
 			}
 		}
 
+		System.out.println("Load entities with existence times.");
+		loadEntitiesWithExistenceTimes();
 		System.out.println("loadEventTimes");
 		loadEventTimes();
 		System.out.println("loadEventLocations");
 		loadEventLocations();
 		System.out.println("loadSubEvents");
 		loadSubEvent();
+	}
+
+	private void loadEntitiesWithExistenceTimes() {
+		this.entitiesWithExistenceTimeByWikidataId = new HashMap<String, Entity>();
+
+		this.entitiesWithExistenceTimeByWikipediaLabel = new HashMap<Language, Map<String, Entity>>();
+		for (Language language : this.languages) {
+			this.entitiesWithExistenceTimeByWikipediaLabel.put(language, new HashMap<String, Entity>());
+		}
+
+		for (StartTime startTime : DataStore.getInstance().getStartTimes()) {
+			Entity entity = startTime.getSubject();
+			this.entitiesWithExistenceTimeByWikidataId.put(entity.getWikidataId(), entity);
+			for (Language language : entity.getWikipediaLabels().keySet()) {
+				if (entity.getWikipediaLabel(language) != null)
+					entitiesWithExistenceTimeByWikipediaLabel.get(language).put(entity.getWikipediaLabel(language),
+							entity);
+			}
+		}
+		for (EndTime endTime : DataStore.getInstance().getEndTimes()) {
+			Entity entity = endTime.getSubject();
+			this.entitiesWithExistenceTimeByWikidataId.put(entity.getWikidataId(), entity);
+			for (Language language : entity.getWikipediaLabels().keySet()) {
+				if (entity.getWikipediaLabel(language) != null)
+					entitiesWithExistenceTimeByWikipediaLabel.get(language).put(entity.getWikipediaLabel(language),
+							entity);
+			}
+		}
 	}
 
 	private void loadEventTimes() {
@@ -128,7 +161,7 @@ public class AllEventPagesDataSet {
 		BufferedReader br = null;
 		try {
 			try {
-				br = FileLoader.getReader(FileName.YAGO_EVENT_TIMES);
+				br = FileLoader.getReader(FileName.YAGO_EXISTENCE_TIMES);
 			} catch (FileNotFoundException e1) {
 				e1.printStackTrace();
 			}
@@ -138,9 +171,11 @@ public class AllEventPagesDataSet {
 
 				String[] parts = line.split("\t");
 
-				String wikipediaLabel = parts[0].substring(1, parts[0].length() - 1).replaceAll(" ", "_");
+				YAGOLabelExtractor yagoLabelExtractor = new YAGOLabelExtractor(parts[0]);
+				yagoLabelExtractor.extractLabel();
 
-				Entity entity = this.wikidataIdMappings.getEntityByWikipediaLabel(Language.EN, wikipediaLabel);
+				Entity entity = this.wikidataIdMappings.getEntityByWikipediaLabel(yagoLabelExtractor.getLanguage(),
+						yagoLabelExtractor.getWikipediaLabel());
 
 				if (entity == null)
 					continue;
@@ -420,7 +455,7 @@ public class AllEventPagesDataSet {
 				DataSet dataSet = DataSets.getInstance().getDataSetById(dataSetId);
 
 				GenericRelation relation = new GenericRelation(event2, dataSet, Prefix.SCHEMA_ORG, "subEvent", event1,
-						null);
+						null, false);
 				DataStore.getInstance().addGenericRelation(relation);
 
 			}
@@ -466,4 +501,11 @@ public class AllEventPagesDataSet {
 		this.events = events;
 	}
 
+	public Set<String> getWikidataIdsOfEntitiesWithExistenceTime() {
+		return this.entitiesWithExistenceTimeByWikidataId.keySet();
+	}
+
+	public Entity getEntityWithExistenceTimeByWikipediaLabel(Language language, String wikipediaLabel) {
+		return entitiesWithExistenceTimeByWikipediaLabel.get(language).get(wikipediaLabel);
+	}
 }

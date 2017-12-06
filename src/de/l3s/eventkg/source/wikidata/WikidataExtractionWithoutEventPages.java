@@ -17,7 +17,7 @@ import de.l3s.eventkg.source.wikidata.processors.FactsWithTemporalSnaksProcessor
 import de.l3s.eventkg.source.wikidata.processors.LocationsExtractor;
 import de.l3s.eventkg.source.wikidata.processors.SubLocationsExtractor;
 import de.l3s.eventkg.source.wikidata.processors.TemporalPropertiesExtractor;
-import de.l3s.eventkg.source.wikidata.processors.TitlesAndDescriptionsExtractor;
+import de.l3s.eventkg.source.wikidata.processors.LabelsAndDescriptionsExtractor;
 
 /**
  * Runs through the Wikidata dump file to extract: <br>
@@ -45,9 +45,9 @@ public class WikidataExtractionWithoutEventPages extends Extractor {
 	public void run() {
 
 		// ID to label mapping
-		TitlesAndDescriptionsExtractor idToWikipediaMappingExtractor = null;
+		LabelsAndDescriptionsExtractor idToWikipediaMappingExtractor = null;
 		try {
-			idToWikipediaMappingExtractor = new TitlesAndDescriptionsExtractor(languages);
+			idToWikipediaMappingExtractor = new LabelsAndDescriptionsExtractor(languages);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

@@ -82,7 +82,7 @@ public class TemporalRelationsCollectorTest {
 				Entity entity2 = new Entity(entity2WikidataId);
 
 				previousRelation = new Relation(entity1, entity2, null, null, propertyWikidataId, Source.WIKIDATA,
-						Language.EN);
+						Language.EN, false);
 				relations.add(previousRelation);
 			}
 		}

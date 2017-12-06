@@ -28,8 +28,12 @@ public class Relation {
 
 	private Language sourceLanguage;
 
+	// if the relation is neither temporal nor involves at least one event, mark
+	// it here
+	private boolean isEntityRelation;
+
 	public Relation(Entity entity1, Entity entity2, Date startTime, Date endTime, String property, Source source,
-			Language sourceLanguage) {
+			Language sourceLanguage, boolean isEntityRelation) {
 		super();
 		this.entity1 = entity1;
 		this.entity2 = entity2;
@@ -126,6 +130,10 @@ public class Relation {
 
 	public void setSourceLanguage(Language sourceLanguage) {
 		this.sourceLanguage = sourceLanguage;
+	}
+
+	public boolean isEntityRelation() {
+		return isEntityRelation;
 	}
 
 }

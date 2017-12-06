@@ -32,7 +32,7 @@ import de.l3s.eventkg.source.wikipedia.WikipediaLinkCountsExtractor;
 import de.l3s.eventkg.source.wikipedia.WikipediaLinkSetsExtractor;
 import de.l3s.eventkg.source.yago.YAGOEventLocationsExtractor;
 import de.l3s.eventkg.source.yago.YAGOEventRelationsExtractor;
-import de.l3s.eventkg.source.yago.YAGOEventTimeExtractor;
+import de.l3s.eventkg.source.yago.YAGOExistenceTimeExtractor;
 import de.l3s.eventkg.textual_events.TextualEventsExtractor;
 
 public class Pipeline {
@@ -78,7 +78,8 @@ public class Pipeline {
 			System.out.println("Skip step 3: Integration step 1.");
 
 		if (steps.contains(4)) {
-			System.out.println("Step 4: Continue extraction -> Extract relations between events.");
+			System.out.println(
+					"Step 4: Continue extraction -> Extract relations between events and entities with existence times.");
 			pipeline.pipelineStep4();
 		} else
 			System.out.println("Skip step 4: Continue extraction -> Extract relations between events.");
@@ -111,7 +112,7 @@ public class Pipeline {
 		extractors.add(new EventsFromFileExtractor(languages));
 
 		// YAGO
-		extractors.add(new YAGOEventTimeExtractor(languages));
+		extractors.add(new YAGOExistenceTimeExtractor(languages));
 		extractors.add(new YAGOEventLocationsExtractor(languages));
 
 		// dbPedia

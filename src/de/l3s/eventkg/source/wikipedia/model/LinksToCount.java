@@ -43,8 +43,9 @@ public class LinksToCount {
 	}
 
 	public GenericRelation toGenericRelation() {
+		// we only store links where at least one event is involved
 		return new GenericRelation(event, DataSets.getInstance().getDataSet(this.language, Source.WIKIPEDIA),
-				Prefix.EVENT_KG_SCHEMA, "links_to", entity, (double) count);
+				Prefix.EVENT_KG_SCHEMA, "links_to", entity, (double) count, false);
 	}
 
 }

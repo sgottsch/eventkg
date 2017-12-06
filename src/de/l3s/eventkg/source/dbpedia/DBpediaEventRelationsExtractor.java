@@ -17,6 +17,7 @@ import de.l3s.eventkg.util.FileName;
 public class DBpediaEventRelationsExtractor extends Extractor {
 
 	private PrintWriter resultsWriter;
+	private PrintWriter entityResultsWriter;
 	private AllEventPagesDataSet allEventPagesDataSet;
 
 	public DBpediaEventRelationsExtractor(List<Language> languages, AllEventPagesDataSet allEventPagesDataSet) {
@@ -41,6 +42,7 @@ public class DBpediaEventRelationsExtractor extends Extractor {
 
 		try {
 			resultsWriter = FileLoader.getWriter(FileName.DBPEDIA_EVENT_RELATIONS, language);
+			entityResultsWriter = FileLoader.getWriter(FileName.DBPEDIA_ENTITY_RELATIONS, language);
 			br = FileLoader.getReader(FileName.DBPEDIA_MAPPINGS, language);
 
 			String line;
@@ -77,6 +79,11 @@ public class DBpediaEventRelationsExtractor extends Extractor {
 				if (this.allEventPagesDataSet.getEventByWikipediaLabel(language, subject) != null
 						|| this.allEventPagesDataSet.getEventByWikipediaLabel(language, object) != null) {
 					resultsWriter.write(subject + Config.TAB + property + Config.TAB + object + Config.NL);
+				} else if (this.allEventPagesDataSet.getEntityWithExistenceTimeByWikipediaLabel(language,
+						subject) != null
+						|| this.allEventPagesDataSet.getEntityWithExistenceTimeByWikipediaLabel(language,
+								object) != null) {
+					entityResultsWriter.write(subject + Config.TAB + property + Config.TAB + object + Config.NL);
 				}
 
 			}
@@ -86,6 +93,7 @@ public class DBpediaEventRelationsExtractor extends Extractor {
 			try {
 				br.close();
 				resultsWriter.close();
+				entityResultsWriter.close();
 			} catch (IOException e) {
 				e.printStackTrace();
 			}

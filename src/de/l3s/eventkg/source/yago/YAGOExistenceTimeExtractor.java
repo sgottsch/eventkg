@@ -17,7 +17,7 @@ import de.l3s.eventkg.pipeline.Extractor;
 import de.l3s.eventkg.util.FileLoader;
 import de.l3s.eventkg.util.FileName;
 
-public class YAGOEventTimeExtractor extends Extractor {
+public class YAGOExistenceTimeExtractor extends Extractor {
 
 	private PrintWriter resultsWriter;
 
@@ -31,11 +31,11 @@ public class YAGOEventTimeExtractor extends Extractor {
 		languages.add(Language.RU);
 		languages.add(Language.PT);
 
-		YAGOEventTimeExtractor e = new YAGOEventTimeExtractor(languages);
+		YAGOExistenceTimeExtractor e = new YAGOExistenceTimeExtractor(languages);
 		e.run();
 	}
 
-	public YAGOEventTimeExtractor(List<Language> languages) {
+	public YAGOExistenceTimeExtractor(List<Language> languages) {
 		super("YAGOEventTimeExtractor", Source.YAGO, "?", languages);
 	}
 
@@ -45,7 +45,7 @@ public class YAGOEventTimeExtractor extends Extractor {
 		BufferedReader br = null;
 
 		try {
-			this.resultsWriter = FileLoader.getWriter(FileName.YAGO_EVENT_TIMES);
+			this.resultsWriter = FileLoader.getWriter(FileName.YAGO_EXISTENCE_TIMES);
 
 			br = FileLoader.getReader(FileName.YAGO_DATE_FACTS);
 

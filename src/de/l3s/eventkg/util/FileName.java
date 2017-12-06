@@ -7,20 +7,20 @@ public enum FileName {
 	// YAGO
 
 	/**
-	 * All "<happenenedOnDate>" and "<startedOnDate>" relations from YAGO
+	 * All "<happenenedOnDate>" and "<startedOnDate>" relations from YAGO.
+	 * Update: now also died etc. for entities.
 	 */
-	YAGO_EVENT_TIMES("yago_event_times.txt", Source.YAGO, FileType.RESULTS, false, false, false),
+	YAGO_EXISTENCE_TIMES("yago_existence_times.txt", Source.YAGO, FileType.RESULTS, false, false, false),
 
 	/**
-	 * All "<<isLocatedIn>" and "<happenedIn>" relations (event as subject) from
+	 * All "<isLocatedIn>" and "<happenedIn>" relations (event as subject) from
 	 * YAGO
 	 */
 	YAGO_LOCATIONS("yago_locations.tsv", Source.YAGO, FileType.RESULTS, false, false, false),
 
-	/**
-	 * All "<happenenedOnDate>" and "<startedOnDate>" relations from YAGO
-	 */
 	YAGO_EVENT_FACTS("yago_event_facts.tsv", Source.YAGO, FileType.RESULTS, false, false, false),
+
+	YAGO_ENTITY_FACTS("yago_event_facts.tsv", Source.YAGO, FileType.RESULTS, false, false, false),
 
 	/**
 	 * All YAGO facts that are assigned temporal information by reification
@@ -110,6 +110,7 @@ public enum FileName {
 	WIKIDATA_TEMPORAL_FACTS("wikidata_temporal_facts.tsv", Source.WIKIDATA, FileType.RESULTS, false, false, false),
 
 	WIKIDATA_EVENT_RELATIONS("wikidata_event_relations.tsv", Source.WIKIDATA, FileType.RESULTS, false, false, false),
+	WIKIDATA_ENTITY_RELATIONS("wikidata_entity_relations.tsv", Source.WIKIDATA, FileType.RESULTS, false, false, false),
 
 	// Wikipedia Current Events
 	WCE_EVENTS("wce_events.tsv", Source.WCE, FileType.RESULTS, false, false, false),
@@ -142,18 +143,27 @@ public enum FileName {
 	 */
 	DBPEDIA_EVENT_RELATIONS("dbpedia_event_relations.tsv", Source.DBPEDIA, FileType.RESULTS, false, false, false),
 
+	/**
+	 * Triples where the subject and the object is an entity with existence time
+	 * (but no event invovled).
+	 */
+	DBPEDIA_ENTITY_RELATIONS("dbpedia_entity_relations.tsv", Source.DBPEDIA, FileType.RESULTS, false, false, false),
+
 	// Integrated results from multiple sources
 
 	/**
 	 * Wikipedia pages representing events
 	 */
 	ALL_EVENT_PAGES("all_event_pages.tsv", Source.ALL, FileType.RESULTS, false, false, false),
+	// ALL_ENTITIES_WITH_EXISTENCE_TIMES("all_entities_with_existence_times.tsv",
+	// Source.ALL, FileType.RESULTS, false, false, false),
 
 	ALL_TTL_EVENTS_WITH_TEXTS("events.nq", FileType.OUTPUT, false, false, false),
 	ALL_TTL_ENTITIES_WITH_TEXTS("entities.nq", FileType.OUTPUT, false, false, false),
 	ALL_TTL_EVENTS_BASE_RELATIONS("relations_base.nq", FileType.OUTPUT, false, false, false),
 	ALL_TTL_EVENTS_LINK_RELATIOINS("relations_links.nq", FileType.OUTPUT, false, false, false),
 	ALL_TTL_EVENTS_OTHER_RELATIONS("relations_other.nq", FileType.OUTPUT, false, false, false),
+	ALL_TTL_ENTITIES_OTHER_RELATIONS("relations_entities_other.nq", FileType.OUTPUT, false, false, false),
 	ALL_TTL_PROPERTY_LABELS("property_labels.nq", FileType.OUTPUT, false, false, false),
 	ALL_TTL_DATASETS("graphs.ttl", FileType.OUTPUT, false, false, false),
 
@@ -163,6 +173,10 @@ public enum FileName {
 	ALL_TTL_EVENTS_LINK_RELATIOINS_PREVIEW("relations_links_preview.nq", FileType.OUTPUT_PREVIEW, false, false, false),
 	ALL_TTL_PROPERTY_LABELS_PREVIEW("property_labels_preview.nq", FileType.OUTPUT_PREVIEW, false, false, false),
 	ALL_TTL_EVENTS_OTHER_RELATIONS_PREVIEW("relations_other_preview.nq", FileType.OUTPUT_PREVIEW, false, false, false),
+	ALL_TTL_ENTITIES_OTHER_RELATIONS_PREVIEW("relations_entities_other_preview.nq", FileType.OUTPUT_PREVIEW, false, false, false),
+
+	ALL_TTL_ENTITIES_WITH_TEXTS_PREVIOUS_VERSION("entities.nq", FileType.PREVIOUS_VERSION, false, false, false),
+	ALL_TTL_EVENTS_WITH_TEXTS_PREVIOUS_VERSION("events.nq", FileType.PREVIOUS_VERSION, false, false, false),
 
 	/**
 	 * Event pages with times
@@ -330,7 +344,8 @@ public enum FileName {
 		RESULTS,
 		META,
 		OUTPUT,
-		OUTPUT_PREVIEW;
+		OUTPUT_PREVIEW,
+		PREVIOUS_VERSION;
 	}
 
 }

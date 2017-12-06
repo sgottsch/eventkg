@@ -16,6 +16,7 @@ import de.l3s.eventkg.meta.Language;
 public class Entity {
 
 	protected Map<Language, String> wikipediaLabels = new HashMap<Language, String>();
+	protected Map<Language, Set<String>> wikidataLabels = new HashMap<Language, Set<String>>();
 
 	private String wikidataId;
 
@@ -70,6 +71,16 @@ public class Entity {
 		this.wikipediaLabels.put(language, wikipediaLabel);
 	}
 
+	public Set<String> getWikidataLabels(Language language) {
+		return wikidataLabels.get(language);
+	}
+
+	public void addWikidataLabel(Language language, String wikidataLabel) {
+		if (!this.wikidataLabels.containsKey(language))
+			this.wikidataLabels.put(language, new HashSet<String>());
+		this.wikidataLabels.get(language).add(wikidataLabel);
+	}
+
 	public String getWikidataId() {
 		return wikidataId;
 	}
@@ -109,6 +120,10 @@ public class Entity {
 		return wikipediaLabels;
 	}
 
+	public Map<Language, Set<String>> getWikidataLabels() {
+		return wikidataLabels;
+	}
+	
 	public Set<Entity> getSubLocations() {
 		return subLocations;
 	}

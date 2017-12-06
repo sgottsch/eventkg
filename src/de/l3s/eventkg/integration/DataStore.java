@@ -34,12 +34,13 @@ public class DataStore {
 
 	private Set<GenericRelation> linkRelations = new HashSet<GenericRelation>();
 
-	private Set<Label> labels = new HashSet<Label>();
+	private Set<Label> wikipediaLabels = new HashSet<Label>();
+	private Set<Label> wikidataLabels = new HashSet<Label>();
 
 	private Set<PropertyLabel> propertyLabels = new HashSet<PropertyLabel>();
 
 	private static DataStore instance;
-	
+
 	public static DataStore getInstance() {
 		if (instance == null) {
 			instance = new DataStore();
@@ -86,16 +87,24 @@ public class DataStore {
 		return linkRelations;
 	}
 
-	public Set<Label> getLabels() {
-		return labels;
+	public Set<Label> getWikipediaLabels() {
+		return wikipediaLabels;
 	}
 
 	public void addEvent(Event event) {
 		this.events.add(event);
 	}
 
-	public void addLabel(Label label) {
-		this.labels.add(label);
+	public void addWikipediaLabel(Label label) {
+		this.wikipediaLabels.add(label);
+	}
+
+	public Set<Label> getWikidataLabels() {
+		return wikidataLabels;
+	}
+
+	public void addWikidataLabel(Label label) {
+		this.wikidataLabels.add(label);
 	}
 
 	public void addAlias(Alias alias) {

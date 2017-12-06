@@ -106,6 +106,8 @@ public class RawDataDownLoader {
 		(new File(dataPath + "output/")).mkdirs();
 		(new File(dataPath + "output_preview/")).mkdirs();
 
+		(new File(dataPath + "previous_version/")).mkdirs();
+
 		for (Language language : languages) {
 			(new File(dataPath + "raw_data/dbpedia/" + language.getLanguage())).mkdirs();
 			(new File(dataPath + "results/dbpedia/" + language.getLanguage())).mkdirs();

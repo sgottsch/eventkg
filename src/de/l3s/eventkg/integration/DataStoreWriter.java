@@ -32,6 +32,8 @@ public class DataStoreWriter {
 	private DataStore dataStore;
 	private DataSets dataSets;
 
+	private boolean generateIdsFromPreviousEventKG = false;
+
 	private SimpleDateFormat standardFormat = new SimpleDateFormat("\"yyyy-MM-dd\"'^^xsd:date'");
 
 	public DataStoreWriter() {
@@ -40,6 +42,7 @@ public class DataStoreWriter {
 	}
 
 	public void write() {
+		init();
 		System.out.println("writeDataSets");
 		writeDataSets();
 		System.out.println("writeEvents");
@@ -56,6 +59,13 @@ public class DataStoreWriter {
 		writeLinkRelations();
 	}
 
+	private void init() {
+		if (generateIdsFromPreviousEventKG) {
+			// EntityIdGenerator idGenerator=new EntityIdGenerator();
+			// TODO
+		}
+	}
+
 	private void writePropertyLabels() {
 		PrintWriter writer = null;
 		PrintWriter writerPreview = null;
@@ -63,7 +73,7 @@ public class DataStoreWriter {
 			writer = FileLoader.getWriter(FileName.ALL_TTL_PROPERTY_LABELS);
 			writerPreview = FileLoader.getWriter(FileName.ALL_TTL_PROPERTY_LABELS_PREVIEW);
 			List<Prefix> prefixes = new ArrayList<Prefix>();
-			prefixes.add(Prefix.RDF);
+			prefixes.add(Prefix.RDFS);
 			prefixes.add(Prefix.EVENT_KG_SCHEMA);
 			for (String line : createIntro(prefixes)) {
 				writer.write(line + Config.NL);
@@ -75,7 +85,7 @@ public class DataStoreWriter {
 				lineNo += 1;
 				writeTriple(writer, writerPreview, lineNo,
 						propertyLabel.getPrefix().getAbbr() + propertyLabel.getProperty(),
-						Prefix.RDF.getAbbr() + "label", propertyLabel.getLabel(), true, propertyLabel.getDataSet(),
+						Prefix.RDFS.getAbbr() + "label", propertyLabel.getLabel(), true, propertyLabel.getDataSet(),
 						propertyLabel.getLanguage());
 			}
 
@@ -129,6 +139,7 @@ public class DataStoreWriter {
 
 			List<Prefix> prefixes = new ArrayList<Prefix>();
 			prefixes.add(Prefix.RDF);
+			prefixes.add(Prefix.RDFS);
 			prefixes.add(Prefix.EVENT_KG_SCHEMA);
 			prefixes.add(Prefix.DCTERMS);
 			prefixes.add(Prefix.WIKIDATA_ENTITY);
@@ -202,13 +213,24 @@ public class DataStoreWriter {
 				}
 			}
 
-			System.out.println("#labels: " + dataStore.getLabels().size() + ".");
+			System.out.println("#Wikipedia labels: " + dataStore.getWikipediaLabels().size() + ".");
 			lineNo = 0;
-			for (Label label : dataStore.getLabels()) {
+			for (Label label : dataStore.getWikipediaLabels()) {
 				if (label.getSubject().isEvent() || label.getSubject().getEventEntity() != null) {
 					lineNo += 1;
 					writeTriple(writer, writerPreview, lineNo, label.getSubject().getEventEntity().getId(),
-							Prefix.RDF.getAbbr() + "label", label.getLabel(), true, label.getDataSet(),
+							Prefix.RDFS.getAbbr() + "label", label.getLabel(), true, label.getDataSet(),
+							label.getLanguage());
+				}
+			}
+
+			System.out.println("#Wikidata labels: " + dataStore.getWikidataLabels().size() + ".");
+			lineNo = 0;
+			for (Label label : dataStore.getWikidataLabels()) {
+				if (!label.getSubject().isEvent() && label.getSubject().getEventEntity() == null) {
+					lineNo += 1;
+					writeTriple(writer, writerPreview, lineNo, label.getSubject().getId(),
+							Prefix.RDFS.getAbbr() + "label", label.getLabel(), true, label.getDataSet(),
 							label.getLanguage());
 				}
 			}
@@ -263,6 +285,7 @@ public class DataStoreWriter {
 
 			List<Prefix> prefixes = new ArrayList<Prefix>();
 			prefixes.add(Prefix.RDF);
+			prefixes.add(Prefix.RDFS);
 			prefixes.add(Prefix.EVENT_KG_SCHEMA);
 			prefixes.add(Prefix.DCTERMS);
 			prefixes.add(Prefix.DBPEDIA_RESOURCE_EN);
@@ -332,11 +355,21 @@ public class DataStoreWriter {
 			}
 
 			lineNo = 0;
-			for (Label label : dataStore.getLabels()) {
+			for (Label label : dataStore.getWikipediaLabels()) {
 				if (!label.getSubject().isEvent() && label.getSubject().getEventEntity() == null) {
 					lineNo += 1;
 					writeTriple(writer, writerPreview, lineNo, label.getSubject().getId(),
-							Prefix.RDF.getAbbr() + "label", label.getLabel(), true, label.getDataSet(),
+							Prefix.RDFS.getAbbr() + "label", label.getLabel(), true, label.getDataSet(),
+							label.getLanguage());
+				}
+			}
+
+			lineNo = 0;
+			for (Label label : dataStore.getWikidataLabels()) {
+				if (!label.getSubject().isEvent() && label.getSubject().getEventEntity() == null) {
+					lineNo += 1;
+					writeTriple(writer, writerPreview, lineNo, label.getSubject().getId(),
+							Prefix.RDFS.getAbbr() + "label", label.getLabel(), true, label.getDataSet(),
 							label.getLanguage());
 				}
 			}
@@ -520,7 +553,8 @@ public class DataStoreWriter {
 						relation.getDataSet());
 				writeTriple(writer, writerPreview, lineNo, relationId, Prefix.EVENT_KG_SCHEMA.getAbbr() + "property",
 						relation.getPrefix().getAbbr() + relation.getProperty(), false, relation.getDataSet());
-				writeTriple(writer, writerPreview, lineNo, relationId, Prefix.EVENT_KG_SCHEMA.getAbbr() + "number_of_links",
+				writeTriple(writer, writerPreview, lineNo, relationId,
+						Prefix.EVENT_KG_SCHEMA.getAbbr() + "number_of_links",
 						"\"" + String.valueOf(relation.getWeight().intValue()) + "\"^^xsd:nonNegativeInteger", false,
 						relation.getDataSet());
 
@@ -538,11 +572,16 @@ public class DataStoreWriter {
 
 	private void writeOtherRelations() {
 
-		PrintWriter writer = null;
-		PrintWriter writerPreview = null;
+		PrintWriter writerEventRelations = null;
+		PrintWriter writerEventRelationsPreview = null;
+		PrintWriter writerEntityRelations = null;
+		PrintWriter writerEntityRelationsPreview = null;
 		try {
-			writer = FileLoader.getWriter(FileName.ALL_TTL_EVENTS_OTHER_RELATIONS);
-			writerPreview = FileLoader.getWriter(FileName.ALL_TTL_EVENTS_OTHER_RELATIONS_PREVIEW);
+			writerEventRelations = FileLoader.getWriter(FileName.ALL_TTL_EVENTS_OTHER_RELATIONS);
+			writerEventRelationsPreview = FileLoader.getWriter(FileName.ALL_TTL_EVENTS_OTHER_RELATIONS_PREVIEW);
+			writerEntityRelations = FileLoader.getWriter(FileName.ALL_TTL_ENTITIES_OTHER_RELATIONS);
+			writerEntityRelationsPreview = FileLoader.getWriter(FileName.ALL_TTL_ENTITIES_OTHER_RELATIONS_PREVIEW);
+
 			List<Prefix> prefixes = new ArrayList<Prefix>();
 			// prefixes.add(Prefix.EVENT_KG_SCHEMA);
 			// prefixes.add(Prefix.RDF);
@@ -553,17 +592,32 @@ public class DataStoreWriter {
 				prefixes.add(prefix);
 
 			for (String line : createIntro(prefixes)) {
-				writer.write(line + Config.NL);
-				writerPreview.write(line + Config.NL);
+				writerEventRelations.write(line + Config.NL);
+				writerEventRelationsPreview.write(line + Config.NL);
 			}
 
 			int relationNo = 0;
-			int lineNo = 0;
+			int lineNoEventRelations = 0;
+			int lineNoEntityRelations = 0;
 			for (GenericRelation relation : dataStore.getGenericRelations()) {
 
 				Entity object = relation.getObject();
 				if (object.getEventEntity() != null)
 					object = object.getEventEntity();
+
+				PrintWriter writer = writerEventRelations;
+				PrintWriter writerPreview = writerEventRelations;
+				Integer lineNo = null;
+
+				if (relation.isEntityRelation()) {
+					writer = writerEntityRelations;
+					writerPreview = writerEntityRelationsPreview;
+					lineNoEntityRelations += 1;
+					lineNo = lineNoEntityRelations;
+				} else {
+					lineNoEventRelations += 1;
+					lineNo = lineNoEventRelations;
+				}
 
 				lineNo += 1;
 				String relationId = "<eventkg_relation_" + String.valueOf(relationNo) + ">";
@@ -601,8 +655,8 @@ public class DataStoreWriter {
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		} finally {
-			writer.close();
-			writerPreview.close();
+			writerEventRelations.close();
+			writerEventRelationsPreview.close();
 		}
 
 	}

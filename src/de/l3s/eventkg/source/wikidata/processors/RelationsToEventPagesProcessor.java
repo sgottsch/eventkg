@@ -23,20 +23,26 @@ public class RelationsToEventPagesProcessor implements EntityDocumentDumpProcess
 	public static final String TAB = "\t";
 
 	private int itemsWithEventCount = 0;
+	private int itemsWithEntityRelationCount = 0;
 
 	private int itemCount = 0;
 
 	private PrintStream outEventRelations;
+	private PrintStream outEntityRelations;
 
 	private Set<String> targetEventIds;
+	private Set<String> entitiesWithExistenceTimes;
 
 	private Set<String> forbiddenPropertyIds;
 	private Set<String> temporalPropertyIds;
 
 	public RelationsToEventPagesProcessor(AllEventPagesDataSet allEventPagesDataSet) {
 		this.targetEventIds = allEventPagesDataSet.getWikidataIdsOfAllEvents();
+		this.entitiesWithExistenceTimes = allEventPagesDataSet.getWikidataIdsOfEntitiesWithExistenceTime();
+
 		try {
 			outEventRelations = FileLoader.getPrintStream(FileName.WIKIDATA_EVENT_RELATIONS);
+			outEntityRelations = FileLoader.getPrintStream(FileName.WIKIDATA_ENTITY_RELATIONS);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -96,6 +102,7 @@ public class RelationsToEventPagesProcessor implements EntityDocumentDumpProcess
 		this.itemCount++;
 
 		boolean subjectIsEvent = this.targetEventIds.contains(itemDocument.getItemId().getId());
+		boolean subjectHasExistenceTime = this.entitiesWithExistenceTimes.contains(itemDocument.getItemId().getId());
 
 		for (StatementGroup statementGroup : itemDocument.getStatementGroups()) {
 			String propertyId = statementGroup.getProperty().getId();
@@ -112,12 +119,19 @@ public class RelationsToEventPagesProcessor implements EntityDocumentDumpProcess
 							id = ((ItemIdValue) statement.getClaim().getMainSnak().getValue()).getId();
 
 							boolean objectIsEvent = this.targetEventIds.contains(id);
+							boolean objectHasExistenceTime = this.entitiesWithExistenceTimes.contains(id);
 
 							if (subjectIsEvent || objectIsEvent) {
 
 								itemsWithEventCount += 1;
 
 								outEventRelations.print(statement.getStatementId() + "\t"
+										+ itemDocument.getItemId().getId() + "\t" + propertyId + "\t" + id + "\n");
+							} else if (subjectHasExistenceTime && objectHasExistenceTime) {
+
+								itemsWithEntityRelationCount += 1;
+
+								outEntityRelations.print(statement.getStatementId() + "\t"
 										+ itemDocument.getItemId().getId() + "\t" + propertyId + "\t" + id + "\n");
 							}
 
@@ -143,13 +157,14 @@ public class RelationsToEventPagesProcessor implements EntityDocumentDumpProcess
 	}
 
 	public void printStatus() {
-		System.out.println(
-				"Found " + this.itemsWithEventCount + " matching items after scanning " + this.itemCount + " items.");
+		System.out.println("Found " + this.itemsWithEventCount + " event relations and "
+				+ this.itemsWithEntityRelationCount + "entity relations after scanning " + this.itemCount + " items.");
 	}
 
 	public void close() {
 		printStatus();
 		this.outEventRelations.close();
+		this.outEntityRelations.close();
 	}
 
 	@Override

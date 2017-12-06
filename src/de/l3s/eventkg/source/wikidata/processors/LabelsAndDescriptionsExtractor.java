@@ -25,7 +25,7 @@ import de.l3s.eventkg.util.FileName;
  * <item-wiki-label-lang> file3: <item-id> <item-wiki-description-lang> file4:
  * <item-id> <item-wiki-alias1-lang> <item-wiki-alias2-lang> ...
  */
-public class TitlesAndDescriptionsExtractor implements EntityDocumentDumpProcessor {
+public class LabelsAndDescriptionsExtractor implements EntityDocumentDumpProcessor {
 
 	public static final String TAB = "\t";
 
@@ -44,7 +44,7 @@ public class TitlesAndDescriptionsExtractor implements EntityDocumentDumpProcess
 
 	private int itemCountProperties = 0;
 
-	public TitlesAndDescriptionsExtractor(List<Language> languages) throws IOException {
+	public LabelsAndDescriptionsExtractor(List<Language> languages) throws IOException {
 		// open files for writing results
 		this.languages = languages;
 

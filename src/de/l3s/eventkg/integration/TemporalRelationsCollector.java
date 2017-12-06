@@ -20,6 +20,7 @@ import de.l3s.eventkg.meta.Source;
 import de.l3s.eventkg.pipeline.Config;
 import de.l3s.eventkg.pipeline.Config.TimeSymbol;
 import de.l3s.eventkg.pipeline.Extractor;
+import de.l3s.eventkg.source.yago.util.YAGOLabelExtractor;
 import de.l3s.eventkg.util.FileLoader;
 import de.l3s.eventkg.util.FileName;
 import de.l3s.eventkg.util.TimeTransformer;
@@ -52,8 +53,8 @@ public class TemporalRelationsCollector extends Extractor {
 		loadYAGO();
 		System.out.println("Load Wikidata.");
 		loadWikidata();
-		System.out.println("Load DBpedia.");
-		loadDBpedia();
+		System.out.println("Load DBpedia relations.");
+		loadDBpediaRelations();
 		System.out.println("Collect triples.");
 		writeToFiles();
 	}
@@ -121,7 +122,7 @@ public class TemporalRelationsCollector extends Extractor {
 
 			GenericRelation genericRelation = new GenericRelation(relation.getEntity1(),
 					DataSets.getInstance().getDataSet(relation.getSourceLanguage(), relation.getSource()), prefix,
-					relation.getProperty(), relation.getEntity2(), null);
+					relation.getProperty(), relation.getEntity2(), null, relation.isEntityRelation());
 			genericRelation.setStartTime(relation.getStartTime());
 			genericRelation.setEndTime(relation.getEndTime());
 
@@ -152,10 +153,19 @@ public class TemporalRelationsCollector extends Extractor {
 	private void loadYAGO() {
 		loadYAGOTemporalFacts();
 		loadYAGOEventRelations();
+		loadYAGOEntityRelations();
+	}
+
+	private void loadYAGOEntityRelations() {
+		loadYAGORelations(FileName.YAGO_ENTITY_FACTS, true);
 	}
 
 	private void loadYAGOEventRelations() {
-		FileName fileName = FileName.YAGO_EVENT_FACTS;
+		loadYAGORelations(FileName.YAGO_EVENT_FACTS, false);
+	}
+
+	private void loadYAGORelations(FileName fileName, boolean collectEntityRelations) {
+
 		BufferedReader br = null;
 		try {
 			try {
@@ -197,8 +207,11 @@ public class TemporalRelationsCollector extends Extractor {
 
 				} else {
 
-					String entityLabel1 = parts[0];
-					String entityLabel2 = parts[2];
+					YAGOLabelExtractor yagoLabelExtractor1 = new YAGOLabelExtractor(parts[0]);
+					yagoLabelExtractor1.extractLabel();
+					YAGOLabelExtractor yagoLabelExtractor2 = new YAGOLabelExtractor(parts[2]);
+					yagoLabelExtractor2.extractLabel();
+
 					String property = parts[1];
 
 					// remove starting end ending angle bracket from YAGO
@@ -206,10 +219,15 @@ public class TemporalRelationsCollector extends Extractor {
 					if (property.startsWith("<"))
 						property = property.substring(1, property.length() - 1);
 
-					Entity entity1 = buildEntity(Language.EN, entityLabel1);
-					Entity entity2 = buildEntity(Language.EN, entityLabel2);
+					Entity entity1 = buildEntity(yagoLabelExtractor1.getLanguage(),
+							yagoLabelExtractor1.getWikipediaLabel());
+					Entity entity2 = buildEntity(yagoLabelExtractor2.getLanguage(),
+							yagoLabelExtractor2.getWikipediaLabel());
 
-					previousRelation = buildRelation(entity1, entity2, null, null, property, Source.YAGO, Language.EN);
+					// although YAGO has some entities from other languages, we
+					// say the source is English.
+					previousRelation = buildRelation(entity1, entity2, null, null, property, Source.YAGO, Language.EN,
+							collectEntityRelations);
 				}
 
 			}
@@ -267,17 +285,23 @@ public class TemporalRelationsCollector extends Extractor {
 
 				} else {
 
-					String entityLabel1 = parts[0];
-					String entityLabel2 = parts[2];
 					String property = parts[1];
 
 					if (property.startsWith("<"))
 						property = property.substring(1, property.length() - 1);
 
-					Entity entity1 = buildEntity(Language.EN, entityLabel1);
-					Entity entity2 = buildEntity(Language.EN, entityLabel2);
+					YAGOLabelExtractor yagoLabelExtractor1 = new YAGOLabelExtractor(parts[0]);
+					yagoLabelExtractor1.extractLabel();
+					YAGOLabelExtractor yagoLabelExtractor2 = new YAGOLabelExtractor(parts[2]);
+					yagoLabelExtractor2.extractLabel();
 
-					previousRelation = buildRelation(entity1, entity2, null, null, property, Source.YAGO, Language.EN);
+					Entity entity1 = buildEntity(yagoLabelExtractor1.getLanguage(),
+							yagoLabelExtractor1.getWikipediaLabel());
+					Entity entity2 = buildEntity(yagoLabelExtractor2.getLanguage(),
+							yagoLabelExtractor2.getWikipediaLabel());
+
+					previousRelation = buildRelation(entity1, entity2, null, null, property, Source.YAGO, Language.EN,
+							false);
 				}
 
 			}
@@ -294,7 +318,8 @@ public class TemporalRelationsCollector extends Extractor {
 
 	private void loadWikidata() {
 		loadWikidataTemporalRelations();
-		loadWikidataAtemporalRelations();
+		loadWikidataAtemporalEventRelations();
+		loadWikidataAtemporalEntityRelations();
 	}
 
 	private void loadWikidataTemporalRelations() {
@@ -374,7 +399,7 @@ public class TemporalRelationsCollector extends Extractor {
 					// .getWikidataPropertyById(propertyWikidataId);
 
 					previousRelation = buildRelation(entity1, entity2, null, null, propertyWikidataId, Source.WIKIDATA,
-							Language.EN);
+							Language.EN, false);
 				}
 
 			}
@@ -389,8 +414,15 @@ public class TemporalRelationsCollector extends Extractor {
 		}
 	}
 
-	private void loadWikidataAtemporalRelations() {
-		FileName fileName = FileName.WIKIDATA_EVENT_RELATIONS;
+	private void loadWikidataAtemporalEntityRelations() {
+		loadWikidataAtemporalRelations(FileName.WIKIDATA_ENTITY_RELATIONS, true);
+	}
+
+	private void loadWikidataAtemporalEventRelations() {
+		loadWikidataAtemporalRelations(FileName.WIKIDATA_EVENT_RELATIONS, false);
+	}
+
+	private void loadWikidataAtemporalRelations(FileName fileName, boolean collectEntityRelations) {
 		BufferedReader br = null;
 
 		try {
@@ -416,7 +448,8 @@ public class TemporalRelationsCollector extends Extractor {
 				// this.allEventPagesDataSet.getWikidataIdMappings()
 				// .getWikidataPropertyById(propertyWikidataId);
 
-				buildRelation(entity1, entity2, null, null, propertyWikidataId, Source.WIKIDATA, Language.EN);
+				buildRelation(entity1, entity2, null, null, propertyWikidataId, Source.WIKIDATA, Language.EN,
+						collectEntityRelations);
 			}
 
 		} catch (IOException e) {
@@ -435,10 +468,14 @@ public class TemporalRelationsCollector extends Extractor {
 		return entity;
 	}
 
-	private void loadDBpedia() {
+	private void loadDBpediaRelations() {
+		loadDBpedia(FileName.DBPEDIA_EVENT_RELATIONS, false);
+		loadDBpedia(FileName.DBPEDIA_ENTITY_RELATIONS, true);
+	}
+
+	private void loadDBpedia(FileName fileName, boolean loadEntityRelations) {
 
 		for (Language language : this.languages) {
-			FileName fileName = FileName.DBPEDIA_EVENT_RELATIONS;
 			BufferedReader br = null;
 			try {
 				try {
@@ -471,7 +508,8 @@ public class TemporalRelationsCollector extends Extractor {
 						Entity entity1 = buildEntity(language, entityLabel1);
 						Entity entity2 = buildEntity(language, entityLabel2);
 
-						buildRelation(entity1, entity2, null, null, property, Source.DBPEDIA, language);
+						buildRelation(entity1, entity2, null, null, property, Source.DBPEDIA, language,
+								loadEntityRelations);
 					} catch (ArrayIndexOutOfBoundsException e) {
 						// problems if foaf homepage
 						// System.out.println("Warning: " + line);
@@ -516,7 +554,7 @@ public class TemporalRelationsCollector extends Extractor {
 					Entity entity1 = buildEntity(Language.EN, entityLabel1);
 					Entity entity2 = buildEntity(Language.EN, entityLabel2);
 
-					buildRelation(entity1, entity2, time, time, "related", Source.WCE, Language.EN);
+					buildRelation(entity1, entity2, time, time, "related", Source.WCE, Language.EN, false);
 
 				} catch (ParseException e) {
 					e.printStackTrace();
@@ -539,7 +577,7 @@ public class TemporalRelationsCollector extends Extractor {
 	}
 
 	private Relation buildRelation(Entity entity1, Entity entity2, Date startTime, Date endTime, String property,
-			Source source, Language sourceLanguage) {
+			Source source, Language sourceLanguage, boolean isEntityRelation) {
 
 		if (entity1 == null || entity2 == null)
 			return null;
@@ -549,7 +587,8 @@ public class TemporalRelationsCollector extends Extractor {
 		if (entity2.getEventEntity() != null)
 			entity2 = entity2.getEventEntity();
 
-		Relation relation = new Relation(entity1, entity2, startTime, endTime, property, source, sourceLanguage);
+		Relation relation = new Relation(entity1, entity2, startTime, endTime, property, source, sourceLanguage,
+				isEntityRelation);
 
 		this.relations.add(relation);
 

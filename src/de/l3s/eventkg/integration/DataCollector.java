@@ -17,6 +17,7 @@ import de.l3s.eventkg.meta.Source;
 import de.l3s.eventkg.pipeline.Config;
 import de.l3s.eventkg.pipeline.Extractor;
 import de.l3s.eventkg.source.dbpedia.DBpediaAllLocationsLoader;
+import de.l3s.eventkg.source.yago.util.YAGOLabelExtractor;
 import de.l3s.eventkg.util.FileLoader;
 import de.l3s.eventkg.util.FileName;
 import edu.stanford.nlp.util.StringUtils;
@@ -64,7 +65,42 @@ public class DataCollector extends Extractor {
 		collectNextEvents();
 		System.out.println("Collect event locations.");
 		collectEventLocations();
+		// System.out.println("Collect entities with existence times.");
+		// collectEntitiesWithExistenceTimes();
 	}
+
+	// private void collectEntitiesWithExistenceTimes() {
+	//
+	// for (StartTime startTime : DataStore.getInstance().getStartTimes()) {
+	// this.entitiesWithExistenceTime.add(startTime.getSubject());
+	// }
+	// for (EndTime endTime : DataStore.getInstance().getEndTimes()) {
+	// this.entitiesWithExistenceTime.add(endTime.getSubject());
+	// }
+	//
+	// PrintWriter writer = null;
+	// try {
+	// writer =
+	// FileLoader.getWriter(FileName.ALL_ENTITIES_WITH_EXISTENCE_TIMES);
+	//
+	// for (Entity entity : entitiesWithExistenceTime) {
+	//
+	// if (entity.getWikidataId() == null)
+	// continue;
+	//
+	// writer.write(entity.getWikidataId());
+	// writer.write(Config.TAB);
+	// writer.write(entity.getWikipediaLabelsString(this.languages));
+	// writer.write(Config.TAB);
+	// writer.write(Config.NL);
+	// }
+	// } catch (FileNotFoundException e) {
+	// e.printStackTrace();
+	// } finally {
+	// writer.close();
+	// }
+	//
+	// }
 
 	private void init() {
 		this.wikidataIdMappings = new WikidataIdMappings(this.languages);
@@ -249,13 +285,17 @@ public class DataCollector extends Extractor {
 
 				String[] parts = line.split("\t");
 
-				String wikipedia1Label = parts[0];
-				String entity2Label = parts[2];
+				YAGOLabelExtractor yagoLabelExtractor1 = new YAGOLabelExtractor(parts[0]);
+				yagoLabelExtractor1.extractLabel();
 
-				Event event1 = findEvent(Language.EN, wikipedia1Label);
+				YAGOLabelExtractor yagoLabelExtractor2 = new YAGOLabelExtractor(parts[2]);
+				yagoLabelExtractor2.extractLabel();
+
+				Event event1 = findEvent(yagoLabelExtractor1.getLanguage(), yagoLabelExtractor1.getWikipediaLabel());
 
 				if (event1 != null) {
-					Entity entityObject = getEntity(Language.EN, entity2Label);
+					Entity entityObject = getEntity(yagoLabelExtractor2.getLanguage(),
+							yagoLabelExtractor2.getWikipediaLabel());
 					if (entityObject != null)
 						event1.addLocation(entityObject, DataSets.getInstance().getDataSetWithoutLanguage(Source.YAGO));
 				}
