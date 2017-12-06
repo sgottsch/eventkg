@@ -58,6 +58,8 @@ public class EventExtractorFromYearPages {
 	private HashSet<Pattern> dateTemplatePatterns;
 
 	public static void main(String[] args) throws IOException {
+		
+		// TODO: Make this configurable for languages
 
 		Map<Language, Map<Integer, String>> exampleTexts = new HashMap<Language, Map<Integer, String>>();
 

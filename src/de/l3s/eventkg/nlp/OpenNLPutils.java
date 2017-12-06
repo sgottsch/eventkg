@@ -19,29 +19,10 @@ public class OpenNLPutils {
 
 		InputStream modelIn = null;
 
-		if (lang == Language.EN) {
-			modelIn = OpenNLPutils.class.getResourceAsStream("/resource/lang/en-sent.bin");
-		} else if (lang == Language.DE) {
-			modelIn = OpenNLPutils.class.getResourceAsStream("/resource/lang/de-sent.bin");
-		} else if (lang == Language.NL) {
-			modelIn = OpenNLPutils.class.getResourceAsStream("/resource/lang/nl-sent.bin");
-		} else if (lang == Language.ES) {
-			modelIn = OpenNLPutils.class.getResourceAsStream("/resource/lang/es-sent.bin");
-		} else if (lang == Language.SE) {
-			modelIn = OpenNLPutils.class.getResourceAsStream("/resource/lang/se-sent.bin");
-		} else if (lang == Language.PT) {
-			modelIn = OpenNLPutils.class.getResourceAsStream("/resource/lang/pt-sent.bin");
-		} else if (lang == Language.DA) {
-			modelIn = OpenNLPutils.class.getResourceAsStream("/resource/lang/da-sent.bin");
-		} else if (lang == Language.RU) {
-			modelIn = OpenNLPutils.class.getResourceAsStream("/resource/lang/ru-sent.bin");
-		} else if (lang == Language.FR) {
-			modelIn = OpenNLPutils.class.getResourceAsStream("/resource/lang/fr-sent.bin");
-		} else if (lang == Language.IT) {
-			modelIn = OpenNLPutils.class.getResourceAsStream("/resource/lang/it-sent.bin");
-		} else {
+		modelIn = OpenNLPutils.class
+				.getResourceAsStream("/resource/lang/" + lang.getLanguage().toLowerCase() + "-sent.bin");
+		if (modelIn == null)
 			System.err.println("OpenNLPutils:  Sentence splitting in lang not supported: " + lang.getLanguage());
-		}
 
 		try {
 			model = new SentenceModel(modelIn);

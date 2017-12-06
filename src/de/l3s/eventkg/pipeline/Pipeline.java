@@ -199,16 +199,13 @@ public class Pipeline {
 	}
 
 	private void initDataSets() {
-		DataSets.getInstance().addDataSet(Language.DE, Source.DBPEDIA, "http://de.dbpedia.org/");
-		DataSets.getInstance().addDataSet(Language.FR, Source.DBPEDIA, "http://fr.dbpedia.org/");
-		DataSets.getInstance().addDataSet(Language.RU, Source.DBPEDIA, "http://ru.dbpedia.org/");
-		DataSets.getInstance().addDataSet(Language.PT, Source.DBPEDIA, "http://pt.dbpedia.org/");
-		DataSets.getInstance().addDataSet(Language.EN, Source.DBPEDIA, "http://dbpedia.org/");
-		DataSets.getInstance().addDataSet(Language.DE, Source.WIKIPEDIA, "https://dumps.wikimedia.org/dewiki/");
-		DataSets.getInstance().addDataSet(Language.FR, Source.WIKIPEDIA, "https://dumps.wikimedia.org/frwiki/");
-		DataSets.getInstance().addDataSet(Language.RU, Source.WIKIPEDIA, "https://dumps.wikimedia.org/ruwiki/");
-		DataSets.getInstance().addDataSet(Language.PT, Source.WIKIPEDIA, "https://dumps.wikimedia.org/ptwiki/");
-		DataSets.getInstance().addDataSet(Language.EN, Source.WIKIPEDIA, "https://dumps.wikimedia.org/enwiki/");
+		for (Language language : this.languages) {
+			DataSets.getInstance().addDataSet(language, Source.DBPEDIA,
+					"http://" + language.getLanguageLowerCase() + ".dbpedia.org/");
+			DataSets.getInstance().addDataSet(language, Source.WIKIPEDIA,
+					"https://dumps.wikimedia.org/" + language.getLanguageLowerCase() + "wiki/");
+		}
+
 		DataSets.getInstance().addDataSetWithoutLanguage(Source.WIKIDATA,
 				"https://dumps.wikimedia.org/wikidatawiki/entities/");
 		DataSets.getInstance().addDataSetWithoutLanguage(Source.YAGO,
