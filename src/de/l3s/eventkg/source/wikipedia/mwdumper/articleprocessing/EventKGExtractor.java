@@ -111,7 +111,7 @@ public class EventKGExtractor implements DumpWriter {
 
 			EventExtractorFromYearPages eventsExtractor = new EventExtractorFromYearPages(revision.Text, this._pageId,
 					this.pageTitle, language, redirects);
-			if (eventsExtractor.isYearPage()) {
+			if (eventsExtractor.isYearOrDayPage()) {
 				System.out.println("Date page: " + String.valueOf(this._pageId) + ": " + this.pageTitle);
 				eventsExtractor.extractEvents();
 				if (!eventsExtractor.getEventsOutput().isEmpty()) {

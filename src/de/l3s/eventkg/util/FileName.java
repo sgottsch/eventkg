@@ -173,7 +173,12 @@ public enum FileName {
 	ALL_TTL_EVENTS_LINK_RELATIOINS_PREVIEW("relations_links_preview.nq", FileType.OUTPUT_PREVIEW, false, false, false),
 	ALL_TTL_PROPERTY_LABELS_PREVIEW("property_labels_preview.nq", FileType.OUTPUT_PREVIEW, false, false, false),
 	ALL_TTL_EVENTS_OTHER_RELATIONS_PREVIEW("relations_other_preview.nq", FileType.OUTPUT_PREVIEW, false, false, false),
-	ALL_TTL_ENTITIES_OTHER_RELATIONS_PREVIEW("relations_entities_other_preview.nq", FileType.OUTPUT_PREVIEW, false, false, false),
+	ALL_TTL_ENTITIES_OTHER_RELATIONS_PREVIEW(
+			"relations_entities_other_preview.nq",
+			FileType.OUTPUT_PREVIEW,
+			false,
+			false,
+			false),
 
 	ALL_TTL_ENTITIES_WITH_TEXTS_PREVIOUS_VERSION("entities.nq", FileType.PREVIOUS_VERSION, false, false, false),
 	ALL_TTL_EVENTS_WITH_TEXTS_PREVIOUS_VERSION("events.nq", FileType.PREVIOUS_VERSION, false, false, false),
@@ -250,6 +255,14 @@ public enum FileName {
 	WIKIPEDIA_REDIRECTS("redirects.sql.gz", Source.WIKIPEDIA, FileType.RAW_DATA, false, false, true),
 	WIKIPEDIA_PAGE_INFOS("page.sql.gz", Source.WIKIPEDIA, FileType.RAW_DATA, false, false, true),
 	WIKIPEDIA_CATEGORYLINKS("categorylinks.sql.gz", Source.WIKIPEDIA, FileType.RAW_DATA, false, false, true),
+	WIKIPEDIA_META_WORDS("words.txt", Source.WIKIPEDIA, FileType.META, false, false, false),
+	WIKIPEDIA_META_EVENT_DATE_EXPRESSIONS(
+			"event_date_expressions.txt",
+			Source.WIKIPEDIA,
+			FileType.META,
+			false,
+			false,
+			false),
 
 	WIKIPEDIA_DUMP_FILE_LIST("dump_file_list.txt", Source.WIKIPEDIA, FileType.RAW_DATA, false, false, false),
 

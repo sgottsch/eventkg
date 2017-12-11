@@ -1,0 +1,86 @@
+# forbiddenLinks
+
+# forbiddenNameSpaces
+Utilisateur
+Mod\u00e8le
+Projet
+Wikip\u00e9dia
+Aide
+R\u00e9f\u00e9rence
+Fichier
+Cat\u00e9gorie
+Module
+Wikipédia
+Catégorie
+Modèle
+Référence
+
+# talkSuffix
+
+# talkPrefix
+Discussion
+
+# forbiddenInternalLinks
+WT:
+H:
+CAT:
+
+# tableOfContents
+Sommaire
+
+# seeAlsoLinkClasses
+bandeau-niveau-detail
+
+# titlesNotToTranslate
+Voir aussi
+Annexes
+Notes et r\u00e9f\u00e9rences
+R\u00e9f\u00e9rences
+Compl\u00e9ments
+
+# fileLabels
+Fichier
+File
+
+# categoryLabel
+Catégorie
+
+# imageLabels
+Файл
+Image
+File
+
+# listPrefixes
+Liste_
+
+# categoryPrefixes
+Catégorie:
+
+# eventsLabels
+Événements
+Évènements
+
+# monthNames
+Janvier;janvier
+Février;février
+Mars;mars
+Avril;avril
+Mai;mai
+Juin;juin
+Juillet;juillet
+Août;août
+Septembre;septembre
+Octobre;octobre
+Novembre;novembre
+Décembre;décembre
+
+# weekdayNames
+lundi;Lundi
+mardi;Mardi
+mercredi;Mercredi
+jeudi;Jeudi
+vendredi;Vendredi
+samedi;Samedi
+dimanche;Dimanche
+
+# eventCategoryRegexes

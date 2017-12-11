@@ -1,0 +1,93 @@
+# forbiddenLinks
+Wikipedia:Citation_needed
+
+# forbiddenNameSpaces
+Talk
+User
+Wikipedia
+WP
+File
+MediaWiki
+Template
+Help
+Category
+Portal
+Draft
+Education Program
+TimedText
+Module
+Topic
+Special
+Media
+Image
+
+# talkSuffix
+talk
+
+# talkPrefix
+
+# forbiddenInternalLinks
+WT:
+H:
+CAT:
+
+# tableOfContents
+Contents
+
+# seeAlsoLinkClasses
+hatnote
+
+# titlesNotToTranslate
+See also
+References
+External links
+Further reading
+Bibliography
+
+# fileLabels
+File
+
+# categoryLabel
+Category
+
+# imageLabels
+Image
+File
+
+# listPrefixes
+Lists_of_
+List_of_
+Alphabetical_list_of_
+Chronological_list_of_
+
+# categoryPrefixes
+Category:
+
+# eventsLabels
+Events
+
+# monthNames
+January
+February
+March
+April
+May
+June
+July
+August
+September
+October
+November
+December
+
+# weekdayNames
+Monday
+Tuesday
+Wednesday
+Thursday
+Friday
+Saturday
+Sunday
+
+# eventCategoryRegexes
+.+events$

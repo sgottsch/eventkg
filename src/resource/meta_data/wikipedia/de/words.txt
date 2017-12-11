@@ -1,0 +1,114 @@
+# forbiddenLinks
+Viertelgeviertstrich
+
+# forbiddenNameSpaces
+Diskussion
+Benutzer
+Benutzerin
+Wikipedia
+Datei
+MediaWiki
+Vorlage
+Hilfe
+Kategorie
+Portal
+Modul
+Spezial
+Medium
+Talk
+User
+Wikipedia
+WP
+File
+MediaWiki
+Template
+Help
+Category
+Portal
+Draft
+Education Program
+TimedText
+Module
+Topic
+Special
+Media
+Image
+
+# talkSuffix
+Diskussion
+
+# talkPrefix
+
+# forbiddenInternalLinks
+WP:
+H:
+P:
+WD:
+HD:
+PD:
+
+# tableOfContents
+Inhaltsverzeichnis
+
+# seeAlsoLinkClasses
+sieheauch
+hauptartikel
+
+# titlesNotToTranslate
+Ver\u00f6ffentlichungen
+Veröffentlichungen
+Literatur
+Weblinks
+Siehe auch
+Einzelnachweise
+Werke
+Werke (Auswahl)
+
+# fileLabels
+Datei
+File
+
+# categoryLabel
+Kategorie
+
+# imageLabels
+Datei
+File
+Bild
+Image
+
+# listPrefixes
+Liste_
+Listen_
+Übersicht_der_Listen_
+
+# categoryPrefixes
+Kategorie:
+
+# eventsLabels
+Ereignisse
+
+# monthNames
+Januar
+Februar
+März
+April
+Mai
+Juni
+Juli
+August
+September
+Oktober
+November
+Dezember
+
+# weekdayNames
+Montag
+Dienstag
+Mittwoch
+Donnerstag
+Freitag
+Samstag;Sonnabend
+Sonntag
+
+# eventCategoryRegexes

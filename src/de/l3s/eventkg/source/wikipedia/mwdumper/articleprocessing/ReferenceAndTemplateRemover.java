@@ -7,6 +7,8 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.apache.commons.lang3.StringUtils;
+
 import de.l3s.eventkg.meta.Language;
 import de.l3s.eventkg.source.wikipedia.mwdumper.model.Paragraph;
 import de.l3s.eventkg.source.wikipedia.mwdumper.model.Reference;
@@ -439,15 +441,17 @@ public class ReferenceAndTemplateRemover {
 				// is to
 				// indicate that a span of text belongs to a particular
 				// language. Replace template with the text.
-				if (groupText.toLowerCase().startsWith("{{lang")) {
+				if (groupText.toLowerCase().startsWith("{{lang") && StringUtils.countMatches(groupText, "|") >= 2) {
 					// e.g. "{{lang|fr|[[Abitibi-Témiscamingue|Abitibi]]}}" ->
 					// extract "[[Abitibi-Témiscamingue|Abitibi]]"
 					String newText = groupText.substring(groupText.indexOf("|") + 1);
 					newText = newText.substring(newText.indexOf("|") + 1);
 					newText = newText.replaceAll("}}", "");
+					newText = Matcher.quoteReplacement(newText);
 					m.appendReplacement(sb, newText);
 					changed = true;
-				} else if (groupText.toLowerCase().startsWith("{{as of")) {
+				} else if (groupText.toLowerCase().startsWith("{{as of")
+						&& StringUtils.countMatches("groupText", "|") >= 1) {
 					// e.g. {{as of|2014}} -> extract As of 2014
 					groupText = groupText.replaceAll(" ", "");
 					String newText = "As of ";
@@ -459,15 +463,30 @@ public class ReferenceAndTemplateRemover {
 					if (parts.length >= 4)
 						newText += "-" + parts[3];
 					newText = newText.replace("}}", "");
+					newText = Matcher.quoteReplacement(newText);
 					m.appendReplacement(sb, newText);
 					changed = true;
-				} else if (groupText.toLowerCase().startsWith("{{nihongo")) {
+				} else if (groupText.toLowerCase().startsWith("{{nihongo")
+						&& StringUtils.countMatches("groupText", "|") >= 2) {
 					// e.g. "{{lang|fr|[[Abitibi-Témiscamingue|Abitibi]]}}" ->
 					// extract "[[Abitibi-Témiscamingue|Abitibi]]"
 					String newText = groupText.substring(groupText.indexOf("|") + 1);
 					newText = newText.substring(0, newText.indexOf("|"));
 					newText = newText.replaceAll("}}", "");
 					newText = newText.replaceAll("\\{\\{", "");
+					newText = Matcher.quoteReplacement(newText);
+					m.appendReplacement(sb, newText);
+					changed = true;
+				} else if (groupText.toLowerCase().startsWith("{{hlist")
+						&& StringUtils.countMatches("groupText", "|") >= 2) {
+					// e.g. "{{hlist |1948 "Give Us This Day Our Daily Bread"
+					// |"A Note on Gandhi"}}" ->
+					// extract 1948 "Give Us This Day Our Daily Bread"
+					String newText = groupText.substring(groupText.indexOf("|") + 1);
+					newText = newText.substring(0, newText.indexOf("|"));
+					newText = newText.replaceAll("}}", "");
+					newText = newText.replaceAll("\\{\\{", "");
+					newText = Matcher.quoteReplacement(newText);
 					m.appendReplacement(sb, newText);
 					changed = true;
 				} else {

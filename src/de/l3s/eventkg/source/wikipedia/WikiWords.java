@@ -361,7 +361,6 @@ public class WikiWords {
 	}
 
 	public static String getTOCName(Language language) {
-		System.out.println(language);
 		if (language == Language.EN)
 			return "Contents";
 		else if (language == Language.DE)

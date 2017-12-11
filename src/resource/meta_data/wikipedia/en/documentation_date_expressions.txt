@@ -1,0 +1,25 @@
+# predefined regexes
+a set of placeholders which are given in the code and can be re-used. No need to change this.
+
+# new regexes
+new placeholders that can be re-used later on
+
+# dayTitle
+Regex for Wikipedia page titles that represent a specific day. For example "^@regexMonth1@ @regexDay1@$" to find "March 15" for the Wikipedia article https://en.wikipedia.org/wiki/March_15.
+	en: January 22
+	de: 22. Januar
+	fr: 22 janvier
+	pt: 22 de janeiro
+	ru: 22 января
+
+# yearTitlePatterns
+Regexes for Wikipedia page titles that represent a specific year. For example "^(?<y>[0-9]{@digitsInYear@}) in .*$" to find "2007 in philosophy" for the Wikipedia article https://en.wikipedia.org/wiki/2007_in_philosophy.
+
+# yearTitlePatternsBC
+Regexes for Wikipedia page titles that represent a specific year BC. For example "^(?<y>[0-9]{@digitsInYear@}) BC$" to find "53 BC" for the Wikipedia article https://en.wikipedia.org/wiki/53_BC.
+
+# datePatterns
+A list of regexes to extract date expressions from event texts. 
+
+# dateLinkResolvers
+Sometimes, dates are given as links, which are resolved using these regexes. The "<r>" group denotes the anchor text. For example to find 474 BC in "*[[474 BC]] &ndash; [[Roman consul]] ...".
