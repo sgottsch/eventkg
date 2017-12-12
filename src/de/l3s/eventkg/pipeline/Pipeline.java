@@ -49,7 +49,6 @@ public class Pipeline {
 		for (String language : Config.getValue("languages").split(",")) {
 			languages.add(Language.getLanguage(language));
 		}
-		WikiWords.getInstance().init(languages);
 
 		Set<Integer> steps = new HashSet<Integer>();
 		if (args.length > 0) {
@@ -67,6 +66,9 @@ public class Pipeline {
 			pipeline.download();
 		} else
 			System.out.println("Skip step 1: Download files.");
+
+		// WikiWords can be initiated after moving meta files.
+		WikiWords.getInstance().init(languages);
 
 		if (steps.contains(2)) {
 			System.out.println("Step 2: Start extraction -> Find event pages and extract relations.");
@@ -100,8 +102,8 @@ public class Pipeline {
 
 	private void download() {
 		RawDataDownLoader downloader = new RawDataDownLoader(languages);
-		// downloader.createFolders();
-		// downloader.copyMetaFiles();
+		downloader.createFolders();
+		downloader.copyMetaFiles();
 		downloader.downloadFiles();
 	}
 
