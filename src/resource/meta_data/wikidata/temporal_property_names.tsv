@@ -2,7 +2,7 @@ P569	date of birth	s
 P571	inception	s
 P574	date of taxon name publication	s
 P575	time of discovery	s
-P576	dissolved or abolished	e
+P576	dissolved, abolished or demolished	e
 P577	publication date	s
 P580	start time	s
 P582	end time	e
@@ -16,10 +16,12 @@ P729	service entry	s
 P730	service retirement	e
 P746	date of disappearance	e
 P813	retrieved	s
-P1191	first performance	s
+P1191	date of first performance	s
 P1249	time of earliest written record	s
 P1619	date of official opening	s
 P1734	oath of office date	s
 P2285	periapsis date	n
 P2669	discontinued date	e
 P2913	date depicted	b
+P3893	public domain date	b
+P3999	date of official closure	e

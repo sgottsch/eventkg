@@ -29,6 +29,23 @@ SELECT ?property ?propertyLabel WHERE {
 		}           
 	}
 
+# temporal properties
+
+SELECT ?property ?propertyLabel WHERE {
+  ?property wdt:P31+ wd:Q18636219 .
+	SERVICE wikibase:label {
+		bd:serviceParam wikibase:language "en" .
+	}           
+}
+
+# Location properties
+
+SELECT ?property ?propertyLabel WHERE {
+  ?property wdt:P31+ wd:Q18615777 .
+	SERVICE wikibase:label {
+		bd:serviceParam wikibase:language "en" .
+	}           
+}
 
 --- Others (not needed any more) ---
 

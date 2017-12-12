@@ -4,20 +4,21 @@ P47	shares border with
 P66	ancestral home
 P113	airline hub
 P131	located in the administrative territorial entity
-P206	located next to body of water
+P206	located in or next to body of water
 P276	location
 P376	located on astronomical body
 P403	mouth of the watercourse
 P483	recorded at
 P504	home port
 P551	residence
+P609	terminus location
 P610	highest point
 P613	OS grid reference
 P625	coordinate location
 P669	located on street
 P706	located on terrain feature
 P840	narrative location
-P931	place served by airport
+P931	place served by transport hub
 P969	located at street address
 P1259	coordinates of the point of view
 P1302	primary destinations
@@ -42,3 +43,6 @@ P3137	parent peak
 P3179	territory overlaps
 P3403	coextensive with
 P3470	Woodland Trust wood ID
+P4091	Irish Grid Reference
+P4388	Mappy place ID
+P4552	mountain range
