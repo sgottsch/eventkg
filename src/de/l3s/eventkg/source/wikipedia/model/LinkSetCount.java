@@ -49,5 +49,13 @@ public class LinkSetCount {
 				PrefixList.getInstance().getPrefix(PrefixEnum.EVENT_KG_SCHEMA), "linked_with", entity, (double) count,
 				false);
 	}
+	
+	public GenericRelation toGenericRelationSubjectObjectReverted() {
+		// we only store links where at least one event is involved
+		return new GenericRelation(entity, DataSets.getInstance().getDataSet(this.language, Source.WIKIPEDIA),
+				PrefixList.getInstance().getPrefix(PrefixEnum.EVENT_KG_SCHEMA), "linked_with", event, (double) count,
+				false);
+	}
+
 
 }

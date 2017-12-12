@@ -1,6 +1,8 @@
 package de.l3s.eventkg.integration;
 
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 import de.l3s.eventkg.integration.model.Entity;
@@ -40,6 +42,8 @@ public class DataStore {
 	private Set<PropertyLabel> propertyLabels = new HashSet<PropertyLabel>();
 
 	private static DataStore instance;
+
+	private Map<Entity, Map<Entity, Set<GenericRelation>>> linkRelationsBySubjectAndObject = new HashMap<Entity, Map<Entity, Set<GenericRelation>>>();
 
 	public static DataStore getInstance() {
 		if (instance == null) {
@@ -120,6 +124,18 @@ public class DataStore {
 	}
 
 	public void addLinkRelation(GenericRelation genericRelation) {
+
+		if (!linkRelationsBySubjectAndObject.containsKey(genericRelation.getSubject()))
+			linkRelationsBySubjectAndObject.put(genericRelation.getSubject(),
+					new HashMap<Entity, Set<GenericRelation>>());
+
+		if (!linkRelationsBySubjectAndObject.get(genericRelation.getSubject()).containsKey(genericRelation.getObject()))
+			linkRelationsBySubjectAndObject.get(genericRelation.getSubject()).put(genericRelation.getObject(),
+					new HashSet<GenericRelation>());
+
+		linkRelationsBySubjectAndObject.get(genericRelation.getSubject()).get(genericRelation.getObject())
+				.add(genericRelation);
+
 		this.linkRelations.add(genericRelation);
 	}
 
@@ -149,6 +165,10 @@ public class DataStore {
 
 	public Set<PropertyLabel> getPropertyLabels() {
 		return propertyLabels;
+	}
+
+	public Map<Entity, Map<Entity, Set<GenericRelation>>> getLinkRelationsBySubjectAndObject() {
+		return linkRelationsBySubjectAndObject;
 	}
 
 }

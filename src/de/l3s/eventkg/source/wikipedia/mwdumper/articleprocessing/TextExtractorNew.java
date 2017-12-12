@@ -22,7 +22,7 @@ import de.l3s.eventkg.meta.Language;
 import de.l3s.eventkg.nlp.OpenNLPutils;
 import de.l3s.eventkg.pipeline.Config;
 import de.l3s.eventkg.source.wikipedia.RedirectsTableCreator;
-import de.l3s.eventkg.source.wikipedia.WikiWords2;
+import de.l3s.eventkg.source.wikipedia.WikiWords;
 import de.l3s.eventkg.source.wikipedia.mwdumper.model.Link;
 import de.l3s.eventkg.source.wikipedia.mwdumper.model.Paragraph;
 import de.l3s.eventkg.source.wikipedia.mwdumper.model.Reference;
@@ -73,7 +73,7 @@ public class TextExtractorNew {
 		Config.init("config_eventkb_local.txt");
 		List<Language> languages = new ArrayList<Language>();
 		languages.add(Language.EN);
-		WikiWords2.getInstance().init(languages);
+		WikiWords.getInstance().init(languages);
 
 		Map<Language, Map<Integer, String>> exampleTexts = new HashMap<Language, Map<Integer, String>>();
 
@@ -306,7 +306,7 @@ public class TextExtractorNew {
 					}
 					levelBefore = level;
 					title = title.replaceAll("=+$", "").trim();
-					if (WikiWords2.getInstance().getTitlesOfParagraphsNotToTranslate(language).contains(title))
+					if (WikiWords.getInstance().getTitlesOfParagraphsNotToTranslate(language).contains(title))
 						break;
 					// if (title.equals("Images"))
 					// continue;
@@ -325,7 +325,7 @@ public class TextExtractorNew {
 					if (line.startsWith("{{quote|") && line.endsWith("}}")) {
 						line = line.substring("{{quote|".length(), line.length() - 2);
 					}
-					if (line.startsWith("[[" + WikiWords2.getInstance().getCategoryLabel(language) + ":"))
+					if (line.startsWith("[[" + WikiWords.getInstance().getCategoryLabel(language) + ":"))
 						break;
 
 					// Lists should consistently start with "* "
@@ -371,10 +371,10 @@ public class TextExtractorNew {
 				String anchorText = linkName = m.group().substring(2, m.group().length() - 2);
 
 				boolean starts = false;
-				for (String label : WikiWords2.getInstance().getFileLabel(language))
+				for (String label : WikiWords.getInstance().getFileLabel(language))
 					if (linkName.startsWith(label + ":"))
 						starts = true;
-				for (String label : WikiWords2.getInstance().getImageLabels(language))
+				for (String label : WikiWords.getInstance().getImageLabels(language))
 					if (linkName.startsWith(label + ":"))
 						starts = true;
 

@@ -15,6 +15,7 @@ public enum PrefixEnum {
 	WIKIDATA_ENTITY("wd:", "http://www.wikidata.org/entity/"),
 	FOAF("foaf:", "http://xmlns.com/foaf/0.1/"),
 	OWL("owl:", "http://www.w3.org/2002/07/owl#"),
+	SEM("sem:", "http://semanticweb.cs.vu.nl/2009/11/sem/"),
 	DBPEDIA_RESOURCE(null, null),
 	// TODO: Solve that better. Mapping from lang to prefix.
 	// DBPEDIA_RESOURCE_EN("dbr:", "http://dbpedia.org/resource/"),

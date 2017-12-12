@@ -141,7 +141,7 @@ public class EventExtractorFromYearPages {
 
 		this.isYearOrDayPage = true;
 
-		this.eventDateExpressions = new EventDateExpressions(language, this.year, this.month);
+		this.eventDateExpressions = new EventDateExpressions(this.year, this.month);
 		this.eventDateExpressions.init();
 
 		this.eventsOutput = "";

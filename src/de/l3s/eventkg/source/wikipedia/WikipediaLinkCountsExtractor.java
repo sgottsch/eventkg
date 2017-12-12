@@ -75,9 +75,9 @@ public class WikipediaLinkCountsExtractor extends Extractor {
 				DataStore.getInstance().addLinkRelation(linkCount.toGenericRelation());
 			}
 
-			for (LinkedByCount linkCount : this.linkedByCounts) {
-				DataStore.getInstance().addLinkRelation(linkCount.toGenericRelation());
-			}
+			// for (LinkedByCount linkCount : this.linkedByCounts) {
+			// DataStore.getInstance().addLinkRelation(linkCount.toGenericRelation());
+			// }
 		} else {
 
 			System.out.println("Write results: Link counts");

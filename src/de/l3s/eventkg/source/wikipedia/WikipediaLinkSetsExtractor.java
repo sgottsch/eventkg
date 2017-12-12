@@ -79,6 +79,7 @@ public class WikipediaLinkSetsExtractor extends Extractor {
 
 		for (LinkSetCount linkCount : this.linkSets) {
 			DataStore.getInstance().addLinkRelation(linkCount.toGenericRelation());
+			DataStore.getInstance().addLinkRelation(linkCount.toGenericRelationSubjectObjectReverted());
 		}
 
 		// System.out.println("Write results: Link sets");

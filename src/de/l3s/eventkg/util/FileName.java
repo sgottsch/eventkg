@@ -163,6 +163,7 @@ public enum FileName {
 	ALL_TTL_EVENTS_BASE_RELATIONS("relations_base.nq", FileType.OUTPUT, false, false, false),
 	ALL_TTL_EVENTS_LINK_RELATIOINS("relations_links.nq", FileType.OUTPUT, false, false, false),
 	ALL_TTL_EVENTS_OTHER_RELATIONS("relations_other.nq", FileType.OUTPUT, false, false, false),
+	ALL_TTL_ENTITIES_TEMPORAL_RELATIONS("relations_entities_temporal.nq", FileType.OUTPUT, false, false, false),
 	ALL_TTL_ENTITIES_OTHER_RELATIONS("relations_entities_other.nq", FileType.OUTPUT, false, false, false),
 	ALL_TTL_PROPERTY_LABELS("property_labels.nq", FileType.OUTPUT, false, false, false),
 	ALL_TTL_DATASETS("graphs.ttl", FileType.OUTPUT, false, false, false),
@@ -173,6 +174,12 @@ public enum FileName {
 	ALL_TTL_EVENTS_LINK_RELATIOINS_PREVIEW("relations_links_preview.nq", FileType.OUTPUT_PREVIEW, false, false, false),
 	ALL_TTL_PROPERTY_LABELS_PREVIEW("property_labels_preview.nq", FileType.OUTPUT_PREVIEW, false, false, false),
 	ALL_TTL_EVENTS_OTHER_RELATIONS_PREVIEW("relations_other_preview.nq", FileType.OUTPUT_PREVIEW, false, false, false),
+	ALL_TTL_ENTITIES_TEMPORAL_RELATIONS_PREVIEW(
+			"relations_entities_temporal_preview.nq",
+			FileType.OUTPUT_PREVIEW,
+			false,
+			false,
+			false),
 	ALL_TTL_ENTITIES_OTHER_RELATIONS_PREVIEW(
 			"relations_entities_other_preview.nq",
 			FileType.OUTPUT_PREVIEW,

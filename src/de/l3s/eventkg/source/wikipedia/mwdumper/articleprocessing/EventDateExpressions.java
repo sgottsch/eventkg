@@ -6,11 +6,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.regex.Pattern;
 
-import de.l3s.eventkg.meta.Language;
-
 public class EventDateExpressions {
-
-	private Language language;
 
 	private List<Pattern> dateLinkResolvers = new ArrayList<Pattern>();
 
@@ -27,8 +23,7 @@ public class EventDateExpressions {
 
 	private Integer year;
 
-	public EventDateExpressions(Language language, Integer year, Integer month) {
-		this.language = language;
+	public EventDateExpressions(Integer year, Integer month) {
 		this.year = year;
 		this.month = month;
 	}

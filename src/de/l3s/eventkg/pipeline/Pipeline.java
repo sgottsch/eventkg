@@ -28,6 +28,7 @@ import de.l3s.eventkg.source.wikidata.EventsFromFileFinder;
 import de.l3s.eventkg.source.wikidata.WikidataExtractionWithEventPages;
 import de.l3s.eventkg.source.wikidata.WikidataExtractionWithoutEventPages;
 import de.l3s.eventkg.source.wikipedia.LabelsAndDescriptionsExtractor;
+import de.l3s.eventkg.source.wikipedia.WikiWords;
 import de.l3s.eventkg.source.wikipedia.WikipediaEventsByCategoryNameLoader;
 import de.l3s.eventkg.source.wikipedia.WikipediaLinkCountsExtractor;
 import de.l3s.eventkg.source.wikipedia.WikipediaLinkSetsExtractor;
@@ -48,6 +49,7 @@ public class Pipeline {
 		for (String language : Config.getValue("languages").split(",")) {
 			languages.add(Language.getLanguage(language));
 		}
+		WikiWords.getInstance().init(languages);
 
 		Set<Integer> steps = new HashSet<Integer>();
 		if (args.length > 0) {
