@@ -265,6 +265,7 @@ public class EventDateExpressions {
 		}
 
 		for (String datePatternLine : EventDateExpressionsAll.getInstance().getEntriesPerType("dateLinkResolvers")) {
+			datePatternLine = datePatternLine.replaceAll("@thisYear@", String.valueOf(this.year));
 			dateLinkResolvers
 					.add(Pattern.compile(EventDateExpressionsAll.getInstance().createPatternString(datePatternLine)));
 		}

@@ -72,6 +72,21 @@ public class RawDataDownLoader {
 					RawDataDownLoader.class
 							.getResource("/resource/meta_data/yago/" + FileName.YAGO_TIME_PROPERTIES.getFileName()),
 					new File(metaDataPath + "yago/" + FileName.YAGO_TIME_PROPERTIES.getFileName()));
+
+			for (Language language : this.languages) {
+				FileUtils.copyURLToFile(
+						RawDataDownLoader.class
+								.getResource("/resource/meta_data/wikipedia/" + language.getLanguageLowerCase() + "/"
+										+ FileName.WIKIPEDIA_META_EVENT_DATE_EXPRESSIONS.getFileName()),
+						new File(metaDataPath + "wikipedia/" + language.getLanguageLowerCase() + "/"
+								+ FileName.WIKIPEDIA_META_EVENT_DATE_EXPRESSIONS.getFileName()));
+				FileUtils.copyURLToFile(
+						RawDataDownLoader.class.getResource("/resource/meta_data/wikipedia/"
+								+ language.getLanguageLowerCase() + "/" + FileName.WIKIPEDIA_META_WORDS.getFileName()),
+						new File(metaDataPath + "wikipedia/" + language.getLanguageLowerCase() + "/"
+								+ FileName.WIKIPEDIA_META_WORDS.getFileName()));
+			}
+
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -116,6 +131,7 @@ public class RawDataDownLoader {
 			(new File(dataPath + "results/wikipedia/" + language.getLanguage())).mkdirs();
 			(new File(dataPath + "meta/wikipedia/" + language.getLanguage())).mkdirs();
 			(new File(dataPath + "results/wikidata/" + language.getLanguage())).mkdirs();
+			(new File(dataPath + "meta/wikipedia/"+ language.getLanguage())).mkdirs();
 		}
 
 		this.metaDataPath = this.dataPath + FileLoader.ONLINE_META_FOLDER_SUFFIX;

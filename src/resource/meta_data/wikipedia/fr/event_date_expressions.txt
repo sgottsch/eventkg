@@ -1,0 +1,38 @@
+# predefined regexes
+@hyphensOrWithSlash@
+@hyphensOr@
+@digitsInYear@
+@regexDay1@
+@regexDay2@
+@regexMonth1@
+@regexMonth2@
+@regexYear@
+@thisYear@
+
+# new regexes
+@regexDayMonth1@	@regexDay1@ @regexMonth1@
+@hyphensOrWithSlashAndText@	(-|–|—|-|—|/|(et|au))
+@conjunctions@	(dans|en|au|avant|chez|aux|à|par pays)
+
+# dayTitle
+^@regexDay1@ @regexMonth1$
+
+# yearTitlePatterns
+^(?<y>[0-9]{@digitsInYear@})$
+^(?<y>[0-9]{@digitsInYear@}) @conjunctions@ .*$
+
+# yearTitlePatternsBC
+^(?<y>[0-9]{@digitsInYear@}) av\. ?J\.-C\.$
+^(?<y>[0-9]{@digitsInYear@}) av\. ?J\.-C\. @conjunctions@ .*$
+
+# datePatterns	hasStartDay	hasEndDay	hasStartMonth	hasEndMonth	hasYear
+^@regexDay1@ @regexMonth1@ ?@hyphensOrWithSlashAndText@ ?@regexDay2@ @regexMonth2@	1	1	1	1
+^@regexDay1@ ?@hyphensOrWithSlashAndText@ ?@regexDay2@ @regexMonth1@	1	1	1	0
+^@regexDayMonth1@	1	0	1	0
+^@regexMonth1@	0	0	1	0
+
+# dateLinkResolvers	(include "<r>"!)
+\[\[@regexDay1@ @regexMonth1@\|(?<r>[^\]]*)\]\]
+\[\[(?<r>@regexDay1@ @regexMonth1@)\]\]
+\[\[@regexMonth1@ @thisYear@\|(?<r>[^\]]*)\]\]
+\[\[(?<r>@regexYear@)\]\]
