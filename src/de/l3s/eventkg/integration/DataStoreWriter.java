@@ -528,14 +528,11 @@ public class DataStoreWriter {
 					lineNo += 1;
 					String relationId = "<eventkg_link_relation_" + String.valueOf(lineNo) + ">";
 					writeTriple(writer, writerPreview, lineNo, relationId, PrefixEnum.RDF.getAbbr() + "type",
-							prefixList.getPrefix(PrefixEnum.RDF).getAbbr() + "Statement", false, null);
+							prefixList.getPrefix(PrefixEnum.EVENT_KG_SCHEMA).getAbbr() + "Relation", false, null);
 					writeTriple(writer, writerPreview, lineNo, relationId,
 							prefixList.getPrefix(PrefixEnum.RDF).getAbbr() + "subject", subject.getId(), false, null);
 					writeTriple(writer, writerPreview, lineNo, relationId,
 							prefixList.getPrefix(PrefixEnum.RDF).getAbbr() + "object", object.getId(), false, null);
-					writeTriple(writer, writerPreview, lineNo, relationId,
-							prefixList.getPrefix(PrefixEnum.RDF).getAbbr() + "predicate",
-							prefixList.getPrefix(PrefixEnum.EVENT_KG_SCHEMA).getAbbr() + "are_linked", false, null);
 
 					for (GenericRelation relation : dataStore.getLinkRelations()) {
 						writeTriple(writer, writerPreview, lineNo, relationId,
@@ -591,23 +588,38 @@ public class DataStoreWriter {
 				lineNo += 1;
 				String relationId = "<eventkg_relation_" + String.valueOf(lineNo) + ">";
 
-				writeTriple(writer, writerPreview, lineNo, relationId, PrefixEnum.SEM.getAbbr() + "type",
-						prefixList.getPrefix(PrefixEnum.RDF).getAbbr() + "Role", false, relation.getDataSet());
-				writeTriple(writer, writerPreview, lineNo, relationId,
-						prefixList.getPrefix(PrefixEnum.RDF).getAbbr() + "value", object.getId(), false,
+				writeTriple(writer, writerPreview, lineNo, relationId, PrefixEnum.RDF.getAbbr() + "type",
+						prefixList.getPrefix(PrefixEnum.EVENT_KG_SCHEMA).getAbbr() + "Relation", false,
 						relation.getDataSet());
 
-				if (object.isEvent())
-					writeTriple(writer, writerPreview, lineNo, relation.getSubject().getId(),
-							prefixList.getPrefix(PrefixEnum.SEM).getAbbr() + "hasEvent", relationId, false,
-							relation.getDataSet());
-				else
-					writeTriple(writer, writerPreview, lineNo, relation.getSubject().getId(),
-							prefixList.getPrefix(PrefixEnum.SEM).getAbbr() + "hasActor", relationId, false,
-							relation.getDataSet());
+				writeTriple(writer, writerPreview, lineNo, relationId,
+						prefixList.getPrefix(PrefixEnum.RDF).getAbbr() + "subject", relation.getSubject().getId(),
+						false, relation.getDataSet());
 
 				writeTriple(writer, writerPreview, lineNo, relationId,
-						prefixList.getPrefix(PrefixEnum.RDF).getAbbr() + "roleType",
+						prefixList.getPrefix(PrefixEnum.RDF).getAbbr() + "object", relation.getObject().getId(), false,
+						relation.getDataSet());
+
+				// writeTriple(writer, writerPreview, lineNo, relationId,
+				// prefixList.getPrefix(PrefixEnum.RDF).getAbbr() + "value",
+				// object.getId(), false,
+				// relation.getDataSet());
+
+				// if (object.isEvent())
+				// writeTriple(writer, writerPreview, lineNo,
+				// relation.getSubject().getId(),
+				// prefixList.getPrefix(PrefixEnum.SEM).getAbbr() + "hasEvent",
+				// relationId, false,
+				// relation.getDataSet());
+				// else
+				// writeTriple(writer, writerPreview, lineNo,
+				// relation.getSubject().getId(),
+				// prefixList.getPrefix(PrefixEnum.SEM).getAbbr() + "hasActor",
+				// relationId, false,
+				// relation.getDataSet());
+
+				writeTriple(writer, writerPreview, lineNo, relationId,
+						prefixList.getPrefix(PrefixEnum.SEM).getAbbr() + "roleType",
 						relation.getPrefix().getAbbr() + relation.getProperty(), false, relation.getDataSet());
 
 				if (relation.getStartTime() != null)
@@ -684,7 +696,7 @@ public class DataStoreWriter {
 				String relationId = "<eventkg_relation_" + String.valueOf(relationNo) + ">";
 
 				writeTriple(writer, writerPreview, lineNo, relationId, PrefixEnum.RDF.getAbbr() + "type",
-						prefixList.getPrefix(PrefixEnum.RDF).getAbbr() + "Statement", false, relation.getDataSet());
+						prefixList.getPrefix(PrefixEnum.EVENT_KG_SCHEMA).getAbbr() + "Relation", false, relation.getDataSet());
 				writeTriple(writer, writerPreview, lineNo, relationId,
 						prefixList.getPrefix(PrefixEnum.RDF).getAbbr() + "subject", relation.getSubject().getId(),
 						false, relation.getDataSet());
@@ -693,7 +705,7 @@ public class DataStoreWriter {
 						relation.getDataSet());
 
 				writeTriple(writer, writerPreview, lineNo, relationId,
-						prefixList.getPrefix(PrefixEnum.RDF).getAbbr() + "predicatea",
+						prefixList.getPrefix(PrefixEnum.SEM).getAbbr() + "roleType",
 						relation.getPrefix().getAbbr() + relation.getProperty(), false, relation.getDataSet());
 
 				if (relation.getStartTime() != null)

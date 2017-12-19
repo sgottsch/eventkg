@@ -114,7 +114,11 @@ public class AllEventPagesDataSet {
 		System.out.println("loadEventLocations");
 		loadEventLocations();
 		System.out.println("loadSubEvents");
-		loadSubEvent();
+		loadSubEvents();
+		System.out.println("loadPreviousEvents");
+		loadPreviousEvents();
+		System.out.println("loadNextEvents");
+		loadNextEvents();
 	}
 
 	private void loadEntitiesWithExistenceTimes() {
@@ -435,7 +439,7 @@ public class AllEventPagesDataSet {
 
 	}
 
-	private void loadSubEvent() {
+	private void loadSubEvents() {
 		BufferedReader br = null;
 
 		try {
@@ -460,7 +464,91 @@ public class AllEventPagesDataSet {
 				DataSet dataSet = DataSets.getInstance().getDataSetById(dataSetId);
 
 				GenericRelation relation = new GenericRelation(event2, dataSet,
-						PrefixList.getInstance().getPrefix(PrefixEnum.SCHEMA_ORG), "subEvent", event1, null, false);
+						PrefixList.getInstance().getPrefix(PrefixEnum.SEM), "hasSubEvent", event1, null, false);
+				DataStore.getInstance().addGenericRelation(relation);
+
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				br.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+
+	}
+
+	private void loadPreviousEvents() {
+		BufferedReader br = null;
+
+		try {
+			br = FileLoader.getReader(FileName.ALL_PREVIOUS_EVENTS);
+
+			String line;
+			while ((line = br.readLine()) != null) {
+
+				String[] parts = line.split("\t");
+
+				Event event1 = getEventByWikidataId(parts[0]);
+				if (event1 == null) {
+					continue;
+				}
+
+				Event event2 = getEventByWikidataId(parts[2]);
+				if (event2 == null) {
+					continue;
+				}
+
+				String dataSetId = parts[4];
+				DataSet dataSet = DataSets.getInstance().getDataSetById(dataSetId);
+
+				GenericRelation relation = new GenericRelation(event2, dataSet,
+						PrefixList.getInstance().getPrefix(PrefixEnum.DBPEDIA_ONTOLOGY), "previousEvent", event1, null,
+						false);
+				DataStore.getInstance().addGenericRelation(relation);
+
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				br.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+
+	}
+
+	private void loadNextEvents() {
+		BufferedReader br = null;
+
+		try {
+			br = FileLoader.getReader(FileName.ALL_NEXT_EVENTS);
+
+			String line;
+			while ((line = br.readLine()) != null) {
+
+				String[] parts = line.split("\t");
+
+				Event event1 = getEventByWikidataId(parts[0]);
+				if (event1 == null) {
+					continue;
+				}
+
+				Event event2 = getEventByWikidataId(parts[2]);
+				if (event2 == null) {
+					continue;
+				}
+
+				String dataSetId = parts[4];
+				DataSet dataSet = DataSets.getInstance().getDataSetById(dataSetId);
+
+				GenericRelation relation = new GenericRelation(event2, dataSet,
+						PrefixList.getInstance().getPrefix(PrefixEnum.DBPEDIA_ONTOLOGY), "nextEvent", event1, null,
+						false);
 				DataStore.getInstance().addGenericRelation(relation);
 
 			}

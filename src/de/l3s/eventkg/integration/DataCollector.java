@@ -117,6 +117,10 @@ public class DataCollector extends Extractor {
 		collectEvents();
 		System.out.println("Collect \"part of\" relations.");
 		collectPartOfs();
+		System.out.println("Collect \"follows\" relations.");
+		collectPreviousEvents();
+		System.out.println("Collect \"followed by\" relations.");
+		collectNextEvents();
 		System.out.println("Collect event locations.");
 		collectEventLocations();
 	}
@@ -408,11 +412,68 @@ public class DataCollector extends Extractor {
 	private void collectPreviousEvents() {
 		collectPreviousEventsWikidata();
 		collectPreviousEventsDBpedia();
+		writePreviousEventsToFile();
 	}
+
+	private void writePreviousEventsToFile() {
+		PrintWriter writer = null;
+		try {
+			writer = FileLoader.getWriter(FileName.ALL_PREVIOUS_EVENTS);
+			for (Event event : uniqueEvents) {
+				for (Event previousEvent : event.getPreviousEvents()) {
+					for (DataSet dataSet : event.getPreviousEventsWithDataSets().get(previousEvent)) {
+						writer.write(event.getWikidataId());
+						writer.write(Config.TAB);
+						writer.write(event.getWikipediaLabelsString(this.languages));
+						writer.write(Config.TAB);
+						writer.write(previousEvent.getWikidataId());
+						writer.write(Config.TAB);
+						writer.write(previousEvent.getWikipediaLabelsString(this.languages));
+						writer.write(Config.TAB);
+						writer.write(dataSet.getId());
+						writer.write(Config.NL);
+					}
+				}
+			}
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} finally {
+			writer.close();
+		}
+	}
+	
+	private void writeNextEventsToFile() {
+		PrintWriter writer = null;
+		try {
+			writer = FileLoader.getWriter(FileName.ALL_NEXT_EVENTS);
+			for (Event event : uniqueEvents) {
+				for (Event nextEvent : event.getNextEvents()) {
+					for (DataSet dataSet : event.getNextEventsWithDataSets().get(nextEvent)) {
+						writer.write(event.getWikidataId());
+						writer.write(Config.TAB);
+						writer.write(event.getWikipediaLabelsString(this.languages));
+						writer.write(Config.TAB);
+						writer.write(nextEvent.getWikidataId());
+						writer.write(Config.TAB);
+						writer.write(nextEvent.getWikipediaLabelsString(this.languages));
+						writer.write(Config.TAB);
+						writer.write(dataSet.getId());
+						writer.write(Config.NL);
+					}
+				}
+			}
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} finally {
+			writer.close();
+		}
+	}
+
 
 	private void collectNextEvents() {
 		collectNextEventsWikidata();
 		collectNextEventsDBpedia();
+		writeNextEventsToFile();
 	}
 
 	private void writePartOfsToFile() {

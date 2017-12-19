@@ -46,7 +46,7 @@ public class LinksToCount {
 	public GenericRelation toGenericRelation() {
 		// we only store links where at least one event is involved
 		return new GenericRelation(event, DataSets.getInstance().getDataSet(this.language, Source.WIKIPEDIA),
-				PrefixList.getInstance().getPrefix(PrefixEnum.EVENT_KG_SCHEMA), "links_to", entity, (double) count,
+				PrefixList.getInstance().getPrefix(PrefixEnum.EVENT_KG_SCHEMA), "links", entity, (double) count,
 				false);
 	}
 

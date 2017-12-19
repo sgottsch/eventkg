@@ -199,6 +199,8 @@ public enum FileName {
 	 * Event pages with part of relations
 	 */
 	ALL_PART_OF_RELATIONS("all_event_part_ofs.tsv", Source.ALL, FileType.RESULTS, false, false, false),
+	ALL_PREVIOUS_EVENTS("all_previous_events.tsv", Source.ALL, FileType.RESULTS, false, false, false),
+	ALL_NEXT_EVENTS("all_next_events.tsv", Source.ALL, FileType.RESULTS, false, false, false),
 
 	/**
 	 * Event pages with the events' locations

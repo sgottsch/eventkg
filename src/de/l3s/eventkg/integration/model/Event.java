@@ -218,4 +218,12 @@ public class Event extends Entity {
 		this.eventInstanceComments.add(eventInstanceComment);
 	}
 
+	public Map<Event, Set<DataSet>> getNextEventsWithDataSets() {
+		return nextEventsWithDataSets;
+	}
+
+	public Map<Event, Set<DataSet>> getPreviousEventsWithDataSets() {
+		return previousEventsWithDataSets;
+	}
+
 }
