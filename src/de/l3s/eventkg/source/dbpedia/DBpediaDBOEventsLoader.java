@@ -91,6 +91,7 @@ public class DBpediaDBOEventsLoader extends Extractor {
 			try {
 				br.close();
 				resultsWriter.close();
+				resultsWriterBlacklist.close();
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
