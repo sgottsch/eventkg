@@ -135,6 +135,9 @@ public class DataCollector extends Extractor {
 	}
 
 	private void writeSubLocationsToFile() {
+
+		System.out.println("writeSubLocationsToFile");
+
 		PrintWriter writer = null;
 		try {
 			writer = FileLoader.getWriter(FileName.ALL_SUB_LOCATIONS);
@@ -285,11 +288,15 @@ public class DataCollector extends Extractor {
 
 				String[] parts = line.split("\t");
 
-				YAGOLabelExtractor yagoLabelExtractor1 = new YAGOLabelExtractor(parts[0]);
+				YAGOLabelExtractor yagoLabelExtractor1 = new YAGOLabelExtractor(parts[0], this.languages);
 				yagoLabelExtractor1.extractLabel();
+				if (!yagoLabelExtractor1.isValid())
+					continue;
 
-				YAGOLabelExtractor yagoLabelExtractor2 = new YAGOLabelExtractor(parts[2]);
+				YAGOLabelExtractor yagoLabelExtractor2 = new YAGOLabelExtractor(parts[2], this.languages);
 				yagoLabelExtractor2.extractLabel();
+				if (!yagoLabelExtractor2.isValid())
+					continue;
 
 				Event event1 = findEvent(yagoLabelExtractor1.getLanguage(), yagoLabelExtractor1.getWikipediaLabel());
 
@@ -817,27 +824,29 @@ public class DataCollector extends Extractor {
 
 		Set<String> wikidataBlackListEvents = new HashSet<String>();
 
-		BufferedReader br = null;
-		try {
+		for (Language language : this.languages) {
+			BufferedReader br = null;
 			try {
-				br = FileLoader.getReader(FileName.DBPEDIA_ALL_LOCATIONS);
-			} catch (FileNotFoundException e1) {
-				e1.printStackTrace();
-			}
+				try {
+					br = FileLoader.getReader(FileName.DBPEDIA_ALL_LOCATIONS, language);
+				} catch (FileNotFoundException e1) {
+					e1.printStackTrace();
+				}
 
-			String line;
-			while ((line = br.readLine()) != null) {
-				createBlacklistEventByWikidataID(line, "loadLocationsBlacklistEvents");
+				String line;
+				while ((line = br.readLine()) != null) {
+					createBlacklistEvent(language, line, "loadLocationsBlacklistEvents");
 
-				wikidataBlackListEvents.add(line);
-			}
-		} catch (IOException e) {
-			e.printStackTrace();
-		} finally {
-			try {
-				br.close();
+					wikidataBlackListEvents.add(line);
+				}
 			} catch (IOException e) {
 				e.printStackTrace();
+			} finally {
+				try {
+					br.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
 			}
 		}
 
@@ -1130,7 +1139,7 @@ public class DataCollector extends Extractor {
 
 		System.out.println("collectSubLocationsWikidata");
 
-		this.locations = DBpediaAllLocationsLoader.loadLocationEntities(this.wikidataIdMappings);
+		this.locations = DBpediaAllLocationsLoader.loadLocationEntities(this.languages, this.wikidataIdMappings);
 
 		BufferedReader br = null;
 		try {
@@ -1187,6 +1196,8 @@ public class DataCollector extends Extractor {
 	}
 
 	private void minimizeSubLocations() {
+
+		System.out.println("minimizeSubLocations");
 
 		// transitive parents
 		for (Entity location : this.locations) {

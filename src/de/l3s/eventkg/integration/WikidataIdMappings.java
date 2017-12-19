@@ -12,9 +12,12 @@ import java.util.Set;
 import de.l3s.eventkg.integration.model.Entity;
 import de.l3s.eventkg.meta.Language;
 import de.l3s.eventkg.pipeline.Config.TimeSymbol;
+import de.l3s.eventkg.source.wikipedia.RedirectsTableCreator;
 import de.l3s.eventkg.source.wikipedia.WikiWords;
 import de.l3s.eventkg.util.FileLoader;
 import de.l3s.eventkg.util.FileName;
+import gnu.trove.map.TIntObjectMap;
+import gnu.trove.map.hash.TIntObjectHashMap;
 
 public class WikidataIdMappings {
 
@@ -22,7 +25,9 @@ public class WikidataIdMappings {
 	// private Map<Language, Map<String, String>> wikidataIdsForWikipediaLabels;
 	private Map<Language, Map<String, String>> wikidataPropertysByIDs;
 
-	private Map<String, Entity> entitiesByWikidataIds;
+	private TIntObjectMap<Entity> entitiesByWikidataNumericIds = new TIntObjectHashMap<Entity>(45000000);
+
+	// private Map<String, Entity> entitiesByWikidataIds;
 	private Map<Language, Map<String, Entity>> entitiesByWikipediaLabels;
 
 	private List<Language> languages;
@@ -31,15 +36,26 @@ public class WikidataIdMappings {
 
 	private Map<String, TimeSymbol> temporalPropertyIds;
 
+	private Map<Language, Map<String, String>> redirects = new HashMap<Language, Map<String, String>>();
+
 	public WikidataIdMappings(List<Language> languages) {
 		this.languages = languages;
 	}
 
 	public void load() {
+		loadRedirects();
 		loadWikidataIdMapping();
 		loadWikidataLabels();
 		loadWikidataPropertyIdMapping();
 		loadTemporalProperties();
+	}
+
+	private void loadRedirects() {
+		for (Language language : this.languages) {
+			System.out.println(language + ": Load redirects.");
+			Map<String, String> redirectsOfLanguage = RedirectsTableCreator.getRedirects(language);
+			this.redirects.put(language, redirectsOfLanguage);
+		}
 	}
 
 	private void loadWikidataLabels() {
@@ -49,6 +65,8 @@ public class WikidataIdMappings {
 			System.out
 					.println("Load Wikidata mapping for the " + language.getLanguageAdjective() + " Wikidata labels.");
 
+			int lineNo = 0;
+			int brackets = 0;
 			BufferedReader br = null;
 			try {
 				br = FileLoader.getReader(FileName.WIKIDATA_LABELS, language);
@@ -56,6 +74,10 @@ public class WikidataIdMappings {
 				String line;
 				while ((line = br.readLine()) != null) {
 
+					if (lineNo % 1000000 == 0)
+						System.out.println(lineNo + " - " + brackets);
+
+					lineNo += 1;
 					String[] parts = line.split("\t");
 
 					String wikidataId = parts[0];
@@ -64,11 +86,22 @@ public class WikidataIdMappings {
 					if (label.isEmpty())
 						continue;
 
-					Entity entity = this.entitiesByWikidataIds.get(wikidataId);
+					// if(label.startsWith("[") && label.endsWith("]")) {
+					// brackets+=1;
+					// continue;
+					// }
+
+					int numericWikidataId = Integer.parseInt(wikidataId.substring(1));
+
+					// Entity entity =
+					// this.entitiesByWikidataIds.get(wikidataId);
+
+					Entity entity = this.entitiesByWikidataNumericIds.get(numericWikidataId);
 					if (entity == null) {
 						entity = new Entity(wikidataId);
 						DataStore.getInstance().addEntity(entity);
-						this.entitiesByWikidataIds.put(wikidataId, entity);
+						// this.entitiesByWikidataIds.put(wikidataId, entity);
+						this.entitiesByWikidataNumericIds.put(numericWikidataId, entity);
 					}
 
 					entity.addWikidataLabel(language, label);
@@ -95,7 +128,7 @@ public class WikidataIdMappings {
 		// this.wikidataEntitiesByIDs = new HashMap<Language, Map<String,
 		// String>>();
 
-		this.entitiesByWikidataIds = new HashMap<String, Entity>();
+		// this.entitiesByWikidataIds = new HashMap<String, Entity>();
 		this.entitiesByWikipediaLabels = new HashMap<Language, Map<String, Entity>>();
 
 		for (Language language : this.languages) {
@@ -104,6 +137,7 @@ public class WikidataIdMappings {
 					+ " Wikipedia labels in Wikidata.");
 
 			this.entitiesByWikipediaLabels.put(language, new HashMap<String, Entity>());
+			int lines = 0;
 
 			BufferedReader br = null;
 			try {
@@ -128,6 +162,7 @@ public class WikidataIdMappings {
 					// wikidataEntitiesByIDs.get(language).put(wikidataId,
 					// wikipediaLabel);
 
+					lines += 1;
 					createEntity(wikidataId, language, wikipediaLabel);
 				}
 			} catch (IOException e) {
@@ -139,11 +174,13 @@ public class WikidataIdMappings {
 					e.printStackTrace();
 				}
 			}
+
+			System.out.println(language + ": " + lines + " labels.");
 		}
 
 		Set<Entity> entitiesToRemove = new HashSet<Entity>();
 		// remove category entities
-		for (Entity entity : this.entitiesByWikidataIds.values()) {
+		for (Entity entity : this.entitiesByWikidataNumericIds.valueCollection()) {
 			for (Language labelLanguage : entity.getWikipediaLabels().keySet()) {
 				for (String listPrefix : WikiWords.getInstance().getCategoryPrefixes(labelLanguage)) {
 					if (entity.getWikipediaLabel(labelLanguage).startsWith(listPrefix)) {
@@ -154,7 +191,7 @@ public class WikidataIdMappings {
 		}
 
 		// remove list entities
-		for (Entity entity : this.entitiesByWikidataIds.values()) {
+		for (Entity entity : this.entitiesByWikidataNumericIds.valueCollection()) {
 			for (Language labelLanguage : entity.getWikipediaLabels().keySet()) {
 				for (String listPrefix : WikiWords.getInstance().getListPrefixes(labelLanguage)) {
 					if (entity.getWikipediaLabel(labelLanguage).startsWith(listPrefix)) {
@@ -165,7 +202,7 @@ public class WikidataIdMappings {
 		}
 
 		for (Entity entity : entitiesToRemove) {
-			this.entitiesByWikidataIds.remove(entity.getWikidataId());
+			this.entitiesByWikidataNumericIds.remove(entity.getNumericWikidataId());
 			for (Language labelLanguage : entity.getWikipediaLabels().keySet()) {
 				this.entitiesByWikipediaLabels.get(labelLanguage).remove(entity.getWikipediaLabel(labelLanguage));
 				DataStore.getInstance().removeEntity(entity);
@@ -176,13 +213,15 @@ public class WikidataIdMappings {
 
 	private Entity createEntity(String wikidataId, Language language, String wikipediaLabel) {
 
-		Entity entity = this.entitiesByWikidataIds.get(wikidataId);
+		int numericWikidataId = Integer.parseInt(wikidataId.substring(1));
+
+		Entity entity = this.entitiesByWikidataNumericIds.get(numericWikidataId);
 		if (entity != null) {
 			entity.addWikipediaLabel(language, wikipediaLabel);
 		} else {
-			entity = new Entity(language, wikipediaLabel, wikidataId);
+			entity = new Entity(language, wikipediaLabel, wikidataId, numericWikidataId);
 			DataStore.getInstance().addEntity(entity);
-			this.entitiesByWikidataIds.put(wikidataId, entity);
+			this.entitiesByWikidataNumericIds.put(numericWikidataId, entity);
 		}
 
 		this.entitiesByWikipediaLabels.get(language).put(wikipediaLabel, entity);
@@ -271,15 +310,28 @@ public class WikidataIdMappings {
 	}
 
 	public Entity getEntityByWikipediaLabel(Language language, String wikipediaLabel) {
+		if (!this.redirects.containsKey(language))
+			System.out.println("redirects is missing " + language);
+
+		if (!this.entitiesByWikipediaLabels.containsKey(language))
+			System.out.println("entitiesByWikipediaLabels is missing " + language);
+
+		if (this.redirects.get(language).containsKey(wikipediaLabel))
+			wikipediaLabel = this.redirects.get(language).get(wikipediaLabel);
+
 		return entitiesByWikipediaLabels.get(language).get(wikipediaLabel);
 	}
 
 	public Entity getEntityByWikidataId(String wikidataId) {
-		return entitiesByWikidataIds.get(wikidataId);
+		return entitiesByWikidataNumericIds.get(Integer.parseInt(wikidataId.substring(1)));
 	}
 
-	public Map<String, Entity> getEntitiesByWikidataIds() {
-		return entitiesByWikidataIds;
+	public Entity getEntityByWikidataId(int wikidataId) {
+		return entitiesByWikidataNumericIds.get(wikidataId);
+	}
+
+	public TIntObjectMap<Entity> getEntitiesByWikidataIds() {
+		return null;
 	}
 
 	// public Set<String> getWikidataIdsThatHaveLabels() {

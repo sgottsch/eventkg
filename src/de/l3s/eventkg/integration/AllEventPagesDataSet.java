@@ -73,10 +73,12 @@ public class AllEventPagesDataSet {
 				String[] parts = line.split("\t");
 
 				String wikidataId = parts[0];
+				int numericWikidataId = Integer.parseInt(wikidataId.substring(1));
+
 				// if (wikidataId.equals("\\N"))
 				// wikidataId = null;
 
-				Entity entity = this.wikidataIdMappings.getEntityByWikidataId(wikidataId);
+				Entity entity = this.wikidataIdMappings.getEntityByWikidataId(numericWikidataId);
 
 				if (entity == null) {
 					// this happens in case of "list" entities that were removed
@@ -172,8 +174,10 @@ public class AllEventPagesDataSet {
 
 				String[] parts = line.split("\t");
 
-				YAGOLabelExtractor yagoLabelExtractor = new YAGOLabelExtractor(parts[0]);
+				YAGOLabelExtractor yagoLabelExtractor = new YAGOLabelExtractor(parts[0], this.languages);
 				yagoLabelExtractor.extractLabel();
+				if (!yagoLabelExtractor.isValid())
+					continue;
 
 				Entity entity = this.wikidataIdMappings.getEntityByWikipediaLabel(yagoLabelExtractor.getLanguage(),
 						yagoLabelExtractor.getWikipediaLabel());

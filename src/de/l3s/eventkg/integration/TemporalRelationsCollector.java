@@ -209,10 +209,15 @@ public class TemporalRelationsCollector extends Extractor {
 
 				} else {
 
-					YAGOLabelExtractor yagoLabelExtractor1 = new YAGOLabelExtractor(parts[0]);
+					YAGOLabelExtractor yagoLabelExtractor1 = new YAGOLabelExtractor(parts[0], this.languages);
 					yagoLabelExtractor1.extractLabel();
-					YAGOLabelExtractor yagoLabelExtractor2 = new YAGOLabelExtractor(parts[2]);
+					if (!yagoLabelExtractor1.isValid())
+						continue;
+
+					YAGOLabelExtractor yagoLabelExtractor2 = new YAGOLabelExtractor(parts[2], this.languages);
 					yagoLabelExtractor2.extractLabel();
+					if (!yagoLabelExtractor2.isValid())
+						continue;
 
 					String property = parts[1];
 
@@ -292,10 +297,15 @@ public class TemporalRelationsCollector extends Extractor {
 					if (property.startsWith("<"))
 						property = property.substring(1, property.length() - 1);
 
-					YAGOLabelExtractor yagoLabelExtractor1 = new YAGOLabelExtractor(parts[0]);
+					YAGOLabelExtractor yagoLabelExtractor1 = new YAGOLabelExtractor(parts[0], this.languages);
 					yagoLabelExtractor1.extractLabel();
-					YAGOLabelExtractor yagoLabelExtractor2 = new YAGOLabelExtractor(parts[2]);
+					if (!yagoLabelExtractor1.isValid())
+						continue;
+
+					YAGOLabelExtractor yagoLabelExtractor2 = new YAGOLabelExtractor(parts[2], this.languages);
 					yagoLabelExtractor2.extractLabel();
+					if (!yagoLabelExtractor2.isValid())
+						continue;
 
 					Entity entity1 = buildEntity(yagoLabelExtractor1.getLanguage(),
 							yagoLabelExtractor1.getWikipediaLabel());

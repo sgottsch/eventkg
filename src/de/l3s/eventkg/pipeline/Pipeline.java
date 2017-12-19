@@ -24,7 +24,7 @@ import de.l3s.eventkg.source.dbpedia.DBpediaEventLocationsExtractor;
 import de.l3s.eventkg.source.dbpedia.DBpediaEventRelationsExtractor;
 import de.l3s.eventkg.source.dbpedia.DBpediaPartOfLoader;
 import de.l3s.eventkg.source.dbpedia.DBpediaTimesExtractor;
-import de.l3s.eventkg.source.wikidata.EventsFromFileFinder;
+import de.l3s.eventkg.source.wikidata.WikidataEventsFromFileFinder;
 import de.l3s.eventkg.source.wikidata.WikidataExtractionWithEventPages;
 import de.l3s.eventkg.source.wikidata.WikidataExtractionWithoutEventPages;
 import de.l3s.eventkg.source.wikipedia.LabelsAndDescriptionsExtractor;
@@ -102,8 +102,8 @@ public class Pipeline {
 
 	private void download() {
 		RawDataDownLoader downloader = new RawDataDownLoader(languages);
-		downloader.createFolders();
-		downloader.copyMetaFiles();
+		//downloader.createFolders();
+		//downloader.copyMetaFiles();
 		downloader.downloadFiles();
 	}
 
@@ -142,8 +142,8 @@ public class Pipeline {
 
 		List<Extractor> extractors = new ArrayList<Extractor>();
 
-		extractors.add(new EventsFromFileFinder(languages));
-		extractors.add(new DBpediaAllLocationsLoader(languages, getAllEventPagesDataSet()));
+		extractors.add(new WikidataEventsFromFileFinder(languages));
+		extractors.add(new DBpediaAllLocationsLoader(languages));
 		// First step of integration
 		extractors.add(new DataCollector(languages));
 

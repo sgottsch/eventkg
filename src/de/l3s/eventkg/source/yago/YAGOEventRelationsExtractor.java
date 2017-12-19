@@ -83,9 +83,17 @@ public class YAGOEventRelationsExtractor extends Extractor {
 
 					String[] parts = line.split("\t");
 
-					YAGOLabelExtractor yagoLabelExtractor1 = new YAGOLabelExtractor(parts[0]);
+					YAGOLabelExtractor yagoLabelExtractor1 = new YAGOLabelExtractor(parts[0], this.languages);
+					yagoLabelExtractor1.extractLabel();
+					if(!yagoLabelExtractor1.isValid())
+						continue;
+
 					YAGOLabelExtractor yagoLabelExtractor2 = new YAGOLabelExtractor(
-							parts[2].substring(0, parts[2].length() - 2));
+							parts[2].substring(0, parts[2].length() - 2), this.languages);
+					yagoLabelExtractor2.extractLabel();
+					if(!yagoLabelExtractor2.isValid())
+						continue;
+
 					String wikipediaLabel1 = parts[0].substring(1, parts[0].length() - 1);
 					String wikipediaLabel2 = parts[2].substring(1, parts[2].length() - 3);
 

@@ -1,5 +1,9 @@
 package de.l3s.eventkg.source.yago.util;
 
+import java.util.List;
+
+import org.apache.commons.lang3.EnumUtils;
+
 import de.l3s.eventkg.meta.Language;
 
 public class YAGOLabelExtractor {
@@ -8,8 +12,13 @@ public class YAGOLabelExtractor {
 	private String wikipediaLabel;
 	private Language language;
 
-	public YAGOLabelExtractor(String id) {
+	private List<Language> languages;
+
+	private boolean isValid = true;
+
+	public YAGOLabelExtractor(String id, List<Language> languages) {
 		this.id = id;
+		this.languages = languages;
 	}
 
 	public void extractLabel() {
@@ -23,10 +32,20 @@ public class YAGOLabelExtractor {
 
 		// YAGO labels can be like "<de/Sass_Pordoi>". Extract language
 		// then.
-		if (wikipediaLabel.charAt(2) == '/') {
+		if (wikipediaLabel.length() > 2 && wikipediaLabel.charAt(2) == '/') {
 			String languageString = wikipediaLabel.substring(0, 2);
+
+			if (!EnumUtils.isValidEnum(Language.class, languageString.toUpperCase())) {
+				this.isValid = false;
+				return;
+			}
+
 			if (Language.valueOf(languageString.toUpperCase()) != null) {
 				language = Language.valueOf(languageString.toUpperCase());
+				if (!this.languages.contains(language)) {
+					this.isValid = false;
+					return;
+				}
 				wikipediaLabel = wikipediaLabel.substring(3);
 			}
 		}
@@ -38,6 +57,10 @@ public class YAGOLabelExtractor {
 
 	public Language getLanguage() {
 		return language;
+	}
+
+	public boolean isValid() {
+		return isValid;
 	}
 
 }

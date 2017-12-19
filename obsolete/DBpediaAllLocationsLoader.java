@@ -5,12 +5,11 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
+import de.l3s.eventkg.integration.AllEventPagesDataSet;
 import de.l3s.eventkg.integration.WikidataIdMappings;
 import de.l3s.eventkg.integration.model.Entity;
 import de.l3s.eventkg.meta.Language;
@@ -22,7 +21,9 @@ import de.l3s.eventkg.util.FileName;
 
 public class DBpediaAllLocationsLoader extends Extractor {
 
-	public Map<Language, Set<String>> locationEntities = new HashMap<Language, Set<String>>();
+	private AllEventPagesDataSet allEventPagesDataSet;
+
+	public Set<Entity> locationEntities = new HashSet<Entity>();
 
 	public static void main(String[] args) {
 		Config.init("config_eventkb_local.txt");
@@ -40,13 +41,12 @@ public class DBpediaAllLocationsLoader extends Extractor {
 		writeResults();
 	}
 
-	public DBpediaAllLocationsLoader(List<Language> languages) {
+	public DBpediaAllLocationsLoader(List<Language> languages, AllEventPagesDataSet allEventPagesDataSet) {
 		super("DBpediaAllLocationsLoader", Source.DBPEDIA, "?", languages);
+		this.allEventPagesDataSet = allEventPagesDataSet;
 	}
 
 	private void extractLocations(Language language) {
-
-		this.locationEntities.put(language, new HashSet<String>());
 
 		BufferedReader br = null;
 
@@ -69,7 +69,11 @@ public class DBpediaAllLocationsLoader extends Extractor {
 				}
 
 				if (type.equals("<http://dbpedia.org/ontology/Place>")) {
-					this.locationEntities.get(language).add(subject);
+					Entity entity = allEventPagesDataSet.getWikidataIdMappings().getEntityByWikipediaLabel(language,
+							subject);
+					if (entity != null) {
+						this.locationEntities.add(entity);
+					}
 				}
 			}
 
@@ -95,17 +99,22 @@ public class DBpediaAllLocationsLoader extends Extractor {
 
 				String[] parts = line.split(" ");
 
-				String subject = parts[0];
-				if (!subject.contains("resource"))
+				String subbject = parts[0];
+				if (!subbject.contains("resource"))
 					continue;
 
 				try {
-					subject = subject.substring(subject.lastIndexOf("resource/") + 9, subject.lastIndexOf(">"));
+					subbject = subbject.substring(subbject.lastIndexOf("resource/") + 9, subbject.lastIndexOf(">"));
 				} catch (StringIndexOutOfBoundsException e) {
 					continue;
 				}
 
-				this.locationEntities.get(language).add(subject);
+				Entity entity = allEventPagesDataSet.getWikidataIdMappings().getEntityByWikipediaLabel(language,
+						subbject);
+
+				if (entity != null) {
+					this.locationEntities.add(entity);
+				}
 
 			}
 
@@ -124,51 +133,45 @@ public class DBpediaAllLocationsLoader extends Extractor {
 
 	private void writeResults() {
 
-		for (Language language : this.languages) {
-			PrintWriter writer = null;
-			try {
-				writer = FileLoader.getWriter(FileName.DBPEDIA_ALL_LOCATIONS, language);
-				for (String entityLabel : this.locationEntities.get(language)) {
-					writer.write(entityLabel + "\n");
+		PrintWriter writer = null;
+		try {
+			writer = FileLoader.getWriter(FileName.DBPEDIA_ALL_LOCATIONS);
+			for (Entity entity : this.locationEntities) {
+				if (entity.getWikidataId() != null) {
+					writer.write(entity.getWikidataId() + "\n");
 				}
-			} catch (FileNotFoundException e) {
-				e.printStackTrace();
-			} finally {
-				writer.close();
 			}
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} finally {
+			writer.close();
 		}
 
 	}
 
-	public static Set<Entity> loadLocationEntities(List<Language> languages, WikidataIdMappings mappings) {
+	public static Set<Entity> loadLocationEntities(WikidataIdMappings mappings) {
 
 		Set<Entity> entities = new HashSet<Entity>();
 
 		BufferedReader br = null;
 
-		for (Language language : languages) {
+		try {
+			br = FileLoader.getReader(FileName.DBPEDIA_ALL_LOCATIONS);
+
+			String line;
+			while ((line = br.readLine()) != null) {
+				Entity entity = mappings.getEntityByWikidataId(line);
+				entity.setLocation(true);
+				entities.add(entity);
+			}
+
+		} catch (IOException e) {
+			e.printStackTrace();
+		} finally {
 			try {
-				br = FileLoader.getReader(FileName.DBPEDIA_ALL_LOCATIONS, language);
-
-				String line;
-				while ((line = br.readLine()) != null) {
-					Entity entity = mappings.getEntityByWikipediaLabel(language, line);
-
-					if (entity == null)
-						continue;
-
-					entity.setLocation(true);
-					entities.add(entity);
-				}
-
+				br.close();
 			} catch (IOException e) {
 				e.printStackTrace();
-			} finally {
-				try {
-					br.close();
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
 			}
 		}
 

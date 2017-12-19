@@ -163,7 +163,7 @@ public class LabelsAndDescriptionsExtractor extends Extractor {
 		// }
 		// }
 
-		for (Entity entity : this.allEventPagesDataSet.getWikidataIdMappings().getEntitiesByWikidataIds().values()) {
+		for (Entity entity : this.allEventPagesDataSet.getWikidataIdMappings().getEntitiesByWikidataIds().valueCollection()) {
 			for (Language language : entity.getWikipediaLabels().keySet()) {
 				this.wikipediaLabels.get(language).put(entity, entity.getWikipediaLabel(language));
 			}

@@ -37,7 +37,8 @@ public class WikipediaEventsByCategoryNameLoader extends Extractor {
 		// no need to do the process if there are no event categories specified
 		// but even if there is none, create the empty file (so when loading the
 		// files later, we don't need to check for file existence)
-		if (!WikiWords.getInstance().getEventCategoryRegexes(language).isEmpty()) {
+		if (WikiWords.getInstance().getEventCategoryRegexes(language) != null
+				&& !WikiWords.getInstance().getEventCategoryRegexes(language).isEmpty()) {
 			System.out.println("Load event pages (Wikipedia categories) - " + language + ".");
 			Map<Integer, String> eventPageIDs = loadEventPages(language);
 			System.out.println("Load labels of Wikipedia category event pages.");

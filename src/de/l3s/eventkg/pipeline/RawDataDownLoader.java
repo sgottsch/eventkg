@@ -139,9 +139,13 @@ public class RawDataDownLoader {
 	}
 
 	void downloadFiles() {
-		downloadWikipediaFiles();
-		downloadDBPediaFiles();
-		downloadWCEFiles();
+		
+		this.dataPath = Config.getValue("data_folder");
+		this.dataPath = this.dataPath + FileLoader.ONLINE_RAW_DATA_FOLDER_SUFFIX;
+		
+		//downloadWikipediaFiles();
+		//downloadDBPediaFiles();
+		//downloadWCEFiles();
 		downloadYAGOFiles();
 		downloadWikidataFile();
 	}
@@ -274,51 +278,52 @@ public class RawDataDownLoader {
 
 	public void downloadYAGOFiles() {
 
-		String yagoUrl = "http://resources.mpi-inf.mpg.de/yago-naga/yago/download/yago/";
+		String yagoUrl = "http://resources.mpi-inf.mpg.de/yago-naga/yago3.1/";
 		Set<String> urls = new HashSet<String>();
 		urls.add("yagoTaxonomy.ttl.7z");
 		urls.add("yagoDateFacts.ttl.7z");
 		urls.add("yagoFacts.ttl.7z");
 		urls.add("yagoMetaFacts.ttl.7z");
 
+		// TODO: Bug. Automated unzipping does not work anymore. Fix it!
+		
 		for (String urlString : urls) {
 			File downloadedFile = null;
 
-			try {
+//			try {
 
 				downloadedFile = downloadFile(yagoUrl + urlString, this.dataPath + "yago/" + urlString);
 
-				InputStream inputStream = new FileInputStream(this.dataPath + "yago/" + urlString);
-
-				SevenZFile sevenZFile = null;
-
-				try {
-					sevenZFile = new SevenZFile(downloadedFile);
-					SevenZArchiveEntry entry = sevenZFile.getNextEntry();
-					while (entry != null) {
-						OutputStream out = new FileOutputStream(this.dataPath + "yago/" + entry.getName());
-						byte[] content = new byte[(int) entry.getSize()];
-						sevenZFile.read(content, 0, content.length);
-						out.write(content);
-						out.close();
-						entry = sevenZFile.getNextEntry();
-					}
-					sevenZFile.close();
-					// outputStream.close();
-					inputStream.close();
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-
-			} catch (IOException e) {
-				e.printStackTrace();
-			} finally {
-				try {
-					Files.delete(downloadedFile.toPath());
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-			}
+//				InputStream inputStream = new FileInputStream(this.dataPath + "yago/" + urlString);
+//
+//				SevenZFile sevenZFile = null;
+//
+//				try {
+//					sevenZFile = new SevenZFile(downloadedFile);
+//					SevenZArchiveEntry entry = sevenZFile.getNextEntry();
+//					while (entry != null) {
+//						OutputStream out = new FileOutputStream(this.dataPath + "yago/" + entry.getName());
+//						byte[] content = new byte[(int) entry.getSize()];
+//						sevenZFile.read(content, 0, content.length);
+//						out.write(content);
+//						out.close();
+//						entry = sevenZFile.getNextEntry();
+//					}
+//					sevenZFile.close();
+//					inputStream.close();
+//				} catch (IOException e) {
+//					e.printStackTrace();
+//				}
+//
+//			} catch (IOException e) {
+//				e.printStackTrace();
+//			} finally {
+//				try {
+//					Files.delete(downloadedFile.toPath());
+//				} catch (IOException e) {
+//					e.printStackTrace();
+//				}
+//			}
 		}
 
 	}

@@ -109,7 +109,7 @@ public class TextualEventsExtractor extends Extractor {
 		// Sometimes, they are just actors ("Ethiopia begins a massive offensive
 		// in Eritrea.")
 		Set<Entity> locationEntities = DBpediaAllLocationsLoader
-				.loadLocationEntities(this.allEventPagesDataSet.getWikidataIdMappings());
+				.loadLocationEntities(this.languages, this.allEventPagesDataSet.getWikidataIdMappings());
 
 		Set<Set<TextualEvent>> mergedEvents = new HashSet<Set<TextualEvent>>();
 

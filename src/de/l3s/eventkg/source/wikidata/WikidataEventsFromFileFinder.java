@@ -24,7 +24,7 @@ import de.l3s.eventkg.util.FileName;
  * Given the "subclass of" and "instance of" relations extracted from the
  * Wikidata dump, creates a file listing all event items in Wikidata.
  */
-public class EventsFromFileFinder extends Extractor {
+public class WikidataEventsFromFileFinder extends Extractor {
 
 	private PrintWriter resultsWriter;
 	private PrintWriter blacklistResultsWriter;
@@ -33,12 +33,12 @@ public class EventsFromFileFinder extends Extractor {
 		Config.init(args[0]);
 		List<Language> ls = new ArrayList<Language>();
 		ls.add(Language.EN);
-		EventsFromFileFinder ff = new EventsFromFileFinder(ls);
+		WikidataEventsFromFileFinder ff = new WikidataEventsFromFileFinder(ls);
 		ff.run();
 	}
 
-	public EventsFromFileFinder(List<Language> languages) {
-		super("EventsFromFileFinder", Source.WIKIDATA,
+	public WikidataEventsFromFileFinder(List<Language> languages) {
+		super("WikidataEventsFromFileFinder", Source.WIKIDATA,
 				"Given the \"subclass of\" and \"instance of\" relations extracted from the Wikidata dump, creates a file listing all event items in Wikidata",
 				languages);
 	}

@@ -19,8 +19,9 @@ public class Entity {
 	protected Map<Language, Set<String>> wikidataLabels = new HashMap<Language, Set<String>>();
 
 	private String wikidataId;
+	private int numericWikidataId;
 
-	private String id;
+	private String eventKGId;
 
 	private boolean isEvent = false;
 
@@ -42,14 +43,7 @@ public class Entity {
 	public Entity(String wikidataId) {
 		super();
 		this.wikidataId = wikidataId;
-	}
-
-	public String getId() {
-		return id;
-	}
-
-	public void setId(String id) {
-		this.id = id;
+		this.numericWikidataId = Integer.parseInt(wikidataId.substring(1));
 	}
 
 	public Entity(Language language, String wikipediaLabel) {
@@ -61,6 +55,13 @@ public class Entity {
 		super();
 		this.wikipediaLabels.put(language, wikipediaLabel);
 		this.wikidataId = wikidataId;
+	}
+
+	public Entity(Language language, String wikipediaLabel, String wikidataId, int numericWikidataId) {
+		super();
+		this.wikipediaLabels.put(language, wikipediaLabel);
+		this.wikidataId = wikidataId;
+		this.numericWikidataId = numericWikidataId;
 	}
 
 	public String getWikipediaLabel(Language language) {
@@ -123,7 +124,7 @@ public class Entity {
 	public Map<Language, Set<String>> getWikidataLabels() {
 		return wikidataLabels;
 	}
-	
+
 	public Set<Entity> getSubLocations() {
 		return subLocations;
 	}
@@ -184,6 +185,22 @@ public class Entity {
 
 	public Map<Date, Set<DataSet>> getEndTimesWithDataSets() {
 		return endTimesWithDataSets;
+	}
+
+	public int getNumericWikidataId() {
+		return numericWikidataId;
+	}
+
+	public void setNumericWikidataId(int numericWikidataId) {
+		this.numericWikidataId = numericWikidataId;
+	}
+
+	public String getId() {
+		return eventKGId;
+	}
+
+	public void setId(String outputId) {
+		this.eventKGId = outputId;
 	}
 
 }
