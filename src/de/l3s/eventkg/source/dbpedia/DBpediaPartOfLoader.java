@@ -92,6 +92,8 @@ public class DBpediaPartOfLoader extends Extractor {
 			try {
 				br.close();
 				resultsWriter.close();
+				resultsWriterPreviousEvents.close();
+				resultsWriterNextEvents.close();
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
