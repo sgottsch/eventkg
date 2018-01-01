@@ -11,6 +11,7 @@ import java.util.Set;
 
 import de.l3s.eventkg.integration.model.Entity;
 import de.l3s.eventkg.meta.Language;
+import de.l3s.eventkg.pipeline.Config;
 import de.l3s.eventkg.pipeline.Config.TimeSymbol;
 import de.l3s.eventkg.source.wikipedia.RedirectsTableCreator;
 import de.l3s.eventkg.source.wikipedia.WikiWords;
@@ -60,6 +61,10 @@ public class WikidataIdMappings {
 
 	private void loadWikidataLabels() {
 
+		Set<Integer> allWikidataEntitiesWithFacts = loadAllWikidataEntitiesWithFacts();
+
+		int ignoredEntities = 0;
+
 		for (Language language : this.languages) {
 
 			System.out
@@ -74,6 +79,9 @@ public class WikidataIdMappings {
 				String line;
 				while ((line = br.readLine()) != null) {
 
+					// ignore all entities that do not have a Wikipedia label
+					// and no temporal relation
+
 					if (lineNo % 1000000 == 0)
 						System.out.println(lineNo + " - " + brackets);
 
@@ -82,6 +90,9 @@ public class WikidataIdMappings {
 
 					String wikidataId = parts[0];
 					String label = parts[1].trim();
+
+					if (label.startsWith(WikiWords.getInstance().getCategoryLabel(language) + ":"))
+						continue;
 
 					if (label.isEmpty())
 						continue;
@@ -98,6 +109,14 @@ public class WikidataIdMappings {
 
 					Entity entity = this.entitiesByWikidataNumericIds.get(numericWikidataId);
 					if (entity == null) {
+						// all entities that do not have Wikipedia labels
+
+						if (!allWikidataEntitiesWithFacts.contains(numericWikidataId)) {
+//							System.out.println("Ignore " + numericWikidataId + " - " + label + ".");
+							ignoredEntities += 1;
+							continue;
+						}
+
 						entity = new Entity(wikidataId);
 						DataStore.getInstance().addEntity(entity);
 						// this.entitiesByWikidataIds.put(wikidataId, entity);
@@ -116,8 +135,157 @@ public class WikidataIdMappings {
 				}
 			}
 
+			System.out.println(language + ", ignoredEntities: " + ignoredEntities);
+			System.out.println(language + ", entities: " + this.entitiesByWikidataNumericIds.size());
+
 		}
 
+		System.out.println("ignoredEntities: " + ignoredEntities);
+		System.out.println(this.entitiesByWikidataNumericIds.size() + " entities.");
+
+	}
+
+	private Set<Integer> loadAllWikidataEntitiesWithFacts() {
+
+		System.out.println("loadAllWikidataEntitiesWithFacts");
+
+		Set<Integer> wikidataIds = new HashSet<Integer>();
+
+		BufferedReader br = null;
+
+		try {
+
+			try {
+				br = FileLoader.getReader(FileName.WIKIDATA_TEMPORAL_FACTS);
+			} catch (FileNotFoundException e1) {
+				e1.printStackTrace();
+			}
+
+			String line;
+			while ((line = br.readLine()) != null) {
+
+				String[] parts = line.split("\t");
+
+				if (line.startsWith("\t"))
+					continue;
+
+				wikidataIds.add(Integer.valueOf(parts[1].substring(1)));
+				wikidataIds.add(Integer.valueOf(parts[3].substring(1)));
+
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				br.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+
+		br = null;
+		try {
+			try {
+				br = FileLoader.getReader(FileName.WIKIDATA_TEMPORAL_PROPERTIES);
+			} catch (FileNotFoundException e1) {
+				e1.printStackTrace();
+			}
+
+			String line;
+			while ((line = br.readLine()) != null) {
+				String[] parts = line.split("\t");
+
+				wikidataIds.add(Integer.valueOf(parts[0].substring(1)));
+
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				br.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+
+		br = null;
+		try {
+			try {
+				br = FileLoader.getReader(FileName.WIKIDATA_LOCATIONS);
+			} catch (FileNotFoundException e1) {
+				e1.printStackTrace();
+			}
+
+			String line;
+			while ((line = br.readLine()) != null) {
+				String[] parts = line.split("\t");
+
+				wikidataIds.add(Integer.valueOf(parts[2].substring(1)));
+				wikidataIds.add(Integer.valueOf(parts[0].substring(1)));
+
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				br.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+
+		br = null;
+		try {
+			try {
+				br = FileLoader.getReader(FileName.WIKIDATA_SUB_LOCATIONS);
+			} catch (FileNotFoundException e1) {
+				e1.printStackTrace();
+			}
+
+			String line;
+			while ((line = br.readLine()) != null) {
+				String[] parts = line.split("\t");
+
+				wikidataIds.add(Integer.valueOf(parts[1].substring(1)));
+				wikidataIds.add(Integer.valueOf(parts[3].substring(1)));
+
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				br.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+
+		br = null;
+		try {
+			try {
+				br = FileLoader.getReader(FileName.WIKIDATA_EVENTS);
+			} catch (FileNotFoundException e1) {
+				e1.printStackTrace();
+			}
+
+			String line;
+			while ((line = br.readLine()) != null) {
+				String[] parts = line.split(Config.TAB);
+				wikidataIds.add(Integer.valueOf(parts[0].substring(1)));
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				br.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+
+		System.out.println("\t" + wikidataIds.size());
+
+		return wikidataIds;
 	}
 
 	private void loadWikidataIdMapping() {
@@ -331,7 +499,11 @@ public class WikidataIdMappings {
 	}
 
 	public TIntObjectMap<Entity> getEntitiesByWikidataIds() {
-		return null;
+		return this.entitiesByWikidataNumericIds;
+	}
+
+	public TIntObjectMap<Entity> getEntitiesByWikidataNumericIds() {
+		return entitiesByWikidataNumericIds;
 	}
 
 	// public Set<String> getWikidataIdsThatHaveLabels() {

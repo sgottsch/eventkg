@@ -62,6 +62,7 @@ public class EventExtractorFromYearPages {
 		enMap.put(160795, "1988");
 		enMap.put(53347099, "Green Light (Lorde song)");
 		enMap.put(2646680, "1989 in British music");
+		enMap.put(2843484, "1965 in Australia");
 		exampleTexts.put(Language.EN, enMap);
 
 		Map<Integer, String> deMap = new HashMap<Integer, String>();
@@ -69,6 +70,7 @@ public class EventExtractorFromYearPages {
 		deMap.put(5909, "1957");
 		deMap.put(499753, "2014");
 		deMap.put(1531063, "2017");
+		deMap.put(6996295, "Musikjahr 1862");
 		exampleTexts.put(Language.DE, deMap);
 
 		Map<Integer, String> ruMap = new HashMap<Integer, String>();
@@ -93,18 +95,19 @@ public class EventExtractorFromYearPages {
 		ptMap.put(1989, "1897");
 		exampleTexts.put(Language.PT, ptMap);
 
-		Language language = Language.RU;
-		int id = 160616;
+		Language language = Language.EN;
+		int id = 2843484;
 
 		// TODO: Do this before
+		WikiWords.getInstance().init(language);
 		EventDateExpressionsAll.getInstance().init(language);
 
 		String text = IOUtils.toString(
 				TextExtractorNew.class.getResourceAsStream("/resource/wikipage/" + language.getLanguage() + "/" + id),
 				"UTF-8");
 
-		EventExtractorFromYearPages extr = new EventExtractorFromYearPages(text, id,
-				exampleTexts.get(language).get(id), language, RedirectsTableCreator.getRedirectsDummy(language));
+		EventExtractorFromYearPages extr = new EventExtractorFromYearPages(text, id, exampleTexts.get(language).get(id),
+				language, RedirectsTableCreator.getRedirectsDummy(language));
 		try {
 			extr.extractEvents();
 		} catch (NullPointerException e) {
@@ -200,88 +203,96 @@ public class EventExtractorFromYearPages {
 
 		for (String line : this.text.split("\n")) {
 
-			line = line.trim();
-			// String lineText = StringUtils.strip(line, "= ");
+			try {
 
-			// if (line.replace(" ", "").trim().startsWith("==") &&
-			// !line.replace(" ", "").trim().startsWith("===")) {
-			if (containsAny(line.replace(" ", "").trim(), WikiWords.getInstance().getEventsLabels(language))) {
-				root = new LineNode(line, 0);
-				root.setType(LineNode.NodeType.TITLE);
-				root.getPartialDate().setYear(this.year);
-				if (this.month != null)
-					root.getPartialDate().addMonth(this.month);
-				if (this.day != null)
-					root.getPartialDate().addDay(this.day);
-				currentNode = root;
-				currentSectionNode = root;
-				inEvents = true;
-			}
-			// else if (!inEvents && line.startsWith("=") && line.endsWith("="))
-			// {
-			// if (lineText.matches("^"+this.regexMonth+"$")) {
-			// root = new LineNode(line, 0);
-			// root.setType(LineNode.NodeType.TITLE);
-			// root.getPartialDate().setYear(this.year);
-			// if (this.month != null)
-			// root.getPartialDate().addMonth(this.month);
-			// if (this.day != null)
-			// root.getPartialDate().addDay(this.day);
-			// currentNode = root;
-			// currentSectionNode = root;
-			// inEvents = true;
-			// }
-			// }
-			else {
-				if (inEvents && line.trim().matches("^==[^=].*")) {
-					inEvents = false;
-					break;
+				line = line.trim();
+				// String lineText = StringUtils.strip(line, "= ");
+
+				// if (line.replace(" ", "").trim().startsWith("==") &&
+				// !line.replace(" ", "").trim().startsWith("===")) {
+				if (containsAny(line.replace(" ", "").trim(), WikiWords.getInstance().getEventsLabels(language))) {
+					root = new LineNode(line, 0);
+					root.setType(LineNode.NodeType.TITLE);
+					root.getPartialDate().setYear(this.year);
+					if (this.month != null)
+						root.getPartialDate().addMonth(this.month);
+					if (this.day != null)
+						root.getPartialDate().addDay(this.day);
+					currentNode = root;
+					currentSectionNode = root;
+					inEvents = true;
 				}
-				if (inEvents && !line.isEmpty()) {
-					if (line.startsWith("*") || line.startsWith("=")) {
+				// else if (!inEvents && line.startsWith("=") &&
+				// line.endsWith("="))
+				// {
+				// if (lineText.matches("^"+this.regexMonth+"$")) {
+				// root = new LineNode(line, 0);
+				// root.setType(LineNode.NodeType.TITLE);
+				// root.getPartialDate().setYear(this.year);
+				// if (this.month != null)
+				// root.getPartialDate().addMonth(this.month);
+				// if (this.day != null)
+				// root.getPartialDate().addDay(this.day);
+				// currentNode = root;
+				// currentSectionNode = root;
+				// inEvents = true;
+				// }
+				// }
+				else {
+					if (inEvents && line.trim().matches("^==[^=].*")) {
+						inEvents = false;
+						break;
+					}
+					if (inEvents && !line.isEmpty()) {
+						if (line.startsWith("*") || line.startsWith("=")) {
 
-						if (line.startsWith("=")) {
-							int level = countOccurencesOfCharacter(line, Character.valueOf('=')) - 2;
+							if (line.startsWith("=")) {
+								int level = countOccurencesOfCharacter(line, Character.valueOf('=')) - 2;
 
-							line = StringUtils.stripStart(line, "=");
-							line = StringUtils.stripEnd(line, "=").trim();
-							if (!line.isEmpty()) {
+								line = StringUtils.stripStart(line, "=");
+								line = StringUtils.stripEnd(line, "=").trim();
+								if (!line.isEmpty()) {
+									LineNode node = new LineNode(line, level);
+									node.setType(LineNode.NodeType.TITLE);
+									if (currentNode.getLevel() == level) {
+										currentNode.getParent().addChild(node);
+									} else if (currentNode.getLevel() < level) {
+										currentNode.addChild(node);
+									} else {
+										try {
+											currentNode.getParentAtLevel(level - 1).addChild(node);
+										} catch (NullPointerException e) {
+											System.err
+													.println("Error with page " + this.pageId + ": " + this.pageTitle);
+											System.err.println(e.getMessage() + "\n" + e.getStackTrace());
+										}
+									}
+									currentSectionNode = node;
+									currentNode = node;
+								}
+							} else if (line.startsWith("*")) {
+								int level = countOccurencesOfCharacter(line, Character.valueOf('*'));
+								line = line.substring(countOccurencesOfCharacter(line, Character.valueOf('*')),
+										line.length()).trim();
+								level += currentSectionNode.getLevel();
 								LineNode node = new LineNode(line, level);
-								node.setType(LineNode.NodeType.TITLE);
+								node.setType(LineNode.NodeType.LINE);
 								if (currentNode.getLevel() == level) {
 									currentNode.getParent().addChild(node);
 								} else if (currentNode.getLevel() < level) {
 									currentNode.addChild(node);
 								} else {
-									try {
-										currentNode.getParentAtLevel(level - 1).addChild(node);
-									} catch (NullPointerException e) {
-										System.err.println("Error with page " + this.pageId + ": " + this.pageTitle);
-										System.err.println(e.getMessage() + "\n" + e.getStackTrace());
-									}
+									currentNode.getParentAtLevel(level - 1).addChild(node);
 								}
-								currentSectionNode = node;
 								currentNode = node;
 							}
-						} else if (line.startsWith("*")) {
-							int level = countOccurencesOfCharacter(line, Character.valueOf('*'));
-							line = line
-									.substring(countOccurencesOfCharacter(line, Character.valueOf('*')), line.length())
-									.trim();
-							level += currentSectionNode.getLevel();
-							LineNode node = new LineNode(line, level);
-							node.setType(LineNode.NodeType.LINE);
-							if (currentNode.getLevel() == level) {
-								currentNode.getParent().addChild(node);
-							} else if (currentNode.getLevel() < level) {
-								currentNode.addChild(node);
-							} else {
-								currentNode.getParentAtLevel(level - 1).addChild(node);
-							}
-							currentNode = node;
 						}
 					}
 				}
+
+			} catch (NullPointerException e) {
+				System.err.println("Error 1 with page " + this.pageId + ": " + this.pageTitle);
+				System.err.println(e.getMessage() + "\n" + e.getStackTrace());
 			}
 		}
 
@@ -303,52 +314,58 @@ public class EventExtractorFromYearPages {
 		extractEvents(root);
 
 		for (Event event : this.events) {
-			boolean changed = true;
-			while (changed) {
 
-				changed = false;
+			try {
+				boolean changed = true;
+				while (changed) {
 
-				Pattern p = ReferenceAndTemplateRemover.getInstance(language).getLinksFindPattern();
-				Matcher m = p.matcher(event.getRawText());
+					changed = false;
 
-				StringBuffer sb = new StringBuffer();
-				while (m.find()) {
-					String linkName;
-					changed = true;
-					String anchorText = linkName = m.group().substring(2, m.group().length() - 2);
+					Pattern p = ReferenceAndTemplateRemover.getInstance(language).getLinksFindPattern();
+					Matcher m = p.matcher(event.getRawText());
 
-					boolean starts = false;
-					for (String label : WikiWords.getInstance().getFileLabel(language))
-						if (linkName.startsWith(label + ":"))
-							starts = true;
-					for (String label : WikiWords.getInstance().getImageLabels(language))
-						if (linkName.startsWith(label + ":"))
-							starts = true;
+					StringBuffer sb = new StringBuffer();
+					while (m.find()) {
+						String linkName;
+						changed = true;
+						String anchorText = linkName = m.group().substring(2, m.group().length() - 2);
 
-					if (starts) {
-						m.appendReplacement(sb, "");
-						continue;
+						boolean starts = false;
+						for (String label : WikiWords.getInstance().getFileLabel(language))
+							if (linkName.startsWith(label + ":"))
+								starts = true;
+						for (String label : WikiWords.getInstance().getImageLabels(language))
+							if (linkName.startsWith(label + ":"))
+								starts = true;
+
+						if (starts) {
+							m.appendReplacement(sb, "");
+							continue;
+						}
+						if (linkName.contains("|")) {
+							anchorText = linkName.substring(linkName.indexOf("|") + 1, linkName.length());
+							linkName = linkName.substring(0, linkName.indexOf("|"));
+						}
+						String insertedAnchorText = Matcher.quoteReplacement(anchorText);
+						m.appendReplacement(sb, insertedAnchorText);
+						if (linkName.equals("#"))
+							continue;
+
+						linkName = resolveRedirects(linkName);
+						if (linkName == null)
+							continue;
+
+						if (!linkName.contains("#"))
+							event.addLink(linkName);
 					}
-					if (linkName.contains("|")) {
-						anchorText = linkName.substring(linkName.indexOf("|") + 1, linkName.length());
-						linkName = linkName.substring(0, linkName.indexOf("|"));
-					}
-					String insertedAnchorText = Matcher.quoteReplacement(anchorText);
-					m.appendReplacement(sb, insertedAnchorText);
-					if (linkName.equals("#"))
-						continue;
-
-					linkName = resolveRedirects(linkName);
-					if (linkName == null)
-						continue;
-
-					if (!linkName.contains("#"))
-						event.addLink(linkName);
+					m.appendTail(sb);
+					event.setRawText(sb.toString());
 				}
-				m.appendTail(sb);
-				event.setRawText(sb.toString());
-			}
 
+			} catch (NullPointerException e) {
+				System.err.println("Error 2 with page " + this.pageId + ": " + this.pageTitle);
+				System.err.println(e.getMessage() + "\n" + e.getStackTrace());
+			}
 		}
 
 		this.eventsOutput = "";

@@ -1,0 +1,13 @@
+@prefix eventKG-s: <http://eventKG.l3s.uni-hannover.de/schema/> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix sem: <http://semanticweb.cs.vu.nl/2009/11/sem/> .
+
+eventKG-s:Relation rdf:type sem:Role .
+eventKG-s:links rdfs:domain eventKG-s:Relation .
+eventKG-s:links rdfs:range xsd:nonNegativeInteger .
+eventKG-s:mentions rdfs:domain eventKG-s:Relation .
+eventKG-s:mentions rdfs:range xsd:nonNegativeInteger .
+eventKG-s:extractedFrom rdfs:domain sem:Core .
+eventKG-s:extractedFrom rdfs:range rdf:Resource .

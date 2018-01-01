@@ -10,7 +10,9 @@ import java.io.OutputStreamWriter;
 import java.sql.Connection;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
@@ -22,6 +24,8 @@ import org.mediawiki.importer.XmlDumpReader;
 import de.l3s.eventkg.meta.Language;
 import de.l3s.eventkg.pipeline.Config;
 import de.l3s.eventkg.source.wikipedia.RedirectsTableCreator;
+import de.l3s.eventkg.source.wikipedia.WikiWords;
+import de.l3s.eventkg.source.wikipedia.mwdumper.articleprocessing.EventDateExpressionsAll;
 import de.l3s.eventkg.source.wikipedia.mwdumper.articleprocessing.EventKGExtractor;
 import de.l3s.eventkg.util.FileLoader;
 import de.l3s.eventkg.util.FileName;
@@ -39,6 +43,11 @@ class Dumper {
 		MultiWriter writers = new MultiWriter();
 
 		Language language = Language.getLanguage(args[1]);
+
+		List<Language> languages = new ArrayList<Language>();
+		languages.add(language);
+		WikiWords.getInstance().init(languages);
+		EventDateExpressionsAll.getInstance().init(language);
 
 		DumpWriter sink = getEventKGExtractor(language);
 		InputStream input = openStandardInput();
@@ -86,7 +95,7 @@ class Dumper {
 		BufferedWriter fileLinkCounts = null;
 
 		Map<String, String> redirects = RedirectsTableCreator.getRedirects(language);
-
+		
 		try {
 			Date currentDate = new Date();
 			Random random = new Random();

@@ -144,7 +144,7 @@ public class Pipeline {
 
 		extractors.add(new WikidataEventsFromFileFinder(languages));
 		extractors.add(new DBpediaAllLocationsLoader(languages));
-		// First step of integration
+//		// First step of integration
 		extractors.add(new DataCollector(languages));
 
 		for (Extractor extractor : extractors) {
@@ -158,10 +158,10 @@ public class Pipeline {
 		List<Extractor> extractors = new ArrayList<Extractor>();
 
 		// Collect relations from/to events
-		extractors.add(new WikidataExtractionWithEventPages(languages, getAllEventPagesDataSet()));
 		extractors.add(new DBpediaEventRelationsExtractor(languages, getAllEventPagesDataSet()));
 		extractors.add(new CurrentEventsRelationsExtraction(languages, getAllEventPagesDataSet()));
 		extractors.add(new YAGOEventRelationsExtractor(languages, getAllEventPagesDataSet()));
+		extractors.add(new WikidataExtractionWithEventPages(languages, getAllEventPagesDataSet()));
 
 		for (Extractor extractor : extractors) {
 			System.out.println(extractor.getName() + ", " + extractor.getSource() + " - " + extractor.getDescription());
@@ -215,10 +215,10 @@ public class Pipeline {
 		DataSets.getInstance().addDataSetWithoutLanguage(Source.YAGO,
 				"https://www.mpi-inf.mpg.de/de/departments/databases-and-information-systems/research/yago-naga/yago/downloads/");
 		DataSets.getInstance().addDataSet(Language.EN, Source.WCE, "http://wikitimes.l3s.de/Resource.jsp");
-		DataSets.getInstance().addDataSetWithoutLanguage(Source.INTEGRATED_TIME, "http://eventkg.l3s.uni-hannover.de/");
-		DataSets.getInstance().addDataSetWithoutLanguage(Source.INTEGRATED_TIME_2,
-				"http://eventkg.l3s.uni-hannover.de/");
-		DataSets.getInstance().addDataSetWithoutLanguage(Source.INTEGRATED_LOC, "http://eventkg.l3s.uni-hannover.de/");
+		DataSets.getInstance().addDataSetWithoutLanguage(Source.EVENT_KG, "http://eventkg.l3s.uni-hannover.de/");
+//		DataSets.getInstance().addDataSetWithoutLanguage(Source.INTEGRATED_TIME_2,
+//				"http://eventkg.l3s.uni-hannover.de/");
+//		DataSets.getInstance().addDataSetWithoutLanguage(Source.INTEGRATED_LOC, "http://eventkg.l3s.uni-hannover.de/");
 		// DataSets.getInstance().addDataSetWithoutLanguage(Source.INTEGRATED_LOC_2,
 		// "http://eventkg.l3s.uni-hannover.de/");
 

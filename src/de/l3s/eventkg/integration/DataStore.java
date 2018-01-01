@@ -119,8 +119,16 @@ public class DataStore {
 		this.descriptions.add(description);
 	}
 
-	public void addGenericRelation(GenericRelation genericRelation) {
-		this.genericRelations.add(genericRelation);
+	public void addGenericRelation(GenericRelation relation) {
+
+		if (relation.getSubject().isEvent() || relation.getObject().isEvent()) {
+			if (relation.getSubject().isEvent())
+				relation.getObject().setActor(true);
+			else
+				relation.getSubject().setActor(true);
+		}
+
+		this.genericRelations.add(relation);
 	}
 
 	public void addLinkRelation(GenericRelation genericRelation) {

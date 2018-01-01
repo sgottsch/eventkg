@@ -78,12 +78,21 @@ public class LabelsAndDescriptionsExtractor implements EntityDocumentDumpProcess
 	@Override
 	public void processItemDocument(ItemDocument itemDocument) {
 		this.itemCount++;
+		
+		boolean tc=false;
+		if(itemDocument.getItemId().getId().equals("Q28")) {
+			System.out.println("TC: Found Q28.");
+			tc=true;
+	}
 
 		for (Language language : this.languages) {
 
 			MonolingualTextValue labelValue = itemDocument.getLabels().get(language.getLanguageLowerCase());
 
 			if (labelValue != null) {
+				if(tc)
+				System.out.println("TC: "+language+", "+labelValue.getText());
+
 				outLabels.get(language)
 						.println(itemDocument.getItemId().getId() + TAB + csvEscape(labelValue.getText()));
 			}
@@ -170,6 +179,7 @@ public class LabelsAndDescriptionsExtractor implements EntityDocumentDumpProcess
 	}
 
 	public void close() {
+		System.out.println("Close label files.");
 		printStatus();
 		for (Language language : this.languages) {
 			this.outWikipediaTitles.get(language).close();

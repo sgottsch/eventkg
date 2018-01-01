@@ -32,10 +32,10 @@ public class TimesIntegratorTest {
 		DataSets.getInstance().addDataSetWithoutLanguage(Source.YAGO,
 				"https://www.mpi-inf.mpg.de/de/departments/databases-and-information-systems/research/yago-naga/yago/downloads/");
 		DataSets.getInstance().addDataSet(Language.EN, Source.WCE, "http://wikitimes.l3s.de/Resource.jsp");
-		DataSets.getInstance().addDataSetWithoutLanguage(Source.INTEGRATED_TIME, "http://eventkg.l3s.uni-hannover.de/");
+		DataSets.getInstance().addDataSetWithoutLanguage(Source.EVENT_KG, "http://eventkg.l3s.uni-hannover.de/");
 		DataSets.getInstance().addDataSetWithoutLanguage(Source.INTEGRATED_TIME_2,
 				"http://eventkg.l3s.uni-hannover.de/");
-		DataSets.getInstance().addDataSetWithoutLanguage(Source.INTEGRATED_LOC, "http://eventkg.l3s.uni-hannover.de/");
+		DataSets.getInstance().addDataSetWithoutLanguage(Source.EVENT_KG, "http://eventkg.l3s.uni-hannover.de/");
 
 		// ~~~
 

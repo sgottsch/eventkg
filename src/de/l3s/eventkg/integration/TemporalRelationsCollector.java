@@ -155,7 +155,9 @@ public class TemporalRelationsCollector extends Extractor {
 	private void loadYAGO() {
 		loadYAGOTemporalFacts();
 		loadYAGOEventRelations();
-		loadYAGOEntityRelations();
+
+		// TODO: Entity relations
+		// loadYAGOEntityRelations();
 	}
 
 	private void loadYAGOEntityRelations() {
@@ -331,7 +333,9 @@ public class TemporalRelationsCollector extends Extractor {
 	private void loadWikidata() {
 		loadWikidataTemporalRelations();
 		loadWikidataAtemporalEventRelations();
-		loadWikidataAtemporalEntityRelations();
+
+		// TODO: Entity relations
+		// loadWikidataAtemporalEntityRelations();
 	}
 
 	private void loadWikidataTemporalRelations() {
@@ -482,12 +486,17 @@ public class TemporalRelationsCollector extends Extractor {
 
 	private void loadDBpediaRelations() {
 		loadDBpedia(FileName.DBPEDIA_EVENT_RELATIONS, false);
-		loadDBpedia(FileName.DBPEDIA_ENTITY_RELATIONS, true);
+
+		// TODO: Entity relations
+		// loadDBpedia(FileName.DBPEDIA_ENTITY_RELATIONS, true);
 	}
 
 	private void loadDBpedia(FileName fileName, boolean loadEntityRelations) {
 
 		for (Language language : this.languages) {
+
+			System.out.println("Language: " + language + " (" + fileName.getFileName() + ")");
+
 			BufferedReader br = null;
 			try {
 				try {

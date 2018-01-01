@@ -9,6 +9,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
@@ -48,7 +49,7 @@ public class TextualEventsExtractor extends Extractor {
 	private Set<TextualEvent> textualEvents;
 	private Map<Event, Set<TextualEvent>> eventsToTextualEvents;
 
-	private SimpleDateFormat dateFormat = new SimpleDateFormat("G yyyy-MM-dd");
+	private SimpleDateFormat dateFormat = new SimpleDateFormat("G yyyy-MM-dd", Locale.ENGLISH);
 	private SimpleDateFormat dateFormatPageTitle = new SimpleDateFormat("MMMMM_yyyy");
 
 	private Map<String, Set<TextualEvent>> eventsByDates = new HashMap<String, Set<TextualEvent>>();
@@ -108,8 +109,8 @@ public class TextualEventsExtractor extends Extractor {
 		// TODO: Is each location mentioned in the text a location of the event?
 		// Sometimes, they are just actors ("Ethiopia begins a massive offensive
 		// in Eritrea.")
-		Set<Entity> locationEntities = DBpediaAllLocationsLoader
-				.loadLocationEntities(this.languages, this.allEventPagesDataSet.getWikidataIdMappings());
+		Set<Entity> locationEntities = DBpediaAllLocationsLoader.loadLocationEntities(this.languages,
+				this.allEventPagesDataSet.getWikidataIdMappings());
 
 		Set<Set<TextualEvent>> mergedEvents = new HashSet<Set<TextualEvent>>();
 
@@ -395,8 +396,15 @@ public class TextualEventsExtractor extends Extractor {
 				String[] parts = line.split(Config.TAB);
 				// if(parts.length<4)
 
-				String wikipediaPage = "https://" + language.getLanguageLowerCase() + ".wikipedia.org/wiki/"
-						+ parts[1].replaceAll(" ", "_");
+				// TODO: Remove this exception fetch. Was just used when there
+				// was an error in the dumper that has been solved now.
+				String wikipediaPage = null;
+				try {
+					wikipediaPage = "https://" + language.getLanguageLowerCase() + ".wikipedia.org/wiki/"
+							+ parts[1].replaceAll(" ", "_");
+				} catch (ArrayIndexOutOfBoundsException e) {
+					continue;
+				}
 
 				String startDate = parts[5];
 				String endDate = parts[6];

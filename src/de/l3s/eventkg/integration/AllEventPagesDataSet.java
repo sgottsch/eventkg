@@ -15,11 +15,8 @@ import de.l3s.eventkg.integration.model.Entity;
 import de.l3s.eventkg.integration.model.Event;
 import de.l3s.eventkg.integration.model.relation.DataSet;
 import de.l3s.eventkg.integration.model.relation.EndTime;
-import de.l3s.eventkg.integration.model.relation.GenericRelation;
 import de.l3s.eventkg.integration.model.relation.Location;
 import de.l3s.eventkg.integration.model.relation.StartTime;
-import de.l3s.eventkg.integration.model.relation.prefix.PrefixEnum;
-import de.l3s.eventkg.integration.model.relation.prefix.PrefixList;
 import de.l3s.eventkg.meta.Language;
 import de.l3s.eventkg.meta.Source;
 import de.l3s.eventkg.pipeline.Config.TimeSymbol;
@@ -107,10 +104,10 @@ public class AllEventPagesDataSet {
 			}
 		}
 
-		System.out.println("Load entities with existence times.");
-		loadEntitiesWithExistenceTimes();
 		System.out.println("loadEventTimes");
 		loadEventTimes();
+		System.out.println("Load entities with existence times.");
+		loadEntitiesWithExistenceTimes();
 		System.out.println("loadEventLocations");
 		loadEventLocations();
 		System.out.println("loadSubEvents");
@@ -129,6 +126,7 @@ public class AllEventPagesDataSet {
 			this.entitiesWithExistenceTimeByWikipediaLabel.put(language, new HashMap<String, Entity>());
 		}
 
+		System.out.println("Start times: " + DataStore.getInstance().getStartTimes().size());
 		for (StartTime startTime : DataStore.getInstance().getStartTimes()) {
 			Entity entity = startTime.getSubject();
 			this.entitiesWithExistenceTimeByWikidataId.put(entity.getWikidataId(), entity);
@@ -138,6 +136,8 @@ public class AllEventPagesDataSet {
 							entity);
 			}
 		}
+
+		System.out.println("End times: " + DataStore.getInstance().getEndTimes().size());
 		for (EndTime endTime : DataStore.getInstance().getEndTimes()) {
 			Entity entity = endTime.getSubject();
 			this.entitiesWithExistenceTimeByWikidataId.put(entity.getWikidataId(), entity);
@@ -147,6 +147,8 @@ public class AllEventPagesDataSet {
 							entity);
 			}
 		}
+
+		System.out.println("Entities with existence time: " + entitiesWithExistenceTimeByWikidataId.size());
 	}
 
 	private void loadEventTimes() {
@@ -229,6 +231,7 @@ public class AllEventPagesDataSet {
 					}
 
 				} catch (ParseException e) {
+					System.err.println("Error with line: " + line);
 					e.printStackTrace();
 				}
 
@@ -463,9 +466,13 @@ public class AllEventPagesDataSet {
 				String dataSetId = parts[4];
 				DataSet dataSet = DataSets.getInstance().getDataSetById(dataSetId);
 
-				GenericRelation relation = new GenericRelation(event2, dataSet,
-						PrefixList.getInstance().getPrefix(PrefixEnum.SEM), "hasSubEvent", event1, null, false);
-				DataStore.getInstance().addGenericRelation(relation);
+				event1.addParent(event2, dataSet);
+
+				// GenericRelation relation = new GenericRelation(event2,
+				// dataSet,
+				// PrefixList.getInstance().getPrefix(PrefixEnum.SEM),
+				// "hasSubEvent", event1, null, false);
+				// DataStore.getInstance().addGenericRelation(relation);
 
 			}
 		} catch (IOException e) {
@@ -504,10 +511,14 @@ public class AllEventPagesDataSet {
 				String dataSetId = parts[4];
 				DataSet dataSet = DataSets.getInstance().getDataSetById(dataSetId);
 
-				GenericRelation relation = new GenericRelation(event2, dataSet,
-						PrefixList.getInstance().getPrefix(PrefixEnum.DBPEDIA_ONTOLOGY), "previousEvent", event1, null,
-						false);
-				DataStore.getInstance().addGenericRelation(relation);
+				event2.addPreviousEvent(event1, dataSet);
+
+				// GenericRelation relation = new GenericRelation(event2,
+				// dataSet,
+				// PrefixList.getInstance().getPrefix(PrefixEnum.DBPEDIA_ONTOLOGY),
+				// "previousEvent", event1, null,
+				// false);
+				// DataStore.getInstance().addGenericRelation(relation);
 
 			}
 		} catch (IOException e) {
@@ -546,10 +557,14 @@ public class AllEventPagesDataSet {
 				String dataSetId = parts[4];
 				DataSet dataSet = DataSets.getInstance().getDataSetById(dataSetId);
 
-				GenericRelation relation = new GenericRelation(event2, dataSet,
-						PrefixList.getInstance().getPrefix(PrefixEnum.DBPEDIA_ONTOLOGY), "nextEvent", event1, null,
-						false);
-				DataStore.getInstance().addGenericRelation(relation);
+				event2.addNextEvent(event1, dataSet);
+
+				// GenericRelation relation = new GenericRelation(event2,
+				// dataSet,
+				// PrefixList.getInstance().getPrefix(PrefixEnum.DBPEDIA_ONTOLOGY),
+				// "nextEvent", event1, null,
+				// false);
+				// DataStore.getInstance().addGenericRelation(relation);
 
 			}
 		} catch (IOException e) {
@@ -580,6 +595,8 @@ public class AllEventPagesDataSet {
 		this.wikidataIdMappings = new WikidataIdMappings(languages);
 		this.wikidataIdMappings.load();
 		load();
+		System.out.println(
+				"EntitiesByWikidataNumericIds: " + this.wikidataIdMappings.getEntitiesByWikidataNumericIds().size());
 	}
 
 	public WikidataIdMappings getWikidataIdMappings() {

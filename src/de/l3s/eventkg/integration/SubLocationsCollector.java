@@ -31,6 +31,9 @@ public class SubLocationsCollector extends Extractor {
 
 	private void loadSubLocations() {
 
+		System.out.println("EntitiesByWikidataNumericIds 2: "
+				+ this.allEventPagesDataSet.getWikidataIdMappings().getEntitiesByWikidataNumericIds().size());
+
 		BufferedReader br = null;
 		try {
 			try {
@@ -51,6 +54,15 @@ public class SubLocationsCollector extends Extractor {
 				Entity location2 = this.allEventPagesDataSet.getWikidataIdMappings()
 						.getEntityByWikidataId((entity2WikidataId));
 
+				if (location1 == null) {
+					System.out.println("Missing location 1: " + entity1WikidataId);
+					continue;
+				}
+				if (location2 == null) {
+					System.out.println("Missing location 2: " + entity2WikidataId);
+					continue;
+				}
+			
 				this.locations.add(location1);
 				this.locations.add(location2);
 
@@ -68,6 +80,7 @@ public class SubLocationsCollector extends Extractor {
 			}
 		}
 
+		System.out.println("#Locations with sub locations: " + this.locations.size());
 		for (Entity location : this.locations) {
 			DataCollector.collectAllParents(location, location.getParentLocations());
 			// no self loops!

@@ -40,10 +40,13 @@ public class Entity {
 
 	private boolean isLocation = false;
 
+	private boolean isActor = false;
+
 	public Entity(String wikidataId) {
 		super();
 		this.wikidataId = wikidataId;
-		this.numericWikidataId = Integer.parseInt(wikidataId.substring(1));
+		if (wikidataId != null)
+			this.numericWikidataId = Integer.parseInt(wikidataId.substring(1));
 	}
 
 	public Entity(Language language, String wikipediaLabel) {
@@ -201,6 +204,14 @@ public class Entity {
 
 	public void setId(String outputId) {
 		this.eventKGId = outputId;
+	}
+
+	public boolean isActor() {
+		return isActor;
+	}
+
+	public void setActor(boolean isActor) {
+		this.isActor = isActor;
 	}
 
 }

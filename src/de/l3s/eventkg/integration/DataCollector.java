@@ -441,7 +441,7 @@ public class DataCollector extends Extractor {
 			writer.close();
 		}
 	}
-	
+
 	private void writeNextEventsToFile() {
 		PrintWriter writer = null;
 		try {
@@ -468,7 +468,6 @@ public class DataCollector extends Extractor {
 			writer.close();
 		}
 	}
-
 
 	private void collectNextEvents() {
 		collectNextEventsWikidata();
@@ -568,6 +567,8 @@ public class DataCollector extends Extractor {
 	private void collectPreviousEventsDBpedia() {
 
 		for (Language language : this.languages) {
+			
+			System.out.println("collectPreviousEventsDBpedia "+language);
 
 			BufferedReader br = null;
 			try {
@@ -582,10 +583,18 @@ public class DataCollector extends Extractor {
 
 					String[] parts = line.split("\t");
 
-					String wikipedia1Label = parts[0].substring(parts[0].lastIndexOf("/") + 1, parts[0].length() - 1)
-							.replaceAll(" ", "_");
-					String wikipedia2Label = parts[2].substring(parts[2].lastIndexOf("/") + 1, parts[2].length() - 1)
-							.replaceAll(" ", "_");
+					String wikipedia1Label = null;
+					String wikipedia2Label = null;
+
+					try {
+						wikipedia1Label = parts[0].substring(parts[0].lastIndexOf("/") + 1, parts[0].length() - 1)
+								.replaceAll(" ", "_");
+						wikipedia2Label = parts[2].substring(parts[2].lastIndexOf("/") + 1, parts[2].length() - 1)
+								.replaceAll(" ", "_");
+					} catch (ArrayIndexOutOfBoundsException | StringIndexOutOfBoundsException e) {
+						System.out.println("Error, previous event: " + line);
+						continue;
+					}
 
 					Event event1 = findEvent(language, wikipedia1Label);
 					Event event2 = findEvent(language, wikipedia2Label);
@@ -612,6 +621,8 @@ public class DataCollector extends Extractor {
 	private void collectNextEventsDBpedia() {
 
 		for (Language language : this.languages) {
+			
+			System.out.println("collectNextEventsDBpedia "+language);
 
 			BufferedReader br = null;
 			try {
@@ -626,10 +637,18 @@ public class DataCollector extends Extractor {
 
 					String[] parts = line.split("\t");
 
-					String wikipedia1Label = parts[0].substring(parts[0].lastIndexOf("/") + 1, parts[0].length() - 1)
-							.replaceAll(" ", "_");
-					String wikipedia2Label = parts[2].substring(parts[2].lastIndexOf("/") + 1, parts[2].length() - 1)
-							.replaceAll(" ", "_");
+					String wikipedia1Label = null;
+					String wikipedia2Label = null;
+
+					try {
+						wikipedia1Label = parts[0].substring(parts[0].lastIndexOf("/") + 1, parts[0].length() - 1)
+								.replaceAll(" ", "_");
+						wikipedia2Label = parts[2].substring(parts[2].lastIndexOf("/") + 1, parts[2].length() - 1)
+								.replaceAll(" ", "_");
+					} catch (ArrayIndexOutOfBoundsException | StringIndexOutOfBoundsException e) {
+						System.out.println("Error, next event: " + line);
+						continue;
+					}
 
 					Event event1 = findEvent(language, wikipedia1Label);
 					Event event2 = findEvent(language, wikipedia2Label);

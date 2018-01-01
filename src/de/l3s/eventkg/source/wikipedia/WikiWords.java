@@ -57,6 +57,12 @@ public class WikiWords {
 	private WikiWords() {
 	}
 
+	public void init(Language language) {
+		List<Language> languages = new ArrayList<Language>();
+		languages.add(language);
+		init(languages);
+	}
+
 	public void init(List<Language> languages) {
 		for (Language language : languages) {
 			BufferedReader br = null;

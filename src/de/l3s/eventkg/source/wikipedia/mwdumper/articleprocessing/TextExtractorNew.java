@@ -121,7 +121,11 @@ public class TextExtractorNew {
 		exampleTexts.put(Language.PT, ptMap);
 
 		Language language = Language.EN;
-		int id = 26913444;
+		int id = 18224;
+
+		languages.clear();
+		languages.add(language);
+		WikiWords.getInstance().init(languages);
 
 		String text = IOUtils.toString(
 				TextExtractorNew.class.getResourceAsStream("/resource/wikipage/" + language.getLanguage() + "/" + id),
@@ -195,7 +199,7 @@ public class TextExtractorNew {
 		this.text = this.text.replaceAll("&ndash;", "–");
 		this.text = this.text.replaceAll("&mdash;", "—");
 
-		this.mergeLines();
+		// this.mergeLines();
 		this.divideIntoParagraphs();
 		this.removeReferencesFromParagraphs(this.articleParagraph);
 
@@ -329,11 +333,11 @@ public class TextExtractorNew {
 						break;
 
 					// Lists should consistently start with "* "
-					if (line.startsWith("*") && line.charAt(1) != ' ')
+					if (line.length() > 1 && line.startsWith("*") && line.charAt(1) != ' ')
 						line = "* " + line.substring(1);
-					if (line.startsWith("#") && line.charAt(1) != ' ')
+					if (line.length() > 1 && line.startsWith("#") && line.charAt(1) != ' ')
 						line = "# " + line.substring(1);
-					if (line.startsWith(";") && line.charAt(1) != ' ')
+					if (line.length() > 1 && line.startsWith(";") && line.charAt(1) != ' ')
 						line = "; " + line.substring(1);
 
 					Paragraph pParagraph = new Paragraph(line, "P", id);

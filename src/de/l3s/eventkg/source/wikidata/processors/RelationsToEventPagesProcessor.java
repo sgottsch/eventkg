@@ -158,7 +158,7 @@ public class RelationsToEventPagesProcessor implements EntityDocumentDumpProcess
 
 	public void printStatus() {
 		System.out.println("Found " + this.itemsWithEventCount + " event relations and "
-				+ this.itemsWithEntityRelationCount + "entity relations after scanning " + this.itemCount + " items.");
+				+ this.itemsWithEntityRelationCount + " entity relations after scanning " + this.itemCount + " items.");
 	}
 
 	public void close() {

@@ -36,11 +36,11 @@ public class TimeTransformer {
 
 		// System.out.println(generateLatestTimeForWikidata("7;-00000002500-00-00T00:00:00Z"));
 
-		System.out.println(generateEarliestTimeForWikidata("8;+00000001940-01-01T00:00:00Z"));
-		System.out.println(generateLatestTimeForWikidata("8;+00000001940-01-01T00:00:00Z"));
-		System.out.println("---");
-		System.out.println(generateEarliestTimeForWikidata("8;-00000001940-01-01T00:00:00Z"));
-		System.out.println(generateLatestTimeForWikidata("8;-00000001940-01-01T00:00:00Z"));
+		// System.out.println(generateEarliestTimeForWikidata("8;+00000001940-01-01T00:00:00Z"));
+		// System.out.println(generateLatestTimeForWikidata("8;+00000001940-01-01T00:00:00Z"));
+		// System.out.println("---");
+		// System.out.println(generateEarliestTimeForWikidata("8;-00000001940-01-01T00:00:00Z"));
+		// System.out.println(generateLatestTimeForWikidata("8;-00000001940-01-01T00:00:00Z"));
 
 		// System.out.println(generateEarliestTimeForWikidata("7;-00000001178-00-00T00:00:00Z"));
 		// System.out.println(generateLatestTimeForWikidata("7;-00000001178-00-00T00:00:00Z"));
@@ -60,6 +60,11 @@ public class TimeTransformer {
 		//
 		// System.out.println(dbPediaDateFormat
 		// .format(generateEarliestTimeFromXsd("\"1618-##-##\"^^<http://www.w3.org/2001/XMLSchema#date>")));
+
+		System.out.println(dbPediaDateFormat
+				.format(generateEarliestTimeFromXsd("\"168-##-##\"^^<http://www.w3.org/2001/XMLSchema#date>")));
+
+		System.out.println(dbPediaDateFormat.format(generateLatestTimeFromXsd("\"161#-##-##\"^^xsd:date")));
 
 	}
 
@@ -299,6 +304,13 @@ public class TimeTransformer {
 				timeString = timeString.substring(0, 2) + "99" + timeString.substring(4);
 		}
 
+		if (timeString.substring(3, 5).equals("#-")) {
+			if (era == 1)
+				timeString = timeString.substring(0, 3) + "0" + timeString.substring(4);
+			else
+				timeString = timeString.substring(0, 3) + "9" + timeString.substring(4);
+		}
+
 		timeString = timeString.replaceAll("-##-", "-01-");
 
 		timeString = timeString.replaceAll("-##", "-01");
@@ -342,7 +354,14 @@ public class TimeTransformer {
 			else
 				timeString = timeString.substring(0, 2) + "00" + timeString.substring(4);
 		}
-
+		
+		if (timeString.substring(3, 5).equals("#-")) {
+			if (era == 1)
+				timeString = timeString.substring(0, 3) + "9" + timeString.substring(4);
+			else
+				timeString = timeString.substring(0, 3) + "0" + timeString.substring(4);
+		}
+		
 		timeString = timeString.replaceAll("-##-", "-12-");
 
 		int year = Integer.valueOf(timeString.substring(0, timeString.indexOf("-")));

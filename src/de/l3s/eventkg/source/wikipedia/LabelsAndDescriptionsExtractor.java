@@ -75,10 +75,10 @@ public class LabelsAndDescriptionsExtractor extends Extractor {
 
 		this.wikipediaLabels = new HashMap<Language, Map<Entity, String>>();
 		for (Language language : this.languages) {
-			this.wikidataLabels.put(language, new HashMap<Entity, Set<String>>());
+			this.wikipediaLabels.put(language, new HashMap<Entity, String>());
 		}
 
-		this.wikipediaLabels = new HashMap<Language, Map<Entity, String>>();
+		this.wikidataLabels = new HashMap<Language, Map<Entity, Set<String>>>();
 		for (Language language : this.languages) {
 			this.wikidataLabels.put(language, new HashMap<Entity, Set<String>>());
 		}
@@ -120,7 +120,7 @@ public class LabelsAndDescriptionsExtractor extends Extractor {
 			e.printStackTrace();
 		}
 
-		System.out.println("descriptions: " + this.descriptions.get(language).size());
+		System.out.println("descriptions (" + language + "): " + this.descriptions.get(language).size());
 	}
 
 	private void collectAliasesFromFile(File file, Language language) {
@@ -151,7 +151,7 @@ public class LabelsAndDescriptionsExtractor extends Extractor {
 			e.printStackTrace();
 		}
 
-		System.out.println("aliases: " + this.aliases.get(language).size());
+		System.out.println("aliases (" + language + "): " + this.aliases.get(language).size());
 	}
 
 	private void collectLabels() {
@@ -163,7 +163,8 @@ public class LabelsAndDescriptionsExtractor extends Extractor {
 		// }
 		// }
 
-		for (Entity entity : this.allEventPagesDataSet.getWikidataIdMappings().getEntitiesByWikidataIds().valueCollection()) {
+		for (Entity entity : this.allEventPagesDataSet.getWikidataIdMappings().getEntitiesByWikidataIds()
+				.valueCollection()) {
 			for (Language language : entity.getWikipediaLabels().keySet()) {
 				this.wikipediaLabels.get(language).put(entity, entity.getWikipediaLabel(language));
 			}
