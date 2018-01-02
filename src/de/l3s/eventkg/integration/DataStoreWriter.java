@@ -168,6 +168,7 @@ public class DataStoreWriter {
 			prefixes.add(prefixList.getPrefix(PrefixEnum.WIKIDATA_ENTITY));
 			prefixes.add(prefixList.getPrefix(PrefixEnum.SEM));
 			prefixes.add(prefixList.getPrefix(PrefixEnum.OWL));
+			
 			for (Language language : this.languages)
 				prefixes.add(prefixList.getPrefix(PrefixEnum.DBPEDIA_RESOURCE, language));
 
