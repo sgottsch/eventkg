@@ -168,7 +168,7 @@ public class DataStoreWriter {
 			prefixes.add(prefixList.getPrefix(PrefixEnum.WIKIDATA_ENTITY));
 			prefixes.add(prefixList.getPrefix(PrefixEnum.SEM));
 			prefixes.add(prefixList.getPrefix(PrefixEnum.OWL));
-			
+
 			for (Language language : this.languages)
 				prefixes.add(prefixList.getPrefix(PrefixEnum.DBPEDIA_RESOURCE, language));
 
@@ -471,6 +471,8 @@ public class DataStoreWriter {
 
 			for (Entity entity : dataStore.getEntities()) {
 
+				int lineNoPlusOne = lineNo + 1;
+
 				if (entity.isEvent() && entity.getEventEntity() != null) {
 
 					Event event = entity.getEventEntity();
@@ -571,6 +573,9 @@ public class DataStoreWriter {
 					}
 
 				}
+
+				// find max_line_no of events/entities with these relations
+				lineNo = Math.min(lineNo, lineNoPlusOne);
 
 			}
 
@@ -730,13 +735,15 @@ public class DataStoreWriter {
 
 		PrintWriter writerEventRelations = null;
 		PrintWriter writerEventRelationsPreview = null;
-		PrintWriter writerEntityRelations = null;
-		PrintWriter writerEntityRelationsPreview = null;
+		// PrintWriter writerEntityRelations = null;
+		// PrintWriter writerEntityRelationsPreview = null;
 		try {
 			writerEventRelations = FileLoader.getWriter(FileName.ALL_TTL_ENTITIES_TEMPORAL_RELATIONS);
 			writerEventRelationsPreview = FileLoader.getWriter(FileName.ALL_TTL_ENTITIES_TEMPORAL_RELATIONS_PREVIEW);
-			writerEntityRelations = FileLoader.getWriter(FileName.ALL_TTL_ENTITIES_OTHER_RELATIONS);
-			writerEntityRelationsPreview = FileLoader.getWriter(FileName.ALL_TTL_ENTITIES_OTHER_RELATIONS_PREVIEW);
+			// writerEntityRelations =
+			// FileLoader.getWriter(FileName.ALL_TTL_ENTITIES_OTHER_RELATIONS);
+			// writerEntityRelationsPreview =
+			// FileLoader.getWriter(FileName.ALL_TTL_ENTITIES_OTHER_RELATIONS_PREVIEW);
 
 			List<Prefix> prefixes = new ArrayList<Prefix>();
 			// prefixes.add(Prefix.EVENT_KG_SCHEMA);
@@ -754,7 +761,7 @@ public class DataStoreWriter {
 
 			int relationNo = 0;
 			int lineNoEventRelations = 0;
-			int lineNoEntityRelations = 0;
+			// int lineNoEntityRelations = 0;
 			for (GenericRelation relation : dataStore.getGenericRelations()) {
 
 				if (relation.getSubject().isEvent() || relation.getObject().isEvent())
@@ -763,18 +770,18 @@ public class DataStoreWriter {
 				Entity object = relation.getObject();
 
 				PrintWriter writer = writerEventRelations;
-				PrintWriter writerPreview = writerEventRelations;
+				PrintWriter writerPreview = writerEventRelationsPreview;
 				Integer lineNo = null;
 
-				if (relation.isEntityRelation()) {
-					writer = writerEntityRelations;
-					writerPreview = writerEntityRelationsPreview;
-					lineNoEntityRelations += 1;
-					lineNo = lineNoEntityRelations;
-				} else {
-					lineNoEventRelations += 1;
-					lineNo = lineNoEventRelations;
-				}
+				// if (relation.isEntityRelation()) {
+				// writer = writerEntityRelations;
+				// writerPreview = writerEntityRelationsPreview;
+				// lineNoEntityRelations += 1;
+				// lineNo = lineNoEntityRelations;
+				// } else {
+				lineNoEventRelations += 1;
+				lineNo = lineNoEventRelations;
+				// }
 
 				lineNo += 1;
 				String relationId = "<eventkg_relation_" + String.valueOf(relationNo) + ">";
