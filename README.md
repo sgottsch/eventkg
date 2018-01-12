@@ -46,3 +46,7 @@ The EventKG extraction pipeline consists of several steps described in the follo
 ```java -jar Pipeline.jar path_to_config_file.txt 4,5```
 
 6. The resulting *.nq* files can be found in the folder `data/output`.
+
+#### License ####
+
+This project is licensed under the terms of the MIT license (see LICENSE.txt).
