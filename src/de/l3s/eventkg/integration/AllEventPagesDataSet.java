@@ -453,20 +453,20 @@ public class AllEventPagesDataSet {
 
 				String[] parts = line.split("\t");
 
-				Event event1 = getEventByWikidataId(parts[0]);
-				if (event1 == null) {
+				Event parentEvent = getEventByWikidataId(parts[0]);
+				if (parentEvent == null) {
 					continue;
 				}
 
-				Event event2 = getEventByWikidataId(parts[2]);
-				if (event2 == null) {
+				Event event = getEventByWikidataId(parts[2]);
+				if (event == null) {
 					continue;
 				}
 
 				String dataSetId = parts[4];
 				DataSet dataSet = DataSets.getInstance().getDataSetById(dataSetId);
 
-				event1.addParent(event2, dataSet);
+				event.addParent(parentEvent, dataSet);
 
 				// GenericRelation relation = new GenericRelation(event2,
 				// dataSet,
@@ -511,7 +511,7 @@ public class AllEventPagesDataSet {
 				String dataSetId = parts[4];
 				DataSet dataSet = DataSets.getInstance().getDataSetById(dataSetId);
 
-				event2.addPreviousEvent(event1, dataSet);
+				event1.addPreviousEvent(event2, dataSet);
 
 				// GenericRelation relation = new GenericRelation(event2,
 				// dataSet,
@@ -557,7 +557,7 @@ public class AllEventPagesDataSet {
 				String dataSetId = parts[4];
 				DataSet dataSet = DataSets.getInstance().getDataSetById(dataSetId);
 
-				event2.addNextEvent(event1, dataSet);
+				event1.addNextEvent(event2, dataSet);
 
 				// GenericRelation relation = new GenericRelation(event2,
 				// dataSet,

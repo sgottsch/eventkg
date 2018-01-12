@@ -13,10 +13,10 @@ import de.l3s.eventkg.util.FileLoader;
 
 public class Event extends Entity {
 
-	private Set<Event> children;
+	private Set<Event> children = new HashSet<Event>();
 	private Map<Event, Set<DataSet>> childrenWithDataSets = new HashMap<Event, Set<DataSet>>();
 
-	private Set<Event> parents;
+	private Set<Event> parents = new HashSet<Event>();
 	private Map<Event, Set<DataSet>> parentsWithDataSets = new HashMap<Event, Set<DataSet>>();
 
 	private Set<Event> nextEvents = new HashSet<Event>();
@@ -45,22 +45,16 @@ public class Event extends Entity {
 
 	public Event(String wikidataId) {
 		super(wikidataId);
-		this.children = new HashSet<Event>();
-		this.parents = new HashSet<Event>();
 		setEvent(true);
 	}
 
 	public Event(Language language, String wikipediaLabel) {
 		super(language, wikipediaLabel);
-		this.children = new HashSet<Event>();
-		this.parents = new HashSet<Event>();
 		setEvent(true);
 	}
 
 	public Event(Language language, String wikipediaLabel, String wikidataId) {
 		super(language, wikipediaLabel, wikidataId);
-		this.children = new HashSet<Event>();
-		this.parents = new HashSet<Event>();
 		setEvent(true);
 	}
 
@@ -70,8 +64,6 @@ public class Event extends Entity {
 			this.wikipediaLabels.put(language, entity.getWikipediaLabels().get(language));
 		}
 
-		this.children = new HashSet<Event>();
-		this.parents = new HashSet<Event>();
 		setEvent(true);
 		entity.setEventEntity(this);
 	}

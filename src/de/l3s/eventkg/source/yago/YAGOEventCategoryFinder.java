@@ -10,6 +10,7 @@ import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
 
+import de.l3s.eventkg.pipeline.Config;
 import de.l3s.eventkg.source.yago.model.Category;
 import de.l3s.eventkg.source.yago.model.WikipediaCategory;
 import de.l3s.eventkg.source.yago.model.YAGOCategory;
@@ -23,6 +24,7 @@ public class YAGOEventCategoryFinder {
 	private Set<String> subNotEventCategoryNames;
 
 	public static void main(String[] args) {
+		Config.init("config_eventkb_local.txt");
 		YAGOEventCategoryFinder eventFinder = new YAGOEventCategoryFinder();
 		eventFinder.findEventCategories();
 		eventFinder.findTopCategories();
@@ -90,13 +92,16 @@ public class YAGOEventCategoryFinder {
 		// subNotEventCategoryNames. In that case, categories are no negative
 		// constraint, but also don't favor events.
 		subEventCategoryNames.removeAll(subNotEventCategoryNames);
+		
+		for(String cat: subNotEventCategoryNames)
+			System.out.println(cat);
 
 		return subEventCategoryNames;
 	}
 
 	private Set<String> findSubCategoryNames(Category eventCategory) {
 		Set<Category> children = new HashSet<Category>();
-		findAllChildren(eventCategory, children);
+		findAllChildren(eventCategory, children," ");
 
 		Set<String> allCategoryNames = new HashSet<String>();
 
@@ -140,11 +145,14 @@ public class YAGOEventCategoryFinder {
 		return allCategoryNames;
 	}
 
-	private void findAllChildren(Category parent, Set<Category> children) {
+	private void findAllChildren(Category parent, Set<Category> children, String indent) {
+		System.out.println(indent+parent.getTitle());
+
 		for (Category child : parent.getChildren()) {
-			if (child.getType().equals("wikipedia"))
+			if (child.getType().equals("wikipedia")) {
 				children.add(child);
-			findAllChildren(child, children);
+			}
+			findAllChildren(child, children,indent+" ");
 		}
 	}
 

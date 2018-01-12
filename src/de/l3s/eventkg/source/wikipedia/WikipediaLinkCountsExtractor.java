@@ -168,14 +168,21 @@ public class WikipediaLinkCountsExtractor extends Extractor {
 								continue;
 							}
 
-							if (pageEntity.getEventEntity() != null) {
-								this.linksToCounts.add(
-										new LinksToCount(pageEntity.getEventEntity(), linkedEntity, count, language));
-							}
+							if (pageEntity.getEventEntity() != null || linkedEntity.getEventEntity() != null) {
 
-							if (linkedEntity.getEventEntity() != null) {
-								this.linkedByCounts.add(
-										new LinkedByCount(linkedEntity.getEventEntity(), pageEntity, count, language));
+								Entity pageEntity2 = pageEntity;
+								if (pageEntity.getEventEntity() != null)
+									pageEntity2 = pageEntity.getEventEntity();
+
+								Entity linkedEntity2 = linkedEntity;
+								if (linkedEntity.getEventEntity() != null)
+									linkedEntity2 = linkedEntity.getEventEntity();
+
+								this.linksToCounts.add(new LinksToCount(pageEntity2, linkedEntity2, count, language));
+
+								// this.linkedByCounts.add(
+								// new LinkedByCount(linkedEntity2, pageEntity2,
+								// count, language));
 							}
 
 						}

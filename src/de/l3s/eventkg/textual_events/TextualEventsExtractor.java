@@ -250,10 +250,7 @@ public class TextualEventsExtractor extends Extractor {
 				if (namedEvent == null) {
 					// completely new event
 				} else {
-					GenericRelation relation = new GenericRelation(event, dataSet,
-							PrefixList.getInstance().getPrefix(PrefixEnum.SCHEMA_ORG), "subEvent", namedEvent, null,
-							false);
-					DataStore.getInstance().addGenericRelation(relation);
+					event.addParent(namedEvent, dataSet);
 				}
 			}
 

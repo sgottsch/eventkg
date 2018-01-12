@@ -157,7 +157,7 @@ public class TemporalRelationsCollector extends Extractor {
 		loadYAGOEventRelations();
 
 		// TODO: Entity relations
-		// loadYAGOEntityRelations();
+		loadYAGOEntityRelations();
 	}
 
 	private void loadYAGOEntityRelations() {
@@ -169,6 +169,8 @@ public class TemporalRelationsCollector extends Extractor {
 	}
 
 	private void loadYAGORelations(FileName fileName, boolean collectEntityRelations) {
+
+		System.out.println("loadYAGORelations: " + fileName.getFileName()+".");
 
 		BufferedReader br = null;
 		try {
@@ -335,7 +337,7 @@ public class TemporalRelationsCollector extends Extractor {
 		loadWikidataAtemporalEventRelations();
 
 		// TODO: Entity relations
-		// loadWikidataAtemporalEntityRelations();
+		loadWikidataAtemporalEntityRelations();
 	}
 
 	private void loadWikidataTemporalRelations() {
@@ -441,6 +443,8 @@ public class TemporalRelationsCollector extends Extractor {
 	private void loadWikidataAtemporalRelations(FileName fileName, boolean collectEntityRelations) {
 		BufferedReader br = null;
 
+		System.out.println("loadWikidataAtemporalRelations: " + fileName.getFileName()+".");
+		
 		try {
 			try {
 				br = FileLoader.getReader(fileName);
@@ -488,11 +492,13 @@ public class TemporalRelationsCollector extends Extractor {
 		loadDBpedia(FileName.DBPEDIA_EVENT_RELATIONS, false);
 
 		// TODO: Entity relations
-		// loadDBpedia(FileName.DBPEDIA_ENTITY_RELATIONS, true);
+		loadDBpedia(FileName.DBPEDIA_ENTITY_RELATIONS, true);
 	}
 
 	private void loadDBpedia(FileName fileName, boolean loadEntityRelations) {
 
+		System.out.println("loadDBpedia: " + fileName.getFileName()+".");	
+		
 		for (Language language : this.languages) {
 
 			System.out.println("Language: " + language + " (" + fileName.getFileName() + ")");

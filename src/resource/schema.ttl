@@ -4,7 +4,7 @@
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 @prefix sem: <http://semanticweb.cs.vu.nl/2009/11/sem/> .
 
-eventKG-s:Relation rdf:type sem:Role .
+eventKG-s:Relation rdfs:subClassOf sem:Role .
 eventKG-s:links rdfs:domain eventKG-s:Relation .
 eventKG-s:links rdfs:range xsd:nonNegativeInteger .
 eventKG-s:mentions rdfs:domain eventKG-s:Relation .

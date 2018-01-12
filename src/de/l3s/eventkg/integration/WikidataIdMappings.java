@@ -112,7 +112,8 @@ public class WikidataIdMappings {
 						// all entities that do not have Wikipedia labels
 
 						if (!allWikidataEntitiesWithFacts.contains(numericWikidataId)) {
-//							System.out.println("Ignore " + numericWikidataId + " - " + label + ".");
+							// System.out.println("Ignore " + numericWikidataId
+							// + " - " + label + ".");
 							ignoredEntities += 1;
 							continue;
 						}
@@ -246,8 +247,10 @@ public class WikidataIdMappings {
 			while ((line = br.readLine()) != null) {
 				String[] parts = line.split("\t");
 
+				// only add parent: We are only interested in subs if they are
+				// actually the location of something. Parents are needed for
+				// transitivity.
 				wikidataIds.add(Integer.valueOf(parts[1].substring(1)));
-				wikidataIds.add(Integer.valueOf(parts[3].substring(1)));
 
 			}
 		} catch (IOException e) {
@@ -272,6 +275,40 @@ public class WikidataIdMappings {
 			while ((line = br.readLine()) != null) {
 				String[] parts = line.split(Config.TAB);
 				wikidataIds.add(Integer.valueOf(parts[0].substring(1)));
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				br.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+
+		System.out.println("\t" + wikidataIds.size() + " (with scientific articles)");
+
+		// remove scientific articles
+		// TODO: Do this as blacklist class
+
+		br = null;
+		try {
+			try {
+				br = FileLoader.getReader(FileName.WIKIDATA_INSTANCE_OF);
+			} catch (FileNotFoundException e1) {
+				e1.printStackTrace();
+			}
+
+			String line;
+			while ((line = br.readLine()) != null) {
+
+				String[] parts = line.split(Config.TAB);
+
+				String parentClass = parts[2];
+
+				if (parentClass.equals("Q13442814")) {
+					wikidataIds.remove(Integer.valueOf(parts[0].substring(1)));
+				}
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
