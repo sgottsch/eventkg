@@ -20,7 +20,7 @@ public class WikipediaEventsByCategoryNameLoader extends Extractor {
 
 	public WikipediaEventsByCategoryNameLoader(List<Language> languages) {
 		super("WikipediaEventsLoader", Source.WIKIPEDIA,
-				"Load Wikipedia pages representing events according to their category names (e.g. English Wikipedia pages in the categiory \"November_1963_events\").",
+				"Load Wikipedia pages representing events according to their category names (e.g. English Wikipedia pages in the category \"November_1963_events\").",
 				languages);
 	}
 
@@ -169,6 +169,12 @@ public class WikipediaEventsByCategoryNameLoader extends Extractor {
 							}
 						}
 
+						// very specific special case. Ignore category
+						// "Films_based_on_actual_events". TODO: Add this as
+						// blacklist property to the configuration file.
+						if (categoryName.contains("based_on") || categoryName.contains("based on"))
+							isEvent = false;
+
 						if (isEvent) {
 							eventPageIDs.put(pageId, categoryName);
 						}
@@ -185,6 +191,8 @@ public class WikipediaEventsByCategoryNameLoader extends Extractor {
 				e.printStackTrace();
 			}
 		}
+
+		System.out.println("Found " + eventPageIDs.size() + " Wikipedia (" + language + ") category name events.");
 
 		return eventPageIDs;
 	}

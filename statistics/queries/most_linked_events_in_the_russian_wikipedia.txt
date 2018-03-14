@@ -1,0 +1,20 @@
+PREFIX eventKG-s: <http://eventKG.l3s.uni-hannover.de/schema/>
+PREFIX eventKG-g: <http://eventKG.l3s.uni-hannover.de/graph/>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX sem: <http://semanticweb.cs.vu.nl/2009/11/sem/>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX owl: <http://www.w3.org/2002/07/owl#>
+PREFIX dbr: <http://dbpedia.org/resource/> 
+
+SELECT ?event ?links ?dbp {
+ ?event rdf:type sem:Event .
+ GRAPH eventKG-g:dbpedia_en { ?event owl:sameAs ?dbp . } .
+  {
+   SELECT ?event (SUM(?link_count) AS ?links) WHERE {
+   ?relation rdf:type eventKG-s:Relation .
+   ?relation rdf:object ?event .
+   GRAPH eventKG-g:wikipedia_ru {  ?relation eventKG-s:links ?link_count . } .
+  } GROUP BY ?event
+ }
+} ORDER BY DESC(?links)
+LIMIT 10

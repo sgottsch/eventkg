@@ -21,7 +21,9 @@ public class DBpediaDBOEventsLoader extends Extractor {
 	private PrintWriter resultsWriterBlacklist;
 
 	public DBpediaDBOEventsLoader(List<Language> languages) {
-		super("DBpediaDBOEventsLoader", Source.DBPEDIA, "?", languages);
+		super("DBpediaDBOEventsLoader", Source.DBPEDIA,
+				"Loads all DBpedia entities that are events, by looking for instances of e.g. <http://schema.org/Event>. It also maintains a set of blacklisted entities that may never be mapped to events, e.g. instances of <http://schema.org/Organization>.",
+				languages);
 	}
 
 	public void run() {
@@ -33,6 +35,7 @@ public class DBpediaDBOEventsLoader extends Extractor {
 	public void run(Language language) {
 
 		Set<String> foundEvents = new HashSet<String>();
+		Set<String> uniqueFoundEvents = new HashSet<String>();
 		Set<String> targetObjects = loadEventObjects();
 		Set<String> blacklistObjects = loadBlacklistObjects();
 
@@ -82,6 +85,7 @@ public class DBpediaDBOEventsLoader extends Extractor {
 						resultsWriter.write(fileLine + Config.NL);
 
 					foundEvents.add(fileLine);
+					uniqueFoundEvents.add(subject);
 				}
 
 			}
@@ -97,6 +101,7 @@ public class DBpediaDBOEventsLoader extends Extractor {
 			}
 		}
 
+		System.out.println("Found " + uniqueFoundEvents.size() + " DBpedia (" + language + ") events.");
 	}
 
 	public static Set<String> loadEventObjects() {
@@ -121,6 +126,7 @@ public class DBpediaDBOEventsLoader extends Extractor {
 
 		blacklistObjects.add("<http://dbpedia.org/ontology/Organisation>");
 		blacklistObjects.add("<http://schema.org/Organization>");
+		blacklistObjects.add("<http://schema.org/Person>");
 
 		return blacklistObjects;
 	}

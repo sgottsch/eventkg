@@ -26,7 +26,9 @@ public class YAGOEventRelationsExtractor extends Extractor {
 	private AllEventPagesDataSet allEventPagesDataSet;
 
 	public YAGOEventRelationsExtractor(List<Language> languages, AllEventPagesDataSet allEventPagesDataSet) {
-		super("YAGOEventRelationsExtractor", Source.YAGO, "?", languages);
+		super("YAGOEventRelationsExtractor", Source.YAGO,
+				"Loads all YAGO relations where the subject and/or object is an event or both have an existence time, or where the fact has a temporal scope.",
+				languages);
 		this.allEventPagesDataSet = allEventPagesDataSet;
 	}
 
@@ -85,13 +87,13 @@ public class YAGOEventRelationsExtractor extends Extractor {
 
 					YAGOLabelExtractor yagoLabelExtractor1 = new YAGOLabelExtractor(parts[0], this.languages);
 					yagoLabelExtractor1.extractLabel();
-					if(!yagoLabelExtractor1.isValid())
+					if (!yagoLabelExtractor1.isValid())
 						continue;
 
 					YAGOLabelExtractor yagoLabelExtractor2 = new YAGOLabelExtractor(
 							parts[2].substring(0, parts[2].length() - 2), this.languages);
 					yagoLabelExtractor2.extractLabel();
-					if(!yagoLabelExtractor2.isValid())
+					if (!yagoLabelExtractor2.isValid())
 						continue;
 
 					String wikipediaLabel1 = parts[0].substring(1, parts[0].length() - 1);

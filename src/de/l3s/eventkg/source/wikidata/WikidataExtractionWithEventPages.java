@@ -15,9 +15,10 @@ import de.l3s.eventkg.source.wikidata.processors.RelationsToEventPagesProcessor;
 public class WikidataExtractionWithEventPages extends Extractor {
 
 	private AllEventPagesDataSet allEventPagesDataSet;
-	
+
 	public WikidataExtractionWithEventPages(List<Language> languages, AllEventPagesDataSet allEventPagesDataSet) {
-		super("WikidataExtractionWithEventPages", Source.WIKIDATA, "Extract relations to and from event pages.",
+		super("WikidataExtractionWithEventPages", Source.WIKIDATA,
+				"Loads all Wikidata relations where the subject and/or object is an event or both have an existence time.",
 				languages);
 		this.allEventPagesDataSet = allEventPagesDataSet;
 	}

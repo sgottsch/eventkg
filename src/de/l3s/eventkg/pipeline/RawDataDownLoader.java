@@ -6,8 +6,6 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.io.Writer;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -19,8 +17,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.commons.compress.archivers.sevenz.SevenZArchiveEntry;
-import org.apache.commons.compress.archivers.sevenz.SevenZFile;
 import org.apache.commons.compress.compressors.bzip2.BZip2CompressorInputStream;
 import org.apache.commons.io.FileUtils;
 import org.jsoup.Jsoup;
@@ -43,9 +39,10 @@ public class RawDataDownLoader {
 	public void copyMetaFiles() {
 
 		System.out.println("Copy meta files.");
-		// Currently, we only have meta files for Wikidata
 
 		try {
+			
+			// Wikidata
 			FileUtils.copyURLToFile(
 					RawDataDownLoader.class.getResource("/resource/meta_data/wikidata/"
 							+ FileName.WIKIDATA_MANUAL_FORBIDDEN_PROPERTY_NAMES.getFileName()),
@@ -69,9 +66,25 @@ public class RawDataDownLoader {
 							+ FileName.WIKIDATA_SUB_LOCATION_PROPERTY_NAMES.getFileName()),
 					new File(metaDataPath + "wikidata/" + FileName.WIKIDATA_SUB_LOCATION_PROPERTY_NAMES.getFileName()));
 			FileUtils.copyURLToFile(
+					RawDataDownLoader.class.getResource(
+							"/resource/meta_data/wikidata/" + FileName.WIKIDATA_EVENT_BLACKLIST_CLASSES.getFileName()),
+					new File(metaDataPath + "wikidata/" + FileName.WIKIDATA_EVENT_BLACKLIST_CLASSES.getFileName()));
+
+			// YAGO
+			FileUtils.copyURLToFile(
 					RawDataDownLoader.class
 							.getResource("/resource/meta_data/yago/" + FileName.YAGO_TIME_PROPERTIES.getFileName()),
 					new File(metaDataPath + "yago/" + FileName.YAGO_TIME_PROPERTIES.getFileName()));
+
+			// EventKG
+			FileUtils.copyURLToFile(
+					RawDataDownLoader.class
+							.getResource("/resource/meta_data/event_kg/" + FileName.ALL_TTL_SCHEMA_INPUT.getFileName()),
+					new File(metaDataPath + "event_kg/" + FileName.ALL_TTL_SCHEMA_INPUT.getFileName()));
+			FileUtils.copyURLToFile(
+					RawDataDownLoader.class
+							.getResource("/resource/meta_data/event_kg/" + FileName.ALL_TTL_VOID_INPUT.getFileName()),
+					new File(metaDataPath + "event_kg/" + FileName.ALL_TTL_VOID_INPUT.getFileName()));
 
 			for (Language language : this.languages) {
 				FileUtils.copyURLToFile(
@@ -131,7 +144,7 @@ public class RawDataDownLoader {
 			(new File(dataPath + "results/wikipedia/" + language.getLanguage())).mkdirs();
 			(new File(dataPath + "meta/wikipedia/" + language.getLanguage())).mkdirs();
 			(new File(dataPath + "results/wikidata/" + language.getLanguage())).mkdirs();
-			(new File(dataPath + "meta/wikipedia/"+ language.getLanguage())).mkdirs();
+			(new File(dataPath + "meta/wikipedia/" + language.getLanguage())).mkdirs();
 		}
 
 		this.metaDataPath = this.dataPath + FileLoader.ONLINE_META_FOLDER_SUFFIX;
@@ -139,13 +152,13 @@ public class RawDataDownLoader {
 	}
 
 	void downloadFiles() {
-		
+
 		this.dataPath = Config.getValue("data_folder");
 		this.dataPath = this.dataPath + FileLoader.ONLINE_RAW_DATA_FOLDER_SUFFIX;
-		
-		//downloadWikipediaFiles();
-		//downloadDBPediaFiles();
-		//downloadWCEFiles();
+
+		// downloadWikipediaFiles();
+		// downloadDBPediaFiles();
+		// downloadWCEFiles();
 		downloadYAGOFiles();
 		downloadWikidataFile();
 	}
@@ -286,44 +299,46 @@ public class RawDataDownLoader {
 		urls.add("yagoMetaFacts.ttl.7z");
 
 		// TODO: Bug. Automated unzipping does not work anymore. Fix it!
-		
+
 		for (String urlString : urls) {
 			File downloadedFile = null;
 
-//			try {
+			// try {
 
-				downloadedFile = downloadFile(yagoUrl + urlString, this.dataPath + "yago/" + urlString);
+			downloadedFile = downloadFile(yagoUrl + urlString, this.dataPath + "yago/" + urlString);
 
-//				InputStream inputStream = new FileInputStream(this.dataPath + "yago/" + urlString);
-//
-//				SevenZFile sevenZFile = null;
-//
-//				try {
-//					sevenZFile = new SevenZFile(downloadedFile);
-//					SevenZArchiveEntry entry = sevenZFile.getNextEntry();
-//					while (entry != null) {
-//						OutputStream out = new FileOutputStream(this.dataPath + "yago/" + entry.getName());
-//						byte[] content = new byte[(int) entry.getSize()];
-//						sevenZFile.read(content, 0, content.length);
-//						out.write(content);
-//						out.close();
-//						entry = sevenZFile.getNextEntry();
-//					}
-//					sevenZFile.close();
-//					inputStream.close();
-//				} catch (IOException e) {
-//					e.printStackTrace();
-//				}
-//
-//			} catch (IOException e) {
-//				e.printStackTrace();
-//			} finally {
-//				try {
-//					Files.delete(downloadedFile.toPath());
-//				} catch (IOException e) {
-//					e.printStackTrace();
-//				}
-//			}
+			// InputStream inputStream = new FileInputStream(this.dataPath +
+			// "yago/" + urlString);
+			//
+			// SevenZFile sevenZFile = null;
+			//
+			// try {
+			// sevenZFile = new SevenZFile(downloadedFile);
+			// SevenZArchiveEntry entry = sevenZFile.getNextEntry();
+			// while (entry != null) {
+			// OutputStream out = new FileOutputStream(this.dataPath + "yago/" +
+			// entry.getName());
+			// byte[] content = new byte[(int) entry.getSize()];
+			// sevenZFile.read(content, 0, content.length);
+			// out.write(content);
+			// out.close();
+			// entry = sevenZFile.getNextEntry();
+			// }
+			// sevenZFile.close();
+			// inputStream.close();
+			// } catch (IOException e) {
+			// e.printStackTrace();
+			// }
+			//
+			// } catch (IOException e) {
+			// e.printStackTrace();
+			// } finally {
+			// try {
+			// Files.delete(downloadedFile.toPath());
+			// } catch (IOException e) {
+			// e.printStackTrace();
+			// }
+			// }
 		}
 
 	}

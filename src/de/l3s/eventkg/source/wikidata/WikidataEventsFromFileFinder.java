@@ -74,7 +74,7 @@ public class WikidataEventsFromFileFinder extends Extractor {
 				String parentClass = parts[2];
 
 				// ignore "Wikimedia internal stuff" children
-				if (parentClass.equals("Q17442446")) {
+				if (parentClass.equals(WikidataResource.WIKIMEDIA_INTERNAL_STUFF.getId())) {
 					forbiddenClasses.add(id);
 					continue;
 				}
@@ -100,32 +100,12 @@ public class WikidataEventsFromFileFinder extends Extractor {
 		// subClasses.get("Q350604").add("Q198");
 
 		Set<String> targetClasses = new HashSet<String>();
-		targetClasses.add("Q1190554");
-		targetClasses.add("Q1656682");
+		targetClasses.add(WikidataResource.OCCURRENCE.getId());
+		targetClasses.add(WikidataResource.EVENT.getId());
 
-		forbiddenClasses.add("Q1914636"); // activity
-		forbiddenClasses.add("Q3249551"); // process
-		forbiddenClasses.add("Q17442446"); // Wikimedia internal stuff
-		forbiddenClasses.add("Q12139612"); // enumeration
-		forbiddenClasses.add("Q20202269"); // music term
-		forbiddenClasses.add("Q7366"); // song
-		forbiddenClasses.add("Q155171"); // cover version
-		forbiddenClasses.add("Q816829"); // periodization
-
-		// Avoid cities as events: municipality ... self-governance ...
-		// administration ... assembly ... meeting ... event
-		forbiddenClasses.add("Q1752346"); // assembly
-		forbiddenClasses.add("Q43229"); // organization
-		forbiddenClasses.add("Q2495862"); // Congress
-
-		forbiddenClasses.add("Q23893363"); // erroneous entry?, parent of
-											// cultural heritage
-		forbiddenClasses.add("Q17633526"); // Wikinews article
-		forbiddenClasses.add("Q65943"); // theorem
-		forbiddenClasses.add("Q49703"); // sacrament
-
-		forbiddenClasses.add("Q14795564"); // determinator for date of periodic
-											// occurrence
+		for (String line : FileLoader.readLines(FileName.WIKIDATA_EVENT_BLACKLIST_CLASSES)) {
+			forbiddenClasses.add(line.split("\t")[0]);
+		}
 
 		Set<String> allClasses = new HashSet<String>();
 
@@ -178,7 +158,9 @@ public class WikidataEventsFromFileFinder extends Extractor {
 	private void extractEventInstances(Set<String> eventClasses) {
 
 		Set<String> blacklistClasses = new HashSet<String>();
-		blacklistClasses.add("Q14795564"); // determinator for date of periodic
+		blacklistClasses.add(WikidataResource.DETERMINATOR_FOR_DATE_OF_PERIODIC_OCCURRENCE.getId());
+		blacklistClasses.add(WikidataResource.HUMAN.getId());
+		blacklistClasses.add(WikidataResource.FICTIONAL_HUMAN.getId());
 
 		try {
 			resultsWriter = FileLoader.getWriter(FileName.WIKIDATA_EVENTS);

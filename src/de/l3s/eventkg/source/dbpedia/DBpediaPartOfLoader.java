@@ -22,7 +22,9 @@ public class DBpediaPartOfLoader extends Extractor {
 	private PrintWriter resultsWriterNextEvents;
 
 	public DBpediaPartOfLoader(List<Language> languages) {
-		super("DBpediaPartOfLoader", Source.DBPEDIA, "?", languages);
+		super("DBpediaPartOfLoader", Source.DBPEDIA,
+				"Loads all DBpedia relations where a subject is connected with an object as its part (e.g., via <http://dbpedia.org/ontology/isPartOf>), it's predecessor (e.g., via <http://dbpedia.org/ontology/previousEvent>), or succesor (e.g., via <http://dbpedia.org/ontology/followingEvent>).",
+				languages);
 	}
 
 	public void run() {

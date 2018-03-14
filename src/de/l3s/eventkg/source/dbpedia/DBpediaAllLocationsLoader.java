@@ -41,7 +41,9 @@ public class DBpediaAllLocationsLoader extends Extractor {
 	}
 
 	public DBpediaAllLocationsLoader(List<Language> languages) {
-		super("DBpediaAllLocationsLoader", Source.DBPEDIA, "?", languages);
+		super("DBpediaAllLocationsLoader", Source.DBPEDIA,
+				"Extracts all DBpedia entities that represent locations (type <http://dbpedia.org/ontology/Place>).",
+				languages);
 	}
 
 	private void extractLocations(Language language) {

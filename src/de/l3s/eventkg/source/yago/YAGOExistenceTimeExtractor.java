@@ -36,7 +36,9 @@ public class YAGOExistenceTimeExtractor extends Extractor {
 	}
 
 	public YAGOExistenceTimeExtractor(List<Language> languages) {
-		super("YAGOEventTimeExtractor", Source.YAGO, "?", languages);
+		super("YAGOExistenceTimeExtractor", Source.YAGO,
+				"Extracts YAGO date facts. They denote existence times, e.g. with <happenedOnDate> or <diedOnDate>.",
+				languages);
 	}
 
 	public void run() {

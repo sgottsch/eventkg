@@ -35,7 +35,7 @@ public class DataSets {
 		if (!this.dataSets.containsKey(language))
 			this.dataSets.put(language, new HashMap<Source, DataSet>());
 		DataSet dataSet = new DataSet(source, source.toString().toLowerCase() + "_" + language.getLanguageLowerCase(),
-				"<" + url + ">");
+				"<" + url + ">", language);
 		allDataSets.add(dataSet);
 		this.dataSets.get(language).put(source, dataSet);
 		// this.dataSetsById.put(dataSet.getId().replace("graphs/", ""),

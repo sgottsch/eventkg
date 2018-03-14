@@ -24,10 +24,7 @@ import de.l3s.eventkg.integration.model.Event;
 import de.l3s.eventkg.integration.model.relation.DataSet;
 import de.l3s.eventkg.integration.model.relation.Description;
 import de.l3s.eventkg.integration.model.relation.EndTime;
-import de.l3s.eventkg.integration.model.relation.GenericRelation;
 import de.l3s.eventkg.integration.model.relation.StartTime;
-import de.l3s.eventkg.integration.model.relation.prefix.PrefixEnum;
-import de.l3s.eventkg.integration.model.relation.prefix.PrefixList;
 import de.l3s.eventkg.meta.Language;
 import de.l3s.eventkg.meta.Source;
 import de.l3s.eventkg.pipeline.Config;
@@ -42,6 +39,8 @@ import de.l3s.eventkg.util.FileName;
 
 public class TextualEventsExtractor extends Extractor {
 
+	public static final boolean PUT_ENTITIES_LINKED_IN_THE_SAME_EVENT_IN_LINK_SET = false;
+
 	private int numberOfExtractedWikiEvents = 0;
 
 	private AllEventPagesDataSet allEventPagesDataSet;
@@ -50,7 +49,7 @@ public class TextualEventsExtractor extends Extractor {
 	private Map<Event, Set<TextualEvent>> eventsToTextualEvents;
 
 	private SimpleDateFormat dateFormat = new SimpleDateFormat("G yyyy-MM-dd", Locale.ENGLISH);
-	private SimpleDateFormat dateFormatPageTitle = new SimpleDateFormat("MMMMM_yyyy");
+	private SimpleDateFormat dateFormatPageTitle = new SimpleDateFormat("MMMMM_yyyy", Locale.US);
 
 	private Map<String, Set<TextualEvent>> eventsByDates = new HashMap<String, Set<TextualEvent>>();
 
@@ -72,12 +71,11 @@ public class TextualEventsExtractor extends Extractor {
 
 	public TextualEventsExtractor(List<Language> languages, AllEventPagesDataSet allEventPagesDataSet) {
 		super("CurrentEventsRelationsExtraction", de.l3s.eventkg.meta.Source.WIKIPEDIA,
-				"Extract relations between entities and events.", languages);
+				"Collect and integrate textual events and their relations.", languages);
 		this.allEventPagesDataSet = allEventPagesDataSet;
 	}
 
 	public void run() {
-		System.out.println("Collect textual events and their relations.");
 		extractRelations();
 	}
 
@@ -105,6 +103,11 @@ public class TextualEventsExtractor extends Extractor {
 	}
 
 	private void mergeEvents() {
+
+		for (Language language : languages) {
+			DataStore.getInstance().getMentionCountsFromTextualEvents().put(language,
+					new HashMap<Entity, Map<Entity, Integer>>());
+		}
 
 		// TODO: Is each location mentioned in the text a location of the event?
 		// Sometimes, they are just actors ("Ethiopia begins a massive offensive
@@ -266,10 +269,44 @@ public class TextualEventsExtractor extends Extractor {
 
 			// add links
 			for (Language language : relatedEntities.keySet()) {
-				for (Entity entity : relatedEntities.get(language).keySet()) {
-					LinksToCount linkCount = new LinksToCount(event, entity, relatedEntities.get(language).get(entity),
-							language);
+				Map<Entity, Map<Entity, Integer>> mentionPairsInLanguage = DataStore.getInstance()
+						.getMentionCountsFromTextualEvents().get(language);
+
+				for (Entity entity1 : relatedEntities.get(language).keySet()) {
+					LinksToCount linkCount = new LinksToCount(event, entity1,
+							relatedEntities.get(language).get(entity1), language, true);
 					DataStore.getInstance().addLinkRelation(linkCount.toGenericRelation());
+
+					if (PUT_ENTITIES_LINKED_IN_THE_SAME_EVENT_IN_LINK_SET) {
+						for (Entity entity2 : relatedEntities.get(language).keySet()) {
+
+							if (entity1 == entity2)
+								continue;
+
+							// remember mentions of two entities in the same
+							// events,
+							// so these numbers can be added later to the link
+							// set
+							// counts
+							if (!mentionPairsInLanguage.containsKey(entity1)) {
+								mentionPairsInLanguage.put(entity1, new HashMap<Entity, Integer>());
+							}
+							if (!mentionPairsInLanguage.get(entity1).containsKey(entity2))
+								mentionPairsInLanguage.get(entity1).put(entity2, 1);
+							else
+								mentionPairsInLanguage.get(entity1).put(entity2,
+										mentionPairsInLanguage.get(entity1).get(entity2) + 1);
+
+							if (!mentionPairsInLanguage.containsKey(entity2)) {
+								mentionPairsInLanguage.put(entity2, new HashMap<Entity, Integer>());
+							}
+							if (!mentionPairsInLanguage.get(entity2).containsKey(entity1))
+								mentionPairsInLanguage.get(entity2).put(entity1, 1);
+							else
+								mentionPairsInLanguage.get(entity2).put(entity1,
+										mentionPairsInLanguage.get(entity2).get(entity1) + 1);
+						}
+					}
 				}
 			}
 
@@ -406,6 +443,9 @@ public class TextualEventsExtractor extends Extractor {
 				String startDate = parts[5];
 				String endDate = parts[6];
 				String text = parts[7];
+
+				if (text.trim().equals("No events.") || text.trim().equals("No events"))
+					continue;
 
 				Set<Entity> relatedEntities = new HashSet<Entity>();
 				Set<Event> relatedEvents = new HashSet<Event>();

@@ -43,7 +43,9 @@ public class TemporalRelationsCollector extends Extractor {
 	}
 
 	public TemporalRelationsCollector(List<Language> languages, AllEventPagesDataSet allEventPagesDataSet) {
-		super("TemporalRelationsCollector", Source.ALL, "?", languages);
+		super("TemporalRelationsCollector", Source.ALL,
+				"Integrates temporal relations from all sources (s.t. they use the same set of entities. Different relations are not merged.).",
+				languages);
 		this.allEventPagesDataSet = allEventPagesDataSet;
 	}
 
@@ -170,7 +172,7 @@ public class TemporalRelationsCollector extends Extractor {
 
 	private void loadYAGORelations(FileName fileName, boolean collectEntityRelations) {
 
-		System.out.println("loadYAGORelations: " + fileName.getFileName()+".");
+		System.out.println("loadYAGORelations: " + fileName.getFileName() + ".");
 
 		BufferedReader br = null;
 		try {
@@ -443,8 +445,8 @@ public class TemporalRelationsCollector extends Extractor {
 	private void loadWikidataAtemporalRelations(FileName fileName, boolean collectEntityRelations) {
 		BufferedReader br = null;
 
-		System.out.println("loadWikidataAtemporalRelations: " + fileName.getFileName()+".");
-		
+		System.out.println("loadWikidataAtemporalRelations: " + fileName.getFileName() + ".");
+
 		try {
 			try {
 				br = FileLoader.getReader(fileName);
@@ -497,8 +499,8 @@ public class TemporalRelationsCollector extends Extractor {
 
 	private void loadDBpedia(FileName fileName, boolean loadEntityRelations) {
 
-		System.out.println("loadDBpedia: " + fileName.getFileName()+".");	
-		
+		System.out.println("loadDBpedia: " + fileName.getFileName() + ".");
+
 		for (Language language : this.languages) {
 
 			System.out.println("Language: " + language + " (" + fileName.getFileName() + ")");

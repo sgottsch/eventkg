@@ -19,7 +19,8 @@ public class CurrentEventsRelationsExtraction extends Extractor {
 	private AllEventPagesDataSet allEventPagesDataSet;
 
 	public CurrentEventsRelationsExtraction(List<Language> languages, AllEventPagesDataSet allEventPagesDataSet) {
-		super("CurrentEventsRelationsExtraction", de.l3s.eventkg.meta.Source.WCE, "Extract relations between entities and events.",
+		super("CurrentEventsRelationsExtraction", de.l3s.eventkg.meta.Source.WCE,
+				"Extract relations between entities and events for the textual events from the Wikipedia Current Events Portal.",
 				languages);
 		this.allEventPagesDataSet = allEventPagesDataSet;
 	}

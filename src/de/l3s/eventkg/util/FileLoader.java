@@ -26,6 +26,7 @@ public class FileLoader {
 	public static final String ONLINE_META_FOLDER_SUFFIX = "meta/";
 	public static final String ONLINE_OUTPUT_FOLDER_SUFFIX = "output/";
 	public static final String ONLINE_OUTPUT_PREVIEW_FOLDER_SUFFIX = "output_preview/";
+	public static final String ONLINE_PREVIOUS_VERSION_FOLDER_SUFFIX = "previous_version/";
 
 	public static SimpleDateFormat PARSE_DATE_FORMAT = new SimpleDateFormat("G yyyy-MM-dd");
 	public static SimpleDateFormat PRINT_DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd");
@@ -52,6 +53,64 @@ public class FileLoader {
 			}
 		}
 		return br;
+	}
+
+	public static List<String> readLines(FileName fileName) {
+
+		List<String> lines = new ArrayList<String>();
+
+		BufferedReader br = null;
+		try {
+			try {
+				br = FileLoader.getReader(fileName);
+			} catch (FileNotFoundException e1) {
+				e1.printStackTrace();
+			}
+
+			String line;
+			while ((line = br.readLine()) != null) {
+				lines.add(line);
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				br.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+
+		return lines;
+	}
+
+	public static List<String> readLines(FileName fileName, Language language) {
+
+		List<String> lines = new ArrayList<String>();
+
+		BufferedReader br = null;
+		try {
+			try {
+				br = FileLoader.getReader(fileName, language);
+			} catch (FileNotFoundException e1) {
+				e1.printStackTrace();
+			}
+
+			String line;
+			while ((line = br.readLine()) != null) {
+				lines.add(line);
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				br.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+
+		return lines;
 	}
 
 	public static BufferedReader getReader(FileName fileName, Language language) throws IOException {
@@ -122,6 +181,8 @@ public class FileLoader {
 			path = Config.getValue("data_folder") + ONLINE_OUTPUT_FOLDER_SUFFIX;
 		else if (fileName.isOutputPreviewData())
 			path = Config.getValue("data_folder") + ONLINE_OUTPUT_PREVIEW_FOLDER_SUFFIX;
+		else if (fileName.isPreviousVersionData())
+			path = Config.getValue("data_folder") + ONLINE_PREVIOUS_VERSION_FOLDER_SUFFIX;
 
 		if (fileName.getSource() != null) {
 			if (language == null) {

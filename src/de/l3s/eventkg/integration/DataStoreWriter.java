@@ -4,8 +4,11 @@ import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import de.l3s.eventkg.integration.model.Entity;
@@ -36,7 +39,7 @@ public class DataStoreWriter {
 
 	private boolean generateIdsFromPreviousEventKG = false;
 
-	private SimpleDateFormat standardFormat = new SimpleDateFormat("\"yyyy-MM-dd\"'^^xsd:date'");
+	private static SimpleDateFormat standardFormat = new SimpleDateFormat("\"yyyy-MM-dd\"'^^xsd:date'");
 
 	private PrefixList prefixList;
 
@@ -44,6 +47,7 @@ public class DataStoreWriter {
 
 	private Set<String> propertiesUsedInNamedEventRelations = new HashSet<String>();
 	private int relationNo;
+	private EntityIdGenerator idGenerator;
 
 	public DataStoreWriter(List<Language> languages) {
 		this.dataStore = DataStore.getInstance();
@@ -53,8 +57,8 @@ public class DataStoreWriter {
 
 	public void write() {
 		init();
-		System.out.println("writeDataSets");
-		writeDataSets();
+		System.out.println("Write meta files.");
+		writeMetaFiles();
 		System.out.println("writeEvents");
 		writeEvents();
 		System.out.println("writeEntities");
@@ -71,13 +75,19 @@ public class DataStoreWriter {
 		writeLinkRelations();
 	}
 
+	private void writeMetaFiles() {
+		writeDataSetDescriptions();
+		copySchemaFile();
+		createVoIDFile();
+	}
+
 	private void init() {
 
 		prefixList = PrefixList.getInstance();
 
 		if (generateIdsFromPreviousEventKG) {
-			// EntityIdGenerator idGenerator=new EntityIdGenerator();
-			// TODO
+			this.idGenerator = new EntityIdGenerator();
+			this.idGenerator.load();
 		}
 	}
 
@@ -120,7 +130,7 @@ public class DataStoreWriter {
 		}
 	}
 
-	private void writeDataSets() {
+	private void writeDataSetDescriptions() {
 		PrintWriter writer = null;
 		try {
 			writer = FileLoader.getWriter(FileName.ALL_TTL_DATASETS);
@@ -130,6 +140,7 @@ public class DataStoreWriter {
 			prefixes.add(prefixList.getPrefix(PrefixEnum.FOAF));
 			prefixes.add(prefixList.getPrefix(PrefixEnum.RDF));
 			prefixes.add(prefixList.getPrefix(PrefixEnum.EVENT_KG_SCHEMA));
+			prefixes.add(prefixList.getPrefix(PrefixEnum.DCTERMS));
 			for (String line : createIntro(prefixes)) {
 				writer.write(line + Config.NL);
 			}
@@ -140,6 +151,10 @@ public class DataStoreWriter {
 						false, null);
 				writeTriple(writer, null, null, PrefixEnum.EVENT_KG_GRAPH.getAbbr() + dataSet.getId(),
 						prefixList.getPrefix(PrefixEnum.FOAF).getAbbr() + "homepage", dataSet.getUrl(), false, null);
+				if (dataSet.getDate() != null)
+					writeTriple(writer, null, null, PrefixEnum.EVENT_KG_GRAPH.getAbbr() + dataSet.getId(),
+							prefixList.getPrefix(PrefixEnum.DCTERMS).getAbbr() + "created",
+							standardFormat.format(dataSet.getDate()), false, null);
 			}
 
 		} catch (FileNotFoundException e) {
@@ -149,10 +164,66 @@ public class DataStoreWriter {
 		}
 	}
 
+	private void copySchemaFile() {
+		PrintWriter writer = null;
+		try {
+			writer = FileLoader.getWriter(FileName.ALL_TTL_SCHEMA);
+
+			for (String line : FileLoader.readLines(FileName.ALL_TTL_SCHEMA_INPUT)) {
+				writer.write(line + Config.NL);
+			}
+
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} finally {
+			writer.close();
+		}
+	}
+
+	private void createVoIDFile() {
+
+		String currentDate = standardFormat.format(new Date());
+
+		PrintWriter writer = null;
+		try {
+			writer = FileLoader.getWriter(FileName.ALL_TTL_VOID);
+
+			for (String line : FileLoader.readLines(FileName.ALL_TTL_VOID_INPUT)) {
+				writer.write(line.replace("@creation_date@", currentDate) + Config.NL);
+			}
+
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} finally {
+			writer.close();
+		}
+
+	}
+
 	private void writeEvents() {
 
-		String eventId = "event_";
 		int eventNo = 0;
+
+		if (generateIdsFromPreviousEventKG)
+			eventNo = this.idGenerator.getLastEventNo() + 1;
+
+		Map<Event, Map<DataSet, Set<String>>> descriptionMap = new HashMap<Event, Map<DataSet, Set<String>>>();
+
+		for (Description description : dataStore.getDescriptions()) {
+			if (description.getSubject() == null)
+				continue;
+			if (description.getSubject().isEvent() || description.getSubject().getEventEntity() != null) {
+				Event event = description.getSubject().getEventEntity();
+				if (event == null)
+					event = (Event) description.getSubject();
+				if (!descriptionMap.containsKey(event))
+					descriptionMap.put(event, new HashMap<DataSet, Set<String>>());
+				if (!descriptionMap.get(event).containsKey(description.getDataSet()))
+					descriptionMap.get(event).put(description.getDataSet(), new HashSet<String>());
+
+				descriptionMap.get(event).get(description.getDataSet()).add(description.getLabel());
+			}
+		}
 
 		PrintWriter writer = null;
 		PrintWriter writerPreview = null;
@@ -181,13 +252,21 @@ public class DataStoreWriter {
 			int lineNo = 0;
 			for (Event event : dataStore.getEvents()) {
 
-				event.setId("<" + eventId + String.valueOf(eventNo) + ">");
+				// event.setId("<" + eventId + String.valueOf(eventNo) + ">");
 
 				// if (event.getEventEntity() != null)
 				// event.getEventEntity().setId("<" + eventId +
 				// String.valueOf(eventNo) + ">");
 
-				eventNo += 1;
+				// eventNo += 1;
+
+				String eventId = generateEventId(event, descriptionMap.get(event));
+				if (eventId == null) {
+					eventId = "<event_" + String.valueOf(eventNo) + ">";
+					eventNo += 1;
+				}
+				event.setId(eventId);
+
 				lineNo += 1;
 				writeTriple(writer, writerPreview, lineNo, event.getId(), PrefixEnum.RDF.getAbbr() + "type",
 						prefixList.getPrefix(PrefixEnum.SEM).getAbbr() + "Event", false, null);
@@ -226,8 +305,8 @@ public class DataStoreWriter {
 				if (label.getSubject().isEvent() || label.getSubject().getEventEntity() != null) {
 					lineNo += 1;
 					writeTriple(writer, writerPreview, lineNo, label.getSubject().getEventEntity().getId(),
-							prefixList.getPrefix(PrefixEnum.RDFS).getAbbr() + "label", label.getLabel(), true,
-							label.getDataSet(), label.getLanguage());
+							prefixList.getPrefix(PrefixEnum.RDFS).getAbbr() + "label",
+							label.getLabel().replaceAll("_", " "), true, label.getDataSet(), label.getLanguage());
 				}
 			}
 
@@ -283,8 +362,11 @@ public class DataStoreWriter {
 
 	private void writeEntities() {
 
-		String entityId = "entity_";
+		// String entityId = "entity_";
 		int entityNo = 0;
+
+		if (generateIdsFromPreviousEventKG)
+			entityNo = this.idGenerator.getLastEntityNo() + 1;
 
 		PrintWriter writer = null;
 		PrintWriter writerPreview = null;
@@ -318,9 +400,15 @@ public class DataStoreWriter {
 				if (entity.isEvent() || entity.getEventEntity() != null)
 					continue;
 
-				entity.setId("<" + entityId + String.valueOf(entityNo) + ">");
+				// entity.setId("<" + entityId + String.valueOf(entityNo) +
+				// ">");
 
-				entityNo += 1;
+				String entityId = generateEntityId(entity);
+				if (entityId == null) {
+					entityId = "<entity_" + String.valueOf(entityNo) + ">";
+					entityNo += 1;
+				}
+				entity.setId(entityId);
 
 				if (entity.isActor())
 					writeTriple(writer, writerPreview, lineNo, entity.getId(),
@@ -357,8 +445,8 @@ public class DataStoreWriter {
 				if (!label.getSubject().isEvent() && label.getSubject().getEventEntity() == null) {
 					lineNo += 1;
 					writeTriple(writer, writerPreview, lineNo, label.getSubject().getId(),
-							prefixList.getPrefix(PrefixEnum.RDFS).getAbbr() + "label", label.getLabel(), true,
-							label.getDataSet(), label.getLanguage());
+							prefixList.getPrefix(PrefixEnum.RDFS).getAbbr() + "label",
+							label.getLabel().replaceAll("_", " "), true, label.getDataSet(), label.getLanguage());
 				}
 			}
 
@@ -406,6 +494,88 @@ public class DataStoreWriter {
 			writerPreview.close();
 		}
 
+	}
+
+	private String generateEntityId(Entity entity) {
+
+		if (!generateIdsFromPreviousEventKG)
+			return null;
+
+		Set<String> entityIds = new HashSet<String>();
+
+		if (entity.getWikidataId() != null && this.idGenerator.getEntityLabelsMap()
+				.containsKey(DataSets.getInstance().getDataSetWithoutLanguage(Source.WIKIDATA))) {
+			entityIds.add(this.idGenerator.getEntityLabelsMap()
+					.get(DataSets.getInstance().getDataSetWithoutLanguage(Source.WIKIDATA))
+					.get(entity.getWikidataId()));
+		}
+
+		for (Language language : entity.getWikipediaLabels().keySet()) {
+			if (entity.getWikidataId() != null && this.idGenerator.getEntityLabelsMap()
+					.containsKey(DataSets.getInstance().getDataSet(language, Source.DBPEDIA))) {
+				entityIds.add(this.idGenerator.getEntityLabelsMap()
+						.get(DataSets.getInstance().getDataSet(language, Source.DBPEDIA))
+						.get(entity.getWikipediaLabels().get(language)));
+			}
+
+		}
+
+		entityIds.remove(null);
+		if (entityIds.size() == 1) {
+			for (String entityId : entityIds) {
+				return entityId;
+			}
+		}
+
+		return null;
+	}
+
+	private String generateEventId(Event event, Map<DataSet, Set<String>> descriptionMap) {
+
+		if (!generateIdsFromPreviousEventKG)
+			return null;
+
+		Set<String> eventIds = new HashSet<String>();
+
+		if (event.getWikidataId() == null && event.getWikipediaLabels().isEmpty()) {
+			// Textual events
+			for (DataSet dataSet : descriptionMap.keySet()) {
+				if (this.idGenerator.getEventDescriptionsMap().containsKey(dataSet)) {
+					for (String description : descriptionMap.get(dataSet)) {
+						if (this.idGenerator.getEventDescriptionsMap().get(dataSet).containsKey(description))
+							eventIds.add(this.idGenerator.getEventDescriptionsMap().get(dataSet).get(description));
+					}
+				}
+			}
+		} else {
+			// Wikidata
+			if (event.getWikidataId() != null && this.idGenerator.getEventLabelsMap()
+					.containsKey(DataSets.getInstance().getDataSetWithoutLanguage(Source.WIKIDATA))) {
+				eventIds.add(this.idGenerator.getEventLabelsMap()
+						.get(DataSets.getInstance().getDataSetWithoutLanguage(Source.WIKIDATA))
+						.get(event.getWikidataId()));
+			}
+
+			for (Language language : event.getWikipediaLabels().keySet()) {
+				// DBpedia
+				if (event.getWikidataId() != null && this.idGenerator.getEventLabelsMap()
+						.containsKey(DataSets.getInstance().getDataSet(language, Source.DBPEDIA))) {
+					eventIds.add(this.idGenerator.getEventLabelsMap()
+							.get(DataSets.getInstance().getDataSet(language, Source.DBPEDIA))
+							.get(event.getWikipediaLabels().get(language)));
+				}
+
+			}
+		}
+
+		eventIds.remove(null);
+		if (eventIds.size() == 1) {
+			for (String eventId : eventIds) {
+				return eventId;
+			}
+		}
+
+		return null;
 	}
 
 	private void writeBaseRelations() {
@@ -545,11 +715,15 @@ public class DataStoreWriter {
 
 	private void writeLinkRelations() {
 
-		PrintWriter writer = null;
-		PrintWriter writerPreview = null;
+		PrintWriter writerEventLinks = null;
+		PrintWriter writerEventLinksPreview = null;
+		PrintWriter writerEntityLinks = null;
+		PrintWriter writerEntityLinksPreview = null;
 		try {
-			writer = FileLoader.getWriter(FileName.ALL_TTL_EVENTS_LINK_RELATIOINS);
-			writerPreview = FileLoader.getWriter(FileName.ALL_TTL_EVENTS_LINK_RELATIOINS_PREVIEW);
+			writerEventLinks = FileLoader.getWriter(FileName.ALL_TTL_EVENTS_LINK_RELATIONS);
+			writerEventLinksPreview = FileLoader.getWriter(FileName.ALL_TTL_EVENTS_LINK_RELATIONS_PREVIEW);
+			writerEntityLinks = FileLoader.getWriter(FileName.ALL_TTL_ENTITY_LINK_RELATIONS);
+			writerEntityLinksPreview = FileLoader.getWriter(FileName.ALL_TTL_ENTITY_LINK_RELATIONS_PREVIEW);
 			List<Prefix> prefixes = new ArrayList<Prefix>();
 			// prefixes.add(Prefix.RDF);
 			// prefixes.add(Prefix.EVENT_KG);
@@ -558,37 +732,68 @@ public class DataStoreWriter {
 			prefixes.add(prefixList.getPrefix(PrefixEnum.RDF));
 
 			for (String line : createIntro(prefixes)) {
-				writer.write(line + Config.NL);
-				writerPreview.write(line + Config.NL);
+				writerEventLinks.write(line + Config.NL);
+				writerEventLinksPreview.write(line + Config.NL);
+				writerEntityLinks.write(line + Config.NL);
+				writerEntityLinksPreview.write(line + Config.NL);
 			}
 
 			int lineNo = 0;
+			int lineNoEvents = 0;
+			int lineNoEntities = 0;
 
 			System.out.println("Link subjects: " + dataStore.getLinkRelationsBySubjectAndObject().keySet().size());
 
 			for (Entity subject : dataStore.getLinkRelationsBySubjectAndObject().keySet()) {
 				for (Entity object : dataStore.getLinkRelationsBySubjectAndObject().get(subject).keySet()) {
 
+					boolean isEntityRelation = true;
+
 					String subjectId = subject.getId();
-					if (subject.getEventEntity() != null)
+					if (subject.getEventEntity() != null) {
 						subjectId = subject.getEventEntity().getId();
+						isEntityRelation = false;
+					}
+					if (subject.isEvent())
+						isEntityRelation = false;
 
 					String objectId = object.getId();
-					if (object.getEventEntity() != null)
+					if (object.getEventEntity() != null) {
 						objectId = object.getEventEntity().getId();
+						isEntityRelation = false;
+					}
+					if (object.isEvent())
+						isEntityRelation = false;
 
+					PrintWriter writer = null;
+					PrintWriter writerPreview = null;
+
+					Integer lineNoWriter = null;
+					if (isEntityRelation) {
+						lineNoWriter = lineNoEntities;
+						lineNoEntities += 1;
+						writer = writerEntityLinks;
+						writerPreview = writerEntityLinksPreview;
+					} else {
+						lineNoWriter = lineNoEvents;
+						lineNoEvents += 1;
+						writer = writerEventLinks;
+						writerPreview = writerEventLinksPreview;
+					}
 					lineNo += 1;
+
 					String relationId = "<eventkg_link_relation_" + String.valueOf(lineNo) + ">";
-					writeTriple(writer, writerPreview, lineNo, relationId, PrefixEnum.RDF.getAbbr() + "type",
+
+					writeTriple(writer, writerPreview, lineNoWriter, relationId, PrefixEnum.RDF.getAbbr() + "type",
 							prefixList.getPrefix(PrefixEnum.EVENT_KG_SCHEMA).getAbbr() + "Relation", false, null);
-					writeTriple(writer, writerPreview, lineNo, relationId,
+					writeTriple(writer, writerPreview, lineNoWriter, relationId,
 							prefixList.getPrefix(PrefixEnum.RDF).getAbbr() + "subject", subjectId, false, null);
-					writeTriple(writer, writerPreview, lineNo, relationId,
+					writeTriple(writer, writerPreview, lineNoWriter, relationId,
 							prefixList.getPrefix(PrefixEnum.RDF).getAbbr() + "object", objectId, false, null);
 
 					for (GenericRelation relation : dataStore.getLinkRelationsBySubjectAndObject().get(subject)
 							.get(object)) {
-						writeTriple(writer, writerPreview, lineNo, relationId,
+						writeTriple(writer, writerPreview, lineNoWriter, relationId,
 								relation.getPrefix().getAbbr() + relation.getProperty(),
 								"\"" + String.valueOf(relation.getWeight().intValue()) + "\"^^xsd:nonNegativeInteger",
 								false, relation.getDataSet());
@@ -599,8 +804,10 @@ public class DataStoreWriter {
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		} finally {
-			writer.close();
-			writerPreview.close();
+			writerEventLinks.close();
+			writerEventLinksPreview.close();
+			writerEntityLinks.close();
+			writerEntityLinksPreview.close();
 		}
 
 	}
@@ -629,6 +836,7 @@ public class DataStoreWriter {
 			}
 
 			this.relationNo = 0;
+
 			for (GenericRelation relation : dataStore.getGenericRelations()) {
 
 				if (!relation.getSubject().isEvent() && !relation.getObject().isEvent())
@@ -638,8 +846,8 @@ public class DataStoreWriter {
 				if (object.getEventEntity() != null)
 					object = object.getEventEntity();
 
-				this.relationNo += 1;
 				String relationId = "<eventkg_relation_" + String.valueOf(this.relationNo) + ">";
+				this.relationNo += 1;
 
 				writeTriple(writer, writerPreview, this.relationNo, relationId, PrefixEnum.RDF.getAbbr() + "type",
 						prefixList.getPrefix(PrefixEnum.EVENT_KG_SCHEMA).getAbbr() + "Relation", false,
@@ -756,6 +964,7 @@ public class DataStoreWriter {
 
 				lineNo += 1;
 				String relationId = "<eventkg_relation_" + String.valueOf(this.relationNo) + ">";
+				this.relationNo += 1;
 
 				writeTriple(writer, writerPreview, lineNo, relationId, PrefixEnum.RDF.getAbbr() + "type",
 						prefixList.getPrefix(PrefixEnum.EVENT_KG_SCHEMA).getAbbr() + "Relation", false,
@@ -789,7 +998,6 @@ public class DataStoreWriter {
 				// relation.getDataSet(), language);
 				// }
 
-				this.relationNo += 1;
 			}
 
 		} catch (FileNotFoundException e) {

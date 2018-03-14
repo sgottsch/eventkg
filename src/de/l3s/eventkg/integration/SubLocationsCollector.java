@@ -20,7 +20,9 @@ public class SubLocationsCollector extends Extractor {
 	private AllEventPagesDataSet allEventPagesDataSet;
 
 	public SubLocationsCollector(List<Language> languages, AllEventPagesDataSet allEventPagesDataSet) {
-		super("SubLocationsCollector", Source.ALL, "?", languages);
+		super("SubLocationsCollector", Source.ALL,
+				"Creates a transitive map with locations and their parent/sub locations (e.g., Paris is sub location of France).",
+				languages);
 		this.allEventPagesDataSet = allEventPagesDataSet;
 	}
 
@@ -62,7 +64,7 @@ public class SubLocationsCollector extends Extractor {
 					System.out.println("Missing location 2: " + entity2WikidataId);
 					continue;
 				}
-			
+
 				this.locations.add(location1);
 				this.locations.add(location2);
 

@@ -38,6 +38,8 @@ public class Event extends Entity {
 
 	private Set<String> eventInstanceComments = new HashSet<String>();
 
+	private Map<DataSet, Set<String>> eventInstancesPerDataSet = new HashMap<DataSet, Set<String>>();
+
 	public Event() {
 		super(null);
 		setEvent(true);
@@ -216,6 +218,16 @@ public class Event extends Entity {
 
 	public Map<Event, Set<DataSet>> getPreviousEventsWithDataSets() {
 		return previousEventsWithDataSets;
+	}
+
+	public Map<DataSet, Set<String>> getEventInstancesPerDataSet() {
+		return eventInstancesPerDataSet;
+	}
+
+	public void addDataSetAndEventInstance(DataSet dataSet, String eventInstance) {
+		if (!this.eventInstancesPerDataSet.containsKey(dataSet))
+			this.eventInstancesPerDataSet.put(dataSet, new HashSet<String>());
+		this.eventInstancesPerDataSet.get(dataSet).add(eventInstance);
 	}
 
 }

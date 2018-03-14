@@ -19,7 +19,8 @@ public class YAGOEventLocationsExtractor extends Extractor {
 
 	public YAGOEventLocationsExtractor(List<Language> languages) {
 		super("YAGOEventLocationsExtractor", Source.YAGO,
-				"Loads all facts with locations. Results are written to one file.", languages);
+				"Loads all YAGO facts where a subject is connected to a location via <isLocatedIn> or <happenedIn>.",
+				languages);
 	}
 
 	public void run() {

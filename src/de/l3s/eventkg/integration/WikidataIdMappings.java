@@ -13,6 +13,7 @@ import de.l3s.eventkg.integration.model.Entity;
 import de.l3s.eventkg.meta.Language;
 import de.l3s.eventkg.pipeline.Config;
 import de.l3s.eventkg.pipeline.Config.TimeSymbol;
+import de.l3s.eventkg.source.wikidata.WikidataResource;
 import de.l3s.eventkg.source.wikipedia.RedirectsTableCreator;
 import de.l3s.eventkg.source.wikipedia.WikiWords;
 import de.l3s.eventkg.util.FileLoader;
@@ -306,7 +307,9 @@ public class WikidataIdMappings {
 
 				String parentClass = parts[2];
 
-				if (parentClass.equals("Q13442814")) {
+				// remove scientific article and Wikinews articles
+				if (parentClass.equals(WikidataResource.SCIENTIFIC_ARTICLE.getId())
+						|| parentClass.equals(WikidataResource.WIKINEWS_ARTICLE.getId())) {
 					wikidataIds.remove(Integer.valueOf(parts[0].substring(1)));
 				}
 			}

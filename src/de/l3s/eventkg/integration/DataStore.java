@@ -15,6 +15,7 @@ import de.l3s.eventkg.integration.model.relation.Label;
 import de.l3s.eventkg.integration.model.relation.Location;
 import de.l3s.eventkg.integration.model.relation.PropertyLabel;
 import de.l3s.eventkg.integration.model.relation.StartTime;
+import de.l3s.eventkg.meta.Language;
 
 public class DataStore {
 
@@ -40,6 +41,10 @@ public class DataStore {
 	private Set<Label> wikidataLabels = new HashSet<Label>();
 
 	private Set<PropertyLabel> propertyLabels = new HashSet<PropertyLabel>();
+
+	private Map<Entity, Set<Entity>> connectedEntities = new HashMap<Entity, Set<Entity>>();
+
+	Map<Language, Map<Entity, Map<Entity, Integer>>> mentionCountsFromTextualEvents = new HashMap<Language, Map<Entity, Map<Entity, Integer>>>();
 
 	private static DataStore instance;
 
@@ -116,6 +121,8 @@ public class DataStore {
 	}
 
 	public void addDescription(Description description) {
+		if (description.getLabel().startsWith("[["))
+			return;
 		this.descriptions.add(description);
 	}
 
@@ -126,6 +133,21 @@ public class DataStore {
 				relation.getObject().setActor(true);
 			else
 				relation.getSubject().setActor(true);
+		}
+
+		if (!relation.getSubject().isEvent() && !relation.getObject().isEvent()) {
+
+			if (this.connectedEntities.size() < 50) {
+				System.out.println("connected entities: " + relation.getSubject().getWikidataId() + "\t"
+						+ relation.getObject().getWikidataId());
+			}
+
+			if (!this.connectedEntities.containsKey(relation.getSubject()))
+				this.connectedEntities.put(relation.getSubject(), new HashSet<Entity>());
+			if (!this.connectedEntities.containsKey(relation.getObject()))
+				this.connectedEntities.put(relation.getObject(), new HashSet<Entity>());
+			this.connectedEntities.get(relation.getSubject()).add(relation.getObject());
+			this.connectedEntities.get(relation.getObject()).add(relation.getSubject());
 		}
 
 		this.genericRelations.add(relation);
@@ -177,6 +199,19 @@ public class DataStore {
 
 	public Map<Entity, Map<Entity, Set<GenericRelation>>> getLinkRelationsBySubjectAndObject() {
 		return linkRelationsBySubjectAndObject;
+	}
+
+	public Map<Entity, Set<Entity>> getConnectedEntities() {
+		return connectedEntities;
+	}
+
+	public Map<Language, Map<Entity, Map<Entity, Integer>>> getMentionCountsFromTextualEvents() {
+		return mentionCountsFromTextualEvents;
+	}
+
+	public void setMentionCountsFromTextualEvents(
+			Map<Language, Map<Entity, Map<Entity, Integer>>> mentionCountsFromTextualEvents) {
+		this.mentionCountsFromTextualEvents = mentionCountsFromTextualEvents;
 	}
 
 }

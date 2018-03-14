@@ -88,6 +88,22 @@ public class AllEventPagesDataSet {
 				events.add(event);
 				DataStore.getInstance().addEvent(event);
 
+				// parse sources
+				// e.g. DBpedia_en (DUL.owl#Event) Wikidata (Q3001412)
+				String[] dataSetsAndEventInstances = parts[2].split(" ");
+				DataSet dataSet = null;
+				for (int i = 0; i < dataSetsAndEventInstances.length; i++) {
+					if (i % 2 == 0)
+						dataSet = DataSets.getInstance().getDataSetById(dataSetsAndEventInstances[i]);
+					else {
+						// remove brackets
+						String eventInstance = dataSetsAndEventInstances[i].substring(1,
+								dataSetsAndEventInstances[i].length() - 1);
+						event.addDataSetAndEventInstance(dataSet, eventInstance);
+						dataSet = null;
+					}
+				}
+
 				for (Language language : entity.getWikipediaLabels().keySet()) {
 					if (entity.getWikipediaLabel(language) != null)
 						eventsByWikipediaLabel.get(language).put(entity.getWikipediaLabel(language), event);
@@ -129,6 +145,7 @@ public class AllEventPagesDataSet {
 		System.out.println("Start times: " + DataStore.getInstance().getStartTimes().size());
 		for (StartTime startTime : DataStore.getInstance().getStartTimes()) {
 			Entity entity = startTime.getSubject();
+
 			this.entitiesWithExistenceTimeByWikidataId.put(entity.getWikidataId(), entity);
 			for (Language language : entity.getWikipediaLabels().keySet()) {
 				if (entity.getWikipediaLabel(language) != null)
@@ -140,6 +157,12 @@ public class AllEventPagesDataSet {
 		System.out.println("End times: " + DataStore.getInstance().getEndTimes().size());
 		for (EndTime endTime : DataStore.getInstance().getEndTimes()) {
 			Entity entity = endTime.getSubject();
+
+			// TODO: REMOVE
+			if (entity.getWikidataId().equals("Q567") || entity.getWikidataId().equals("Q2522577")) {
+				System.out.println("End time: " + entity.getWikidataId());
+			}
+
 			this.entitiesWithExistenceTimeByWikidataId.put(entity.getWikidataId(), entity);
 			for (Language language : entity.getWikipediaLabels().keySet()) {
 				if (entity.getWikipediaLabel(language) != null)
@@ -147,6 +170,9 @@ public class AllEventPagesDataSet {
 							entity);
 			}
 		}
+
+		System.out.println("Q567: " + this.entitiesWithExistenceTimeByWikidataId.get("Q567"));
+		System.out.println("Q2522577: " + this.entitiesWithExistenceTimeByWikidataId.get("Q2522577"));
 
 		System.out.println("Entities with existence time: " + entitiesWithExistenceTimeByWikidataId.size());
 	}

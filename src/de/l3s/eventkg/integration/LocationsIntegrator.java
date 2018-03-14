@@ -16,7 +16,9 @@ import de.l3s.eventkg.pipeline.Extractor;
 public class LocationsIntegrator extends Extractor {
 
 	public LocationsIntegrator(List<Language> languages) {
-		super("LocationsIntegrator", Source.ALL, "Integrate so:location into a common graph.", languages);
+		super("LocationsIntegrator", Source.ALL,
+				"Fuses locations of events into a common graph: For each event, takes the union of locations from all sources and then limits this set of locations to the sub locations (e.g., {Paris, Francy, Lyon} becomes {Paris, Lyon}.",
+				languages);
 	}
 
 	public void run() {

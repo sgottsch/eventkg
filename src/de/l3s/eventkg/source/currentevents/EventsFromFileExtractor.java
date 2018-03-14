@@ -33,7 +33,8 @@ public class EventsFromFileExtractor extends Extractor {
 	private DataStore dataStore;
 
 	public EventsFromFileExtractor(List<Language> languages) {
-		super("EventsFromFileExtractor", de.l3s.eventkg.meta.Source.WCE, "Extract event pages.", languages);
+		super("EventsFromFileExtractor", de.l3s.eventkg.meta.Source.WCE,
+				"Extract textual events from the Wikipedia Current Events portal.", languages);
 	}
 
 	public void run() {
@@ -56,6 +57,8 @@ public class EventsFromFileExtractor extends Extractor {
 				}
 				// System.out.println(event.getDate());
 			}
+
+			System.out.println("Found " + dataStore.getEvents().size() + " Wikipedia Current Events Portal events.");
 
 			for (String storyName : storyNames) {
 				resultWriter.write(storyName + "\n");

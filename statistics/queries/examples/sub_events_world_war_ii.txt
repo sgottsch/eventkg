@@ -1,0 +1,29 @@
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX eventKG-s: <http://eventKG.l3s.uni-hannover.de/schema/>
+PREFIX eventKG-g: <http://eventKG.l3s.uni-hannover.de/graph/>
+PREFIX so: <http://schema.org/>
+PREFIX dcterms: <http://purl.org/dc/terms/>
+PREFIX sem: <http://semanticweb.cs.vu.nl/2009/11/sem/>
+PREFIX owl: <http://www.w3.org/2002/07/owl#>
+PREFIX dbr: <http://dbpedia.org/resource/> 
+
+SELECT ?startTime ?subEvent group_concat(DISTINCT(STR(?description));separator=',') ?sa
+WHERE {
+ ?event owl:sameAs dbr:World_War_II .
+ ?event sem:hasSubEvent* ?subEvent .
+ ?subEvent sem:hasBeginTimeStamp ?startTime .
+
+ OPTIONAL {
+  GRAPH eventKG-g:wikipedia_en { ?subEvent dcterms:description ?description . } .
+  FILTER(LANGMATCHES(LANG(?description), "en")) .
+ }
+
+ OPTIONAL { GRAPH eventKG-g:dbpedia_en { ?subEvent owl:sameAs ?sa . } . } .
+ FILTER (?startTime >= "1941-02-12"^^xsd:date) .
+ FILTER (?startTime < "1941-02-28"^^xsd:date) .
+
+ FILTER(BOUND(?sa) || BOUND(?description)) .
+
+}
+GROUP BY ?startTime ?subEvent ?sa
+ORDER BY ASC(?startTime)

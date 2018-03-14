@@ -20,7 +20,9 @@ public class DBpediaEventLocationsExtractor extends Extractor {
 	private PrintWriter resultsWriter;
 
 	public DBpediaEventLocationsExtractor(List<Language> languages) {
-		super("DBpediaEventLocationsExtractor", Source.DBPEDIA, "?", languages);
+		super("DBpediaEventLocationsExtractor", Source.DBPEDIA,
+				"Loads all DBpedia relations where a subject is connected with a location via <http://dbpedia.org/ontology/place>.",
+				languages);
 	}
 
 	public void run() {

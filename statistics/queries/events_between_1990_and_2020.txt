@@ -1,0 +1,20 @@
+PREFIX eventKG-s: <http://eventKG.l3s.uni-hannover.de/schema/>
+PREFIX eventKG-g: <http://eventKG.l3s.uni-hannover.de/graph/>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX sem: <http://semanticweb.cs.vu.nl/2009/11/sem/>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX owl: <http://www.w3.org/2002/07/owl#>
+PREFIX dbpedia-de: <http://de.dbpedia.org/resource/> 
+
+SELECT COUNT(DISTINCT(?relation)) {
+?relation sem:roleType ?roleType. 
+?relation rdf:type eventKG-s:Relation .
+#FILTER(!EXISTS { ?relation sem:roleType ?roleType. } ) .
+?relation sem:hasBeginTimeStamp ?st .
+
+#FILTER(BOUND(?st) || BOUND(?et)) .
+
+FILTER ( ?st >= "1900-01-01"^^xsd:date )
+FILTER ( ?st <= "2020-12-31"^^xsd:date )
+
+}

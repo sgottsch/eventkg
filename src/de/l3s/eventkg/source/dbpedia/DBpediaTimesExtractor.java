@@ -23,7 +23,9 @@ public class DBpediaTimesExtractor extends Extractor {
 	private PrintWriter resultsWriter;
 
 	public DBpediaTimesExtractor(List<Language> languages) {
-		super("DBpediaTimesExtractor", Source.DBPEDIA, "?", languages);
+		super("DBpediaTimesExtractor", Source.DBPEDIA,
+				"Loads all DBpedia relations where a subject is connected with a date via <http://dbpedia.org/ontology/date>, <http://dbpedia.org/ontology/birthDate> or <http://dbpedia.org/ontology/deathDate>.",
+				languages);
 	}
 
 	public void run() {

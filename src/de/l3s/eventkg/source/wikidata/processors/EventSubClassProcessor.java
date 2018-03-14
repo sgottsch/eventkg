@@ -12,6 +12,7 @@ import org.wikidata.wdtk.datamodel.interfaces.Statement;
 import org.wikidata.wdtk.datamodel.interfaces.StatementGroup;
 
 import de.l3s.eventkg.pipeline.Config;
+import de.l3s.eventkg.source.wikidata.WikidataProperty;
 import de.l3s.eventkg.util.FileLoader;
 import de.l3s.eventkg.util.FileName;
 
@@ -22,12 +23,6 @@ import de.l3s.eventkg.util.FileName;
  * <item1> <partOf> <item2>
  */
 public class EventSubClassProcessor implements EntityDocumentDumpProcessor {
-
-	static final String instanceOfPropertyId = "P31";
-	static final String subClassPropertyId = "P279";
-	static final String partOfPropertyId = "P361";
-	static final String followsPropertyId = "P155";
-	static final String followedByPropertyId = "P156";
 
 	int itemsWithInstanceOfCount = 0;
 	int itemsWithSubClassCount = 0;
@@ -65,9 +60,9 @@ public class EventSubClassProcessor implements EntityDocumentDumpProcessor {
 		// else
 		// return;
 
-		if (itemDocument.hasStatement(instanceOfPropertyId)) {
+		if (itemDocument.hasStatement(WikidataProperty.INSTANCE_OF.getId())) {
 
-			StatementGroup statements = itemDocument.findStatementGroup(instanceOfPropertyId);
+			StatementGroup statements = itemDocument.findStatementGroup(WikidataProperty.INSTANCE_OF.getId());
 
 			if (statements != null) {
 				for (Statement statement : statements) {
@@ -98,9 +93,9 @@ public class EventSubClassProcessor implements EntityDocumentDumpProcessor {
 			}
 		}
 
-		if (itemDocument.hasStatement(subClassPropertyId)) {
+		if (itemDocument.hasStatement(WikidataProperty.SUB_CLASS.getId())) {
 
-			StatementGroup statements = itemDocument.findStatementGroup(subClassPropertyId);
+			StatementGroup statements = itemDocument.findStatementGroup(WikidataProperty.SUB_CLASS.getId());
 
 			if (statements != null) {
 				for (Statement statement : statements) {
@@ -131,9 +126,9 @@ public class EventSubClassProcessor implements EntityDocumentDumpProcessor {
 			}
 		}
 
-		if (itemDocument.hasStatement(partOfPropertyId)) {
+		if (itemDocument.hasStatement(WikidataProperty.PART_OF.getId())) {
 
-			StatementGroup statements = itemDocument.findStatementGroup(partOfPropertyId);
+			StatementGroup statements = itemDocument.findStatementGroup(WikidataProperty.PART_OF.getId());
 
 			if (statements != null) {
 				for (Statement statement : statements) {
@@ -164,9 +159,9 @@ public class EventSubClassProcessor implements EntityDocumentDumpProcessor {
 			}
 		}
 
-		if (itemDocument.hasStatement(followsPropertyId)) {
+		if (itemDocument.hasStatement(WikidataProperty.FOLLOWS.getId())) {
 
-			StatementGroup statements = itemDocument.findStatementGroup(followsPropertyId);
+			StatementGroup statements = itemDocument.findStatementGroup(WikidataProperty.FOLLOWS.getId());
 
 			if (statements != null) {
 				for (Statement statement : statements) {
@@ -197,9 +192,9 @@ public class EventSubClassProcessor implements EntityDocumentDumpProcessor {
 			}
 		}
 
-		if (itemDocument.hasStatement(followedByPropertyId)) {
+		if (itemDocument.hasStatement(WikidataProperty.FOLLOWED_BY.getId())) {
 
-			StatementGroup statements = itemDocument.findStatementGroup(followedByPropertyId);
+			StatementGroup statements = itemDocument.findStatementGroup(WikidataProperty.FOLLOWED_BY.getId());
 
 			if (statements != null) {
 				for (Statement statement : statements) {

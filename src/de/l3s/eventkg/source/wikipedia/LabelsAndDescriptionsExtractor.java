@@ -35,7 +35,7 @@ public class LabelsAndDescriptionsExtractor extends Extractor {
 	private HashMap<Language, Map<Entity, String>> wikipediaLabels;
 	private HashMap<Language, Map<Entity, Set<String>>> wikidataLabels;
 
-	private HashMap<Language, Map<Event, Set<String>>> aliases;
+	private HashMap<Language, Map<Entity, Set<String>>> aliases;
 
 	private HashMap<Language, Map<Event, String>> descriptions;
 
@@ -54,12 +54,11 @@ public class LabelsAndDescriptionsExtractor extends Extractor {
 
 	public LabelsAndDescriptionsExtractor(List<Language> languages, AllEventPagesDataSet allEventPagesDataSet) {
 		super("CurrentEventsRelationsExtraction", de.l3s.eventkg.meta.Source.WIKIPEDIA,
-				"Extract relations between entities and events.", languages);
+				"Collect labels and descriptions of entities and events.", languages);
 		this.allEventPagesDataSet = allEventPagesDataSet;
 	}
 
 	public void run() {
-		System.out.println("Collect labels and descriptions.");
 		extractRelations();
 	}
 
@@ -85,9 +84,9 @@ public class LabelsAndDescriptionsExtractor extends Extractor {
 
 		collectLabels();
 
-		this.aliases = new HashMap<Language, Map<Event, Set<String>>>();
+		this.aliases = new HashMap<Language, Map<Entity, Set<String>>>();
 		for (Language language : this.languages) {
-			this.aliases.put(language, new HashMap<Event, Set<String>>());
+			this.aliases.put(language, new HashMap<Entity, Set<String>>());
 			collectAliasesFromFile(FileLoader.getFile(FileName.WIKIDATA_ALIASES, language), language);
 		}
 
@@ -143,6 +142,21 @@ public class LabelsAndDescriptionsExtractor extends Extractor {
 							continue;
 						}
 						this.aliases.get(language).get(event).add(alias);
+					}
+				} else {
+					Entity entity = allEventPagesDataSet.getWikidataIdMappings().getEntityByWikidataId(wikidataId);
+					if (entity == null)
+						continue;
+
+					this.aliases.get(language).put(entity, new HashSet<String>());
+
+					boolean first = true;
+					for (String alias : parts) {
+						if (first) {
+							first = false;
+							continue;
+						}
+						this.aliases.get(language).get(entity).add(alias);
 					}
 				}
 			}
@@ -255,7 +269,7 @@ public class LabelsAndDescriptionsExtractor extends Extractor {
 			}
 
 			for (Language language : this.languages) {
-				for (Event event : this.aliases.get(language).keySet()) {
+				for (Entity event : this.aliases.get(language).keySet()) {
 					for (String alias : this.aliases.get(language).get(event)) {
 						DataStore.getInstance().addAlias(new Alias(event,
 								DataSets.getInstance().getDataSetWithoutLanguage(Source.WIKIDATA), alias, language));

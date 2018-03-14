@@ -28,6 +28,10 @@ public class GenericRelation extends RelationWithSource {
 	// it here
 	private boolean isEntityRelation;
 
+	public GenericRelation() {
+		super(null, null);
+	}
+
 	public GenericRelation(Entity subject, DataSet dataSet, Prefix prefix, String property, Entity object,
 			Double weight, boolean isEntityRelation) {
 		super(subject, dataSet);

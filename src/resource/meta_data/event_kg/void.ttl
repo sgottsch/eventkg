@@ -1,0 +1,32 @@
+ 
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix foaf: <http://xmlns.com/foaf/0.1/> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+@prefix void: <http://rdfs.org/ns/void#> .
+@prefix eventKG-g: <http://eventKG.l3s.uni-hannover.de/graph/> .
+
+eventKG-g:event_kg rdf:type void:Dataset  .
+eventKG-g:event_kg foaf:homepage <http://eventkg.l3s.uni-hannover.de/>  .
+eventKG-g:event_kg foaf:page <https://doi.org/10.5281/zenodo.1112284/>  .
+eventKG-g:event_kg void:sparqlEndpoint <http://eventkginterface.l3s.uni-hannover.de/sparql> .
+eventKG-g:event_kg dcterms:title "EventKG"  .
+eventKG-g:event_kg dcterms:description "The EventKG is a multilingual resource incorporating event-centric and temporal information extracted from several large-scale knowledge graphs and semi-structured sources."  .
+eventKG-g:event_kg dcterms:publisher <https://www.l3s.de/home>  .
+eventKG-g:event_kg dcterms:creator <https://www.l3s.de/de/user/gottschalk> .
+eventKG-g:event_kg dcterms:creator <https://demidova.wordpress.com/> .
+eventKG-g:event_kg dcterms:created @creation_date@ .
+eventKG-g:event_kg dcterms:source eventKG-g:wikipedia_ru .
+eventKG-g:event_kg dcterms:source eventKG-g:wikipedia_de .
+eventKG-g:event_kg dcterms:source eventKG-g:wikipedia_en .
+eventKG-g:event_kg dcterms:source eventKG-g:wikipedia_fr .
+eventKG-g:event_kg dcterms:source eventKG-g:wikipedia_pt .
+eventKG-g:event_kg dcterms:source eventKG-g:dbpedia_ru .
+eventKG-g:event_kg dcterms:source eventKG-g:dbpedia_de .
+eventKG-g:event_kg dcterms:source eventKG-g:dbpedia_en .
+eventKG-g:event_kg dcterms:source eventKG-g:dbpedia_fr .
+eventKG-g:event_kg dcterms:source eventKG-g:dbpedia_pt .
+eventKG-g:event_kg dcterms:source eventKG-g:wce_en .
+eventKG-g:event_kg dcterms:source eventKG-g:yago .
+eventKG-g:event_kg dcterms:source eventKG-g:wikidata .
+eventKG-g:event_kg dcterms:license <https://creativecommons.org/licenses/by-sa/4.0/> .

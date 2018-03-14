@@ -39,7 +39,8 @@ public class WikidataExtractionWithoutEventPages extends Extractor {
 
 	public WikidataExtractionWithoutEventPages(List<Language> languages) {
 		super("WikidataExtractionWithoutEventPages", Source.WIKIDATA,
-				"Extract id to label mappings, locations and times.", languages);
+				"Extracts from Wikidata: Wikidata ID to label mappings, locations, sub location dependencies, temporal properties and sub class dependencies.",
+				languages);
 	}
 
 	public void run() {

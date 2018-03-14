@@ -101,13 +101,31 @@ public class RelationsToEventPagesProcessor implements EntityDocumentDumpProcess
 	public void processItemDocument(ItemDocument itemDocument) {
 		this.itemCount++;
 
+		boolean tc = false;
+		// if (itemDocument.getItemId().getId().equals("Q567") ||
+		// itemDocument.getItemId().getId().equals("567"))
+		// tc = true;
+
+		if (tc) {
+			System.out.println("Test case: " + itemDocument.getItemId().getId());
+		}
+
 		boolean subjectIsEvent = this.targetEventIds.contains(itemDocument.getItemId().getId());
 		boolean subjectHasExistenceTime = this.entitiesWithExistenceTimes.contains(itemDocument.getItemId().getId());
+
+		if (tc) {
+			System.out.println("subjectIsEvent: " + subjectIsEvent);
+			System.out.println("subjectHasExistenceTime: " + subjectHasExistenceTime);
+		}
 
 		for (StatementGroup statementGroup : itemDocument.getStatementGroups()) {
 			String propertyId = statementGroup.getProperty().getId();
 			if (!this.forbiddenPropertyIds.contains(propertyId)) {
 				// property okay
+
+				if (tc) {
+					System.out.println("propertyId: " + propertyId);
+				}
 
 				for (Statement statement : statementGroup) {
 
@@ -121,13 +139,27 @@ public class RelationsToEventPagesProcessor implements EntityDocumentDumpProcess
 							boolean objectIsEvent = this.targetEventIds.contains(id);
 							boolean objectHasExistenceTime = this.entitiesWithExistenceTimes.contains(id);
 
+							if (tc) {
+								System.out.println("\nid: " + id);
+								System.out.println("objectIsEvent: " + objectIsEvent);
+								System.out.println("objectHasExistenceTime: " + objectHasExistenceTime);
+							}
+
 							if (subjectIsEvent || objectIsEvent) {
+
+								if (tc) {
+									System.out.println("subjectIsEvent || objectIsEvent");
+								}
 
 								itemsWithEventCount += 1;
 
 								outEventRelations.print(statement.getStatementId() + "\t"
 										+ itemDocument.getItemId().getId() + "\t" + propertyId + "\t" + id + "\n");
 							} else if (subjectHasExistenceTime && objectHasExistenceTime) {
+
+								if (tc) {
+									System.out.println("subjectHasExistenceTime && objectHasExistenceTime");
+								}
 
 								itemsWithEntityRelationCount += 1;
 

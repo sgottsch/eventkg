@@ -44,7 +44,7 @@ public class WikipediaLinkCountsExtractor extends Extractor {
 
 	public WikipediaLinkCountsExtractor(List<Language> languages, AllEventPagesDataSet allEventPagesDataSet) {
 		super("CurrentEventsRelationsExtraction", de.l3s.eventkg.meta.Source.WIKIPEDIA,
-				"Extract link counts between entities and events.", languages);
+				"Extract Wikipedia link counts between entities and events.", languages);
 		this.allEventPagesDataSet = allEventPagesDataSet;
 	}
 
@@ -178,11 +178,19 @@ public class WikipediaLinkCountsExtractor extends Extractor {
 								if (linkedEntity.getEventEntity() != null)
 									linkedEntity2 = linkedEntity.getEventEntity();
 
-								this.linksToCounts.add(new LinksToCount(pageEntity2, linkedEntity2, count, language));
+								this.linksToCounts
+										.add(new LinksToCount(pageEntity2, linkedEntity2, count, language, true));
 
 								// this.linkedByCounts.add(
 								// new LinkedByCount(linkedEntity2, pageEntity2,
 								// count, language));
+							} else {
+
+								if (areConnectedViaRelation(pageEntity, linkedEntity)) {
+									this.linksToCounts
+											.add(new LinksToCount(pageEntity, linkedEntity, count, language, false));
+								}
+
 							}
 
 						}
@@ -196,6 +204,11 @@ public class WikipediaLinkCountsExtractor extends Extractor {
 
 		// System.out.println(this.linksToCounts.size());
 		// System.out.println(this.linkedByCounts.size());
+	}
+
+	private boolean areConnectedViaRelation(Entity entity1, Entity entity2) {
+		return DataStore.getInstance().getConnectedEntities().containsKey(entity1)
+				&& DataStore.getInstance().getConnectedEntities().get(entity1).contains(entity2);
 	}
 
 }

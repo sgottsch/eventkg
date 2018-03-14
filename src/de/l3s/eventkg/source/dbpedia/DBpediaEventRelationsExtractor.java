@@ -21,7 +21,9 @@ public class DBpediaEventRelationsExtractor extends Extractor {
 	private AllEventPagesDataSet allEventPagesDataSet;
 
 	public DBpediaEventRelationsExtractor(List<Language> languages, AllEventPagesDataSet allEventPagesDataSet) {
-		super("DBpediaEventRelationsExtractor", Source.DBPEDIA, "?", languages);
+		super("DBpediaEventRelationsExtractor", Source.DBPEDIA,
+				"Loads all DBpedia relations where the subject and/or object is an event or both have an existence time.",
+				languages);
 		this.allEventPagesDataSet = allEventPagesDataSet;
 	}
 

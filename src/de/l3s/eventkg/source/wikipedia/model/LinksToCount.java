@@ -18,12 +18,15 @@ public class LinksToCount {
 
 	private Language language;
 
-	public LinksToCount(Entity linkSource, Entity linkTarget, int count, Language language) {
+	private boolean involvesEvent;
+
+	public LinksToCount(Entity linkSource, Entity linkTarget, int count, Language language, boolean involvesEvent) {
 		super();
 		this.linkSource = linkSource;
 		this.linkTarget = linkTarget;
 		this.count = count;
 		this.language = language;
+		this.involvesEvent = involvesEvent;
 	}
 
 	public Entity getEvent() {
@@ -40,6 +43,14 @@ public class LinksToCount {
 
 	public Language getLanguage() {
 		return language;
+	}
+
+	public boolean isInvolvesEvent() {
+		return involvesEvent;
+	}
+
+	public void setInvolvesEvent(boolean involvesEvent) {
+		this.involvesEvent = involvesEvent;
 	}
 
 	public GenericRelation toGenericRelation() {

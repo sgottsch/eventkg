@@ -1,6 +1,9 @@
 package de.l3s.eventkg.pipeline;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -102,8 +105,8 @@ public class Pipeline {
 
 	private void download() {
 		RawDataDownLoader downloader = new RawDataDownLoader(languages);
-		//downloader.createFolders();
-		//downloader.copyMetaFiles();
+		// downloader.createFolders();
+		// downloader.copyMetaFiles();
 		downloader.downloadFiles();
 	}
 
@@ -144,7 +147,7 @@ public class Pipeline {
 
 		extractors.add(new WikidataEventsFromFileFinder(languages));
 		extractors.add(new DBpediaAllLocationsLoader(languages));
-//		// First step of integration
+		// // First step of integration
 		extractors.add(new DataCollector(languages));
 
 		for (Extractor extractor : extractors) {
@@ -216,12 +219,60 @@ public class Pipeline {
 				"https://www.mpi-inf.mpg.de/departments/databases-and-information-systems/research/yago-naga/yago/downloads/");
 		DataSets.getInstance().addDataSet(Language.EN, Source.WCE, "http://wikitimes.l3s.de/Resource.jsp");
 		DataSets.getInstance().addDataSetWithoutLanguage(Source.EVENT_KG, "http://eventkg.l3s.uni-hannover.de/");
-//		DataSets.getInstance().addDataSetWithoutLanguage(Source.INTEGRATED_TIME_2,
-//				"http://eventkg.l3s.uni-hannover.de/");
-//		DataSets.getInstance().addDataSetWithoutLanguage(Source.INTEGRATED_LOC, "http://eventkg.l3s.uni-hannover.de/");
+		// DataSets.getInstance().addDataSetWithoutLanguage(Source.INTEGRATED_TIME_2,
+		// "http://eventkg.l3s.uni-hannover.de/");
+		// DataSets.getInstance().addDataSetWithoutLanguage(Source.INTEGRATED_LOC,
+		// "http://eventkg.l3s.uni-hannover.de/");
 		// DataSets.getInstance().addDataSetWithoutLanguage(Source.INTEGRATED_LOC_2,
 		// "http://eventkg.l3s.uni-hannover.de/");
 
 		PrefixList.getInstance().init(languages);
+
+		// set dates of data sets (later needed for the graphs.ttl file)
+		SimpleDateFormat configDateFormat = new SimpleDateFormat("yyyyMMdd");
+		SimpleDateFormat configDateFormatDBpedia = new SimpleDateFormat("yyyy-MM");
+
+		for (Language language : this.languages) {
+
+			// Wikipedia
+			String wikiName = language.getWiki();
+			String dumpDate = Config.getValue(wikiName);
+			try {
+				DataSets.getInstance().getDataSet(language, Source.WIKIPEDIA).setDate(configDateFormat.parse(dumpDate));
+			} catch (ParseException e1) {
+				e1.printStackTrace();
+			}
+
+			// DBpedia
+			String dumpDateDbpedia = Config.getValue("dbpedia");
+			try {
+				DataSets.getInstance().getDataSet(language, Source.DBPEDIA)
+						.setDate(configDateFormatDBpedia.parse(dumpDateDbpedia));
+			} catch (ParseException e1) {
+				e1.printStackTrace();
+			}
+
+		}
+
+		// Wikidata
+		String dumpDateWikidata = Config.getValue("wikidata");
+		try {
+			DataSets.getInstance().getDataSetWithoutLanguage(Source.WIKIDATA)
+					.setDate(configDateFormat.parse(dumpDateWikidata));
+		} catch (ParseException e1) {
+			e1.printStackTrace();
+		}
+
+		// TODO: It is quite unclear to find out the YAGO date. It could also
+		// change in future.
+		try {
+			DataSets.getInstance().getDataSetWithoutLanguage(Source.YAGO).setDate(configDateFormat.parse("20170701"));
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+
+		// WCE: Current date.
+		DataSets.getInstance().getDataSet(Language.EN, Source.WCE).setDate(Calendar.getInstance().getTime());
+
 	}
 }

@@ -20,7 +20,7 @@ public enum FileName {
 
 	YAGO_EVENT_FACTS("yago_event_facts.tsv", Source.YAGO, FileType.RESULTS, false, false, false),
 
-	YAGO_ENTITY_FACTS("yago_event_facts.tsv", Source.YAGO, FileType.RESULTS, false, false, false),
+	YAGO_ENTITY_FACTS("yago_entity_facts.tsv", Source.YAGO, FileType.RESULTS, false, false, false),
 
 	/**
 	 * All YAGO facts that are assigned temporal information by reification
@@ -93,6 +93,13 @@ public enum FileName {
 			false,
 			false,
 			false),
+	WIKIDATA_EVENT_BLACKLIST_CLASSES(
+			"event_blacklist_classes.tsv",
+			Source.WIKIDATA,
+			FileType.META,
+			false,
+			false,
+			false),
 	WIKIDATA_EXTERNAL_IDS_PROPERTY_NAMES(
 			"external_ids_property_names.tsv",
 			Source.WIKIDATA,
@@ -151,8 +158,11 @@ public enum FileName {
 
 	// Integrated results from multiple sources
 
+	ALL_TTL_SCHEMA_INPUT("schema.ttl", Source.EVENT_KG, FileType.META, false, false, false),
+	ALL_TTL_VOID_INPUT("void.ttl", Source.EVENT_KG, FileType.META, false, false, false),
+
 	/**
-	 * Wikipedia pages representing events
+	 * Wikipedia pages (or Wikidata items) representing events
 	 */
 	ALL_EVENT_PAGES("all_event_pages.tsv", Source.ALL, FileType.RESULTS, false, false, false),
 	// ALL_ENTITIES_WITH_EXISTENCE_TIMES("all_entities_with_existence_times.tsv",
@@ -161,17 +171,26 @@ public enum FileName {
 	ALL_TTL_EVENTS_WITH_TEXTS("events.nq", FileType.OUTPUT, false, false, false),
 	ALL_TTL_ENTITIES_WITH_TEXTS("entities.nq", FileType.OUTPUT, false, false, false),
 	ALL_TTL_EVENTS_BASE_RELATIONS("relations_base.nq", FileType.OUTPUT, false, false, false),
-	ALL_TTL_EVENTS_LINK_RELATIOINS("relations_links.nq", FileType.OUTPUT, false, false, false),
+	ALL_TTL_EVENTS_LINK_RELATIONS("relations_links.nq", FileType.OUTPUT, false, false, false),
+	ALL_TTL_ENTITY_LINK_RELATIONS("relations_entity_links.nq", FileType.OUTPUT, false, false, false),
 	ALL_TTL_EVENTS_OTHER_RELATIONS("relations_other.nq", FileType.OUTPUT, false, false, false),
 	ALL_TTL_ENTITIES_TEMPORAL_RELATIONS("relations_entities_temporal.nq", FileType.OUTPUT, false, false, false),
 	ALL_TTL_ENTITIES_OTHER_RELATIONS("relations_entities_other.nq", FileType.OUTPUT, false, false, false),
 	ALL_TTL_PROPERTY_LABELS("property_labels.nq", FileType.OUTPUT, false, false, false),
 	ALL_TTL_DATASETS("graphs.ttl", FileType.OUTPUT, false, false, false),
+	ALL_TTL_SCHEMA("schema.ttl", FileType.OUTPUT, false, false, false),
+	ALL_TTL_VOID("void.ttl", FileType.OUTPUT, false, false, false),
 
 	ALL_TTL_EVENTS_WITH_TEXTS_PREVIEW("events_preview.nq", FileType.OUTPUT_PREVIEW, false, false, false),
 	ALL_TTL_ENTITIES_WITH_TEXTS_PREVIEW("entities_preview.nq", FileType.OUTPUT_PREVIEW, false, false, false),
 	ALL_TTL_EVENTS_BASE_RELATIONS_PREVIEW("relations_base_preview.nq", FileType.OUTPUT_PREVIEW, false, false, false),
-	ALL_TTL_EVENTS_LINK_RELATIOINS_PREVIEW("relations_links_preview.nq", FileType.OUTPUT_PREVIEW, false, false, false),
+	ALL_TTL_EVENTS_LINK_RELATIONS_PREVIEW("relations_links_preview.nq", FileType.OUTPUT_PREVIEW, false, false, false),
+	ALL_TTL_ENTITY_LINK_RELATIONS_PREVIEW(
+			"relations_entity_links_preview.nq",
+			FileType.OUTPUT_PREVIEW,
+			false,
+			false,
+			false),
 	ALL_TTL_PROPERTY_LABELS_PREVIEW("property_labels_preview.nq", FileType.OUTPUT_PREVIEW, false, false, false),
 	ALL_TTL_EVENTS_OTHER_RELATIONS_PREVIEW("relations_other_preview.nq", FileType.OUTPUT_PREVIEW, false, false, false),
 	ALL_TTL_ENTITIES_TEMPORAL_RELATIONS_PREVIEW(
@@ -189,6 +208,30 @@ public enum FileName {
 
 	ALL_TTL_ENTITIES_WITH_TEXTS_PREVIOUS_VERSION("entities.nq", FileType.PREVIOUS_VERSION, false, false, false),
 	ALL_TTL_EVENTS_WITH_TEXTS_PREVIOUS_VERSION("events.nq", FileType.PREVIOUS_VERSION, false, false, false),
+	// ALL_TTL_EVENTS_OTHER_RELATIONS_PREVIOUS_VERSION(
+	// "relations_other.nq",
+	// FileType.PREVIOUS_VERSION,
+	// false,
+	// false,
+	// false),
+	// ALL_TTL_ENTITIES_OTHER_RELATIONS_PREVIOUS_VERSION(
+	// "relations_entities_other.nq",
+	// FileType.PREVIOUS_VERSION,
+	// false,
+	// false,
+	// false),
+	// ALL_TTL_ENTITIES_TEMPORAL_RELATIONS_PREVIOUS_VERSION(
+	// "relations_entities_temporal.nq",
+	// FileType.PREVIOUS_VERSION,
+	// false,
+	// false,
+	// false),
+	// ALL_TTL_EVENTS_LINK_RELATIOINS_PREVIOUS_VERSION(
+	// "relations_links.nq",
+	// FileType.PREVIOUS_VERSION,
+	// false,
+	// false,
+	// false),
 
 	/**
 	 * Event pages with times
@@ -347,6 +390,10 @@ public enum FileName {
 
 	public boolean isOutputPreviewData() {
 		return this.fileType == FileType.OUTPUT_PREVIEW;
+	}
+
+	public boolean isPreviousVersionData() {
+		return this.fileType == FileType.PREVIOUS_VERSION;
 	}
 
 	public boolean isFolder() {

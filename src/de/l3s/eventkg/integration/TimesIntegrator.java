@@ -31,7 +31,7 @@ public class TimesIntegrator extends Extractor {
 	private Map<Entity, Set<EndTime>> newEndTimes = new HashMap<Entity, Set<EndTime>>();
 
 	public TimesIntegrator(List<Language> languages) {
-		super("TimesIntegrator", Source.ALL, "Integrate start and end times into a common graph.", languages);
+		super("TimesIntegrator", Source.ALL, "Fuses start and end times into a common graph.", languages);
 	}
 
 	private enum DateType {
@@ -132,7 +132,7 @@ public class TimesIntegrator extends Extractor {
 	private void integrateTimesByTrust() {
 
 		System.out.println("integrateTimesByTrust");
-		
+
 		// strategy: first priority: dates mentioned in multiple sources
 		// 2nd prio: Dates mentioned by more trustful source.
 
@@ -174,8 +174,8 @@ public class TimesIntegrator extends Extractor {
 			if (entity.getStartTimesWithDataSets() != null && !entity.getStartTimesWithDataSets().isEmpty()) {
 				startTime = integrateTimesOfEvent(entity.getStartTimesWithDataSets(), DateType.START, null);
 				if (startTime != null)
-					addTemporaryStartTime(entity,
-							DataSets.getInstance().getDataSetWithoutLanguage(Source.EVENT_KG), startTime);
+					addTemporaryStartTime(entity, DataSets.getInstance().getDataSetWithoutLanguage(Source.EVENT_KG),
+							startTime);
 			}
 
 			if (print && startTime != null)
@@ -229,8 +229,7 @@ public class TimesIntegrator extends Extractor {
 				System.out.println("After, end: " + sdf.format(endTime));
 
 			if (endTime != null)
-				addTemporaryEndTime(entity, DataSets.getInstance().getDataSetWithoutLanguage(Source.EVENT_KG),
-						endTime);
+				addTemporaryEndTime(entity, DataSets.getInstance().getDataSetWithoutLanguage(Source.EVENT_KG), endTime);
 
 		}
 	}
@@ -413,7 +412,8 @@ public class TimesIntegrator extends Extractor {
 
 	private void addTemporaryStartTime(Entity entity, DataSet dataSet, Date startTime) {
 
-		// System.out.println("add start: " + dataSet.getSource() + "\t" + startTime);
+		// System.out.println("add start: " + dataSet.getSource() + "\t" +
+		// startTime);
 
 		StartTime newStartTime = new StartTime(entity, dataSet, startTime);
 		if (!this.newStartTimes.containsKey(entity))
