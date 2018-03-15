@@ -308,8 +308,8 @@ public class LabelsAndDescriptionsExtractor extends Extractor {
 				Entity pageEntity = allEventPagesDataSet.getWikidataIdMappings().getEntityByWikipediaLabel(language,
 						pageTitle);
 
-				if (pageEntity != null && pageEntity.getEventEntity() != null && !parts[2].isEmpty()) {
-					this.sentences.get(language).put(pageEntity.getEventEntity(), parts[2]);
+				if (pageEntity != null && pageEntity.isEvent() && !parts[2].isEmpty()) {
+					this.sentences.get(language).put((Event) pageEntity, parts[2]);
 				}
 			}
 

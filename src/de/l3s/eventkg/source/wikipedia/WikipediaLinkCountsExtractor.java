@@ -168,15 +168,10 @@ public class WikipediaLinkCountsExtractor extends Extractor {
 								continue;
 							}
 
-							if (pageEntity.getEventEntity() != null || linkedEntity.getEventEntity() != null) {
+							if (pageEntity.isEvent() || linkedEntity.isEvent()) {
 
 								Entity pageEntity2 = pageEntity;
-								if (pageEntity.getEventEntity() != null)
-									pageEntity2 = pageEntity.getEventEntity();
-
 								Entity linkedEntity2 = linkedEntity;
-								if (linkedEntity.getEventEntity() != null)
-									linkedEntity2 = linkedEntity.getEventEntity();
 
 								this.linksToCounts
 										.add(new LinksToCount(pageEntity2, linkedEntity2, count, language, true));

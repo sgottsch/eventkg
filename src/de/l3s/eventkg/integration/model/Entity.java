@@ -36,8 +36,6 @@ public class Entity {
 	private Set<Date> endTimes = new HashSet<Date>();;
 	private Map<Date, Set<DataSet>> endTimesWithDataSets = new HashMap<Date, Set<DataSet>>();
 
-	private Event eventEntity;
-
 	private boolean isLocation = false;
 
 	private boolean isActor = false;
@@ -110,14 +108,6 @@ public class Entity {
 				labels.add(language.getLanguageLowerCase() + ":-");
 		}
 		return StringUtils.join(labels, " ");
-	}
-
-	public Event getEventEntity() {
-		return eventEntity;
-	}
-
-	public void setEventEntity(Event eventEntity) {
-		this.eventEntity = eventEntity;
 	}
 
 	public Map<Language, String> getWikipediaLabels() {

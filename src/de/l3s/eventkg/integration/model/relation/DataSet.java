@@ -30,7 +30,6 @@ public class DataSet {
 		this.source = source;
 		this.id = id;
 		this.url = url;
-		this.language = language;
 	}
 
 	public String getId() {

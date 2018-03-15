@@ -516,8 +516,8 @@ public class DataCollector extends Extractor {
 			return null;
 		}
 
-		if (entity.getEventEntity() != null)
-			return entity.getEventEntity();
+		if (entity.isEvent())
+			return (Event) entity;
 
 		return null;
 	}
@@ -930,8 +930,8 @@ public class DataCollector extends Extractor {
 			}
 		}
 
-		System.out.println(
-				"Number of blacklist events extracted from DBpedia locations : " + dbPediaLocationsBlackListEvents.size());
+		System.out.println("Number of blacklist events extracted from DBpedia locations : "
+				+ dbPediaLocationsBlackListEvents.size());
 	}
 
 	private void loadWikidataBlacklistEvents() {
@@ -985,14 +985,15 @@ public class DataCollector extends Extractor {
 		if (blacklistEvents.contains(entity))
 			return null;
 
-		if (entity.getEventEntity() != null) {
+		if (entity.isEvent()) {
+			Event event = (Event) entity;
 			if (comment != null)
-				entity.getEventEntity().addEventInstanceComment(comment);
-			entity.getEventEntity().addDataSetAndEventInstance(dataSet, eventInstance);
-			return entity.getEventEntity();
+				event.addEventInstanceComment(comment);
+			event.addDataSetAndEventInstance(dataSet, eventInstance);
+			return event;
 		}
 
-		Event newEvent = new Event(entity);
+		Event newEvent = new Event(entity, this.wikidataIdMappings);
 
 		if (comment != null)
 			newEvent.addEventInstanceComment(comment);
@@ -1043,8 +1044,8 @@ public class DataCollector extends Extractor {
 			return null;
 		}
 
-		if (entity.getEventEntity() != null)
-			return entity.getEventEntity();
+		if (entity.isEvent())
+			return (Event) entity;
 
 		return null;
 	}
@@ -1060,13 +1061,14 @@ public class DataCollector extends Extractor {
 		if (entity == null)
 			return null;
 
-		if (entity.getEventEntity() != null) {
+		if (entity.isEvent()) {
+			Event event = (Event) entity;
 			if (comment != null)
-				entity.getEventEntity().addEventInstanceComment(comment);
-			return entity.getEventEntity();
+				event.addEventInstanceComment(comment);
+			return event;
 		}
 
-		Event newEvent = new Event(entity);
+		Event newEvent = new Event(entity, this.wikidataIdMappings);
 
 		if (comment != null)
 			newEvent.addEventInstanceComment(comment);

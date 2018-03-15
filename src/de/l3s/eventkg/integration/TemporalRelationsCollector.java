@@ -611,11 +611,6 @@ public class TemporalRelationsCollector extends Extractor {
 		if (entity1 == null || entity2 == null)
 			return null;
 
-		if (entity1.getEventEntity() != null)
-			entity1 = entity1.getEventEntity();
-		if (entity2.getEventEntity() != null)
-			entity2 = entity2.getEventEntity();
-
 		Relation relation = new Relation(entity1, entity2, startTime, endTime, property, source, sourceLanguage,
 				isEntityRelation);
 

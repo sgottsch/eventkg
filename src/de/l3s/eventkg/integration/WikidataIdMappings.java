@@ -10,6 +10,7 @@ import java.util.Map;
 import java.util.Set;
 
 import de.l3s.eventkg.integration.model.Entity;
+import de.l3s.eventkg.integration.model.Event;
 import de.l3s.eventkg.meta.Language;
 import de.l3s.eventkg.pipeline.Config;
 import de.l3s.eventkg.pipeline.Config.TimeSymbol;
@@ -544,6 +545,14 @@ public class WikidataIdMappings {
 
 	public TIntObjectMap<Entity> getEntitiesByWikidataNumericIds() {
 		return entitiesByWikidataNumericIds;
+	}
+
+	public void updateEntityToEvent(Entity entity, Event event) {
+		this.entitiesByWikidataNumericIds.put(entity.getNumericWikidataId(), event);
+
+		for (Language language : entity.getWikipediaLabels().keySet()) {
+			entitiesByWikipediaLabels.get(language).put(entity.getWikipediaLabels().get(language), event);
+		}
 	}
 
 	// public Set<String> getWikidataIdsThatHaveLabels() {

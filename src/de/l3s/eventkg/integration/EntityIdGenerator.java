@@ -493,17 +493,12 @@ public class EntityIdGenerator {
 		List<String> parts = new ArrayList<String>();
 
 		String subjectId = relation.getSubject().getId();
-		if (relation.getSubject().getEventEntity() != null)
-			subjectId = relation.getSubject().getEventEntity().getId();
 		parts.add(subjectId);
 
 		Entity object = relation.getObject();
 		String objectId = "-";
 		if (object != null) {
 			objectId = relation.getObject().getId();
-
-			if (relation.getObject().getEventEntity() != null)
-				objectId = relation.getObject().getEventEntity().getId();
 		}
 		parts.add(objectId);
 
@@ -528,8 +523,6 @@ public class EntityIdGenerator {
 		List<String> parts = new ArrayList<String>();
 
 		String subjectId = relation.getSubject().getId();
-		if (relation.getSubject().getEventEntity() != null)
-			subjectId = relation.getSubject().getEventEntity().getId();
 		parts.add(subjectId);
 
 		Entity object = relation.getObject();

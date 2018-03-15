@@ -212,8 +212,8 @@ public class DataStoreWriter {
 		for (Description description : dataStore.getDescriptions()) {
 			if (description.getSubject() == null)
 				continue;
-			if (description.getSubject().isEvent() || description.getSubject().getEventEntity() != null) {
-				Event event = description.getSubject().getEventEntity();
+			if (description.getSubject().isEvent()) {
+				Event event = (Event) description.getSubject();
 				if (event == null)
 					event = (Event) description.getSubject();
 				if (!descriptionMap.containsKey(event))
@@ -302,9 +302,9 @@ public class DataStoreWriter {
 			System.out.println("#Wikipedia labels: " + dataStore.getWikipediaLabels().size() + ".");
 			lineNo = 0;
 			for (Label label : dataStore.getWikipediaLabels()) {
-				if (label.getSubject().isEvent() || label.getSubject().getEventEntity() != null) {
+				if (label.getSubject().isEvent()) {
 					lineNo += 1;
-					writeTriple(writer, writerPreview, lineNo, label.getSubject().getEventEntity().getId(),
+					writeTriple(writer, writerPreview, lineNo, label.getSubject().getId(),
 							prefixList.getPrefix(PrefixEnum.RDFS).getAbbr() + "label",
 							label.getLabel().replaceAll("_", " "), true, label.getDataSet(), label.getLanguage());
 				}
@@ -313,9 +313,9 @@ public class DataStoreWriter {
 			System.out.println("#Wikidata labels: " + dataStore.getWikidataLabels().size() + ".");
 			lineNo = 0;
 			for (Label label : dataStore.getWikidataLabels()) {
-				if (label.getSubject().isEvent() || label.getSubject().getEventEntity() != null) {
+				if (label.getSubject().isEvent()) {
 					lineNo += 1;
-					writeTriple(writer, writerPreview, lineNo, label.getSubject().getEventEntity().getId(),
+					writeTriple(writer, writerPreview, lineNo, label.getSubject().getId(),
 							prefixList.getPrefix(PrefixEnum.RDFS).getAbbr() + "label", label.getLabel(), true,
 							label.getDataSet(), label.getLanguage());
 				}
@@ -324,8 +324,8 @@ public class DataStoreWriter {
 			System.out.println("#aliases: " + dataStore.getAliases().size() + ".");
 			lineNo = 0;
 			for (Alias alias : dataStore.getAliases()) {
-				if (alias.getSubject().isEvent() || alias.getSubject().getEventEntity() != null) {
-					Event event = alias.getSubject().getEventEntity();
+				if (alias.getSubject().isEvent()) {
+					Event event = (Event) alias.getSubject();
 					if (event == null)
 						event = (Event) alias.getSubject();
 					lineNo += 1;
@@ -340,8 +340,8 @@ public class DataStoreWriter {
 			for (Description description : dataStore.getDescriptions()) {
 				if (description.getSubject() == null)
 					continue;
-				if (description.getSubject().isEvent() || description.getSubject().getEventEntity() != null) {
-					Event event = description.getSubject().getEventEntity();
+				if (description.getSubject().isEvent()) {
+					Event event = (Event) description.getSubject();
 					if (event == null)
 						event = (Event) description.getSubject();
 					lineNo += 1;
@@ -397,7 +397,7 @@ public class DataStoreWriter {
 			for (Entity entity : dataStore.getEntities()) {
 				lineNo += 1;
 
-				if (entity.isEvent() || entity.getEventEntity() != null)
+				if (entity.isEvent())
 					continue;
 
 				// entity.setId("<" + entityId + String.valueOf(entityNo) +
@@ -442,7 +442,7 @@ public class DataStoreWriter {
 
 			lineNo = 0;
 			for (Label label : dataStore.getWikipediaLabels()) {
-				if (!label.getSubject().isEvent() && label.getSubject().getEventEntity() == null) {
+				if (!label.getSubject().isEvent()) {
 					lineNo += 1;
 					writeTriple(writer, writerPreview, lineNo, label.getSubject().getId(),
 							prefixList.getPrefix(PrefixEnum.RDFS).getAbbr() + "label",
@@ -452,7 +452,7 @@ public class DataStoreWriter {
 
 			lineNo = 0;
 			for (Label label : dataStore.getWikidataLabels()) {
-				if (!label.getSubject().isEvent() && label.getSubject().getEventEntity() == null) {
+				if (!label.getSubject().isEvent()) {
 					lineNo += 1;
 					writeTriple(writer, writerPreview, lineNo, label.getSubject().getId(),
 							prefixList.getPrefix(PrefixEnum.RDFS).getAbbr() + "label", label.getLabel(), true,
@@ -750,16 +750,14 @@ public class DataStoreWriter {
 					boolean isEntityRelation = true;
 
 					String subjectId = subject.getId();
-					if (subject.getEventEntity() != null) {
-						subjectId = subject.getEventEntity().getId();
+					if (subject.isEvent()) {
 						isEntityRelation = false;
 					}
 					if (subject.isEvent())
 						isEntityRelation = false;
 
 					String objectId = object.getId();
-					if (object.getEventEntity() != null) {
-						objectId = object.getEventEntity().getId();
+					if (object.isEvent()) {
 						isEntityRelation = false;
 					}
 					if (object.isEvent())
@@ -841,10 +839,6 @@ public class DataStoreWriter {
 
 				if (!relation.getSubject().isEvent() && !relation.getObject().isEvent())
 					continue;
-
-				Entity object = relation.getObject();
-				if (object.getEventEntity() != null)
-					object = object.getEventEntity();
 
 				String relationId = "<eventkg_relation_" + String.valueOf(this.relationNo) + ">";
 				this.relationNo += 1;

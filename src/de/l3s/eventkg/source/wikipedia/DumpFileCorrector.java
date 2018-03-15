@@ -6,7 +6,6 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
-import java.util.zip.GZIPInputStream;
 
 import org.apache.commons.compress.compressors.bzip2.BZip2CompressorInputStream;
 
@@ -16,7 +15,7 @@ public class DumpFileCorrector {
 		String fileName = "/home/gottschalk/eventkb/eswc/data/raw_data/wikipedia/en/enwiki-20171201-pages-meta-current27.xml-p53163462p54663462.bz2";
 
 		int lineNoGiven = 47939482;
-//		int lineNoGiven = 5000;
+		// int lineNoGiven = 5000;
 
 		BufferedReader br = null;
 		PrintWriter resWriter = null;
@@ -29,7 +28,8 @@ public class DumpFileCorrector {
 			}
 
 			try {
-				br = new BufferedReader(new InputStreamReader(new BZip2CompressorInputStream(new FileInputStream(fileName))));
+				br = new BufferedReader(
+						new InputStreamReader(new BZip2CompressorInputStream(new FileInputStream(fileName))));
 			} catch (FileNotFoundException e) {
 				e.printStackTrace();
 			} catch (IOException e) {

@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import de.l3s.eventkg.integration.WikidataIdMappings;
 import de.l3s.eventkg.integration.model.relation.DataSet;
 import de.l3s.eventkg.meta.Language;
 import de.l3s.eventkg.util.FileLoader;
@@ -60,14 +61,14 @@ public class Event extends Entity {
 		setEvent(true);
 	}
 
-	public Event(Entity entity) {
+	public Event(Entity entity, WikidataIdMappings wikidataIdMappings) {
 		super(entity.getWikidataId());
 		for (Language language : entity.getWikipediaLabels().keySet()) {
 			this.wikipediaLabels.put(language, entity.getWikipediaLabels().get(language));
 		}
 
 		setEvent(true);
-		entity.setEventEntity(this);
+		wikidataIdMappings.updateEntityToEvent(entity, this);
 	}
 
 	public Set<Event> getChildren() {

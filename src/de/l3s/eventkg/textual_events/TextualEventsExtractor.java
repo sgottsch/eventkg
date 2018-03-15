@@ -457,8 +457,8 @@ public class TextualEventsExtractor extends Extractor {
 						if (entity == null)
 							continue;
 						relatedEntities.add(entity);
-						if (entity.getEventEntity() != null)
-							relatedEvents.add(entity.getEventEntity());
+						if (entity.isEvent())
+							relatedEvents.add((Event) entity);
 					}
 				}
 
@@ -516,8 +516,8 @@ public class TextualEventsExtractor extends Extractor {
 				if (entity == null)
 					continue;
 				relatedEntities.add(entity);
-				if (entity.getEventEntity() != null)
-					relatedEvents.add(entity.getEventEntity());
+				if (entity.isEvent())
+					relatedEvents.add((Event) entity);
 			}
 
 			Entity storyEntity = null;
@@ -527,8 +527,8 @@ public class TextualEventsExtractor extends Extractor {
 						wceEvent.getStory().getName().replaceAll(" ", "_"));
 				if (storyEntity != null) {
 					relatedEntities.add(storyEntity);
-					if (storyEntity.getEventEntity() != null)
-						relatedEvents.add(storyEntity.getEventEntity());
+					if (storyEntity.isEvent())
+						relatedEvents.add((Event) storyEntity);
 				}
 			}
 
@@ -544,8 +544,8 @@ public class TextualEventsExtractor extends Extractor {
 				this.eventsByDates.put(startDate + endDate, new HashSet<TextualEvent>());
 			this.eventsByDates.get(startDate + endDate).add(textualEvent);
 
-			if (storyEntity != null && storyEntity.getEventEntity() != null)
-				textualEvent.setMainEvent(storyEntity.getEventEntity());
+			if (storyEntity != null && storyEntity.isEvent())
+				textualEvent.setMainEvent((Event) storyEntity);
 
 			for (Event event : relatedEvents) {
 				if (!this.eventsToTextualEvents.containsKey(event))

@@ -83,7 +83,7 @@ public class AllEventPagesDataSet {
 					continue;
 				}
 
-				Event event = new Event(entity);
+				Event event = new Event(entity, this.wikidataIdMappings);
 
 				events.add(event);
 				DataStore.getInstance().addEvent(event);
@@ -218,9 +218,8 @@ public class AllEventPagesDataSet {
 					continue;
 
 				Event event = null;
-				if (entity.getEventEntity() != null) {
-					event = entity.getEventEntity();
-					entity = entity.getEventEntity();
+				if (entity.isEvent()) {
+					event = (Event) entity;
 				}
 
 				// System.out.println("Event: " + event + " -");
@@ -236,7 +235,7 @@ public class AllEventPagesDataSet {
 
 					if (date1 != null && (type == TimeSymbol.START_TIME || type == TimeSymbol.START_AND_END_TIME)) {
 
-						if (event != null) {
+						if (entity.isEvent()) {
 							event.setStartTime(date1);
 							event.addStartTime(date1, DataSets.getInstance().getDataSetWithoutLanguage(Source.YAGO));
 						}
@@ -247,7 +246,7 @@ public class AllEventPagesDataSet {
 
 					if (date1L != null && (type == TimeSymbol.END_TIME || type == TimeSymbol.START_AND_END_TIME)) {
 
-						if (event != null) {
+						if (entity.isEvent()) {
 							event.setEndTime(date1L);
 							event.addEndTime(date1L, DataSets.getInstance().getDataSetWithoutLanguage(Source.YAGO));
 						}
@@ -296,9 +295,8 @@ public class AllEventPagesDataSet {
 				if (entity == null)
 					continue;
 
-				if (entity.getEventEntity() != null) {
-					event = entity.getEventEntity();
-					entity = entity.getEventEntity();
+				if (entity.isEvent()) {
+					event = (Event) entity;
 				}
 
 				String propertyWikidataId = parts[1];
@@ -314,7 +312,7 @@ public class AllEventPagesDataSet {
 
 						if (dateEarliest != null) {
 
-							if (event != null) {
+							if (entity.isEvent()) {
 								event.setStartTime(dateEarliest);
 								event.addStartTime(dateEarliest,
 										DataSets.getInstance().getDataSetWithoutLanguage(Source.WIKIDATA));
@@ -330,7 +328,7 @@ public class AllEventPagesDataSet {
 
 						if (dateLatest != null) {
 
-							if (event != null) {
+							if (entity.isEvent()) {
 								event.setEndTime(dateLatest);
 								event.addEndTime(dateLatest,
 										DataSets.getInstance().getDataSetWithoutLanguage(Source.WIKIDATA));
@@ -387,9 +385,8 @@ public class AllEventPagesDataSet {
 					if (entity == null)
 						continue;
 
-					if (entity.getEventEntity() != null) {
-						event = entity.getEventEntity();
-						entity = entity.getEventEntity();
+					if (entity.isEvent()) {
+						event = (Event) entity;
 					}
 
 					Date date;
@@ -397,7 +394,7 @@ public class AllEventPagesDataSet {
 						date = TimeTransformer.generateTimeForDBpedia(timeString);
 
 						if (type == TimeSymbol.START_TIME || type == TimeSymbol.START_AND_END_TIME) {
-							if (event != null) {
+							if (entity.isEvent()) {
 								event.setStartTime(date);
 								event.addStartTime(date, DataSets.getInstance().getDataSet(language, Source.DBPEDIA));
 							}
@@ -407,7 +404,7 @@ public class AllEventPagesDataSet {
 						}
 						if (type == TimeSymbol.END_TIME || type == TimeSymbol.START_AND_END_TIME) {
 
-							if (event != null) {
+							if (entity.isEvent()) {
 								event.setEndTime(date);
 								event.addEndTime(date, DataSets.getInstance().getDataSet(language, Source.DBPEDIA));
 							}

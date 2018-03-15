@@ -103,23 +103,21 @@ public class WikipediaLinkSetsExtractor extends Extractor {
 					System.out.println("\t" + entity1.getWikidataId() + "\t" + entity2.getWikidataId());
 				}
 
-				if (entity1.getEventEntity() != null) {
-					if (!pairs.containsKey(entity1.getEventEntity()))
-						pairs.put(entity1.getEventEntity(), new HashMap<Entity, Integer>());
-					if (!pairs.get(entity1.getEventEntity()).containsKey(entity2)) {
-						pairs.get(entity1.getEventEntity()).put(entity2, 1);
+				if (entity1.isEvent()) {
+					if (!pairs.containsKey(entity1))
+						pairs.put(entity1, new HashMap<Entity, Integer>());
+					if (!pairs.get(entity1).containsKey(entity2)) {
+						pairs.get(entity1).put(entity2, 1);
 					} else {
-						pairs.get(entity1.getEventEntity()).put(entity2,
-								pairs.get(entity1.getEventEntity()).get(entity2) + 1);
+						pairs.get(entity1).put(entity2, pairs.get(entity1).get(entity2) + 1);
 					}
-				} else if (entity2.getEventEntity() != null) {
-					if (!pairs.containsKey(entity2.getEventEntity()))
-						pairs.put(entity2.getEventEntity(), new HashMap<Entity, Integer>());
-					if (!pairs.get(entity2.getEventEntity()).containsKey(entity1)) {
-						pairs.get(entity2.getEventEntity()).put(entity1, 1);
+				} else if (entity2.isEvent()) {
+					if (!pairs.containsKey(entity2))
+						pairs.put(entity2, new HashMap<Entity, Integer>());
+					if (!pairs.get(entity2).containsKey(entity1)) {
+						pairs.get(entity2).put(entity1, 1);
 					} else {
-						pairs.get(entity2.getEventEntity()).put(entity1,
-								pairs.get(entity2.getEventEntity()).get(entity1) + 1);
+						pairs.get(entity2).put(entity1, pairs.get(entity2).get(entity1) + 1);
 					}
 				} else if (areConnectedViaRelation(entity1, entity2)) {
 					if (testCount < 10) {
@@ -210,23 +208,21 @@ public class WikipediaLinkSetsExtractor extends Extractor {
 							if (doneEntities.contains(entity2))
 								continue;
 
-							if (entity1.getEventEntity() != null) {
-								if (!pairs.containsKey(entity1.getEventEntity()))
-									pairs.put(entity1.getEventEntity(), new HashMap<Entity, Integer>());
-								if (!pairs.get(entity1.getEventEntity()).containsKey(entity2)) {
-									pairs.get(entity1.getEventEntity()).put(entity2, 1);
+							if (entity1.isEvent()) {
+								if (!pairs.containsKey(entity1))
+									pairs.put(entity1, new HashMap<Entity, Integer>());
+								if (!pairs.get(entity1).containsKey(entity2)) {
+									pairs.get(entity1).put(entity2, 1);
 								} else {
-									pairs.get(entity1.getEventEntity()).put(entity2,
-											pairs.get(entity1.getEventEntity()).get(entity2) + 1);
+									pairs.get(entity1).put(entity2, pairs.get(entity1).get(entity2) + 1);
 								}
-							} else if (entity2.getEventEntity() != null) {
-								if (!pairs.containsKey(entity2.getEventEntity()))
-									pairs.put(entity2.getEventEntity(), new HashMap<Entity, Integer>());
-								if (!pairs.get(entity2.getEventEntity()).containsKey(entity1)) {
-									pairs.get(entity2.getEventEntity()).put(entity1, 1);
+							} else if (entity2.isEvent()) {
+								if (!pairs.containsKey(entity2))
+									pairs.put(entity2, new HashMap<Entity, Integer>());
+								if (!pairs.get(entity2).containsKey(entity1)) {
+									pairs.get(entity2).put(entity1, 1);
 								} else {
-									pairs.get(entity2.getEventEntity()).put(entity1,
-											pairs.get(entity2.getEventEntity()).get(entity1) + 1);
+									pairs.get(entity2).put(entity1, pairs.get(entity2).get(entity1) + 1);
 								}
 							} else if (areConnectedViaRelation(entity1, entity2)) {
 								if (!pairs.containsKey(entity1))
