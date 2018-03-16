@@ -11,6 +11,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.commons.io.LineIterator;
+
 import de.l3s.eventkg.integration.AllEventPagesDataSet;
 import de.l3s.eventkg.integration.DataSets;
 import de.l3s.eventkg.integration.DataStore;
@@ -68,7 +70,7 @@ public class LabelsAndDescriptionsExtractor extends Extractor {
 		for (Language language : this.languages) {
 			sentences.put(language, new HashMap<Event, String>());
 			for (File child : FileLoader.getFilesList(FileName.WIKIPEDIA_FIRST_SENTENCES, language)) {
-				processFile(child, language);
+				processFileIterator(child, language);
 			}
 		}
 
@@ -101,10 +103,11 @@ public class LabelsAndDescriptionsExtractor extends Extractor {
 
 	private void collectDescriptionsFromFile(File file, Language language) {
 
+		LineIterator it = null;
 		try {
-			String content = FileLoader.readFile(file);
-
-			for (String line : content.split(Config.NL)) {
+			it = FileLoader.getLineIterator(file.getAbsolutePath(), false);
+			while (it.hasNext()) {
+				String line = it.nextLine();
 				String[] parts = line.split(Config.TAB);
 				String wikidataId = parts[0];
 
@@ -114,19 +117,22 @@ public class LabelsAndDescriptionsExtractor extends Extractor {
 					this.descriptions.get(language).put(event, parts[1]);
 				}
 			}
-
 		} catch (IOException e) {
 			e.printStackTrace();
+		} finally {
+			LineIterator.closeQuietly(it);
 		}
 
 		System.out.println("descriptions (" + language + "): " + this.descriptions.get(language).size());
 	}
 
 	private void collectAliasesFromFile(File file, Language language) {
-		try {
-			String content = FileLoader.readFile(file);
 
-			for (String line : content.split(Config.NL)) {
+		LineIterator it = null;
+		try {
+			it = FileLoader.getLineIterator(file.getAbsolutePath(), false);
+			while (it.hasNext()) {
+				String line = it.nextLine();
 				String[] parts = line.split(Config.TAB);
 				String wikidataId = parts[0];
 
@@ -160,9 +166,10 @@ public class LabelsAndDescriptionsExtractor extends Extractor {
 					}
 				}
 			}
-
 		} catch (IOException e) {
 			e.printStackTrace();
+		} finally {
+			LineIterator.closeQuietly(it);
 		}
 
 		System.out.println("aliases (" + language + "): " + this.aliases.get(language).size());
@@ -192,10 +199,13 @@ public class LabelsAndDescriptionsExtractor extends Extractor {
 
 	private void writeResults() {
 
+		boolean writeToFile = false;
 		System.out.println("Write results: labels, descriptions, aliases,...");
 		PrintWriter writer = null;
 		try {
-			writer = FileLoader.getWriter(FileName.ALL_FIRST_SENTENCES);
+
+			if (writeToFile)
+				writer = FileLoader.getWriter(FileName.ALL_FIRST_SENTENCES);
 
 			for (Language language : this.languages) {
 				for (Event event : this.sentences.get(language).keySet()) {
@@ -205,16 +215,21 @@ public class LabelsAndDescriptionsExtractor extends Extractor {
 									DataSets.getInstance().getDataSet(language, Source.WIKIPEDIA),
 									this.sentences.get(language).get(event), language));
 
-					writer.write(event.getWikidataId());
-					writer.write(Config.TAB);
-					writer.write("wiki_first_sentence");
-					writer.write(Config.TAB);
-					writer.write(event.getWikipediaLabelsString(this.languages));
-					writer.write(Config.TAB);
-					writer.write(this.sentences.get(language).get(event));
-					writer.write(Config.NL);
+					if (writeToFile) {
+						writer.write(event.getWikidataId());
+						writer.write(Config.TAB);
+						writer.write("wiki_first_sentence");
+						writer.write(Config.TAB);
+						writer.write(event.getWikipediaLabelsString(this.languages));
+						writer.write(Config.TAB);
+						writer.write(this.sentences.get(language).get(event));
+						writer.write(Config.NL);
+					}
 				}
 			}
+
+			// free memory
+			this.sentences = new HashMap<Language, Map<Event, String>>();
 
 			for (Language language : this.languages) {
 				for (Event event : this.descriptions.get(language).keySet()) {
@@ -224,16 +239,21 @@ public class LabelsAndDescriptionsExtractor extends Extractor {
 									DataSets.getInstance().getDataSetWithoutLanguage(Source.WIKIDATA),
 									this.descriptions.get(language).get(event), language));
 
-					writer.write(event.getWikidataId());
-					writer.write(Config.TAB);
-					writer.write("wikidata_description");
-					writer.write(Config.TAB);
-					writer.write(event.getWikipediaLabelsString(this.languages));
-					writer.write(Config.TAB);
-					writer.write(this.descriptions.get(language).get(event));
-					writer.write(Config.NL);
+					if (writeToFile) {
+						writer.write(event.getWikidataId());
+						writer.write(Config.TAB);
+						writer.write("wikidata_description");
+						writer.write(Config.TAB);
+						writer.write(event.getWikipediaLabelsString(this.languages));
+						writer.write(Config.TAB);
+						writer.write(this.descriptions.get(language).get(event));
+						writer.write(Config.NL);
+					}
 				}
 			}
+
+			// free memory
+			this.descriptions = new HashMap<Language, Map<Event, String>>();
 
 			for (Language language : this.languages) {
 				for (Entity entity : this.wikipediaLabels.get(language).keySet()) {
@@ -242,14 +262,16 @@ public class LabelsAndDescriptionsExtractor extends Extractor {
 							new Label(entity, DataSets.getInstance().getDataSet(language, Source.WIKIPEDIA),
 									this.wikipediaLabels.get(language).get(entity), language));
 
-					writer.write(entity.getWikidataId());
-					writer.write(Config.TAB);
-					writer.write("wiki_label");
-					writer.write(Config.TAB);
-					writer.write(entity.getWikipediaLabelsString(this.languages));
-					writer.write(Config.TAB);
-					writer.write(this.wikipediaLabels.get(language).get(entity));
-					writer.write(Config.NL);
+					if (writeToFile) {
+						writer.write(entity.getWikidataId());
+						writer.write(Config.TAB);
+						writer.write("wiki_label");
+						writer.write(Config.TAB);
+						writer.write(entity.getWikipediaLabelsString(this.languages));
+						writer.write(Config.TAB);
+						writer.write(this.wikipediaLabels.get(language).get(entity));
+						writer.write(Config.NL);
+					}
 				}
 
 				for (Entity entity : this.wikidataLabels.get(language).keySet()) {
@@ -258,15 +280,21 @@ public class LabelsAndDescriptionsExtractor extends Extractor {
 						DataStore.getInstance().addWikidataLabel(new Label(entity,
 								DataSets.getInstance().getDataSetWithoutLanguage(Source.WIKIDATA), label, language));
 
-						writer.write(entity.getWikidataId());
-						writer.write(Config.TAB);
-						writer.write("wikidata_label");
-						writer.write(Config.TAB);
-						writer.write(label);
-						writer.write(Config.NL);
+						if (writeToFile) {
+							writer.write(entity.getWikidataId());
+							writer.write(Config.TAB);
+							writer.write("wikidata_label");
+							writer.write(Config.TAB);
+							writer.write(label);
+							writer.write(Config.NL);
+						}
 					}
 				}
 			}
+
+			// free memory
+			this.wikipediaLabels = new HashMap<Language, Map<Entity, String>>();
+			this.wikidataLabels = new HashMap<Language, Map<Entity, Set<String>>>();
 
 			for (Language language : this.languages) {
 				for (Entity event : this.aliases.get(language).keySet()) {
@@ -274,23 +302,28 @@ public class LabelsAndDescriptionsExtractor extends Extractor {
 						DataStore.getInstance().addAlias(new Alias(event,
 								DataSets.getInstance().getDataSetWithoutLanguage(Source.WIKIDATA), alias, language));
 
-						writer.write(event.getWikidataId());
-						writer.write(Config.TAB);
-						writer.write("wikidata_alias");
-						writer.write(Config.TAB);
-						writer.write(event.getWikipediaLabelsString(this.languages));
-						writer.write(Config.TAB);
-						writer.write(alias);
-						writer.write(Config.NL);
+						if (writeToFile) {
+							writer.write(event.getWikidataId());
+							writer.write(Config.TAB);
+							writer.write("wikidata_alias");
+							writer.write(Config.TAB);
+							writer.write(event.getWikipediaLabelsString(this.languages));
+							writer.write(Config.TAB);
+							writer.write(alias);
+							writer.write(Config.NL);
+						}
 					}
 
 				}
 			}
 
+			this.aliases = new HashMap<Language, Map<Entity, Set<String>>>();
+
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		} finally {
-			writer.close();
+			if (writeToFile)
+				writer.close();
 		}
 
 	}
@@ -303,20 +336,42 @@ public class LabelsAndDescriptionsExtractor extends Extractor {
 			String content = FileLoader.readFile(file);
 
 			for (String line : content.split(Config.NL)) {
-				String[] parts = line.split(Config.TAB);
-				String pageTitle = parts[1].replaceAll(" ", "_");
-				Entity pageEntity = allEventPagesDataSet.getWikidataIdMappings().getEntityByWikipediaLabel(language,
-						pageTitle);
-
-				if (pageEntity != null && pageEntity.isEvent() && !parts[2].isEmpty()) {
-					this.sentences.get(language).put((Event) pageEntity, parts[2]);
-				}
+				processLine(line, language);
 			}
 
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 
+	}
+
+	private void processFileIterator(File file, Language language) {
+
+		System.out.println("Process file " + file.getName() + ".");
+
+		LineIterator it = null;
+		try {
+			it = FileLoader.getLineIterator(file.getAbsolutePath(), false);
+			while (it.hasNext()) {
+				String line = it.nextLine();
+				processLine(line, language);
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		} finally {
+			LineIterator.closeQuietly(it);
+		}
+
+	}
+
+	private void processLine(String line, Language language) {
+		String[] parts = line.split(Config.TAB);
+		String pageTitle = parts[1].replaceAll(" ", "_");
+		Entity pageEntity = allEventPagesDataSet.getWikidataIdMappings().getEntityByWikipediaLabel(language, pageTitle);
+
+		if (pageEntity != null && pageEntity.isEvent() && !parts[2].isEmpty()) {
+			this.sentences.get(language).put((Event) pageEntity, parts[2]);
+		}
 	}
 
 }

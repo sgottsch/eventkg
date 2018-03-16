@@ -136,12 +136,6 @@ public class DataStore {
 		}
 
 		if (!relation.getSubject().isEvent() && !relation.getObject().isEvent()) {
-
-			if (this.connectedEntities.size() < 50) {
-				System.out.println("connected entities: " + relation.getSubject().getWikidataId() + "\t"
-						+ relation.getObject().getWikidataId());
-			}
-
 			if (!this.connectedEntities.containsKey(relation.getSubject()))
 				this.connectedEntities.put(relation.getSubject(), new HashSet<Entity>());
 			if (!this.connectedEntities.containsKey(relation.getObject()))

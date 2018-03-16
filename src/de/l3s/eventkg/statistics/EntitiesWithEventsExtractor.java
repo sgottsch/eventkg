@@ -23,6 +23,7 @@ public class EntitiesWithEventsExtractor {
 		Map<String, String> idToLabelEntities = new HashMap<String, String>();
 		Map<String, Set<String>> idToRelation = new HashMap<String, Set<String>>();
 		Map<String, Set<String>> relationToEvents = new HashMap<String, Set<String>>();
+		Map<String, String> idToStartTime = new HashMap<String, String>();
 
 		System.out.println("ALL_TTL_EVENTS_WITH_TEXTS");
 		List<String> lines1 = FileLoader.readLines(FileName.ALL_TTL_EVENTS_WITH_TEXTS);
@@ -66,6 +67,8 @@ public class EntitiesWithEventsExtractor {
 					String label = parts[2];
 					label = label.substring(1, label.length() - 1);
 					label = label.substring(label.lastIndexOf("/") + 1);
+					if (id.equals("<entity_12393086>"))
+						System.out.println(id + " -> " + label);
 					idToLabelEntities.put(id, label);
 				}
 			}
@@ -77,6 +80,16 @@ public class EntitiesWithEventsExtractor {
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
+		}
+
+		System.out.println("ALL_TTL_EVENTS_BASE_RELATIONS");
+		for (String line : FileLoader.readLines(FileName.ALL_TTL_EVENTS_BASE_RELATIONS)) {
+			if (line.isEmpty() || line.startsWith("@"))
+				continue;
+			String[] parts = line.split(" ");
+			String id = parts[0];
+			if (parts[1].equals("sem:hasBeginTimeStamp"))
+				idToStartTime.put(id, parts[2]);
 		}
 
 		System.out.println("ALL_TTL_EVENTS_LINK_RELATIONS");
@@ -106,9 +119,11 @@ public class EntitiesWithEventsExtractor {
 					idToRelation.put(id, new HashSet<String>());
 				idToRelation.get(id).add(relationId);
 
-				if (!relationToEvents.containsKey(relationId))
-					relationToEvents.put(relationId, new HashSet<String>());
-				relationToEvents.get(relationId).add(id);
+				if (id.startsWith("<event")) {
+					if (!relationToEvents.containsKey(relationId))
+						relationToEvents.put(relationId, new HashSet<String>());
+					relationToEvents.get(relationId).add(id);
+				}
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -132,7 +147,12 @@ public class EntitiesWithEventsExtractor {
 					Set<String> relationEvents = new HashSet<String>();
 					relationEvents.addAll(relationToEvents.get(relationId));
 					relationEvents.remove(id);
+					relationEvents.retainAll(idToStartTime.keySet());
+
 					if (!relationEvents.isEmpty()) {
+						if (id.equals("<entity_12393086>"))
+							System.out.println(id + ", " + relationId + " -> " + relationEvents);
+
 						isConnected = true;
 						break;
 					}

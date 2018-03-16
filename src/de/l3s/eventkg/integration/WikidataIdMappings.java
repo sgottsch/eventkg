@@ -9,6 +9,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.commons.io.LineIterator;
+
 import de.l3s.eventkg.integration.model.Entity;
 import de.l3s.eventkg.integration.model.Event;
 import de.l3s.eventkg.meta.Language;
@@ -74,16 +76,12 @@ public class WikidataIdMappings {
 
 			int lineNo = 0;
 			int brackets = 0;
-			BufferedReader br = null;
+
+			LineIterator it = null;
 			try {
-				br = FileLoader.getReader(FileName.WIKIDATA_LABELS, language);
-
-				String line;
-				while ((line = br.readLine()) != null) {
-
-					// ignore all entities that do not have a Wikipedia label
-					// and no temporal relation
-
+				it = FileLoader.getLineIterator(FileName.WIKIDATA_LABELS, language);
+				while (it.hasNext()) {
+					String line = it.nextLine();
 					if (lineNo % 1000000 == 0)
 						System.out.println(lineNo + " - " + brackets);
 
@@ -131,11 +129,7 @@ public class WikidataIdMappings {
 			} catch (IOException e) {
 				e.printStackTrace();
 			} finally {
-				try {
-					br.close();
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
+				LineIterator.closeQuietly(it);
 			}
 
 			System.out.println(language + ", ignoredEntities: " + ignoredEntities);

@@ -16,6 +16,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.zip.GZIPInputStream;
 
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.LineIterator;
+
 import de.l3s.eventkg.meta.Language;
 import de.l3s.eventkg.pipeline.Config;
 
@@ -44,8 +47,13 @@ public class FileLoader {
 	}
 
 	public static BufferedReader getReader(FileName fileName) throws FileNotFoundException {
-		BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(getPath(fileName))));
-		if (fileName.hasColumnNamesInFirstLine()) {
+		return getReader(getPath(fileName), fileName.hasColumnNamesInFirstLine());
+	}
+
+	public static BufferedReader getReader(String path, boolean hasColumnNamesInFirstLine)
+			throws FileNotFoundException {
+		BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(path)));
+		if (hasColumnNamesInFirstLine) {
 			try {
 				br.readLine();
 			} catch (IOException e) {
@@ -53,6 +61,24 @@ public class FileLoader {
 			}
 		}
 		return br;
+	}
+
+	public static LineIterator getLineIterator(FileName fileName) throws IOException {
+		return getLineIterator(getPath(fileName), fileName.hasColumnNamesInFirstLine());
+	}
+
+	public static LineIterator getLineIterator(FileName fileName, Language language) throws IOException {
+		return getLineIterator(getPath(fileName, language), fileName.hasColumnNamesInFirstLine());
+	}
+
+	public static LineIterator getLineIterator(String path, boolean hasColumnNamesInFirstLine) throws IOException {
+
+		LineIterator it = FileUtils.lineIterator(new File(path), "UTF-8");
+
+		if (hasColumnNamesInFirstLine)
+			it.nextLine();
+
+		return it;
 	}
 
 	public static List<String> readLines(FileName fileName) {

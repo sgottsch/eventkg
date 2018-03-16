@@ -9,6 +9,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.commons.io.LineIterator;
+
 import de.l3s.eventkg.integration.AllEventPagesDataSet;
 import de.l3s.eventkg.integration.DataStore;
 import de.l3s.eventkg.integration.model.Entity;
@@ -60,7 +62,7 @@ public class WikipediaLinkCountsExtractor extends Extractor {
 
 		for (Language language : this.languages) {
 			for (File child : FileLoader.getFilesList(FileName.WIKIPEDIA_LINK_COUNTS, language)) {
-				processFile(child, language);
+				processFileIterator(child, language);
 			}
 		}
 
@@ -138,6 +140,23 @@ public class WikipediaLinkCountsExtractor extends Extractor {
 		}
 	}
 
+	private void processFileIterator(File file, Language language) {
+
+		LineIterator it = null;
+		try {
+			it = FileLoader.getLineIterator(file.getAbsolutePath(), false);
+			while (it.hasNext()) {
+				String line = it.nextLine();
+				processLine(line, language, file);
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		} finally {
+			LineIterator.closeQuietly(it);
+		}
+
+	}
+
 	private void processFile(File file, Language language) {
 
 		System.out.println("Process file " + file.getName() + ".");
@@ -146,51 +165,7 @@ public class WikipediaLinkCountsExtractor extends Extractor {
 			String content = FileLoader.readFile(file);
 
 			for (String line : content.split(Config.NL)) {
-				String[] parts = line.split(Config.TAB);
-				String pageTitle = parts[1].replaceAll(" ", "_");
-				Entity pageEntity = allEventPagesDataSet.getWikidataIdMappings().getEntityByWikipediaLabel(language,
-						pageTitle);
-
-				if (pageEntity != null) {
-
-					for (int i = 2; i < parts.length; i++) {
-						String linkedPageTitle = parts[i].split(" ")[0].replaceAll(" ", "_");
-						Entity linkedEntity = allEventPagesDataSet.getWikidataIdMappings()
-								.getEntityByWikipediaLabel(language, linkedPageTitle);
-						int count = 0;
-						if (linkedEntity != null) {
-
-							try {
-								count = Integer.valueOf(parts[i].split(" ")[1]);
-							} catch (Exception e) {
-								System.out.println(
-										"Warning: Error in file " + file.getName() + " for " + pageTitle + ".");
-								continue;
-							}
-
-							if (pageEntity.isEvent() || linkedEntity.isEvent()) {
-
-								Entity pageEntity2 = pageEntity;
-								Entity linkedEntity2 = linkedEntity;
-
-								this.linksToCounts
-										.add(new LinksToCount(pageEntity2, linkedEntity2, count, language, true));
-
-								// this.linkedByCounts.add(
-								// new LinkedByCount(linkedEntity2, pageEntity2,
-								// count, language));
-							} else {
-
-								if (areConnectedViaRelation(pageEntity, linkedEntity)) {
-									this.linksToCounts
-											.add(new LinksToCount(pageEntity, linkedEntity, count, language, false));
-								}
-
-							}
-
-						}
-					}
-				}
+				processLine(line, language, file);
 			}
 
 		} catch (IOException e) {
@@ -199,6 +174,50 @@ public class WikipediaLinkCountsExtractor extends Extractor {
 
 		// System.out.println(this.linksToCounts.size());
 		// System.out.println(this.linkedByCounts.size());
+	}
+
+	private void processLine(String line, Language language, File file) {
+		String[] parts = line.split(Config.TAB);
+		String pageTitle = parts[1].replaceAll(" ", "_");
+		Entity pageEntity = allEventPagesDataSet.getWikidataIdMappings().getEntityByWikipediaLabel(language, pageTitle);
+
+		if (pageEntity != null) {
+
+			for (int i = 2; i < parts.length; i++) {
+				String linkedPageTitle = parts[i].split(" ")[0].replaceAll(" ", "_");
+				Entity linkedEntity = allEventPagesDataSet.getWikidataIdMappings().getEntityByWikipediaLabel(language,
+						linkedPageTitle);
+				int count = 0;
+				if (linkedEntity != null) {
+
+					try {
+						count = Integer.valueOf(parts[i].split(" ")[1]);
+					} catch (Exception e) {
+						System.out.println("Warning: Error in file " + file.getName() + " for " + pageTitle + ".");
+						continue;
+					}
+
+					if (pageEntity.isEvent() || linkedEntity.isEvent()) {
+
+						Entity pageEntity2 = pageEntity;
+						Entity linkedEntity2 = linkedEntity;
+
+						this.linksToCounts.add(new LinksToCount(pageEntity2, linkedEntity2, count, language, true));
+
+						// this.linkedByCounts.add(
+						// new LinkedByCount(linkedEntity2, pageEntity2,
+						// count, language));
+					} else {
+
+						if (areConnectedViaRelation(pageEntity, linkedEntity)) {
+							this.linksToCounts.add(new LinksToCount(pageEntity, linkedEntity, count, language, false));
+						}
+
+					}
+
+				}
+			}
+		}
 	}
 
 	private boolean areConnectedViaRelation(Entity entity1, Entity entity2) {
