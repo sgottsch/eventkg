@@ -41,7 +41,7 @@ public class RawDataDownLoader {
 		System.out.println("Copy meta files.");
 
 		try {
-			
+
 			// Wikidata
 			FileUtils.copyURLToFile(
 					RawDataDownLoader.class.getResource("/resource/meta_data/wikidata/"
@@ -156,9 +156,9 @@ public class RawDataDownLoader {
 		this.dataPath = Config.getValue("data_folder");
 		this.dataPath = this.dataPath + FileLoader.ONLINE_RAW_DATA_FOLDER_SUFFIX;
 
-		// downloadWikipediaFiles();
-		// downloadDBPediaFiles();
-		// downloadWCEFiles();
+		downloadWikipediaFiles();
+		downloadDBPediaFiles();
+		downloadWCEFiles();
 		downloadYAGOFiles();
 		downloadWikidataFile();
 	}
@@ -240,6 +240,7 @@ public class RawDataDownLoader {
 		String dbPediaUrl = "http://downloads.dbpedia.org/" + Config.getValue("dbpedia") + "/core-i18n/$lang$/";
 		Set<String> urls = new HashSet<String>();
 		urls.add("instance_types_transitive_$lang$.ttl.bz2");
+		urls.add("instance_types_$lang$.ttl.bz2");
 		urls.add("mappingbased_objects_$lang$.ttl.bz2");
 		urls.add("mappingbased_literals_$lang$.ttl.bz2");
 		urls.add("geonames_links_$lang$.ttl.bz2");
@@ -286,6 +287,10 @@ public class RawDataDownLoader {
 			}
 
 		}
+
+		// download ontology
+		downloadFile("http://downloads.dbpedia.org/" + Config.getValue("dbpedia") + "/dbpedia_"
+				+ Config.getValue("dbpedia") + ".nt", FileLoader.getFileNameWithPath(FileName.DBPEDIA_ONTOLOGY));
 
 	}
 

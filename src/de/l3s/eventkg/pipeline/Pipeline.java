@@ -62,7 +62,7 @@ public class Pipeline {
 		}
 
 		Pipeline pipeline = new Pipeline(languages);
-		pipeline.initDataSets();
+		Pipeline.initDataSets(languages);
 
 		if (steps.contains(1)) {
 			System.out.println("Step 1: Download files.");
@@ -205,8 +205,11 @@ public class Pipeline {
 		return this.allEventPagesDataSet;
 	}
 
-	private void initDataSets() {
-		for (Language language : this.languages) {
+	public static void initDataSets(List<Language> languages) {
+
+		DataSets.getInstance().addDataSetWithoutLanguage(Source.DBPEDIA, "http://dbpedia.org/");
+
+		for (Language language : languages) {
 			DataSets.getInstance().addDataSet(language, Source.DBPEDIA,
 					"http://" + language.getLanguageLowerCase() + ".dbpedia.org/");
 			DataSets.getInstance().addDataSet(language, Source.WIKIPEDIA,
@@ -232,7 +235,7 @@ public class Pipeline {
 		SimpleDateFormat configDateFormat = new SimpleDateFormat("yyyyMMdd");
 		SimpleDateFormat configDateFormatDBpedia = new SimpleDateFormat("yyyy-MM");
 
-		for (Language language : this.languages) {
+		for (Language language : languages) {
 
 			// Wikipedia
 			String wikiName = language.getWiki();

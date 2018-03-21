@@ -30,7 +30,7 @@ public class WikidataIdMappings {
 	// private Map<Language, Map<String, String>> wikidataIdsForWikipediaLabels;
 	private Map<Language, Map<String, String>> wikidataPropertysByIDs;
 
-	private TIntObjectMap<Entity> entitiesByWikidataNumericIds = new TIntObjectHashMap<Entity>(45000000);
+	private TIntObjectMap<Entity> entitiesByWikidataNumericIds = new TIntObjectHashMap<Entity>(50000000);
 
 	// private Map<String, Entity> entitiesByWikidataIds;
 	private Map<Language, Map<String, Entity>> entitiesByWikipediaLabels;
@@ -543,6 +543,7 @@ public class WikidataIdMappings {
 
 	public void updateEntityToEvent(Entity entity, Event event) {
 		this.entitiesByWikidataNumericIds.put(entity.getNumericWikidataId(), event);
+		DataStore.getInstance().removeEntity(entity);
 
 		for (Language language : entity.getWikipediaLabels().keySet()) {
 			entitiesByWikipediaLabels.get(language).put(entity.getWikipediaLabels().get(language), event);

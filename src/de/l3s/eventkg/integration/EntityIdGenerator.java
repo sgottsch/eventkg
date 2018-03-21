@@ -1,39 +1,26 @@
 package de.l3s.eventkg.integration;
 
-import java.io.BufferedReader;
-import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
 
 import de.l3s.eventkg.integration.model.Entity;
 import de.l3s.eventkg.integration.model.relation.DataSet;
 import de.l3s.eventkg.integration.model.relation.GenericRelation;
-import de.l3s.eventkg.integration.model.relation.prefix.PrefixEnum;
-import de.l3s.eventkg.util.FileLoader;
-import de.l3s.eventkg.util.FileName;
 
 public class EntityIdGenerator {
 
 	private static SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-	private Map<DataSet, Map<String, String>> entityLabelsMap = new HashMap<DataSet, Map<String, String>>();
-	private Map<DataSet, Map<String, String>> eventLabelsMap = new HashMap<DataSet, Map<String, String>>();
-	private Map<DataSet, Map<String, String>> eventDescriptionsMap = new HashMap<DataSet, Map<String, String>>();
 	// private Map<String, String> relationsMap = new HashMap<String, String>();
 	// private Map<String, String> linkRelationsMap = new HashMap<String,
 	// String>();
 
-	private int lastEntityId;
-	private int lastEventId;
 	// private int lastRelationId;
 	// private int lastLinkRelationId;
+	private EventKGIdMappingLoader mappingLoader;
 
 	// public void load() {
 	//
@@ -115,13 +102,16 @@ public class EntityIdGenerator {
 
 	public void load() {
 
+		this.mappingLoader = new EventKGIdMappingLoader(true);
+
 		System.out.println("ID Generator: initEventIdMapping");
-		initEventIdMapping();
-		System.out.println(lastEventId + " / " + this.eventLabelsMap.size());
+		mappingLoader.initEventIdMapping();
+		System.out.println(this.mappingLoader.getLastEventId() + " / " + this.mappingLoader.getEventLabelsMap().size());
 
 		System.out.println("ID Generator: initEntityIdMapping");
-		initEntityIdMapping();
-		System.out.println(lastEntityId + " / " + this.entityLabelsMap.size());
+		mappingLoader.initEntityIdMapping();
+		System.out
+				.println(this.mappingLoader.getLastEntityId() + " / " + this.mappingLoader.getEntityLabelsMap().size());
 
 		// System.out.println("ID Generator: initRelationMap");
 		// initRelationMap();
@@ -132,168 +122,6 @@ public class EntityIdGenerator {
 		// initLinkRelationMap();
 		// System.out.println(lastLinkRelationId + " / " +
 		// this.linkRelationsMap.size());
-
-	}
-
-	public void initEntityIdMapping() {
-
-		for (DataSet dataSet : DataSets.getInstance().getAllDataSets())
-			entityLabelsMap.put(dataSet, new HashMap<String, String>());
-
-		BufferedReader br = null;
-		try {
-			try {
-				br = FileLoader.getReader(FileName.ALL_TTL_ENTITIES_WITH_TEXTS_PREVIOUS_VERSION);
-			} catch (FileNotFoundException e1) {
-				e1.printStackTrace();
-			}
-
-			String line;
-			while ((line = br.readLine()) != null) {
-
-				if (line.isEmpty() || line.startsWith("@"))
-					continue;
-
-				String[] parts = line.split(" ");
-
-				if (!parts[1].equals("owl:sameAs"))
-					continue;
-
-				String entityId = parts[0];
-				int entityNo = Integer
-						.valueOf(entityId.substring(entityId.lastIndexOf("_") + 1, entityId.length() - 1));
-				if (entityNo > this.lastEntityId)
-					this.lastEntityId = entityNo;
-
-				String entityLabel = parts[2];
-				entityLabel = entityLabel.substring(entityLabel.lastIndexOf("/") + 1, entityLabel.length() - 1);
-				String dataSetGraph = parts[3];
-
-				DataSet dataSet = DataSets.getInstance()
-						.getDataSetById(dataSetGraph.replace(PrefixEnum.EVENT_KG_GRAPH.getAbbr(), ""));
-
-				entityLabelsMap.get(dataSet).put(entityLabel, entityId);
-
-			}
-		} catch (IOException e) {
-			e.printStackTrace();
-		} finally {
-			try {
-				br.close();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		}
-
-	}
-
-	public void initEventIdMapping() {
-
-		for (DataSet dataSet : DataSets.getInstance().getAllDataSets()) {
-			eventLabelsMap.put(dataSet, new HashMap<String, String>());
-			eventDescriptionsMap.put(dataSet, new HashMap<String, String>());
-		}
-
-		Set<String> eventsWithoutLabels = new HashSet<String>();
-
-		BufferedReader br = null;
-		try {
-			try {
-				br = FileLoader.getReader(FileName.ALL_TTL_EVENTS_WITH_TEXTS_PREVIOUS_VERSION);
-			} catch (FileNotFoundException e1) {
-				e1.printStackTrace();
-			}
-
-			String line;
-			while ((line = br.readLine()) != null) {
-
-				if (line.isEmpty() || line.startsWith("@"))
-					continue;
-
-				String[] parts = line.split(" ");
-				String entityId = parts[0];
-				int eventNo = Integer.valueOf(entityId.substring(entityId.lastIndexOf("_") + 1, entityId.length() - 1));
-				if (eventNo > this.lastEventId)
-					this.lastEventId = eventNo;
-
-				eventsWithoutLabels.add(entityId);
-
-				if (!parts[1].equals("owl:sameAs"))
-					continue;
-
-				eventsWithoutLabels.remove(entityId);
-
-				String entityLabel = parts[2];
-				entityLabel = entityLabel.substring(entityLabel.lastIndexOf("/") + 1, entityLabel.length() - 1);
-				String dataSetGraph = parts[3];
-
-				DataSet dataSet = DataSets.getInstance()
-						.getDataSetById(dataSetGraph.replace(PrefixEnum.EVENT_KG_GRAPH.getAbbr(), ""));
-
-				eventLabelsMap.get(dataSet).put(entityLabel, entityId);
-
-			}
-		} catch (IOException e) {
-			e.printStackTrace();
-		} finally {
-			try {
-				br.close();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		}
-
-		try {
-			try {
-				br = FileLoader.getReader(FileName.ALL_TTL_EVENTS_WITH_TEXTS_PREVIOUS_VERSION);
-			} catch (FileNotFoundException e1) {
-				e1.printStackTrace();
-			}
-
-			String line;
-			while ((line = br.readLine()) != null) {
-
-				// because of quoted strings with space it is not so easy to
-				// split the line
-
-				if (line.isEmpty() || line.startsWith("@"))
-					continue;
-
-				String splitLine = line;
-
-				String entityId = splitLine.substring(0, splitLine.indexOf(" "));
-
-				if (!eventsWithoutLabels.contains(entityId))
-					continue;
-
-				splitLine = splitLine.substring(splitLine.indexOf(" ") + 1);
-				String property = splitLine.substring(0, splitLine.indexOf(" "));
-
-				if (!property.equals("dcterms:description"))
-					continue;
-
-				splitLine = StringUtils.stripEnd(splitLine.trim(), "\\.").trim();
-
-				splitLine = splitLine.substring(splitLine.indexOf(" ") + 1);
-				String dataSetGraph = splitLine.substring(splitLine.lastIndexOf(" ") + 1);
-				splitLine = splitLine.substring(0, splitLine.lastIndexOf(" "));
-				String description = splitLine;
-
-				description = description.substring(1, description.lastIndexOf("@") - 1).trim();
-				DataSet dataSet = DataSets.getInstance()
-						.getDataSetById(dataSetGraph.replace(PrefixEnum.EVENT_KG_GRAPH.getAbbr(), ""));
-
-				eventDescriptionsMap.get(dataSet).put(description, entityId);
-			}
-		} catch (IOException e) {
-			e.printStackTrace();
-		} finally {
-			try {
-				br.close();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		}
 
 	}
 
@@ -453,15 +281,15 @@ public class EntityIdGenerator {
 	// }
 
 	public Map<DataSet, Map<String, String>> getEntityLabelsMap() {
-		return entityLabelsMap;
+		return this.mappingLoader.getEntityLabelsMap();
 	}
 
 	public Map<DataSet, Map<String, String>> getEventLabelsMap() {
-		return eventLabelsMap;
+		return this.mappingLoader.getEventLabelsMap();
 	}
 
 	public Map<DataSet, Map<String, String>> getEventDescriptionsMap() {
-		return eventDescriptionsMap;
+		return this.mappingLoader.getEventDescriptionsMap();
 	}
 
 	// public Map<String, String> getRelationsMap() {
@@ -473,11 +301,11 @@ public class EntityIdGenerator {
 	// }
 
 	public int getLastEntityNo() {
-		return lastEntityId;
+		return this.mappingLoader.getLastEntityId();
 	}
 
 	public int getLastEventNo() {
-		return lastEventId;
+		return this.mappingLoader.getLastEventId();
 	}
 
 	// public int getLastRelationNo() {

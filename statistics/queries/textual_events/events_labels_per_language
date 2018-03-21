@@ -1,0 +1,27 @@
+PREFIX eventKG-s: <http://eventKG.l3s.uni-hannover.de/schema/>
+PREFIX eventKG-g: <http://eventKG.l3s.uni-hannover.de/graph/>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX sem: <http://semanticweb.cs.vu.nl/2009/11/sem/>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX owl: <http://www.w3.org/2002/07/owl#>
+PREFIX dbpedia-de: <http://de.dbpedia.org/resource/> 
+PREFIX dcterms: <http://purl.org/dc/terms/>
+
+
+SELECT ?label COUNT(*)
+
+{
+SELECT ?event (LANG(?label) AS ?label) {
+?event rdf:type sem:Event .
+
+?event dcterms:description ?label .
+FILTER NOT EXISTS { ?event owl:sameAs ?as } .
+#?event rdfs:label ?label .
+
+#FILTER(LANG(?label) = LANG(?label2)) .
+
+
+} GROUP BY ?event LANG(?label)
+
+}
+ GROUP BY ?label

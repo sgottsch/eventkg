@@ -157,7 +157,7 @@ public class TextualEventsExtractor extends Extractor {
 			Map<Entity, DataSet> relatedLocations = new HashMap<Entity, DataSet>();
 			Map<Language, Map<Entity, Integer>> relatedEntities = new HashMap<Language, Map<Entity, Integer>>();
 
-			Set<String> urls = new HashSet<String>();
+			Map<DataSet, Set<String>> urls = new HashMap<DataSet, Set<String>>();
 
 			// for each event cluster, keep track of the events' datasets; to
 			// finally take the most frequent one.
@@ -173,7 +173,9 @@ public class TextualEventsExtractor extends Extractor {
 				else
 					dataSetsWithCount.put(dataSet, dataSetsWithCount.get(dataSet) + 1);
 
-				urls.add(event.getWikipediaPage());
+				if (!urls.containsKey(dataSet))
+					urls.put(dataSet, new HashSet<String>());
+				urls.get(dataSet).add(event.getWikipediaPage());
 
 				for (Entity relatedEntity : event.getRelatedEntities()) {
 					if (!relatedEntities.containsKey(event.getLanguage()))

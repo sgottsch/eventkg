@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import de.l3s.eventkg.integration.DataStore;
 import de.l3s.eventkg.integration.WikidataIdMappings;
 import de.l3s.eventkg.integration.model.relation.DataSet;
 import de.l3s.eventkg.meta.Language;
@@ -33,9 +34,7 @@ public class Event extends Entity {
 
 	private Date endTime;
 
-	private Set<String> urls;
-
-	private Set<String> otherUrls;
+	private Map<DataSet, Set<String>> otherUrls;
 
 	private Set<String> eventInstanceComments = new HashSet<String>();
 
@@ -63,12 +62,18 @@ public class Event extends Entity {
 
 	public Event(Entity entity, WikidataIdMappings wikidataIdMappings) {
 		super(entity.getWikidataId());
+
 		for (Language language : entity.getWikipediaLabels().keySet()) {
 			this.wikipediaLabels.put(language, entity.getWikipediaLabels().get(language));
 		}
 
+		for (Language language : entity.getWikidataLabels().keySet()) {
+			this.wikidataLabels.put(language, entity.getWikidataLabels().get(language));
+		}
+
 		setEvent(true);
 		wikidataIdMappings.updateEntityToEvent(entity, this);
+		DataStore.getInstance().removeEntity(entity);
 	}
 
 	public Set<Event> getChildren() {
@@ -181,19 +186,11 @@ public class Event extends Entity {
 		return locationsWithDataSets;
 	}
 
-	public Set<String> getUrls() {
-		return urls;
-	}
-
-	public void setURLs(Set<String> urls) {
-		this.urls = urls;
-	}
-
-	public Set<String> getOtherUrls() {
+	public Map<DataSet, Set<String>> getOtherUrls() {
 		return otherUrls;
 	}
 
-	public void setOtherURLs(Set<String> otherUrls) {
+	public void setOtherURLs(Map<DataSet, Set<String>> otherUrls) {
 		this.otherUrls = otherUrls;
 	}
 

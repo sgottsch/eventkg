@@ -20,8 +20,16 @@ public class EventInstanceOriginsCounter {
 		for (String line : FileLoader.readLines(FileName.ALL_EVENT_PAGES)) {
 			String[] parts = line.split("\t");
 			String sourcesLine = parts[2];
-			for (String str : sourcesLine.split(" \\| ")) {
-				str = str.substring(0, str.indexOf("(")).trim();
+
+			String[] reasonParts = sourcesLine.split(" ");
+			Set<String> sources = new HashSet<String>();
+			// System.out.println(reason);
+			for (int ib = 0; ib < reasonParts.length; ib += 2) {
+				String oneReason = reasonParts[ib];
+				sources.add(oneReason);
+			}
+
+			for (String str : sources) {
 				if (!eventsBySource.containsKey(str))
 					eventsBySource.put(str, new HashSet<String>());
 				eventsBySource.get(str).add(parts[0]);
