@@ -240,6 +240,7 @@ public class DataStoreWriter {
 			prefixes.add(prefixList.getPrefix(PrefixEnum.WIKIDATA_ENTITY));
 			prefixes.add(prefixList.getPrefix(PrefixEnum.SEM));
 			prefixes.add(prefixList.getPrefix(PrefixEnum.OWL));
+			prefixes.add(prefixList.getPrefix(PrefixEnum.YAGO));
 
 			for (Language language : this.languages)
 				prefixes.add(prefixList.getPrefix(PrefixEnum.DBPEDIA_RESOURCE, language));
@@ -277,6 +278,11 @@ public class DataStoreWriter {
 							"<" + prefixList.getPrefix(PrefixEnum.WIKIDATA_ENTITY).getUrlPrefix()
 									+ event.getWikidataId() + ">",
 							false, dataSets.getDataSetWithoutLanguage(Source.WIKIDATA));
+
+				if (event.getYagoId() != null)
+					writeTriple(writer, writerPreview, lineNo, event.getId(), PrefixEnum.OWL.getAbbr() + "sameAs",
+							"<" + prefixList.getPrefix(PrefixEnum.YAGO).getUrlPrefix() + event.getYagoId() + ">", false,
+							dataSets.getDataSetWithoutLanguage(Source.YAGO));
 
 				if (event.getOtherUrls() != null) {
 					for (DataSet dataSet : event.getOtherUrls().keySet()) {
@@ -374,6 +380,7 @@ public class DataStoreWriter {
 			prefixes.add(prefixList.getPrefix(PrefixEnum.EVENT_KG_SCHEMA));
 			prefixes.add(prefixList.getPrefix(PrefixEnum.DCTERMS));
 			prefixes.add(prefixList.getPrefix(PrefixEnum.SEM));
+			prefixes.add(prefixList.getPrefix(PrefixEnum.YAGO));
 			prefixes.add(prefixList.getPrefix(PrefixEnum.OWL));
 			for (Language language : this.languages)
 				prefixes.add(prefixList.getPrefix(PrefixEnum.DBPEDIA_RESOURCE, language));
@@ -424,6 +431,11 @@ public class DataStoreWriter {
 							"<" + prefixList.getPrefix(PrefixEnum.WIKIDATA_ENTITY).getUrlPrefix()
 									+ entity.getWikidataId() + ">",
 							false, dataSets.getDataSetWithoutLanguage(Source.WIKIDATA));
+
+				if (entity.getYagoId() != null)
+					writeTriple(writer, writerPreview, lineNo, entity.getId(), PrefixEnum.OWL.getAbbr() + "sameAs",
+							"<" + prefixList.getPrefix(PrefixEnum.YAGO).getUrlPrefix() + entity.getYagoId() + ">",
+							false, dataSets.getDataSetWithoutLanguage(Source.YAGO));
 
 				for (Language language : entity.getWikipediaLabels().keySet()) {
 					Prefix prefix = prefixList.getPrefix(PrefixEnum.DBPEDIA_RESOURCE, language);

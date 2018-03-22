@@ -302,6 +302,7 @@ public class RawDataDownLoader {
 		urls.add("yagoDateFacts.ttl.7z");
 		urls.add("yagoFacts.ttl.7z");
 		urls.add("yagoMetaFacts.ttl.7z");
+		urls.add("yagoWikidataInstances.ttl.7z");
 
 		// TODO: Bug. Automated unzipping does not work anymore. Fix it!
 

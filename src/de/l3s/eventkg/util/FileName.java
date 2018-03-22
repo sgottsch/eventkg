@@ -297,6 +297,7 @@ public enum FileName {
 
 	// YAGO
 	YAGO_TAXONOMY("yagoTaxonomy.ttl", Source.YAGO, FileType.RAW_DATA, false, false, false),
+	YAGO_WIKIDATA_INSTANCES("yagoWikidataInstances.ttl", Source.YAGO, FileType.RAW_DATA, false, false, false),
 
 	/**
 	 * YAGO facts that have a temporal expression as object.

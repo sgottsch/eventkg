@@ -19,6 +19,7 @@ public class Entity {
 	protected Map<Language, Set<String>> wikidataLabels = new HashMap<Language, Set<String>>();
 
 	private String wikidataId;
+	private String yagoId;
 	private int numericWikidataId;
 
 	private String eventKGId;
@@ -89,6 +90,14 @@ public class Entity {
 
 	public void setWikidataId(String wikidataId) {
 		this.wikidataId = wikidataId;
+	}
+
+	public String getYagoId() {
+		return yagoId;
+	}
+
+	public void setYagoId(String yagoId) {
+		this.yagoId = yagoId;
 	}
 
 	public boolean isEvent() {

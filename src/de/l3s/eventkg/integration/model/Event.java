@@ -62,6 +62,7 @@ public class Event extends Entity {
 
 	public Event(Entity entity, WikidataIdMappings wikidataIdMappings) {
 		super(entity.getWikidataId());
+		setYagoId(entity.getYagoId());
 
 		for (Language language : entity.getWikipediaLabels().keySet()) {
 			this.wikipediaLabels.put(language, entity.getWikipediaLabels().get(language));

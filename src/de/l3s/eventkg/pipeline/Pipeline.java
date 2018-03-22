@@ -16,6 +16,7 @@ import de.l3s.eventkg.integration.LocationsIntegrator;
 import de.l3s.eventkg.integration.SubLocationsCollector;
 import de.l3s.eventkg.integration.TemporalRelationsCollector;
 import de.l3s.eventkg.integration.TimesIntegrator;
+import de.l3s.eventkg.integration.TypesWriter;
 import de.l3s.eventkg.integration.model.relation.prefix.PrefixList;
 import de.l3s.eventkg.meta.Language;
 import de.l3s.eventkg.meta.Source;
@@ -38,6 +39,7 @@ import de.l3s.eventkg.source.wikipedia.WikipediaLinkSetsExtractor;
 import de.l3s.eventkg.source.yago.YAGOEventLocationsExtractor;
 import de.l3s.eventkg.source.yago.YAGOEventRelationsExtractor;
 import de.l3s.eventkg.source.yago.YAGOExistenceTimeExtractor;
+import de.l3s.eventkg.source.yago.YAGOIDExtractor;
 import de.l3s.eventkg.textual_events.TextualEventsExtractor;
 
 public class Pipeline {
@@ -97,6 +99,12 @@ public class Pipeline {
 			pipeline.pipelineStep5();
 		} else
 			System.out.println("Skip step 5: Integration step 2.");
+
+		if (steps.contains(6)) {
+			System.out.println("Step 6: Type extraction step 2.");
+			pipeline.pipelineStep6();
+		} else
+			System.out.println("Skip step 6: Type extraction step 2.");
 	}
 
 	public Pipeline(List<Language> languages) {
@@ -182,6 +190,7 @@ public class Pipeline {
 		extractors.add(new LocationsIntegrator(languages));
 		extractors.add(new TemporalRelationsCollector(languages, getAllEventPagesDataSet())); //
 		extractors.add(new TimesIntegrator(languages));
+		extractors.add(new YAGOIDExtractor(languages, getAllEventPagesDataSet())); //
 		extractors.add(new WikipediaLinkCountsExtractor(languages, getAllEventPagesDataSet())); //
 		extractors.add(new WikipediaLinkSetsExtractor(languages, getAllEventPagesDataSet())); //
 		extractors.add(new LabelsAndDescriptionsExtractor(languages, getAllEventPagesDataSet())); //
@@ -195,6 +204,11 @@ public class Pipeline {
 		outputWriter.write();
 
 		System.out.println("Done.");
+	}
+
+	private void pipelineStep6() {
+		TypesWriter extractor = new TypesWriter(languages);
+		extractor.run();
 	}
 
 	private AllEventPagesDataSet getAllEventPagesDataSet() {
