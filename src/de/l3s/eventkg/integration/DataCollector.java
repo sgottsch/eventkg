@@ -1305,7 +1305,7 @@ public class DataCollector extends Extractor {
 		for (Entity parent : parents) {
 			if (!location.getAllParentLocations().contains(parent)) {
 				location.addAllParentLocation(parent);
-				collectAllParents(location, parent.getAllParentLocations());
+				collectAllParents(location, parent.getParentLocations());
 			}
 		}
 
