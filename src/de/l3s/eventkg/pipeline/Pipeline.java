@@ -113,8 +113,8 @@ public class Pipeline {
 
 	private void download() {
 		RawDataDownLoader downloader = new RawDataDownLoader(languages);
-		// downloader.createFolders();
-		// downloader.copyMetaFiles();
+		downloader.createFolders();
+		downloader.copyMetaFiles();
 		downloader.downloadFiles();
 	}
 
