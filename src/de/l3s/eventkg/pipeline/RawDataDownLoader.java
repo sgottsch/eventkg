@@ -1,24 +1,39 @@
 package de.l3s.eventkg.pipeline;
 
 import java.io.BufferedInputStream;
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.PrintWriter;
+import java.io.RandomAccessFile;
+import java.io.UnsupportedEncodingException;
 import java.io.Writer;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.URLEncoder;
 import java.nio.channels.Channels;
 import java.nio.channels.ReadableByteChannel;
 import java.nio.file.Files;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Enumeration;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipException;
+import java.util.zip.ZipFile;
 
 import org.apache.commons.compress.compressors.bzip2.BZip2CompressorInputStream;
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -27,6 +42,14 @@ import org.jsoup.select.Elements;
 import de.l3s.eventkg.meta.Language;
 import de.l3s.eventkg.util.FileLoader;
 import de.l3s.eventkg.util.FileName;
+import net.sf.sevenzipjbinding.ExtractOperationResult;
+import net.sf.sevenzipjbinding.ISequentialOutStream;
+import net.sf.sevenzipjbinding.SevenZip;
+import net.sf.sevenzipjbinding.SevenZipException;
+import net.sf.sevenzipjbinding.SevenZipNativeInitializationException;
+import net.sf.sevenzipjbinding.impl.RandomAccessFileInStream;
+import net.sf.sevenzipjbinding.simple.ISimpleInArchive;
+import net.sf.sevenzipjbinding.simple.ISimpleInArchiveItem;
 
 public class RawDataDownLoader {
 
@@ -227,12 +250,37 @@ public class RawDataDownLoader {
 
 	private void downloadWikidataFile() {
 
+		downloadWikidataQueryFiles();
+
 		this.dataPath = Config.getValue("data_folder");
 		this.metaDataPath = this.dataPath + FileLoader.ONLINE_META_FOLDER_SUFFIX;
 		this.dataPath = this.dataPath + FileLoader.ONLINE_RAW_DATA_FOLDER_SUFFIX;
 
 		downloadFile("https://dumps.wikimedia.org/wikidatawiki/entities/" + Config.getValue("wikidata") + "/wikidata-"
 				+ Config.getValue("wikidata") + "-all.json.gz", this.dataPath + "wikidata/dump.json.gz");
+	}
+
+	private void downloadWikidataQueryFiles() {
+
+		String query;
+		PrintWriter writer = null;
+		try {
+			query = IOUtils.toString(RawDataDownLoader.class
+					.getResource("/resource/meta_data/wikidata/equivalence_properties_query.sparql"), "UTF-8");
+
+			String url = "https://query.wikidata.org/sparql?query=" + URLEncoder.encode(query, "UTF-8")
+					+ "&format=json";
+			String res = IOUtils.toString(new URL(url), "UTF-8");
+
+			writer = FileLoader.getWriter(FileName.WIKIDATA_PROPERTY_EQUALITIES);
+			writer.write(res);
+
+		} catch (IOException e) {
+			e.printStackTrace();
+		} finally {
+			writer.close();
+		}
+
 	}
 
 	public void downloadDBPediaFiles() {
@@ -297,56 +345,163 @@ public class RawDataDownLoader {
 	public void downloadYAGOFiles() {
 
 		String yagoUrl = "http://resources.mpi-inf.mpg.de/yago-naga/yago3.1/";
-		Set<String> urls = new HashSet<String>();
-		urls.add("yagoTaxonomy.ttl.7z");
-		urls.add("yagoDateFacts.ttl.7z");
-		urls.add("yagoFacts.ttl.7z");
-		urls.add("yagoMetaFacts.ttl.7z");
-		urls.add("yagoWikidataInstances.ttl.7z");
+		Map<String, FileName> urls = new HashMap<String, FileName>();
+		urls.put("yagoTaxonomy.ttl.7z", FileName.YAGO_TAXONOMY);
+		urls.put("yagoDateFacts.ttl.7z", FileName.YAGO_DATE_FACTS);
+		urls.put("yagoFacts.ttl.7z", FileName.YAGO_FACTS);
+		urls.put("yagoMetaFacts.ttl.7z", FileName.YAGO_META_FACTS);
+		urls.put("yagoWikidataInstances.ttl.7z", FileName.YAGO_WIKIDATA_INSTANCES);
 
-		// TODO: Bug. Automated unzipping does not work anymore. Fix it!
+		try {
+			SevenZip.initSevenZipFromPlatformJAR();
+		} catch (SevenZipNativeInitializationException e) {
+			e.printStackTrace();
+		}
 
-		for (String urlString : urls) {
+		for (String urlString : urls.keySet()) {
 			File downloadedFile = null;
 
 			// try {
 
 			downloadedFile = downloadFile(yagoUrl + urlString, this.dataPath + "yago/" + urlString);
 
-			// InputStream inputStream = new FileInputStream(this.dataPath +
-			// "yago/" + urlString);
-			//
-			// SevenZFile sevenZFile = null;
-			//
-			// try {
-			// sevenZFile = new SevenZFile(downloadedFile);
-			// SevenZArchiveEntry entry = sevenZFile.getNextEntry();
-			// while (entry != null) {
-			// OutputStream out = new FileOutputStream(this.dataPath + "yago/" +
-			// entry.getName());
-			// byte[] content = new byte[(int) entry.getSize()];
-			// sevenZFile.read(content, 0, content.length);
-			// out.write(content);
-			// out.close();
-			// entry = sevenZFile.getNextEntry();
-			// }
-			// sevenZFile.close();
-			// inputStream.close();
-			// } catch (IOException e) {
-			// e.printStackTrace();
-			// }
-			//
-			// } catch (IOException e) {
-			// e.printStackTrace();
-			// } finally {
-			// try {
-			// Files.delete(downloadedFile.toPath());
-			// } catch (IOException e) {
-			// e.printStackTrace();
-			// }
-			// }
+			downloadedFile = new File(this.dataPath + "yago/" + urlString);
+
+			RandomAccessFile randomAccessFile = null;
+			ISimpleInArchive inArchive = null;
+			PrintWriter writer = null;
+
+			try {
+				writer = FileLoader.getWriter(urls.get(urlString));
+				randomAccessFile = new RandomAccessFile(downloadedFile.getPath(), "r");
+				inArchive = SevenZip.openInArchive(null, new RandomAccessFileInStream(randomAccessFile))
+						.getSimpleInterface();
+
+				// write the archive file content into new file
+				for (ISimpleInArchiveItem item : inArchive.getArchiveItems()) {
+
+					if (!item.isFolder()) {
+						ExtractOperationResult result;
+
+						final List<String> lineSets = new ArrayList<String>();
+
+						result = item.extractSlow(new ISequentialOutStream() {
+							public int write(byte[] data) throws SevenZipException {
+								try {
+									String str = new String(data, "UTF-8");
+									lineSets.add(str);
+								} catch (UnsupportedEncodingException e) {
+									e.printStackTrace();
+								}
+								return data.length;
+							}
+						});
+
+						for (String s : lineSets)
+							writer.write(s);
+
+						if (result != ExtractOperationResult.OK) {
+							System.err.println("Error extracting item: " + result);
+						}
+					}
+				}
+
+			} catch (Exception e) {
+				System.err.println("Error occurs: " + e);
+			} finally {
+				if (inArchive != null) {
+					try {
+						inArchive.close();
+					} catch (SevenZipException e) {
+						System.err.println("Error closing archive: " + e);
+					}
+				}
+				if (randomAccessFile != null) {
+					try {
+						randomAccessFile.close();
+					} catch (IOException e) {
+						System.err.println("Error closing file: " + e);
+					}
+				}
+				writer.close();
+			}
+
+			// Delete the archive file
+			try {
+				Files.delete(downloadedFile.toPath());
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+
 		}
 
+		downloadYAGODBPediaRelations();
+
+	}
+
+	private void downloadYAGODBPediaRelations() {
+
+		File zippedFile = downloadFile("http://webdam.inria.fr/paris/yd_relations.zip",
+				this.dataPath + "yago/" + "yd_relations.zip");
+
+		ZipFile zipFile = null;
+
+		try {
+			zipFile = new ZipFile(zippedFile);
+			Enumeration<? extends ZipEntry> entries = zipFile.entries();
+
+			while (entries.hasMoreElements()) {
+				ZipEntry entry = entries.nextElement();
+				System.out.println("\tIn Zip: " + entry.getName());
+
+				FileName fileName = null;
+
+				if (entry.getName().equals("relations_dbpedia_sub_yago.tsv"))
+					fileName = FileName.YAGO_FROM_DBPEDIA_RELATIONS;
+				else if (entry.getName().equals("relations_yago_sub_dbpedia.tsv"))
+					fileName = FileName.YAGO_TO_DBPEDIA_RELATIONS;
+				else {
+					System.err.println("Unknown file: " + fileName);
+					continue;
+				}
+
+				PrintWriter writer = null;
+				InputStream stream = null;
+				try {
+					stream = zipFile.getInputStream(entry);
+
+					writer = FileLoader.getWriter(fileName);
+					BufferedReader reader = new BufferedReader(new InputStreamReader(stream));
+
+					while (reader.ready()) {
+						String line = reader.readLine();
+						writer.write(line + Config.NL);
+					}
+
+				} finally {
+					stream.close();
+					writer.close();
+				}
+
+			}
+		} catch (ZipException e1) {
+			e1.printStackTrace();
+		} catch (IOException e1) {
+			e1.printStackTrace();
+		} finally {
+			try {
+				zipFile.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+
+		// Delete the archive file
+		try {
+			Files.delete(zippedFile.toPath());
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 
 	private File downloadFile(String url, String targetPath) {
@@ -359,8 +514,11 @@ public class RawDataDownLoader {
 		}
 		FileOutputStream fos = null;
 
+		int tries = 0;
+
 		boolean succ = false;
 		while (!succ) {
+			tries += 1;
 			System.out.println("Download file " + url + " to " + targetPath + ".");
 
 			try {
@@ -372,10 +530,16 @@ public class RawDataDownLoader {
 				e.printStackTrace();
 			} catch (IOException e) {
 				if (e.getMessage().contains("response code: 503")) {
-					// if server is overload: wait for 5 seconds and re-try
+
+					if (tries == 5) {
+						System.err.println("Could not download " + url + ". Continue.");
+						return null;
+					}
+
+					// if server is overload: wait for 1 minute and re-try
 					System.out.println(e.getMessage());
 					try {
-						Thread.sleep(5000);
+						Thread.sleep(60000);
 					} catch (InterruptedException e1) {
 						e1.printStackTrace();
 					}
