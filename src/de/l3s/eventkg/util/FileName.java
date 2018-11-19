@@ -118,6 +118,13 @@ public enum FileName {
 
 	WIKIDATA_EVENT_RELATIONS("wikidata_event_relations.tsv", Source.WIKIDATA, FileType.RESULTS, false, false, false),
 	WIKIDATA_ENTITY_RELATIONS("wikidata_entity_relations.tsv", Source.WIKIDATA, FileType.RESULTS, false, false, false),
+	WIKIDATA_PROPERTY_EQUALITIES(
+			"wikidata_property_equalities.json",
+			Source.WIKIDATA,
+			FileType.RAW_DATA,
+			false,
+			false,
+			false),
 
 	// Wikipedia Current Events
 	WCE_EVENTS("wce_events.tsv", Source.WCE, FileType.RESULTS, false, false, false),
@@ -268,9 +275,11 @@ public enum FileName {
 	ALL_TEXTUAL_EVENTS("textual_events.tsv", Source.ALL, FileType.RESULTS, false, false, false),
 	ALL_TEXTUAL_EVENTS_EVENTS("textual_events_events.tsv", Source.ALL, FileType.RESULTS, false, false, false),
 	ALL_TEXTUAL_EVENTS_ENTITIES("textual_events_entities.tsv", Source.ALL, FileType.RESULTS, false, false, false),
-
+	
 	// Raw data
 
+	SEM_ONTOLOGY("sem_onotlogy.rdf", Source.ALL, FileType.RAW_DATA, false, false, false),
+	
 	/**
 	 * Gzipped Wikidata dump
 	 */
@@ -303,6 +312,7 @@ public enum FileName {
 	 * YAGO facts that have a temporal expression as object.
 	 */
 	YAGO_DATE_FACTS("yagoDateFacts.ttl", Source.YAGO, FileType.RAW_DATA, false, false, false),
+	YAGO_LITERAL_FACTS("yagoLiteralFacts.ttl", Source.YAGO, FileType.RAW_DATA, false, false, false),
 	YAGO_FACTS("yagoFacts.ttl", Source.YAGO, FileType.RAW_DATA, false, false, false),
 
 	/**
@@ -310,6 +320,21 @@ public enum FileName {
 	 */
 	YAGO_META_FACTS("yagoMetaFacts.ttl", Source.YAGO, FileType.RAW_DATA, false, false, false),
 	YAGO_TIME_PROPERTIES("time_properties.tsv", Source.YAGO, FileType.META, false, false, false),
+
+	YAGO_TO_DBPEDIA_RELATIONS(
+			"yago_relations_yago_to_dbpedia.tsv",
+			Source.YAGO,
+			FileType.RAW_DATA,
+			false,
+			false,
+			false),
+	YAGO_FROM_DBPEDIA_RELATIONS(
+			"yago_relations_dbpedia_to_yago.tsv",
+			Source.YAGO,
+			FileType.RAW_DATA,
+			false,
+			false,
+			false),
 
 	// Wikipedia Current Events
 	WCE_EVENTS_FOLDER("events_", Source.WCE, FileType.RAW_DATA, true, false, false),

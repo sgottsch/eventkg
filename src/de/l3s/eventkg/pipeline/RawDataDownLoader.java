@@ -142,6 +142,7 @@ public class RawDataDownLoader {
 		(new File(dataPath + "raw_data/yago/")).mkdirs();
 		(new File(dataPath + "raw_data/wikidata/")).mkdirs();
 		(new File(dataPath + "raw_data/wce/")).mkdirs();
+		(new File(dataPath + "raw_data/all/")).mkdirs();
 
 		(new File(dataPath + "meta/wce/")).mkdirs();
 		(new File(dataPath + "meta/yago/")).mkdirs();
@@ -179,11 +180,19 @@ public class RawDataDownLoader {
 		this.dataPath = Config.getValue("data_folder");
 		this.dataPath = this.dataPath + FileLoader.ONLINE_RAW_DATA_FOLDER_SUFFIX;
 
+		downloadSEMOntology();
+		downloadYAGOFiles();
 		downloadWikipediaFiles();
 		downloadDBPediaFiles();
 		downloadWCEFiles();
-		downloadYAGOFiles();
 		downloadWikidataFile();
+	}
+
+	private void downloadSEMOntology() {
+
+		downloadFile("http://semanticweb.cs.vu.nl/2009/11/sem/sem.rdf",
+				FileLoader.getFileNameWithPath(FileName.SEM_ONTOLOGY));
+
 	}
 
 	private void downloadWikipediaFiles() {
@@ -292,6 +301,7 @@ public class RawDataDownLoader {
 		urls.add("mappingbased_objects_$lang$.ttl.bz2");
 		urls.add("mappingbased_literals_$lang$.ttl.bz2");
 		urls.add("geonames_links_$lang$.ttl.bz2");
+		urls.add("geonames_links_$lang$.ttl.bz2");
 
 		for (Language language : this.languages) {
 			for (String urlString : urls) {
@@ -351,6 +361,7 @@ public class RawDataDownLoader {
 		urls.put("yagoFacts.ttl.7z", FileName.YAGO_FACTS);
 		urls.put("yagoMetaFacts.ttl.7z", FileName.YAGO_META_FACTS);
 		urls.put("yagoWikidataInstances.ttl.7z", FileName.YAGO_WIKIDATA_INSTANCES);
+		urls.put("yagoLiteralFacts.ttl.7z", FileName.YAGO_LITERAL_FACTS);
 
 		try {
 			SevenZip.initSevenZipFromPlatformJAR();
