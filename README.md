@@ -37,7 +37,7 @@ The EventKG extraction pipeline consists of several steps described in the follo
 
 ```java -jar Pipeline.jar path_to_config_file.txt 2,3```
 
-4. Export the Dumper class (`de.l3s.eventkg.wikipedia.mwdumper.Dumper`) as Jar (`Dumper.jar`). Run the extraction from the Wikipedia dump files for each language by running the following command (here for Portuguese, replace `pt` with other languages if needed). [GNU parallel](https://www.gnu.org/software/parallel/) is required.
+4. Export the Dumper class (`de.l3s.eventkg.source.wikipedia.mwdumper.Dumper`) as Jar (`Dumper.jar`). Run the extraction from the Wikipedia dump files for each language by running the following command (here for Portuguese, replace `pt` with other languages if needed). [GNU parallel](https://www.gnu.org/software/parallel/) is required.
 
 ```nohup parallel -j9 "bzip2 -dc {} | java -jar -Xmx6G -Xss40m Dumper.jar path_to_config_file.txt pt" :::: data/raw_data/wikipedia/pt/dump_file_list.txt 2> log_dumper.txt```
 
