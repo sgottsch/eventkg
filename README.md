@@ -49,7 +49,7 @@ The EventKG extraction pipeline consists of several steps described in the follo
 
 ## Manual Configuration
 
-EventKG extracts information from several reference sources and fits them into the EventKG schema. Therefore, several expressions needs to be defined manually. This includes mappings from source-specific property labels to the EventKG schema and language-specific temporal expressions, as explained below.
+EventKG extracts information from several reference sources and fits them into the EventKG schema. Therefore, several expressions needs to be defined manually. This includes mappings from source-specific property labels to the EventKG schema and language-specific temporal expressions, as explained below. If the reference sources get updated or a new language is included in EventKG, manual changes are necessary for these files.
 
 ### Mappings
 
@@ -69,7 +69,7 @@ Several relations are directly mapped to properties defined in the EventKG schem
 For each language, a list of terms is needed that is used when extracting data from Wikipedia.
 
 Examples:
- - [English file](https://github.com/sgottsch/eventkg/blob/master/src/resource/meta_data/wikipedia/en/event_date_expressions.txt).
+ - [English file](https://github.com/sgottsch/eventkg/blob/master/src/resource/meta_data/wikipedia/en/event_date_expressions.txt)
  - [German file](https://github.com/sgottsch/eventkg/blob/master/src/resource/meta_data/wikipedia/de/event_date_expressions.txt)
 
 | Name | Meaning | Examples (en) |
@@ -97,7 +97,7 @@ Examples:
 For each language, a list of time expressions is needed that is used when extracting textual events from Wikipedia event lists.
 
 Examples:
- - [English file](https://github.com/sgottsch/eventkg/blob/master/src/resource/meta_data/wikipedia/en/event_date_expressions.txt).
+ - [English file](https://github.com/sgottsch/eventkg/blob/master/src/resource/meta_data/wikipedia/en/event_date_expressions.txt)
  - [German file](https://github.com/sgottsch/eventkg/blob/master/src/resource/meta_data/wikipedia/de/event_date_expressions.txt)
 
 | Name | Meaning |
