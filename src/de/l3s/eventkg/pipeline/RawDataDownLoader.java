@@ -99,6 +99,12 @@ public class RawDataDownLoader {
 							.getResource("/resource/meta_data/yago/" + FileName.YAGO_TIME_PROPERTIES.getFileName()),
 					new File(metaDataPath + "yago/" + FileName.YAGO_TIME_PROPERTIES.getFileName()));
 
+			// DBpedia
+			FileUtils.copyURLToFile(
+					RawDataDownLoader.class
+							.getResource("/resource/meta_data/dbpedia/" + FileName.DBPEDIA_PART_OF_PROPERTIES.getFileName()),
+					new File(metaDataPath + "dbpedia/" + FileName.DBPEDIA_PART_OF_PROPERTIES.getFileName()));
+			
 			// EventKG
 			FileUtils.copyURLToFile(
 					RawDataDownLoader.class
@@ -148,6 +154,7 @@ public class RawDataDownLoader {
 		(new File(dataPath + "meta/yago/")).mkdirs();
 		(new File(dataPath + "meta/wikidata/")).mkdirs();
 		(new File(dataPath + "meta/wce/")).mkdirs();
+		(new File(dataPath + "meta/dbpedia/")).mkdirs();
 		(new File(dataPath + "meta/all/")).mkdirs();
 
 		(new File(dataPath + "results/wce/")).mkdirs();

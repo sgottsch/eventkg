@@ -143,10 +143,27 @@ public class DBpediaPartOfLoader extends Extractor {
 
 		Set<String> targetProperties = new HashSet<String>();
 
-		targetProperties.add("<http://dbpedia.org/ontology/isPartOfMilitaryConflict>");
-		targetProperties.add("<http://dbpedia.org/ontology/isPartOf>");
-		targetProperties.add("<http://dbpedia.org/ontology/isPartOfWineRegion>");
-		targetProperties.add("<http://dbpedia.org/ontology/isPartOfAnatomicalStructure>");
+		BufferedReader br = null;
+		try {
+			try {
+				br = FileLoader.getReader(FileName.DBPEDIA_PART_OF_PROPERTIES);
+			} catch (FileNotFoundException e1) {
+				e1.printStackTrace();
+			}
+
+			String line;
+			while ((line = br.readLine()) != null) {
+				targetProperties.add(line);
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				br.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
 
 		return targetProperties;
 	}

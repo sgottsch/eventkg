@@ -6,8 +6,10 @@ import java.io.IOException;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import de.l3s.eventkg.integration.model.Entity;
@@ -22,6 +24,7 @@ import de.l3s.eventkg.meta.Source;
 import de.l3s.eventkg.pipeline.Config;
 import de.l3s.eventkg.pipeline.Config.TimeSymbol;
 import de.l3s.eventkg.pipeline.Extractor;
+import de.l3s.eventkg.source.dbpedia.DBpediaPartOfLoader;
 import de.l3s.eventkg.source.yago.util.YAGOLabelExtractor;
 import de.l3s.eventkg.util.FileLoader;
 import de.l3s.eventkg.util.FileName;
@@ -30,6 +33,7 @@ import de.l3s.eventkg.util.TimeTransformer;
 public class TemporalRelationsCollector extends Extractor {
 
 	public static void main(String[] args) {
+
 		List<Language> languages = new ArrayList<Language>();
 		languages.add(Language.DE);
 
@@ -51,6 +55,8 @@ public class TemporalRelationsCollector extends Extractor {
 
 	private AllEventPagesDataSet allEventPagesDataSet;
 	private Set<Relation> relations = new HashSet<Relation>();
+
+	private Set<String> partOfProperties;
 
 	public void run() {
 		System.out.println("Load YAGO.");
@@ -499,6 +505,11 @@ public class TemporalRelationsCollector extends Extractor {
 
 	private void loadDBpedia(FileName fileName, boolean loadEntityRelations) {
 
+		Set<String> ignoredProperties = new HashSet<String>();
+		for (String property : DBpediaPartOfLoader.loadPartOfProperties()) {
+			ignoredProperties.add(property.substring(property.lastIndexOf("/") + 1, property.length() - 1));
+		}
+
 		System.out.println("loadDBpedia: " + fileName.getFileName() + ".");
 
 		for (Language language : this.languages) {
@@ -529,9 +540,9 @@ public class TemporalRelationsCollector extends Extractor {
 							continue;
 
 						// TODO: Check before
-						if (property.equals("isPartOfMilitaryConflict") || property.equals("isPartOf")
-								|| property.equals("isPartOfWineRegion")
-								|| property.equals("isPartOfAnatomicalStructure"))
+						if (this.partOfProperties.contains(property))
+							continue;
+						if (ignoredProperties.contains(property))
 							continue;
 
 						Entity entity1 = buildEntity(language, entityLabel1);

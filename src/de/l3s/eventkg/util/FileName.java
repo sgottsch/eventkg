@@ -275,11 +275,11 @@ public enum FileName {
 	ALL_TEXTUAL_EVENTS("textual_events.tsv", Source.ALL, FileType.RESULTS, false, false, false),
 	ALL_TEXTUAL_EVENTS_EVENTS("textual_events_events.tsv", Source.ALL, FileType.RESULTS, false, false, false),
 	ALL_TEXTUAL_EVENTS_ENTITIES("textual_events_entities.tsv", Source.ALL, FileType.RESULTS, false, false, false),
-	
+
 	// Raw data
 
 	SEM_ONTOLOGY("sem_onotlogy.rdf", Source.ALL, FileType.RAW_DATA, false, false, false),
-	
+
 	/**
 	 * Gzipped Wikidata dump
 	 */
@@ -303,6 +303,8 @@ public enum FileName {
 			false,
 			false),
 	DBPEDIA_GEONAMES_LINKS("geonames_links_$lang$.ttl", Source.DBPEDIA, FileType.RAW_DATA, false, false, false),
+
+	DBPEDIA_PART_OF_PROPERTIES("part_of_properties.tsv", Source.DBPEDIA, FileType.META, false, false, false),
 
 	// YAGO
 	YAGO_TAXONOMY("yagoTaxonomy.ttl", Source.YAGO, FileType.RAW_DATA, false, false, false),
