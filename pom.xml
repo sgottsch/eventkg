@@ -74,11 +74,8 @@
 			<artifactId>xz</artifactId>
 			<version>1.6</version>
 		</dependency>
-		<dependency>
-			<groupId>org.apache.commons</groupId>
-			<artifactId>commons-compress</artifactId>
-			<version>1.14</version>
-		</dependency>
+		<!-- <dependency> <groupId>org.apache.commons</groupId> <artifactId>commons-compress</artifactId> 
+			<version>1.14</version> </dependency> -->
 		<dependency>
 			<groupId>net.sf.trove4j</groupId>
 			<artifactId>trove4j</artifactId>
