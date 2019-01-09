@@ -278,7 +278,7 @@ public enum FileName {
 
 	// Raw data
 
-	SEM_ONTOLOGY("sem_onotlogy.rdf", Source.ALL, FileType.RAW_DATA, false, false, false),
+	SEM_ONTOLOGY("sem_ontology.rdf", Source.ALL, FileType.RAW_DATA, false, false, false),
 
 	/**
 	 * Gzipped Wikidata dump
