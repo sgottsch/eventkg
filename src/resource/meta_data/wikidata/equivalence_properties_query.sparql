@@ -1,0 +1,5 @@
+SELECT ?property1 ?property2 
+WHERE 
+{
+  ?property1 wdt:P1628 ?property2 .
+}
