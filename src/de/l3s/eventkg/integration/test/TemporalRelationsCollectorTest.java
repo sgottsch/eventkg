@@ -2,12 +2,12 @@ package de.l3s.eventkg.integration.test;
 
 import java.text.ParseException;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
 import de.l3s.eventkg.integration.WikidataIdMappings;
+import de.l3s.eventkg.integration.model.DateWithGranularity;
 import de.l3s.eventkg.integration.model.Entity;
 import de.l3s.eventkg.integration.model.Relation;
 import de.l3s.eventkg.meta.Language;
@@ -51,7 +51,7 @@ public class TemporalRelationsCollectorTest {
 				TimeSymbol type = wikidataIdMappings.getWikidataTemporalPropertyTypeById(propertyWikidataId);
 
 				if (type == TimeSymbol.START_TIME || type == TimeSymbol.START_AND_END_TIME) {
-					Date startTime;
+					DateWithGranularity startTime;
 					try {
 						startTime = TimeTransformer.generateEarliestTimeForWikidata(timeString);
 						if (startTime != null && previousRelation != null)
@@ -61,7 +61,7 @@ public class TemporalRelationsCollectorTest {
 					}
 				}
 				if (type == TimeSymbol.END_TIME || type == TimeSymbol.START_AND_END_TIME) {
-					Date endTime;
+					DateWithGranularity endTime;
 					try {
 						endTime = TimeTransformer.generateLatestTimeForWikidata(timeString);
 						if (endTime != null && previousRelation != null)

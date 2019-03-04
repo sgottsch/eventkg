@@ -1,9 +1,12 @@
 package de.l3s.eventkg.source.currentevents.model;
 
+import java.io.Serializable;
 import java.util.Date;
 import java.util.Set;
 
-public class WCEEvent {
+public class WCEEvent implements Serializable {
+
+	private static final long serialVersionUID = 1L;
 
 	private long id;
 
@@ -17,10 +20,8 @@ public class WCEEvent {
 
 	private Set<Source> sources;
 
-	private String method;
-
 	private Story story;
-	
+
 	public WCEEvent(Date date, String description, Category category, Set<WCEEntity> entities, Set<Source> sources) {
 		this.date = date;
 		this.description = description;
@@ -29,7 +30,8 @@ public class WCEEvent {
 		this.sources = sources;
 	}
 
-	public WCEEvent(Long id, Date date, String description, Category category, Story story, Set<WCEEntity> entities, Set<Source> sources) {
+	public WCEEvent(Long id, Date date, String description, Category category, Story story, Set<WCEEntity> entities,
+			Set<Source> sources) {
 		this.id = id;
 		this.date = date;
 		this.description = description;
@@ -85,14 +87,6 @@ public class WCEEvent {
 
 	public void setCategory(Category category) {
 		this.category = category;
-	}
-
-	public String getMethod() {
-		return method;
-	}
-
-	public void setMethod(String method) {
-		this.method = method;
 	}
 
 	public Story getStory() {

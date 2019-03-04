@@ -15,6 +15,7 @@ import java.util.regex.Pattern;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 
+import de.l3s.eventkg.integration.model.DateGranularity;
 import de.l3s.eventkg.meta.Language;
 import de.l3s.eventkg.pipeline.Config;
 import de.l3s.eventkg.source.wikipedia.RedirectsTableCreator;
@@ -63,6 +64,8 @@ public class EventExtractorFromYearPages {
 		enMap.put(53347099, "Green Light (Lorde song)");
 		enMap.put(2646680, "1989 in British music");
 		enMap.put(2843484, "1965 in Australia");
+		enMap.put(49041453, "2016 in Philippine sports");
+		enMap.put(34632, "1941");
 		exampleTexts.put(Language.EN, enMap);
 
 		Map<Integer, String> deMap = new HashMap<Integer, String>();
@@ -95,8 +98,12 @@ public class EventExtractorFromYearPages {
 		ptMap.put(1989, "1897");
 		exampleTexts.put(Language.PT, ptMap);
 
-		Language language = Language.EN;
-		int id = 2843484;
+		Map<Integer, String> itMap = new HashMap<Integer, String>();
+		itMap.put(4676, "1987");
+		exampleTexts.put(Language.IT, itMap);
+
+		Language language = Language.IT;
+		int id = 4676;
 
 		// TODO: Do this before
 		WikiWords.getInstance().init(language);
@@ -320,9 +327,18 @@ public class EventExtractorFromYearPages {
 				while (changed) {
 
 					changed = false;
-
 					Pattern p = ReferenceAndTemplateRemover.getInstance(language).getLinksFindPattern();
-					Matcher m = p.matcher(event.getRawText());
+
+					// on https://en.wikipedia.org/wiki/1941, it says "Below,
+					// the events of World War II have the "WWII" prefix."
+					// Resolve that.
+					String rawText = event.getRawText();
+					if (language == Language.EN && rawText.startsWith("WWII:"))
+						rawText = rawText.replaceFirst("WWII:", "[[World_War_II]]:");
+					if (language == Language.EN && rawText.startsWith("WWI:"))
+						rawText = rawText.replaceFirst("WWI:", "[[World_War_I]]:");
+
+					Matcher m = p.matcher(rawText);
 
 					StringBuffer sb = new StringBuffer();
 					while (m.find()) {
@@ -342,12 +358,25 @@ public class EventExtractorFromYearPages {
 							m.appendReplacement(sb, "");
 							continue;
 						}
+
+						// detect leading links as in "Stati Uniti: tragico
+						// suicidio in diretta televisiva". The link needs to
+						// stay, but it should be removed from the text.
+						boolean isLeadingLink = false;
+						if (m.start() == 0 && rawText.length() > m.end() && rawText.charAt(m.end()) == ':')
+							isLeadingLink = true;
+
 						if (linkName.contains("|")) {
 							anchorText = linkName.substring(linkName.indexOf("|") + 1, linkName.length());
 							linkName = linkName.substring(0, linkName.indexOf("|"));
 						}
 						String insertedAnchorText = Matcher.quoteReplacement(anchorText);
-						m.appendReplacement(sb, insertedAnchorText);
+
+						if (isLeadingLink)
+							m.appendReplacement(sb, "");
+						else
+							m.appendReplacement(sb, insertedAnchorText);
+
 						if (linkName.equals("#"))
 							continue;
 
@@ -355,8 +384,13 @@ public class EventExtractorFromYearPages {
 						if (linkName == null)
 							continue;
 
-						if (!linkName.contains("#"))
-							event.addLink(linkName);
+						if (!linkName.contains("#")) {
+							if (isLeadingLink)
+								event.setLeadingLink(linkName);
+							else
+								event.addLink(linkName);
+						}
+
 					}
 					m.appendTail(sb);
 					event.setRawText(sb.toString());
@@ -375,6 +409,11 @@ public class EventExtractorFromYearPages {
 			// Clean text again after link removal
 			event.setRawText(cleanTextPart(event.getRawText()));
 			if (event.getRawText() == null)
+				continue;
+
+			// ignore too short events, e.g. "WWII:" in
+			// https://en.wikipedia.org/wiki/1941
+			if (event.getRawText().length() <= 10)
 				continue;
 
 			String line = getEventLine(event);
@@ -437,18 +476,17 @@ public class EventExtractorFromYearPages {
 			startDate = node.getPartialDate().transformToStartDate();
 			endDate = node.getPartialDate().transformToEndDate();
 
-			PartialDate.Granularity granularity = PartialDate.Granularity.YEAR;
+			DateGranularity granularity = DateGranularity.YEAR;
 			if (!node.getPartialDate().getDays().isEmpty()) {
-				granularity = PartialDate.Granularity.DAY;
+				granularity = DateGranularity.DAY;
 			} else if (!node.getPartialDate().getMonths().isEmpty()) {
-				granularity = PartialDate.Granularity.MONTH;
+				granularity = DateGranularity.MONTH;
 			}
 			if (node.getType() != LineNode.NodeType.TITLE) {
 				Event event = new Event(startDate, endDate, node.getLine());
 				event.setGranularity(granularity);
 				event.setOriginalText(node.getOriginalLine());
 				event.setCategories(node.getTitles());
-
 				this.events.add(event);
 			}
 		}
@@ -633,11 +671,12 @@ public class EventExtractorFromYearPages {
 			return null;
 		}
 
-		String line = this.pageId + "\t" + this.pageTitle + Config.TAB + this.year + Config.TAB + this.month
-				+ Config.TAB + this.day + "\t" + this.dateFormat.format(event.getStartDate()) + "\t"
-				+ this.dateFormat.format(event.getEndDate()) + "\t" + event.getRawText().replaceAll("\t", " ") + "\t"
-				+ event.getCategories() + "\t" + event.getGranularity() + Config.TAB
-				+ StringUtils.join(event.getLinks(), " ");
+		String line = this.pageId + Config.TAB + this.pageTitle + Config.TAB + this.year + Config.TAB + this.month
+				+ Config.TAB + this.day + Config.TAB + this.dateFormat.format(event.getStartDate()) + Config.TAB
+				+ this.dateFormat.format(event.getEndDate()) + Config.TAB
+				+ event.getRawText().replaceAll(Config.TAB, " ") + Config.TAB + event.getCategories() + Config.TAB
+				+ event.getGranularity() + Config.TAB + StringUtils.join(event.getLinks(), " ") + Config.TAB
+				+ event.getLeadingLink();
 
 		return line;
 

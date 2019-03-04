@@ -60,6 +60,9 @@ File
 # categoryLabel
 Категория
 
+# templateLabel
+Шаблоны
+
 # imageLabels
 Файл
 Image
@@ -70,6 +73,10 @@ File
 
 # categoryPrefixes
 Категория:
+
+# templatePrefixes
+Шаблоны:
+Шаблон:
 
 # eventsLabels
 События

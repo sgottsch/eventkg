@@ -7,7 +7,9 @@ import java.util.List;
 
 import de.l3s.eventkg.integration.DataSets;
 import de.l3s.eventkg.integration.DataStore;
-import de.l3s.eventkg.integration.TimesIntegrator;
+import de.l3s.eventkg.integration.integrator.TimesIntegrator;
+import de.l3s.eventkg.integration.model.DateGranularity;
+import de.l3s.eventkg.integration.model.DateWithGranularity;
 import de.l3s.eventkg.integration.model.Entity;
 import de.l3s.eventkg.integration.model.relation.StartTime;
 import de.l3s.eventkg.meta.Language;
@@ -56,13 +58,13 @@ public class TimesIntegratorTest {
 		// ~~~
 
 		StartTime time1 = new StartTime(entity1, DataSets.getInstance().getDataSetWithoutLanguage(Source.YAGO),
-				dateFormat.parse("1896-12-17"));
+				new DateWithGranularity(dateFormat.parse("1896-12-17"),DateGranularity.DAY));
 		StartTime time4 = new StartTime(entity1, DataSets.getInstance().getDataSet(Language.DE, Source.DBPEDIA),
-				dateFormat.parse("1895-12-17"));
+				new DateWithGranularity(dateFormat.parse("1895-12-17"),DateGranularity.DAY));
 		StartTime time2 = new StartTime(entity1, DataSets.getInstance().getDataSetWithoutLanguage(Source.YAGO),
-				dateFormat.parse("2009-06-30"));
+				new DateWithGranularity(dateFormat.parse("2009-06-30"),DateGranularity.DAY));
 		StartTime time3 = new StartTime(entity1, DataSets.getInstance().getDataSet(Language.EN, Source.DBPEDIA),
-				dateFormat.parse("2011-12-18"));
+				new DateWithGranularity(dateFormat.parse("2011-12-18"),DateGranularity.DAY));
 
 		DataStore.getInstance().addStartTime(time1);
 		DataStore.getInstance().addStartTime(time2);
@@ -74,7 +76,7 @@ public class TimesIntegratorTest {
 		System.out.println("");
 
 		for (StartTime st : DataStore.getInstance().getStartTimes()) {
-			System.out.println(st.getDataSet().getSource() + "\t" + dateFormat.format(st.getStartTime()));
+			System.out.println(st.getDataSet().getSource() + "\t" + dateFormat.format(st.getStartTime().getDate()));
 		}
 	}
 

@@ -7,13 +7,18 @@ import java.io.PrintWriter;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 import de.l3s.eventkg.meta.Language;
 import de.l3s.eventkg.pipeline.Extractor;
@@ -38,8 +43,54 @@ public class EventsFromFileExtractor extends Extractor {
 	}
 
 	public void run() {
+		createJSONFiles();
 		loadFiles();
 		printEvents();
+	}
+
+	private void createJSONFiles() {
+
+		WCEParser parser = new WCEParser();
+
+		Map<Integer, List<WCEEvent>> eventsPerYear = new HashMap<Integer, List<WCEEvent>>();
+		for (File file : FileLoader.getFilesList(FileName.WCE_EVENTS_WIKIPEDIA_FOLDER)) {
+			String fileName = file.getName().replace("events_", "");
+			int year = Integer.valueOf(fileName.substring(0, fileName.indexOf("_")));
+			// int month =
+			// Integer.valueOf(fileName.substring(fileName.lastIndexOf("_") + 1,
+			// fileName.indexOf(".")));
+			try {
+				System.out.println("Parse " + fileName);
+				List<WCEEvent> events = parser.getEvents(new JSONObject(FileLoader.readFile(file)));
+				if (eventsPerYear.containsKey(year))
+					eventsPerYear.get(year).addAll(events);
+				else
+					eventsPerYear.put(year, events);
+				System.out.println(year + " -> " + eventsPerYear.get(year).size());
+			} catch (JSONException | IOException e) {
+				e.printStackTrace();
+			}
+		}
+
+		for (int year : eventsPerYear.keySet()) {
+			System.out.println("Store into file: year " + year + ". " + FileLoader.getPath(FileName.WCE_EVENTS_FOLDER)
+					+ "/events_" + year + ".json");
+			Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd").create();
+			String eventsJSON = gson.toJson(eventsPerYear.get(year));
+			System.out.println("\t-> " + eventsPerYear.get(year).size() + " events");
+			PrintWriter resultWriter = null;
+			try {
+				resultWriter = new PrintWriter(
+						FileLoader.getPath(FileName.WCE_EVENTS_FOLDER) + "/events_" + year + ".json");
+				resultWriter.write(eventsJSON);
+			} catch (FileNotFoundException e) {
+				e.printStackTrace();
+			} finally {
+				resultWriter.close();
+			}
+
+		}
+
 	}
 
 	private void printEvents() {
@@ -51,8 +102,8 @@ public class EventsFromFileExtractor extends Extractor {
 			Set<String> storyNames = new HashSet<String>();
 			for (WCEEvent event : dataStore.getEvents()) {
 				if (event.getStory() != null) {
-					String storyName = event.getStory().getUrl()
-							.substring(event.getStory().getUrl().lastIndexOf("/") + 1);
+					String storyName = event.getStory().getWikipediaUrl()
+							.substring(event.getStory().getWikipediaUrl().lastIndexOf("/") + 1);
 					storyNames.add(storyName);
 				}
 				// System.out.println(event.getDate());
@@ -103,6 +154,8 @@ public class EventsFromFileExtractor extends Extractor {
 
 	private void processFile(File file) {
 
+		System.out.println("Process file " + file.getName());
+
 		try {
 			String content = FileLoader.readFile(file);
 			JSONArray arr = new JSONArray(content);
@@ -134,7 +187,7 @@ public class EventsFromFileExtractor extends Extractor {
 		} catch (ParseException e) {
 			e.printStackTrace();
 		}
-		String description = obj.getString("description");
+		String description = obj.getString("description").trim();
 
 		long id = obj.getLong("id");
 
@@ -150,11 +203,10 @@ public class EventsFromFileExtractor extends Extractor {
 			story = parseStoryObject(obj.getJSONObject("belongsToStory"));
 		}
 
-		Set<WCEEntity> entities = parseEntityArray(obj.getJSONArray("entity"));
-		Set<Source> sources = parseSourceArray(obj.getJSONArray("source"));
+		Set<WCEEntity> entities = parseEntityArray(obj.getJSONArray("entities"));
+		Set<Source> sources = parseSourceArray(obj.getJSONArray("sources"));
 
 		WCEEvent event = new WCEEvent(id, date, description, category, story, entities, sources);
-		event.setMethod("ev");
 		dataStore.getEventsByID().put(event.getId(), event);
 	}
 
@@ -171,11 +223,11 @@ public class EventsFromFileExtractor extends Extractor {
 
 	private WCEEntity parseEntityObject(JSONObject obj) {
 
-		String name = obj.getString("name");
+		// String name = obj.getString("name");
 		String url = obj.getString("wikiURL");
 		long id = obj.getLong("id");
 
-		WCEEntity entity = dataStore.getEntity(id, name, url);
+		WCEEntity entity = dataStore.getEntity(id, url);
 
 		return entity;
 	}
@@ -199,6 +251,7 @@ public class EventsFromFileExtractor extends Extractor {
 		Story story = dataStore.getStory(id, name, url);
 
 		return story;
+
 	}
 
 	private Set<Source> parseSourceArray(JSONArray arr) {
@@ -222,6 +275,7 @@ public class EventsFromFileExtractor extends Extractor {
 		Source source = dataStore.getSource(id, url, type, sourceName);
 
 		return source;
+
 	}
 
 	public DataStore getDataStore() {

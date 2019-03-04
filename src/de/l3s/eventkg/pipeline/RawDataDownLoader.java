@@ -20,10 +20,12 @@ import java.nio.channels.Channels;
 import java.nio.channels.ReadableByteChannel;
 import java.nio.file.Files;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -46,7 +48,6 @@ import net.sf.sevenzipjbinding.ExtractOperationResult;
 import net.sf.sevenzipjbinding.ISequentialOutStream;
 import net.sf.sevenzipjbinding.SevenZip;
 import net.sf.sevenzipjbinding.SevenZipException;
-import net.sf.sevenzipjbinding.SevenZipNativeInitializationException;
 import net.sf.sevenzipjbinding.impl.RandomAccessFileInStream;
 import net.sf.sevenzipjbinding.simple.ISimpleInArchive;
 import net.sf.sevenzipjbinding.simple.ISimpleInArchiveItem;
@@ -71,10 +72,6 @@ public class RawDataDownLoader {
 							+ FileName.WIKIDATA_MANUAL_FORBIDDEN_PROPERTY_NAMES.getFileName()),
 					new File(metaDataPath + "wikidata/"
 							+ FileName.WIKIDATA_MANUAL_FORBIDDEN_PROPERTY_NAMES.getFileName()));
-			FileUtils.copyURLToFile(
-					RawDataDownLoader.class.getResource("/resource/meta_data/wikidata/"
-							+ FileName.WIKIDATA_EXTERNAL_IDS_PROPERTY_NAMES.getFileName()),
-					new File(metaDataPath + "wikidata/" + FileName.WIKIDATA_EXTERNAL_IDS_PROPERTY_NAMES.getFileName()));
 			FileUtils.copyURLToFile(
 					RawDataDownLoader.class.getResource(
 							"/resource/meta_data/wikidata/" + FileName.WIKIDATA_LOCATION_PROPERTY_NAMES.getFileName()),
@@ -101,10 +98,10 @@ public class RawDataDownLoader {
 
 			// DBpedia
 			FileUtils.copyURLToFile(
-					RawDataDownLoader.class
-							.getResource("/resource/meta_data/dbpedia/" + FileName.DBPEDIA_PART_OF_PROPERTIES.getFileName()),
+					RawDataDownLoader.class.getResource(
+							"/resource/meta_data/dbpedia/" + FileName.DBPEDIA_PART_OF_PROPERTIES.getFileName()),
 					new File(metaDataPath + "dbpedia/" + FileName.DBPEDIA_PART_OF_PROPERTIES.getFileName()));
-			
+
 			// EventKG
 			FileUtils.copyURLToFile(
 					RawDataDownLoader.class
@@ -255,13 +252,44 @@ public class RawDataDownLoader {
 	}
 
 	private void downloadWCEFiles() {
-		String url = "http://wikitimes.l3s.de/webresources/WebService/getEvents/json/$yyyy$-01-01/$yyyy$-12-31";
+		// wikitimes is out of service!
+		// String url =
+		// "http://wikitimes.l3s.de/webresources/WebService/getEvents/json/$yyyy$-01-01/$yyyy$-12-31";
+		//
+		// int currentYear = Calendar.getInstance().get(Calendar.YEAR);
+		// for (int year = 2000; year <= currentYear; year++) {
+		// downloadFile(url.replaceAll("\\$yyyy\\$", String.valueOf(year)),
+		// this.dataPath + "wce/events_" + String.valueOf(year) + ".txt");
+		// }
 
-		int currentYear = Calendar.getInstance().get(Calendar.YEAR);
-		for (int year = 2000; year <= currentYear; year++) {
-			downloadFile(url.replaceAll("\\$yyyy\\$", String.valueOf(year)),
-					this.dataPath + "wce/events_" + String.valueOf(year) + ".txt");
+		List<String> monthNames = Arrays.asList("January", "February", "March", "April", "May", "June", "July",
+				"August", "September", "October", "November", "December");
+
+		String url = "https://en.wikipedia.org/w/api.php?action=parse&page=Portal:Current_events/$date$&action=parse&format=json";
+
+		Calendar c = Calendar.getInstance();
+		int currentYear = c.get(Calendar.YEAR);
+		int currentMonth = c.get(Calendar.MONTH);
+
+		for (int year = 1994; year <= currentYear; year++) {
+			for (int month = 0; month <= 11; month++) {
+
+				// the first WCE page is October 1994
+				if (year == 1994 && month < 9)
+					continue;
+
+				if (year > currentYear)
+					break;
+
+				if (year == currentYear && month > currentMonth)
+					break;
+
+				downloadFile(url.replaceAll("\\$date\\$", monthNames.get(month) + "_" + year),
+						this.dataPath + "wce/events_" + String.valueOf(year) + "_" + (month + 1) + ".json");
+
+			}
 		}
+
 	}
 
 	private void downloadWikidataFile() {
@@ -278,23 +306,31 @@ public class RawDataDownLoader {
 
 	private void downloadWikidataQueryFiles() {
 
-		String query;
-		PrintWriter writer = null;
-		try {
-			query = IOUtils.toString(RawDataDownLoader.class
-					.getResource("/resource/meta_data/wikidata/equivalence_properties_query.sparql"), "UTF-8");
+		Map<FileName, String> queryFiles = new LinkedHashMap<FileName, String>();
+		queryFiles.put(FileName.WIKIDATA_PROPERTY_EQUALITIES, "equivalence_properties_query.sparql");
+		queryFiles.put(FileName.WIKIDATA_EXTERNAL_IDS_PROPERTY_NAMES, "properties_for_identifiers.sparql");
+		queryFiles.put(FileName.WIKIDATA_WIKIPEDIA_INTERNAL_ITEMS, "wikipedia_internal_items.sparql");
 
-			String url = "https://query.wikidata.org/sparql?query=" + URLEncoder.encode(query, "UTF-8")
-					+ "&format=json";
-			String res = IOUtils.toString(new URL(url), "UTF-8");
+		for (FileName fileName : queryFiles.keySet()) {
+			String query;
+			PrintWriter writer = null;
+			try {
+				query = IOUtils.toString(
+						RawDataDownLoader.class.getResource("/resource/meta_data/wikidata/" + queryFiles.get(fileName)),
+						"UTF-8");
 
-			writer = FileLoader.getWriter(FileName.WIKIDATA_PROPERTY_EQUALITIES);
-			writer.write(res);
+				String url = "https://query.wikidata.org/sparql?query=" + URLEncoder.encode(query, "UTF-8")
+						+ "&format=json";
+				String res = IOUtils.toString(new URL(url), "UTF-8");
 
-		} catch (IOException e) {
-			e.printStackTrace();
-		} finally {
-			writer.close();
+				writer = FileLoader.getWriter(fileName);
+				writer.write(res);
+
+			} catch (IOException e) {
+				e.printStackTrace();
+			} finally {
+				writer.close();
+			}
 		}
 
 	}
@@ -308,7 +344,7 @@ public class RawDataDownLoader {
 		urls.add("mappingbased_objects_$lang$.ttl.bz2");
 		urls.add("mappingbased_literals_$lang$.ttl.bz2");
 		urls.add("geonames_links_$lang$.ttl.bz2");
-		urls.add("geonames_links_$lang$.ttl.bz2");
+		urls.add("geo_coordinates_$lang$.ttl.bz2");
 
 		for (Language language : this.languages) {
 			for (String urlString : urls) {
@@ -370,11 +406,11 @@ public class RawDataDownLoader {
 		urls.put("yagoWikidataInstances.ttl.7z", FileName.YAGO_WIKIDATA_INSTANCES);
 		urls.put("yagoLiteralFacts.ttl.7z", FileName.YAGO_LITERAL_FACTS);
 
-		try {
-			SevenZip.initSevenZipFromPlatformJAR();
-		} catch (SevenZipNativeInitializationException e) {
-			e.printStackTrace();
-		}
+		// try {
+		// SevenZip.initSevenZipFromPlatformJAR();
+		// } catch (SevenZipNativeInitializationException e) {
+		// e.printStackTrace();
+		// }
 
 		for (String urlString : urls.keySet()) {
 			File downloadedFile = null;

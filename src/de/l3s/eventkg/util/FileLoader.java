@@ -14,6 +14,7 @@ import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.zip.GZIPInputStream;
 
 import org.apache.commons.io.FileUtils;
@@ -31,7 +32,7 @@ public class FileLoader {
 	public static final String ONLINE_OUTPUT_PREVIEW_FOLDER_SUFFIX = "output_preview/";
 	public static final String ONLINE_PREVIOUS_VERSION_FOLDER_SUFFIX = "previous_version/";
 
-	public static SimpleDateFormat PARSE_DATE_FORMAT = new SimpleDateFormat("G yyyy-MM-dd");
+	public static SimpleDateFormat PARSE_DATE_FORMAT = new SimpleDateFormat("G yyyy-MM-dd", Locale.US);
 	public static SimpleDateFormat PRINT_DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd");
 
 	public static String getFileNameWithPath(FileName fileName) {
@@ -268,6 +269,10 @@ public class FileLoader {
 
 	public static PrintStream getPrintStream(FileName fileName, Language language) throws IOException {
 		return new PrintStream(new FileOutputStream(getPath(fileName, language)));
+	}
+
+	public static String readFile(FileName fileName) throws IOException {
+		return readFile(new File(getPath(fileName)));
 	}
 
 	public static String readFile(File file) throws IOException {

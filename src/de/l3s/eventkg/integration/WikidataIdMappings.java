@@ -10,6 +10,9 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.io.LineIterator;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import de.l3s.eventkg.integration.model.Entity;
 import de.l3s.eventkg.integration.model.Event;
@@ -43,16 +46,45 @@ public class WikidataIdMappings {
 
 	private Map<Language, Map<String, String>> redirects = new HashMap<Language, Map<String, String>>();
 
+	private Set<String> wikipediaInternalClasses;
+
 	public WikidataIdMappings(List<Language> languages) {
 		this.languages = languages;
 	}
 
 	public void load() {
+		loadWikipediaInternalClasses();
 		loadRedirects();
 		loadWikidataIdMapping();
 		loadWikidataLabels();
 		loadWikidataPropertyIdMapping();
 		loadTemporalProperties();
+	}
+
+	private void loadWikipediaInternalClasses() {
+		// TODO Auto-generated method stub
+
+		this.wikipediaInternalClasses = new HashSet<String>();
+
+		try {
+			JSONObject wikidataJSON = new JSONObject(FileLoader.readFile(FileName.WIKIDATA_WIKIPEDIA_INTERNAL_ITEMS));
+			JSONArray bindings = wikidataJSON.getJSONObject("results").getJSONArray("bindings");
+			for (int i = 0; i < bindings.length(); i++) {
+				JSONObject binding = bindings.getJSONObject(i);
+
+				JSONObject itemJSON = binding.getJSONObject("item");
+				String item = itemJSON.getString("value");
+
+				item = item.substring(item.lastIndexOf("/") + 1);
+
+				this.wikipediaInternalClasses.add(item);
+			}
+		} catch (JSONException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
 	}
 
 	private void loadRedirects() {
@@ -75,7 +107,6 @@ public class WikidataIdMappings {
 					.println("Load Wikidata mapping for the " + language.getLanguageAdjective() + " Wikidata labels.");
 
 			int lineNo = 0;
-			int brackets = 0;
 
 			LineIterator it = null;
 			try {
@@ -83,7 +114,7 @@ public class WikidataIdMappings {
 				while (it.hasNext()) {
 					String line = it.nextLine();
 					if (lineNo % 1000000 == 0)
-						System.out.println(lineNo + " - " + brackets);
+						System.out.println(" Line " + lineNo);
 
 					lineNo += 1;
 					String[] parts = line.split("\t");
@@ -92,6 +123,9 @@ public class WikidataIdMappings {
 					String label = parts[1].trim();
 
 					if (label.startsWith(WikiWords.getInstance().getCategoryLabel(language) + ":"))
+						continue;
+
+					if (label.startsWith(WikiWords.getInstance().getTemplateLabel(language) + ":"))
 						continue;
 
 					if (label.isEmpty())
@@ -148,18 +182,18 @@ public class WikidataIdMappings {
 
 		Set<Integer> wikidataIds = new HashSet<Integer>();
 
-		BufferedReader br = null;
+		BufferedReader br1 = null;
 
 		try {
 
 			try {
-				br = FileLoader.getReader(FileName.WIKIDATA_TEMPORAL_FACTS);
+				br1 = FileLoader.getReader(FileName.WIKIDATA_TEMPORAL_FACTS);
 			} catch (FileNotFoundException e1) {
 				e1.printStackTrace();
 			}
 
 			String line;
-			while ((line = br.readLine()) != null) {
+			while ((line = br1.readLine()) != null) {
 
 				String[] parts = line.split("\t");
 
@@ -174,22 +208,22 @@ public class WikidataIdMappings {
 			e.printStackTrace();
 		} finally {
 			try {
-				br.close();
+				br1.close();
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
 		}
 
-		br = null;
+		BufferedReader br2 = null;
 		try {
 			try {
-				br = FileLoader.getReader(FileName.WIKIDATA_TEMPORAL_PROPERTIES);
+				br2 = FileLoader.getReader(FileName.WIKIDATA_TEMPORAL_PROPERTIES);
 			} catch (FileNotFoundException e1) {
 				e1.printStackTrace();
 			}
 
 			String line;
-			while ((line = br.readLine()) != null) {
+			while ((line = br2.readLine()) != null) {
 				String[] parts = line.split("\t");
 
 				wikidataIds.add(Integer.valueOf(parts[0].substring(1)));
@@ -199,48 +233,53 @@ public class WikidataIdMappings {
 			e.printStackTrace();
 		} finally {
 			try {
-				br.close();
+				br2.close();
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
 		}
 
-		br = null;
+		BufferedReader br3 = null;
 		try {
 			try {
-				br = FileLoader.getReader(FileName.WIKIDATA_LOCATIONS);
+				br3 = FileLoader.getReader(FileName.WIKIDATA_LOCATIONS);
 			} catch (FileNotFoundException e1) {
 				e1.printStackTrace();
 			}
 
 			String line;
-			while ((line = br.readLine()) != null) {
+			while ((line = br3.readLine()) != null) {
 				String[] parts = line.split("\t");
 
-				wikidataIds.add(Integer.valueOf(parts[2].substring(1)));
-				wikidataIds.add(Integer.valueOf(parts[0].substring(1)));
+				try {
+					wikidataIds.add(Integer.valueOf(parts[2].substring(1)));
+					wikidataIds.add(Integer.valueOf(parts[0].substring(1)));
+				} catch (NumberFormatException e) {
+					System.out.println("Error in location file: " + line);
+					continue;
+				}
 
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
 		} finally {
 			try {
-				br.close();
+				br3.close();
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
 		}
 
-		br = null;
+		BufferedReader br4 = null;
 		try {
 			try {
-				br = FileLoader.getReader(FileName.WIKIDATA_SUB_LOCATIONS);
+				br4 = FileLoader.getReader(FileName.WIKIDATA_SUB_LOCATIONS);
 			} catch (FileNotFoundException e1) {
 				e1.printStackTrace();
 			}
 
 			String line;
-			while ((line = br.readLine()) != null) {
+			while ((line = br4.readLine()) != null) {
 				String[] parts = line.split("\t");
 
 				// only add parent: We are only interested in subs if they are
@@ -253,22 +292,22 @@ public class WikidataIdMappings {
 			e.printStackTrace();
 		} finally {
 			try {
-				br.close();
+				br4.close();
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
 		}
 
-		br = null;
+		BufferedReader br5 = null;
 		try {
 			try {
-				br = FileLoader.getReader(FileName.WIKIDATA_EVENTS);
+				br5 = FileLoader.getReader(FileName.WIKIDATA_EVENTS);
 			} catch (FileNotFoundException e1) {
 				e1.printStackTrace();
 			}
 
 			String line;
-			while ((line = br.readLine()) != null) {
+			while ((line = br5.readLine()) != null) {
 				String[] parts = line.split(Config.TAB);
 				wikidataIds.add(Integer.valueOf(parts[0].substring(1)));
 			}
@@ -276,7 +315,7 @@ public class WikidataIdMappings {
 			e.printStackTrace();
 		} finally {
 			try {
-				br.close();
+				br5.close();
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
@@ -287,38 +326,71 @@ public class WikidataIdMappings {
 		// remove scientific articles
 		// TODO: Do this as blacklist class
 
-		br = null;
+		Set<Entity> entitiesToRemove = new HashSet<Entity>();
+
+		int blacklistClassEntities = 0;
+		int wikiInternalEntities = 0;
+
+		BufferedReader br6 = null;
 		try {
 			try {
-				br = FileLoader.getReader(FileName.WIKIDATA_INSTANCE_OF);
+				br6 = FileLoader.getReader(FileName.WIKIDATA_INSTANCE_OF);
 			} catch (FileNotFoundException e1) {
 				e1.printStackTrace();
 			}
 
 			String line;
-			while ((line = br.readLine()) != null) {
+			while ((line = br6.readLine()) != null) {
 
 				String[] parts = line.split(Config.TAB);
 
 				String parentClass = parts[2];
 
 				// remove scientific article and Wikinews articles
+				// remove Wikipedia internal items (e.g. templates)
 				if (parentClass.equals(WikidataResource.SCIENTIFIC_ARTICLE.getId())
 						|| parentClass.equals(WikidataResource.WIKINEWS_ARTICLE.getId())) {
 					wikidataIds.remove(Integer.valueOf(parts[0].substring(1)));
+					Entity entityToRemove = getEntityByWikidataId(parts[0]);
+					if (entityToRemove != null) {
+						blacklistClassEntities += 1;
+						entitiesToRemove.add(entityToRemove);
+					}
+				} else if (this.wikipediaInternalClasses.contains(parentClass)) {
+					wikidataIds.remove(Integer.valueOf(parts[0].substring(1)));
+					Entity entityToRemove = getEntityByWikidataId(parts[0]);
+					if (entityToRemove != null) {
+						wikiInternalEntities += 1;
+						entitiesToRemove.add(entityToRemove);
+					}
 				}
+
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
 		} finally {
 			try {
-				br.close();
+				br6.close();
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
 		}
 
-		System.out.println("\t" + wikidataIds.size());
+		System.out.println("Ignore " + blacklistClassEntities
+				+ " entities because of classes (scientific article, Wikinews article).");
+		System.out
+				.println("Ignore " + wikiInternalEntities + " entities because they are Wikipedia internal entities.");
+
+		for (Entity entity : entitiesToRemove) {
+			this.entitiesByWikidataNumericIds.remove(entity.getNumericWikidataId());
+			for (Language labelLanguage : entity.getWikipediaLabels().keySet()) {
+				this.entitiesByWikipediaLabels.get(labelLanguage).remove(entity.getWikipediaLabel(labelLanguage));
+				DataStore.getInstance().removeEntity(entity);
+				wikidataIds.remove(Integer.valueOf(entity.getNumericWikidataId()));
+			}
+		}
+
+		System.out.println("\tWikidata IDs: " + wikidataIds.size());
 
 		return wikidataIds;
 	}
@@ -392,17 +464,35 @@ public class WikidataIdMappings {
 				}
 			}
 		}
+		System.out.println("Category entities to remove: " + entitiesToRemove.size());
 
 		// remove list entities
+		int removedListEntities = 0;
 		for (Entity entity : this.entitiesByWikidataNumericIds.valueCollection()) {
 			for (Language labelLanguage : entity.getWikipediaLabels().keySet()) {
 				for (String listPrefix : WikiWords.getInstance().getListPrefixes(labelLanguage)) {
 					if (entity.getWikipediaLabel(labelLanguage).startsWith(listPrefix)) {
+						removedListEntities += 1;
 						entitiesToRemove.add(entity);
 					}
 				}
 			}
 		}
+		System.out.println("List entities to remove: " + removedListEntities);
+
+		// remove template entities
+		int removedTemplateEntities = 0;
+		for (Entity entity : this.entitiesByWikidataNumericIds.valueCollection()) {
+			for (Language labelLanguage : entity.getWikipediaLabels().keySet()) {
+				for (String listPrefix : WikiWords.getInstance().getTemplatePrefixes(labelLanguage)) {
+					if (entity.getWikipediaLabel(labelLanguage).startsWith(listPrefix)) {
+						removedTemplateEntities += 1;
+						entitiesToRemove.add(entity);
+					}
+				}
+			}
+		}
+		System.out.println("Template entities to remove: " + removedTemplateEntities);
 
 		for (Entity entity : entitiesToRemove) {
 			this.entitiesByWikidataNumericIds.remove(entity.getNumericWikidataId());

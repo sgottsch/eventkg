@@ -9,8 +9,12 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.commons.io.LineIterator;
+import org.apache.commons.lang3.StringUtils;
+
 import de.l3s.eventkg.integration.model.Entity;
 import de.l3s.eventkg.integration.model.Event;
+import de.l3s.eventkg.integration.model.Position;
 import de.l3s.eventkg.integration.model.relation.DataSet;
 import de.l3s.eventkg.meta.Language;
 import de.l3s.eventkg.meta.Source;
@@ -20,7 +24,6 @@ import de.l3s.eventkg.source.dbpedia.DBpediaAllLocationsLoader;
 import de.l3s.eventkg.source.yago.util.YAGOLabelExtractor;
 import de.l3s.eventkg.util.FileLoader;
 import de.l3s.eventkg.util.FileName;
-import edu.stanford.nlp.util.StringUtils;
 
 public class DataCollector extends Extractor {
 
@@ -34,6 +37,7 @@ public class DataCollector extends Extractor {
 	private WikidataIdMappings wikidataIdMappings;
 
 	private Set<Entity> locations;
+	private Set<Entity> entitiesWithPositions;
 
 	public static void main(String[] args) {
 		List<Language> languages = new ArrayList<Language>();
@@ -50,25 +54,6 @@ public class DataCollector extends Extractor {
 		super("DataCollector", de.l3s.eventkg.meta.Source.ALL,
 				"Integrates information collected so far into common output files. For example, a list of event entities is finally created.",
 				languages);
-	}
-
-	public void run(String[] args) {
-		System.out.println("Load Wikidata ID mapping.");
-		init();
-		System.out.println("Collect entity sub/parent locations.");
-		collectSubLocations();
-		System.out.println("Collect event pages.");
-		collectEvents();
-		System.out.println("Collect \"part of\" relations.");
-		collectPartOfs();
-		System.out.println("Collect \"follows\" relations.");
-		collectPreviousEvents();
-		System.out.println("Collect \"followed by\" relations.");
-		collectNextEvents();
-		System.out.println("Collect event locations.");
-		collectEventLocations();
-		// System.out.println("Collect entities with existence times.");
-		// collectEntitiesWithExistenceTimes();
 	}
 
 	// private void collectEntitiesWithExistenceTimes() {
@@ -125,6 +110,129 @@ public class DataCollector extends Extractor {
 		collectNextEvents();
 		System.out.println("Collect event locations.");
 		collectEventLocations();
+		System.out.println("Collect positions.");
+		collectPositions();
+	}
+
+	private void collectPositions() {
+		this.entitiesWithPositions = new HashSet<Entity>();
+		collectPositionsYAGO();
+		collectPositionsDBpedia();
+		collectPositionsWikidata();
+		writePositionsToFile();
+	}
+
+	private void collectPositionsYAGO() {
+		LineIterator it = null;
+		try {
+			it = FileLoader.getLineIterator(FileName.YAGO_POSITIONS);
+
+			while (it.hasNext()) {
+				String line = it.nextLine();
+
+				String[] parts = line.split("\t");
+
+				YAGOLabelExtractor yagoLabelExtractor1 = new YAGOLabelExtractor(parts[0], this.languages);
+				yagoLabelExtractor1.extractLabel();
+				if (!yagoLabelExtractor1.isValid())
+					continue;
+
+				Entity entity = getEntity(yagoLabelExtractor1.getLanguage(), yagoLabelExtractor1.getWikipediaLabel());
+
+				if (entity != null) {
+
+					// YAGO always only has one position, but we have to loop
+					// and take that one
+					Set<Position> positions = entity
+							.getPositionsOfDataSet(DataSets.getInstance().getDataSetWithoutLanguage(Source.YAGO));
+
+					Position position = null;
+					if (positions != null)
+						for (Position positionTmp : positions)
+							position = positionTmp;
+
+					if (position == null) {
+						position = new Position();
+						entity.addPosition(position, DataSets.getInstance().getDataSetWithoutLanguage(Source.YAGO));
+					}
+
+					String valueString = parts[2];
+					valueString = valueString.substring(0, valueString.indexOf("^"));
+					double value = Double.valueOf(StringUtils.strip(valueString, "\""));
+
+					this.entitiesWithPositions.add(entity);
+
+					if (parts[1].equals("<hasLatitude>"))
+						position.setLatitude(value);
+
+					if (parts[1].equals("<hasLongitude>"))
+						position.setLongitude(value);
+				}
+
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		} finally {
+			it.close();
+		}
+	}
+
+	private void collectPositionsDBpedia() {
+
+		for (Language language : this.languages) {
+			LineIterator it = null;
+			try {
+				it = FileLoader.getLineIterator(FileName.DBPEDIA_POSITIONS, language);
+
+				while (it.hasNext()) {
+					String line = it.nextLine();
+
+					String[] parts = line.split("\t");
+
+					Entity entity = getEntity(language, parts[0]);
+
+					if (entity != null) {
+						this.entitiesWithPositions.add(entity);
+						Position position = new Position(Double.valueOf(parts[1]), Double.valueOf(parts[2]));
+						entity.addPosition(position, DataSets.getInstance().getDataSet(language, Source.DBPEDIA));
+					}
+
+				}
+			} catch (IOException e) {
+				e.printStackTrace();
+			} finally {
+				it.close();
+			}
+
+		}
+	}
+
+	private void collectPositionsWikidata() {
+
+		LineIterator it = null;
+		try {
+			it = FileLoader.getLineIterator(FileName.WIKIDATA_POSITIONS);
+
+			while (it.hasNext()) {
+				String line = it.nextLine();
+
+				String[] parts = line.split("\t");
+
+				Entity entity = getEntityFromWikidataId(parts[0]);
+
+				if (entity != null) {
+					this.entitiesWithPositions.add(entity);
+					Position position = new Position(Double.valueOf(parts[2]), Double.valueOf(parts[3]));
+					entity.addPosition(position, DataSets.getInstance().getDataSetWithoutLanguage(Source.WIKIDATA));
+				}
+
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		} finally {
+			it.close();
+		}
+
 	}
 
 	private void collectEventLocations() {
@@ -157,6 +265,38 @@ public class DataCollector extends Extractor {
 					writer.write(Config.TAB);
 					writer.write(subLocation.getWikipediaLabelsString(this.languages));
 					writer.write(Config.NL);
+				}
+			}
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} finally {
+			writer.close();
+		}
+
+	}
+
+	private void writePositionsToFile() {
+
+		System.out.println("writePositionsToFile");
+		System.out.println(" #Entities with positions: " + entitiesWithPositions.size());
+
+		PrintWriter writer = null;
+		try {
+			writer = FileLoader.getWriter(FileName.ALL_POSITIONS);
+			for (Entity entity : entitiesWithPositions) {
+				for (Position position : entity.getPositions()) {
+					if (position.getLatitude() != null && position.getLongitude() != null) {
+						writer.write(entity.getWikidataId());
+						writer.write(Config.TAB);
+						writer.write(entity.getWikipediaLabelsString(this.languages));
+						writer.write(Config.TAB);
+						writer.write(String.valueOf(position.getLatitude()));
+						writer.write(Config.TAB);
+						writer.write(String.valueOf(position.getLongitude()));
+						writer.write(Config.TAB);
+						writer.write(entity.getPositionsWithDataSets().get(position).getId());
+						writer.write(Config.NL);
+					}
 				}
 			}
 		} catch (FileNotFoundException e) {
@@ -204,17 +344,19 @@ public class DataCollector extends Extractor {
 
 		System.out.println("collectLocationsWikidata");
 
-		BufferedReader br = null;
+		LineIterator it = null;
 		try {
-			try {
-				br = FileLoader.getReader(FileName.WIKIDATA_LOCATIONS);
-			} catch (FileNotFoundException e1) {
-				e1.printStackTrace();
-			}
+			it = FileLoader.getLineIterator(FileName.WIKIDATA_LOCATIONS);
 
-			String line;
-			while ((line = br.readLine()) != null) {
+			while (it.hasNext()) {
+				String line = it.nextLine();
+
 				String[] parts = line.split("\t");
+
+				if (parts[0].length() <= 1 || parts[2].length() <= 1) {
+					System.out.println("Error in location line: " + line);
+					continue;
+				}
 
 				String entity2WikidataId = parts[2];
 
@@ -231,11 +373,7 @@ public class DataCollector extends Extractor {
 		} catch (IOException e) {
 			e.printStackTrace();
 		} finally {
-			try {
-				br.close();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
+			it.close();
 		}
 	}
 
@@ -243,16 +381,12 @@ public class DataCollector extends Extractor {
 
 		for (Language language : this.languages) {
 
-			BufferedReader br = null;
+			LineIterator it = null;
 			try {
-				try {
-					br = FileLoader.getReader(FileName.DBPEDIA_EVENT_LOCATIONS, language);
-				} catch (FileNotFoundException e1) {
-					e1.printStackTrace();
-				}
+				it = FileLoader.getLineIterator(FileName.DBPEDIA_EVENT_LOCATIONS, language);
 
-				String line;
-				while ((line = br.readLine()) != null) {
+				while (it.hasNext()) {
+					String line = it.nextLine();
 
 					String[] parts = line.split("\t");
 
@@ -271,26 +405,18 @@ public class DataCollector extends Extractor {
 			} catch (IOException e) {
 				e.printStackTrace();
 			} finally {
-				try {
-					br.close();
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
+				it.close();
 			}
 		}
 	}
 
 	private void collectLocationsYAGO() {
-		BufferedReader br = null;
+		LineIterator it = null;
 		try {
-			try {
-				br = FileLoader.getReader(FileName.YAGO_LOCATIONS);
-			} catch (FileNotFoundException e1) {
-				e1.printStackTrace();
-			}
+			it = FileLoader.getLineIterator(FileName.YAGO_LOCATIONS);
 
-			String line;
-			while ((line = br.readLine()) != null) {
+			while (it.hasNext()) {
+				String line = it.nextLine();
 
 				String[] parts = line.split("\t");
 
@@ -317,11 +443,7 @@ public class DataCollector extends Extractor {
 		} catch (IOException e) {
 			e.printStackTrace();
 		} finally {
-			try {
-				br.close();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
+			it.close();
 		}
 	}
 
@@ -526,16 +648,12 @@ public class DataCollector extends Extractor {
 
 		for (Language language : this.languages) {
 
-			BufferedReader br = null;
+			LineIterator it = null;
 			try {
-				try {
-					br = FileLoader.getReader(FileName.DBPEDIA_DBO_EVENT_PARTS, language);
-				} catch (FileNotFoundException e1) {
-					e1.printStackTrace();
-				}
+				it = FileLoader.getLineIterator(FileName.DBPEDIA_DBO_EVENT_PARTS, language);
 
-				String line;
-				while ((line = br.readLine()) != null) {
+				while (it.hasNext()) {
+					String line = it.nextLine();
 
 					String[] parts = line.split("\t");
 
@@ -556,11 +674,7 @@ public class DataCollector extends Extractor {
 			} catch (IOException e) {
 				e.printStackTrace();
 			} finally {
-				try {
-					br.close();
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
+				it.close();
 			}
 
 		}

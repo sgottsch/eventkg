@@ -3,9 +3,11 @@ package de.l3s.eventkg.util;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.Locale;
+
+import de.l3s.eventkg.integration.model.DateGranularity;
+import de.l3s.eventkg.integration.model.DateWithGranularity;
 
 public class TimeTransformer {
 
@@ -68,8 +70,10 @@ public class TimeTransformer {
 
 	}
 
-	public static Date generateTimeForDBpedia(String timeString) throws ParseException {
+	public static DateWithGranularity generateTimeForDBpedia(String timeString) throws ParseException {
 		// e.g. "1618-05-23"^^<http://www.w3.org/2001/XMLSchema#date>
+
+		DateGranularity dateGranularity = DateGranularity.DAY;
 
 		timeString = timeString.substring(1);
 		timeString = timeString.substring(0, timeString.indexOf("\""));
@@ -85,10 +89,11 @@ public class TimeTransformer {
 		else
 			timeString = "AD " + timeString;
 
-		return dbPediaDateFormat.parse(timeString);
+		return new DateWithGranularity(dbPediaDateFormat.parse(timeString), dateGranularity);
 	}
 
-	public static Date generateEarliestTimeForWikidata(String timeAndPrecisionString) throws ParseException {
+	public static DateWithGranularity generateEarliestTimeForWikidata(String timeAndPrecisionString)
+			throws ParseException {
 
 		// in the case of BC, we need to swap earliest and latest.
 		// Example
@@ -108,27 +113,31 @@ public class TimeTransformer {
 		if (era == 1) {
 			return generateEarliestTimeForWikidata(timeAndPrecisionString, 1);
 		} else {
-			Date date1 = generateEarliestTimeForWikidata(timeAndPrecisionString, -1);
+			DateWithGranularity date1 = generateEarliestTimeForWikidata(timeAndPrecisionString, -1);
 			if (date1 == null)
 				return null;
 			Calendar calendar1 = new GregorianCalendar();
-			calendar1.setTime(date1);
+			calendar1.setTime(date1.getDate());
 			int day = calendar1.get(Calendar.DAY_OF_MONTH);
 			int month = calendar1.get(Calendar.MONTH) + 1;
 
-			Date date2 = generateLatestTimeForWikidata(timeAndPrecisionString, -1);
+			DateWithGranularity date2 = generateLatestTimeForWikidata(timeAndPrecisionString, -1);
 			if (date2 == null)
 				return null;
 			Calendar calendar2 = new GregorianCalendar();
-			calendar2.setTime(date2);
+			calendar2.setTime(date2.getDate());
 			int year = calendar2.get(Calendar.YEAR);
 
 			// day and month from earliest. Year from latest.
-			return wikidataDateFormat.parse("BC " + year + "-" + month + "-" + day);
+			return new DateWithGranularity(wikidataDateFormat.parse("BC " + year + "-" + month + "-" + day),
+					date1.getGranularity());
 		}
 	}
 
-	public static Date generateEarliestTimeForWikidata(String timeAndPrecisionString, int era) throws ParseException {
+	public static DateWithGranularity generateEarliestTimeForWikidata(String timeAndPrecisionString, int era)
+			throws ParseException {
+
+		DateGranularity granularity = DateGranularity.DAY;
 
 		String timeString = timeAndPrecisionString.split(";")[1];
 		timeString = timeString.substring(1);
@@ -143,6 +152,23 @@ public class TimeTransformer {
 		if (precision < 6 || timeString.startsWith("00000000000"))
 			return null;
 
+		switch (precision) {
+		case 10:
+			granularity = DateGranularity.MONTH;
+			break;
+		case 9:
+			granularity = DateGranularity.YEAR;
+			break;
+		case 8:
+			granularity = DateGranularity.DECADE;
+			break;
+		case 7:
+			granularity = DateGranularity.CENTURY;
+			break;
+		default:
+			break;
+		}
+
 		// remove time, only keep date
 		timeString = timeString.substring(0, timeString.indexOf("T"));
 
@@ -155,10 +181,11 @@ public class TimeTransformer {
 		else
 			timeString = "AD " + timeString;
 
-		return wikidataDateFormat.parse(timeString);
+		return new DateWithGranularity(wikidataDateFormat.parse(timeString), granularity);
 	}
 
-	public static Date generateLatestTimeForWikidata(String timeAndPrecisionString) throws ParseException {
+	public static DateWithGranularity generateLatestTimeForWikidata(String timeAndPrecisionString)
+			throws ParseException {
 
 		// in the case of BC, we need to swap earliest and latest.
 		// Example
@@ -178,28 +205,32 @@ public class TimeTransformer {
 		if (era == 1) {
 			return generateLatestTimeForWikidata(timeAndPrecisionString, 1);
 		} else {
-			Date date1 = generateLatestTimeForWikidata(timeAndPrecisionString, -1);
+			DateWithGranularity date1 = generateLatestTimeForWikidata(timeAndPrecisionString, -1);
 			if (date1 == null)
 				return null;
 			Calendar calendar1 = new GregorianCalendar();
-			calendar1.setTime(date1);
+			calendar1.setTime(date1.getDate());
 			int day = calendar1.get(Calendar.DAY_OF_MONTH);
 			int month = calendar1.get(Calendar.MONTH) + 1;
 
-			Date date2 = generateEarliestTimeForWikidata(timeAndPrecisionString, -1);
+			DateWithGranularity date2 = generateEarliestTimeForWikidata(timeAndPrecisionString, -1);
 			if (date2 == null)
 				return null;
 			Calendar calendar2 = new GregorianCalendar();
-			calendar2.setTime(date2);
+			calendar2.setTime(date2.getDate());
 			int year = calendar2.get(Calendar.YEAR);
 
 			// day and month from earliest. Year from latest.
-			return wikidataDateFormat.parse("BC " + year + "-" + month + "-" + day);
+			return new DateWithGranularity(wikidataDateFormat.parse("BC " + year + "-" + month + "-" + day),
+					date1.getGranularity());
 		}
 
 	}
 
-	public static Date generateLatestTimeForWikidata(String timeAndPrecisionString, int era) throws ParseException {
+	public static DateWithGranularity generateLatestTimeForWikidata(String timeAndPrecisionString, int era)
+			throws ParseException {
+
+		DateGranularity granularity = DateGranularity.DAY;
 
 		// System.out.println("\n---\ngenerateLatestTimeForWikidata: " +
 		// timeAndPrecisionString + "\n");
@@ -225,6 +256,23 @@ public class TimeTransformer {
 		// ignore empty dates
 		if (precision < 6 || timeString.startsWith("00000000000"))
 			return null;
+
+		switch (precision) {
+		case 10:
+			granularity = DateGranularity.MONTH;
+			break;
+		case 9:
+			granularity = DateGranularity.YEAR;
+			break;
+		case 8:
+			granularity = DateGranularity.DECADE;
+			break;
+		case 7:
+			granularity = DateGranularity.CENTURY;
+			break;
+		default:
+			break;
+		}
 
 		// remove time, only keep date
 		timeString = timeString.substring(0, timeString.indexOf("T"));
@@ -266,16 +314,17 @@ public class TimeTransformer {
 		else
 			timeString = "AD " + timeString;
 
-		return wikidataDateFormat.parse(timeString);
+		return new DateWithGranularity(wikidataDateFormat.parse(timeString), granularity);
 	}
 
 	private static long getNthLastDigit(long number, int n) {
 		return (long) (Math.abs(number) / Math.pow(10, n - 1)) % 10;
 	}
 
-	public static Date generateEarliestTimeFromXsd(String timeString) throws ParseException {
+	public static DateWithGranularity generateEarliestTimeFromXsd(String timeString) throws ParseException {
 
-		// System.out.println(timeString);
+		DateGranularity granularity = DateGranularity.DAY;
+
 		timeString = cleanupXsdTimeString(timeString);
 		// System.out.println("\t" + timeString);
 
@@ -298,6 +347,8 @@ public class TimeTransformer {
 
 		// for cases where the year is like "19##"
 		if (timeString.substring(2, 4).equals("##")) {
+			granularity = DateGranularity.CENTURY;
+
 			if (era == 1)
 				timeString = timeString.substring(0, 2) + "00" + timeString.substring(4);
 			else
@@ -305,25 +356,38 @@ public class TimeTransformer {
 		}
 
 		if (timeString.substring(3, 5).equals("#-")) {
+			if (granularity == DateGranularity.DAY)
+				granularity = DateGranularity.DECADE;
+
 			if (era == 1)
 				timeString = timeString.substring(0, 3) + "0" + timeString.substring(4);
 			else
 				timeString = timeString.substring(0, 3) + "9" + timeString.substring(4);
 		}
 
-		timeString = timeString.replaceAll("-##-", "-01-");
+		if (timeString.contains("-##-")) {
+			timeString = timeString.replaceAll("-##-", "-01-");
+			if (granularity == DateGranularity.DAY)
+				granularity = DateGranularity.YEAR;
+		}
 
-		timeString = timeString.replaceAll("-##", "-01");
+		if (timeString.endsWith("-##")) {
+			timeString = timeString.replaceAll("-##", "-01");
+			if (granularity == DateGranularity.DAY)
+				granularity = DateGranularity.MONTH;
+		}
 
 		if (era == -1)
 			timeString = "BC " + timeString;
 		else
 			timeString = "AD " + timeString;
 
-		return xsdDateFormat.parse(timeString);
+		return new DateWithGranularity(xsdDateFormat.parse(timeString), granularity);
 	}
 
-	public static Date generateLatestTimeFromXsd(String timeString) throws ParseException {
+	public static DateWithGranularity generateLatestTimeFromXsd(String timeString) throws ParseException {
+
+		DateGranularity granularity = DateGranularity.DAY;
 
 		// System.out.println(timeString);
 		timeString = cleanupXsdTimeString(timeString);
@@ -349,31 +413,42 @@ public class TimeTransformer {
 
 		// for cases where the year is like "19##"
 		if (timeString.substring(2, 4).equals("##")) {
+			granularity = DateGranularity.CENTURY;
 			if (era == 1)
 				timeString = timeString.substring(0, 2) + "99" + timeString.substring(4);
 			else
 				timeString = timeString.substring(0, 2) + "00" + timeString.substring(4);
 		}
-		
+
 		if (timeString.substring(3, 5).equals("#-")) {
+			if (granularity == DateGranularity.DAY)
+				granularity = DateGranularity.DECADE;
 			if (era == 1)
 				timeString = timeString.substring(0, 3) + "9" + timeString.substring(4);
 			else
 				timeString = timeString.substring(0, 3) + "0" + timeString.substring(4);
 		}
-		
-		timeString = timeString.replaceAll("-##-", "-12-");
 
-		int year = Integer.valueOf(timeString.substring(0, timeString.indexOf("-")));
-		int month = Integer.valueOf(timeString.substring(5, 7));
-		timeString = timeString.replaceAll("-##", "-" + String.valueOf(getLastDayInMonth(year, month, era)));
+		if (timeString.contains("-##-")) {
+			timeString = timeString.replaceAll("-##-", "-12-");
+			if (granularity == DateGranularity.DAY)
+				granularity = DateGranularity.YEAR;
+		}
+
+		if (timeString.endsWith("-##")) {
+			int year = Integer.valueOf(timeString.substring(0, timeString.indexOf("-")));
+			int month = Integer.valueOf(timeString.substring(5, 7));
+			timeString = timeString.replaceAll("-##", "-" + String.valueOf(getLastDayInMonth(year, month, era)));
+			if (granularity == DateGranularity.DAY)
+				granularity = DateGranularity.MONTH;
+		}
 
 		if (era == -1)
 			timeString = "BC " + timeString;
 		else
 			timeString = "AD " + timeString;
 
-		return xsdDateFormat.parse(timeString);
+		return new DateWithGranularity(xsdDateFormat.parse(timeString), granularity);
 	}
 
 	private static int getLastDayInMonth(long year, int month, int era) {
@@ -401,8 +476,12 @@ public class TimeTransformer {
 
 	private static String cleanupXsdTimeString(String timeString) {
 		// transform e.g. '"1989-##-##"^^xsd:date .' into '1989-##-##'
-		if (timeString.startsWith("\""))
-			timeString = timeString.substring(1, timeString.lastIndexOf("\""));
+		if (timeString.startsWith("\"")) {
+			timeString = timeString.substring(1);
+			timeString = timeString.substring(0, timeString.indexOf("\""));
+		} else if (timeString.contains("\"")) {
+			timeString = timeString.substring(0, timeString.indexOf("\""));
+		}
 		return timeString;
 	}
 

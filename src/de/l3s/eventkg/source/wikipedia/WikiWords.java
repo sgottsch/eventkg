@@ -27,8 +27,10 @@ public class WikiWords {
 
 	private Map<Language, Set<String>> fileLabels = new HashMap<Language, Set<String>>();
 	private Map<Language, String> categoryLabels = new HashMap<Language, String>();
+	private Map<Language, String> templateLabels = new HashMap<Language, String>();
 	private HashMap<Language, Set<String>> imageLabels = new HashMap<Language, Set<String>>();
 	private HashMap<Language, Set<String>> listPrefixes = new HashMap<Language, Set<String>>();
+	private HashMap<Language, Set<String>> templatePrefixes = new HashMap<Language, Set<String>>();
 	private HashMap<Language, Set<String>> categoryPrefixes = new HashMap<Language, Set<String>>();
 	private Map<Language, Set<String>> eventsLabels = new HashMap<Language, Set<String>>();
 
@@ -132,8 +134,10 @@ public class WikiWords {
 							forbiddenInternalLinksOfLanguage.add(value);
 						break;
 					case "categoryLabel":
-						this.categoryLabels = new HashMap<Language, String>();
 						this.categoryLabels.put(language, singleEntriesPerType.get(type));
+						break;
+					case "templateLabel":
+						this.templateLabels.put(language, singleEntriesPerType.get(type));
 						break;
 					case "imageLabels":
 						addValues(this.imageLabels, language, entriesPerType, type);
@@ -143,6 +147,9 @@ public class WikiWords {
 						break;
 					case "categoryPrefixes":
 						addValues(this.categoryPrefixes, language, entriesPerType, type);
+						break;
+					case "templatePrefixes":
+						addValues(this.templatePrefixes, language, entriesPerType, type);
 						break;
 					case "eventsLabels":
 						addValues(this.eventsLabels, language, entriesPerType, type);
@@ -293,6 +300,10 @@ public class WikiWords {
 		return categoryLabels.get(language);
 	}
 
+	public String getTemplateLabel(Language language) {
+		return templateLabels.get(language);
+	}
+
 	public Set<String> getEventsLabels(Language language) {
 		return eventsLabels.get(language);
 	}
@@ -311,6 +322,10 @@ public class WikiWords {
 
 	public Set<String> getListPrefixes(Language language) {
 		return listPrefixes.get(language);
+	}
+
+	public Set<String> getTemplatePrefixes(Language language) {
+		return templatePrefixes.get(language);
 	}
 
 	public Set<String> getCategoryPrefixes(Language language) {

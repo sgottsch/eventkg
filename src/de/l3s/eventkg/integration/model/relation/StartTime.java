@@ -1,27 +1,26 @@
 package de.l3s.eventkg.integration.model.relation;
 
-import java.util.Date;
-
+import de.l3s.eventkg.integration.model.DateWithGranularity;
 import de.l3s.eventkg.integration.model.Entity;
 import de.l3s.eventkg.meta.Source;
 
 public class StartTime extends RelationWithSource {
 
-	private Date startTime;
+	private DateWithGranularity startTime;
 
 	private Source source;
 
-	public StartTime(Entity subject, DataSet dataSet, Date startTime) {
+	public StartTime(Entity subject, DataSet dataSet, DateWithGranularity startTime) {
 		super(subject, dataSet);
 		this.startTime = startTime;
 		subject.addStartTime(startTime, dataSet);
 	}
 
-	public Date getStartTime() {
+	public DateWithGranularity getStartTime() {
 		return startTime;
 	}
 
-	public void setStartTime(Date startTime) {
+	public void setStartTime(DateWithGranularity startTime) {
 		this.startTime = startTime;
 	}
 

@@ -4,7 +4,7 @@ public class Source {
 
 	private long id;
 
-	private String uri;
+	private String url;
 
 	private String type;
 
@@ -12,7 +12,7 @@ public class Source {
 
 	public Source(long id, String uri, String type, String sourceName) {
 		this.id = id;
-		this.uri = uri;
+		this.url = uri;
 		this.type = type;
 		this.sourceName = sourceName;
 	}
@@ -25,12 +25,12 @@ public class Source {
 		this.id = id;
 	}
 
-	public String getUri() {
-		return uri;
+	public String getUrl() {
+		return url;
 	}
 
-	public void setUri(String uri) {
-		this.uri = uri;
+	public void setUrl(String uri) {
+		this.url = uri;
 	}
 
 	public String getType() {

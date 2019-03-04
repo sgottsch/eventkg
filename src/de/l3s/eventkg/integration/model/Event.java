@@ -1,6 +1,5 @@
 package de.l3s.eventkg.integration.model;
 
-import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -29,10 +28,11 @@ public class Event extends Entity {
 
 	private Set<Entity> locations = new HashSet<Entity>();;
 	private Map<Entity, Set<DataSet>> locationsWithDataSets = new HashMap<Entity, Set<DataSet>>();
+	private Map<DataSet, Set<Entity>> dataSetsWithLocations = new HashMap<DataSet, Set<Entity>>();
 
-	private Date startTime;
+	private DateWithGranularity startTime;
 
-	private Date endTime;
+	private DateWithGranularity endTime;
 
 	private Map<DataSet, Set<String>> otherUrls;
 
@@ -137,16 +137,20 @@ public class Event extends Entity {
 		this.previousEventsWithDataSets.get(event).add(dataSet);
 	}
 
-	public Date getStartTime() {
+	public DateWithGranularity getStartTime() {
 		return startTime;
 	}
 
-	public void setStartTime(Date startTime) {
+	public void setStartTime(DateWithGranularity startTime) {
 		this.startTime = startTime;
 	}
 
-	public Date getEndTime() {
+	public DateWithGranularity getEndTime() {
 		return endTime;
+	}
+
+	public void setEndTime(DateWithGranularity endTime) {
+		this.endTime = endTime;
 	}
 
 	public String getOneLineRepresentation(List<Language> languages) {
@@ -168,15 +172,17 @@ public class Event extends Entity {
 		return oneLiner;
 	}
 
-	public void setEndTime(Date endTime) {
-		this.endTime = endTime;
-	}
-
 	public void addLocation(Entity location, DataSet dataSet) {
 		this.locations.add(location);
+
 		if (!this.locationsWithDataSets.containsKey(location))
 			locationsWithDataSets.put(location, new HashSet<DataSet>());
 		this.locationsWithDataSets.get(location).add(dataSet);
+
+		if (!this.dataSetsWithLocations.containsKey(dataSet))
+			dataSetsWithLocations.put(dataSet, new HashSet<Entity>());
+		this.dataSetsWithLocations.get(dataSet).add(location);
+
 	}
 
 	public Set<Entity> getLocations() {
@@ -227,6 +233,10 @@ public class Event extends Entity {
 		if (!this.eventInstancesPerDataSet.containsKey(dataSet))
 			this.eventInstancesPerDataSet.put(dataSet, new HashSet<String>());
 		this.eventInstancesPerDataSet.get(dataSet).add(eventInstance);
+	}
+
+	public Map<DataSet, Set<Entity>> getDataSetsWithLocations() {
+		return dataSetsWithLocations;
 	}
 
 }

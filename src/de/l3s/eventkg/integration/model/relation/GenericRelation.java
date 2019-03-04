@@ -1,7 +1,8 @@
 package de.l3s.eventkg.integration.model.relation;
 
-import java.util.Date;
+import java.util.Set;
 
+import de.l3s.eventkg.integration.model.DateWithGranularity;
 import de.l3s.eventkg.integration.model.Entity;
 import de.l3s.eventkg.integration.model.relation.prefix.Prefix;
 import de.l3s.eventkg.meta.Source;
@@ -9,6 +10,7 @@ import de.l3s.eventkg.meta.Source;
 public class GenericRelation extends RelationWithSource {
 
 	private String property;
+	private Set<SubProperty> properties;
 
 	private Entity object;
 
@@ -20,9 +22,9 @@ public class GenericRelation extends RelationWithSource {
 
 	// private Map<Language, String> propertyLabels;
 
-	private Date startTime;
+	private DateWithGranularity startTime;
 
-	private Date endTime;
+	private DateWithGranularity endTime;
 
 	// if the relation is neither temporal nor involves at least one event, mark
 	// it here
@@ -48,6 +50,14 @@ public class GenericRelation extends RelationWithSource {
 
 	public void setProperty(String property) {
 		this.property = property;
+	}
+
+	public Set<SubProperty> getProperties() {
+		return properties;
+	}
+
+	public void setProperties(Set<SubProperty> properties) {
+		this.properties = properties;
 	}
 
 	public Entity getObject() {
@@ -90,19 +100,19 @@ public class GenericRelation extends RelationWithSource {
 		this.prefix = prefix;
 	}
 
-	public Date getStartTime() {
+	public DateWithGranularity getStartTime() {
 		return startTime;
 	}
 
-	public void setStartTime(Date startTime) {
+	public void setStartTime(DateWithGranularity startTime) {
 		this.startTime = startTime;
 	}
 
-	public Date getEndTime() {
+	public DateWithGranularity getEndTime() {
 		return endTime;
 	}
 
-	public void setEndTime(Date endTime) {
+	public void setEndTime(DateWithGranularity endTime) {
 		this.endTime = endTime;
 	}
 

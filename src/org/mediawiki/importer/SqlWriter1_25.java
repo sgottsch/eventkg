@@ -26,7 +26,6 @@
 package org.mediawiki.importer;
 
 import java.io.IOException;
-import java.nio.charset.Charset;
 
 public class SqlWriter1_25 extends SqlWriter15 {
 	public SqlWriter1_25(SqlWriter.Traits tr, SqlStream output) {

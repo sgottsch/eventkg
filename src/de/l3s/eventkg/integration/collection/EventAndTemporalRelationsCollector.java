@@ -1,4 +1,4 @@
-package de.l3s.eventkg.integration;
+package de.l3s.eventkg.integration.collection;
 
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
@@ -6,12 +6,16 @@ import java.io.IOException;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
+import de.l3s.eventkg.integration.AllEventPagesDataSet;
+import de.l3s.eventkg.integration.DataSets;
+import de.l3s.eventkg.integration.DataStore;
+import de.l3s.eventkg.integration.model.DateGranularity;
+import de.l3s.eventkg.integration.model.DateWithGranularity;
 import de.l3s.eventkg.integration.model.Entity;
 import de.l3s.eventkg.integration.model.Relation;
 import de.l3s.eventkg.integration.model.relation.GenericRelation;
@@ -30,7 +34,12 @@ import de.l3s.eventkg.util.FileLoader;
 import de.l3s.eventkg.util.FileName;
 import de.l3s.eventkg.util.TimeTransformer;
 
-public class TemporalRelationsCollector extends Extractor {
+public class EventAndTemporalRelationsCollector extends Extractor {
+
+	private AllEventPagesDataSet allEventPagesDataSet;
+	private Set<Relation> relations = new HashSet<Relation>();
+
+	private Set<String> partOfProperties;
 
 	public static void main(String[] args) {
 
@@ -42,21 +51,17 @@ public class TemporalRelationsCollector extends Extractor {
 		AllEventPagesDataSet allEventPagesDataSet = new AllEventPagesDataSet(languages);
 		allEventPagesDataSet.init();
 
-		TemporalRelationsCollector extr = new TemporalRelationsCollector(languages, allEventPagesDataSet);
+		EventAndTemporalRelationsCollector extr = new EventAndTemporalRelationsCollector(languages,
+				allEventPagesDataSet);
 		extr.run();
 	}
 
-	public TemporalRelationsCollector(List<Language> languages, AllEventPagesDataSet allEventPagesDataSet) {
-		super("TemporalRelationsCollector", Source.ALL,
-				"Integrates temporal relations from all sources (s.t. they use the same set of entities. Different relations are not merged.).",
+	public EventAndTemporalRelationsCollector(List<Language> languages, AllEventPagesDataSet allEventPagesDataSet) {
+		super("EventAndTemporalRelationsCollector", Source.ALL,
+				"Integrates temporal relations and those between events from all sources (s.t. they use the same set of entities. Different relations are not merged.).",
 				languages);
 		this.allEventPagesDataSet = allEventPagesDataSet;
 	}
-
-	private AllEventPagesDataSet allEventPagesDataSet;
-	private Set<Relation> relations = new HashSet<Relation>();
-
-	private Set<String> partOfProperties;
 
 	public void run() {
 		System.out.println("Load YAGO.");
@@ -65,18 +70,30 @@ public class TemporalRelationsCollector extends Extractor {
 		loadWikidata();
 		System.out.println("Load DBpedia relations.");
 		loadDBpediaRelations();
-		System.out.println("Collect triples.");
-		writeToFiles();
+		System.out.println("Collect triples with temporal relations.");
+		collectTriples();
 	}
 
-	private void writeToFiles() {
-		// try {
-		// PrintWriter writer =
-		// FileLoader.getWriter(FileName.ALL_TEMPORAL_RELATIONS);
+	private void collectTriples() {
 
 		Set<String> wikidataRelationsWhoseLabelsWereStored = new HashSet<String>();
+		for (PropertyLabel propertyLabel : DataStore.getInstance().getPropertyLabels()) {
+			wikidataRelationsWhoseLabelsWereStored.add(propertyLabel.getProperty());
+		}
 
-		for (Relation relation : relations) {
+		System.out.println("#Relations: " + relations.size() + ".");
+
+		int relationsSize = relations.size();
+		int i = 0;
+		for (Iterator<Relation> it = relations.iterator(); it.hasNext();) {
+
+			Relation relation = it.next();
+			it.remove();
+
+			if (i % 1000000 == 0)
+				System.out.println(((double) i / (double) relationsSize) + " = " + i + "/" + relationsSize);
+
+			i += 1;
 
 			Prefix prefix = null;
 
@@ -158,6 +175,9 @@ public class TemporalRelationsCollector extends Extractor {
 			}
 		}
 
+		this.relations.clear();
+
+		System.out.println("Event/Temporal relations: " + DataStore.getInstance().getGenericRelations().size());
 	}
 
 	private void loadYAGO() {
@@ -200,7 +220,7 @@ public class TemporalRelationsCollector extends Extractor {
 					String timeString = parts[2];
 
 					if (parts[1].equals("<occursSince>")) {
-						Date date;
+						DateWithGranularity date;
 						try {
 							date = TimeTransformer.generateEarliestTimeFromXsd(timeString);
 							if (previousRelation != null)
@@ -209,7 +229,7 @@ public class TemporalRelationsCollector extends Extractor {
 							e.printStackTrace();
 						}
 					} else if (parts[1].equals("<occursUntil>")) {
-						Date date;
+						DateWithGranularity date;
 						try {
 							date = TimeTransformer.generateLatestTimeFromXsd(timeString);
 							if (previousRelation != null)
@@ -283,7 +303,7 @@ public class TemporalRelationsCollector extends Extractor {
 					String timeString = parts[2];
 
 					if (parts[1].equals("<occursSince>")) {
-						Date date;
+						DateWithGranularity date;
 						try {
 							date = TimeTransformer.generateEarliestTimeFromXsd(timeString);
 							if (previousRelation != null)
@@ -292,7 +312,7 @@ public class TemporalRelationsCollector extends Extractor {
 							e.printStackTrace();
 						}
 					} else if (parts[1].equals("<occursUntil>")) {
-						Date date;
+						DateWithGranularity date;
 						try {
 							date = TimeTransformer.generateLatestTimeFromXsd(timeString);
 							if (previousRelation != null)
@@ -377,7 +397,7 @@ public class TemporalRelationsCollector extends Extractor {
 							.getWikidataTemporalPropertyTypeById(propertyWikidataId);
 
 					if (type == TimeSymbol.START_TIME || type == TimeSymbol.START_AND_END_TIME) {
-						Date startTime;
+						DateWithGranularity startTime;
 						try {
 							startTime = TimeTransformer.generateEarliestTimeForWikidata(timeString);
 							if (previousRelation != null && startTime != null)
@@ -387,7 +407,7 @@ public class TemporalRelationsCollector extends Extractor {
 						}
 					}
 					if (type == TimeSymbol.END_TIME || type == TimeSymbol.START_AND_END_TIME) {
-						Date endTime;
+						DateWithGranularity endTime;
 						try {
 							endTime = TimeTransformer.generateLatestTimeForWikidata(timeString);
 							if (previousRelation != null && endTime != null)
@@ -505,8 +525,10 @@ public class TemporalRelationsCollector extends Extractor {
 
 	private void loadDBpedia(FileName fileName, boolean loadEntityRelations) {
 
+		this.partOfProperties = DBpediaPartOfLoader.loadPartOfProperties();
+
 		Set<String> ignoredProperties = new HashSet<String>();
-		for (String property : DBpediaPartOfLoader.loadPartOfProperties()) {
+		for (String property : this.partOfProperties) {
 			ignoredProperties.add(property.substring(property.lastIndexOf("/") + 1, property.length() - 1));
 		}
 
@@ -594,7 +616,9 @@ public class TemporalRelationsCollector extends Extractor {
 					Entity entity1 = buildEntity(Language.EN, entityLabel1);
 					Entity entity2 = buildEntity(Language.EN, entityLabel2);
 
-					buildRelation(entity1, entity2, time, time, "related", Source.WCE, Language.EN, false);
+					buildRelation(entity1, entity2, new DateWithGranularity(time, DateGranularity.DAY),
+							new DateWithGranularity(time, DateGranularity.DAY), "related", Source.WCE, Language.EN,
+							false);
 
 				} catch (ParseException e) {
 					e.printStackTrace();
@@ -616,8 +640,9 @@ public class TemporalRelationsCollector extends Extractor {
 		return this.allEventPagesDataSet.getWikidataIdMappings().getEntityByWikipediaLabel(language, wikipediaLabel);
 	}
 
-	private Relation buildRelation(Entity entity1, Entity entity2, Date startTime, Date endTime, String property,
-			Source source, Language sourceLanguage, boolean isEntityRelation) {
+	private Relation buildRelation(Entity entity1, Entity entity2, DateWithGranularity startTime,
+			DateWithGranularity endTime, String property, Source source, Language sourceLanguage,
+			boolean isEntityRelation) {
 
 		if (entity1 == null || entity2 == null)
 			return null;

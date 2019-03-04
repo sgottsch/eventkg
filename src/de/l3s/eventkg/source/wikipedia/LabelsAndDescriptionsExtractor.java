@@ -55,7 +55,7 @@ public class LabelsAndDescriptionsExtractor extends Extractor {
 	}
 
 	public LabelsAndDescriptionsExtractor(List<Language> languages, AllEventPagesDataSet allEventPagesDataSet) {
-		super("CurrentEventsRelationsExtraction", de.l3s.eventkg.meta.Source.WIKIPEDIA,
+		super("LabelsAndDescriptionsExtractor", de.l3s.eventkg.meta.Source.WIKIPEDIA,
 				"Collect labels and descriptions of entities and events.", languages);
 		this.allEventPagesDataSet = allEventPagesDataSet;
 	}
@@ -324,23 +324,6 @@ public class LabelsAndDescriptionsExtractor extends Extractor {
 		} finally {
 			if (writeToFile)
 				writer.close();
-		}
-
-	}
-
-	private void processFile(File file, Language language) {
-
-		System.out.println("Process file " + file.getName() + ".");
-
-		try {
-			String content = FileLoader.readFile(file);
-
-			for (String line : content.split(Config.NL)) {
-				processLine(line, language);
-			}
-
-		} catch (IOException e) {
-			e.printStackTrace();
 		}
 
 	}

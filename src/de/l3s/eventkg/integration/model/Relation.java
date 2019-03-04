@@ -13,9 +13,9 @@ public class Relation {
 
 	private Entity entity2;
 
-	private Date startTime;
+	private DateWithGranularity startTime;
 
-	private Date endTime;
+	private DateWithGranularity endTime;
 	private Date startTimeEntity1;
 
 	private Date endTimeEntity1;
@@ -32,8 +32,8 @@ public class Relation {
 	// it here
 	private boolean isEntityRelation;
 
-	public Relation(Entity entity1, Entity entity2, Date startTime, Date endTime, String property, Source source,
-			Language sourceLanguage, boolean isEntityRelation) {
+	public Relation(Entity entity1, Entity entity2, DateWithGranularity startTime, DateWithGranularity endTime,
+			String property, Source source, Language sourceLanguage, boolean isEntityRelation) {
 		super();
 		this.entity1 = entity1;
 		this.entity2 = entity2;
@@ -68,19 +68,19 @@ public class Relation {
 		this.entity2 = entity2;
 	}
 
-	public Date getStartTime() {
+	public DateWithGranularity getStartTime() {
 		return startTime;
 	}
 
-	public void setStartTime(Date startTime) {
+	public void setStartTime(DateWithGranularity startTime) {
 		this.startTime = startTime;
 	}
 
-	public Date getEndTime() {
+	public DateWithGranularity getEndTime() {
 		return endTime;
 	}
 
-	public void setEndTime(Date endTime) {
+	public void setEndTime(DateWithGranularity endTime) {
 		this.endTime = endTime;
 	}
 

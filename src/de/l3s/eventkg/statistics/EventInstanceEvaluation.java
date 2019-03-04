@@ -18,7 +18,7 @@ public class EventInstanceEvaluation {
 
 		Map<String, List<String>> eventsBySource = new HashMap<String, List<String>>();
 
-		int ia = 0;
+		// int ia = 0;
 		for (String line : FileLoader.readLines(FileName.ALL_EVENT_PAGES)) {
 			String[] parts = line.split("\t");
 			String sourcesLine = parts[2];
@@ -29,7 +29,7 @@ public class EventInstanceEvaluation {
 					eventsBySource.put(str, new ArrayList<String>());
 				eventsBySource.get(str).add(parts[1] + "   " + oriStr);
 			}
-			ia += 1;
+			// ia += 1;
 			// if (ia > 100)
 			// break;
 		}

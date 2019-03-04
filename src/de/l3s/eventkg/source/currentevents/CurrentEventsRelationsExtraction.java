@@ -55,15 +55,15 @@ public class CurrentEventsRelationsExtraction extends Extractor {
 
 				for (WCEEntity entity : event.getEntities()) {
 					if (allEventPagesDataSet.getEventByWikipediaLabel(Language.EN,
-							entity.getName().replaceAll(" ", "_")) != null) {
-						eventPages.add(entity.getName().replaceAll(" ", "_"));
+							entity.getWikiURL().replaceAll(" ", "_")) != null) {
+						eventPages.add(entity.getWikiURL().replaceAll(" ", "_"));
 					}
 				}
 
 				for (String eventPage : eventPages) {
 					// System.out.println(eventPage);
 					for (WCEEntity entity : event.getEntities()) {
-						String entityName = entity.getName().replaceAll(" ", "_");
+						String entityName = entity.getWikiURL().replaceAll(" ", "_");
 						if (!entityName.equals(eventPage))
 							relationsWriter.write(entityName + "\t" + eventPage + "\t"
 									+ FileLoader.PARSE_DATE_FORMAT.format(event.getDate()) + "\n");

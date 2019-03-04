@@ -33,15 +33,16 @@ public class YAGOEventRelationsExtractor extends Extractor {
 	}
 
 	public void run() {
-		System.out.println("Collect event pages.");
-		extractTriples();
+		System.out.println("Collect YAGO event facts.");
+		Map<String, Set<YAGOMetaFact>> temporalMetaFacts = YAGOMetaFactsDataSet.loadMetaFacts(true);
+
+		extractTriples(temporalMetaFacts);
+		extractTriplesWithEventsAndLiterals(temporalMetaFacts);
 	}
 
-	private void extractTriples() {
+	private void extractTriples(Map<String, Set<YAGOMetaFact>> temporalMetaFacts) {
 
 		System.out.println("Collect meta facts.");
-
-		Map<String, Set<YAGOMetaFact>> temporalMetaFacts = YAGOMetaFactsDataSet.loadMetaFacts(true);
 
 		// Properties:
 		// <isLeaderOf>, <owns>, <isLocatedIn>, <isCitizenOf>, <hasMusicalRole>
@@ -154,6 +155,81 @@ public class YAGOEventRelationsExtractor extends Extractor {
 			eventFactsWriter.close();
 			entityFactsWriter.close();
 			temporalFactsWriter.close();
+		}
+
+	}
+
+	private void extractTriplesWithEventsAndLiterals(Map<String, Set<YAGOMetaFact>> temporalMetaFacts) {
+
+		System.out.println("Collect YAGO facts with events and literals.");
+
+		PrintWriter eventLiteralsFactsWriter = null;
+		try {
+			eventLiteralsFactsWriter = FileLoader.getWriter(FileName.YAGO_EVENT_LITERALS_FACTS);
+
+			BufferedReader br = null;
+			try {
+				try {
+					br = FileLoader.getReader(FileName.YAGO_LITERAL_FACTS);
+				} catch (FileNotFoundException e1) {
+					e1.printStackTrace();
+				}
+
+				String line;
+				String previousId = null;
+
+				while ((line = br.readLine()) != null) {
+
+					if (line.startsWith("#@ <id")) {
+						previousId = line.substring(3);
+					}
+
+					if (line.isEmpty() || line.startsWith("@") || line.startsWith("#"))
+						continue;
+
+					String[] parts = line.split("\t");
+
+					YAGOLabelExtractor yagoLabelExtractor1 = new YAGOLabelExtractor(parts[0], this.languages);
+					yagoLabelExtractor1.extractLabel();
+					if (!yagoLabelExtractor1.isValid())
+						continue;
+
+					String wikipediaLabel1 = parts[0].substring(1, parts[0].length() - 1);
+
+					// check for events using the actual labels. But write to
+					// files the original labels like "de/..." (because
+					// transformation is done later).
+
+					String property = parts[1];
+
+					Set<YAGOMetaFact> metaFactsOfFact = temporalMetaFacts.get(previousId);
+
+					// a) Relations to events
+					if (allEventPagesDataSet.getEventByWikipediaLabel(yagoLabelExtractor1.getLanguage(),
+							yagoLabelExtractor1.getWikipediaLabel()) != null) {
+						eventLiteralsFactsWriter.write(wikipediaLabel1 + "\t" + property + "\t" + parts[2] + "\n");
+						if (metaFactsOfFact != null) {
+							for (YAGOMetaFact metaFact : metaFactsOfFact) {
+								eventLiteralsFactsWriter
+										.write("\t" + metaFact.getProperty() + "\t" + metaFact.getObject() + "\n");
+							}
+						}
+					}
+				}
+			} catch (IOException e) {
+				e.printStackTrace();
+			} finally {
+				try {
+					br.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+
+		} catch (FileNotFoundException e2) {
+			e2.printStackTrace();
+		} finally {
+			eventLiteralsFactsWriter.close();
 		}
 
 	}

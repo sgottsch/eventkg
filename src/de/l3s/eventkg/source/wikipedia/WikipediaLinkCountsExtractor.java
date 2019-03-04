@@ -17,7 +17,6 @@ import de.l3s.eventkg.integration.model.Entity;
 import de.l3s.eventkg.meta.Language;
 import de.l3s.eventkg.pipeline.Config;
 import de.l3s.eventkg.pipeline.Extractor;
-import de.l3s.eventkg.source.wikipedia.model.LinkedByCount;
 import de.l3s.eventkg.source.wikipedia.model.LinksToCount;
 import de.l3s.eventkg.util.FileLoader;
 import de.l3s.eventkg.util.FileName;
@@ -27,7 +26,6 @@ public class WikipediaLinkCountsExtractor extends Extractor {
 	private AllEventPagesDataSet allEventPagesDataSet;
 
 	private Set<LinksToCount> linksToCounts;
-	private Set<LinkedByCount> linkedByCounts;
 
 	private static final boolean WRITE_TO_FILES = false;
 
@@ -45,7 +43,7 @@ public class WikipediaLinkCountsExtractor extends Extractor {
 	}
 
 	public WikipediaLinkCountsExtractor(List<Language> languages, AllEventPagesDataSet allEventPagesDataSet) {
-		super("CurrentEventsRelationsExtraction", de.l3s.eventkg.meta.Source.WIKIPEDIA,
+		super("WikipediaLinkCountsExtractor", de.l3s.eventkg.meta.Source.WIKIPEDIA,
 				"Extract Wikipedia link counts between entities and events.", languages);
 		this.allEventPagesDataSet = allEventPagesDataSet;
 	}
@@ -58,7 +56,6 @@ public class WikipediaLinkCountsExtractor extends Extractor {
 	private void extractRelations() {
 
 		this.linksToCounts = new HashSet<LinksToCount>();
-		this.linkedByCounts = new HashSet<LinkedByCount>();
 
 		for (Language language : this.languages) {
 			for (File child : FileLoader.getFilesList(FileName.WIKIPEDIA_LINK_COUNTS, language)) {
@@ -73,13 +70,20 @@ public class WikipediaLinkCountsExtractor extends Extractor {
 
 		if (!WRITE_TO_FILES) {
 
+			int i = 0;
+			int size = this.linksToCounts.size();
+
+			System.out.println("Found " + size + " relations.");
 			for (LinksToCount linkCount : this.linksToCounts) {
+				if (i % 100000 == 0)
+					System.out.println("\t" + i + "/" + size + " (" + ((double) i / size) + ")");
+				i += 1;
 				DataStore.getInstance().addLinkRelation(linkCount.toGenericRelation());
 			}
+			System.out.println(" Finished loading link counts.");
 
-			// for (LinkedByCount linkCount : this.linkedByCounts) {
-			// DataStore.getInstance().addLinkRelation(linkCount.toGenericRelation());
-			// }
+			this.linksToCounts.clear();
+
 		} else {
 
 			System.out.println("Write results: Link counts");
@@ -110,33 +114,6 @@ public class WikipediaLinkCountsExtractor extends Extractor {
 				writer.close();
 			}
 
-			System.out.println("Write results: Linked by counts");
-			PrintWriter writer2 = null;
-			try {
-				writer2 = FileLoader.getWriter(FileName.ALL_LINKED_BY_COUNTS);
-
-				for (LinkedByCount linkCount : this.linkedByCounts) {
-
-					DataStore.getInstance().addLinkRelation(linkCount.toGenericRelation());
-
-					writer2.write(linkCount.getEvent().getWikidataId());
-					writer2.write(Config.TAB);
-					writer2.write(linkCount.getEvent().getWikipediaLabelsString(this.languages));
-					writer2.write(Config.TAB);
-					writer2.write(linkCount.getEntity().getWikidataId());
-					writer2.write(Config.TAB);
-					writer2.write(linkCount.getEntity().getWikipediaLabelsString(this.languages));
-					writer2.write(Config.TAB);
-					writer2.write(String.valueOf(linkCount.getCount()));
-					writer2.write(Config.TAB);
-					writer2.write(linkCount.getLanguage().getLanguageLowerCase());
-					writer2.write(Config.NL);
-				}
-			} catch (FileNotFoundException e) {
-				e.printStackTrace();
-			} finally {
-				writer2.close();
-			}
 		}
 	}
 
@@ -149,31 +126,14 @@ public class WikipediaLinkCountsExtractor extends Extractor {
 				String line = it.nextLine();
 				processLine(line, language, file);
 			}
+			System.out.println(this.linksToCounts.size() + "\t" + file.getName());
+
 		} catch (IOException e) {
 			e.printStackTrace();
 		} finally {
 			LineIterator.closeQuietly(it);
 		}
 
-	}
-
-	private void processFile(File file, Language language) {
-
-		System.out.println("Process file " + file.getName() + ".");
-
-		try {
-			String content = FileLoader.readFile(file);
-
-			for (String line : content.split(Config.NL)) {
-				processLine(line, language, file);
-			}
-
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-
-		// System.out.println(this.linksToCounts.size());
-		// System.out.println(this.linkedByCounts.size());
 	}
 
 	private void processLine(String line, Language language, File file) {

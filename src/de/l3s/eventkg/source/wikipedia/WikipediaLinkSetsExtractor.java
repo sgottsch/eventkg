@@ -41,7 +41,7 @@ public class WikipediaLinkSetsExtractor extends Extractor {
 	}
 
 	public WikipediaLinkSetsExtractor(List<Language> languages, AllEventPagesDataSet allEventPagesDataSet) {
-		super("CurrentEventsRelationsExtraction", de.l3s.eventkg.meta.Source.WIKIPEDIA,
+		super("WikipediaLinkSetsExtractor", de.l3s.eventkg.meta.Source.WIKIPEDIA,
 				"Extract the number of co-occurences of entities and events in the same sentences in Wikipedia.",
 				languages);
 		this.allEventPagesDataSet = allEventPagesDataSet;
@@ -143,10 +143,20 @@ public class WikipediaLinkSetsExtractor extends Extractor {
 
 	private void writeResults() {
 
+		int i = 0;
+		int size = this.linkSets.size();
+
+		System.out.println("Found " + size + " relations.");
 		for (LinkSetCount linkCount : this.linkSets) {
+			if (i % 100000 == 0)
+				System.out.println("\t" + i + "/" + size + " (" + ((double) i / size) + ")");
+			i += 1;
 			DataStore.getInstance().addLinkRelation(linkCount.toGenericRelation());
 			DataStore.getInstance().addLinkRelation(linkCount.toGenericRelationSubjectObjectReverted());
 		}
+		System.out.println(" Finished loading link sets.");
+
+		this.linkSets.clear();
 
 		// System.out.println("Write results: Link sets");
 		// PrintWriter writer = null;
@@ -247,8 +257,7 @@ public class WikipediaLinkSetsExtractor extends Extractor {
 			e.printStackTrace();
 		}
 
-		System.out.println(pairs.keySet().size());
-
+		System.out.println(pairs.keySet().size() + "\t" + file.getName());
 	}
 
 	private boolean areConnectedViaRelation(Entity entity1, Entity entity2) {

@@ -4,6 +4,7 @@ import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -11,17 +12,24 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.commons.lang3.StringUtils;
+
+import de.l3s.eventkg.integration.model.DateGranularity;
 import de.l3s.eventkg.integration.model.Entity;
 import de.l3s.eventkg.integration.model.Event;
+import de.l3s.eventkg.integration.model.Position;
 import de.l3s.eventkg.integration.model.relation.Alias;
 import de.l3s.eventkg.integration.model.relation.DataSet;
 import de.l3s.eventkg.integration.model.relation.Description;
 import de.l3s.eventkg.integration.model.relation.EndTime;
 import de.l3s.eventkg.integration.model.relation.GenericRelation;
 import de.l3s.eventkg.integration.model.relation.Label;
+import de.l3s.eventkg.integration.model.relation.LiteralDataType;
+import de.l3s.eventkg.integration.model.relation.LiteralRelation;
 import de.l3s.eventkg.integration.model.relation.Location;
 import de.l3s.eventkg.integration.model.relation.PropertyLabel;
 import de.l3s.eventkg.integration.model.relation.StartTime;
+import de.l3s.eventkg.integration.model.relation.SubProperty;
 import de.l3s.eventkg.integration.model.relation.prefix.Prefix;
 import de.l3s.eventkg.integration.model.relation.prefix.PrefixEnum;
 import de.l3s.eventkg.integration.model.relation.prefix.PrefixList;
@@ -71,8 +79,52 @@ public class DataStoreWriter {
 		writeOtherRelations();
 		System.out.println("writePropertyLabels");
 		writePropertyLabels();
+		System.out.println("writeLiteralsRelations");
+		writeLiteralsRelations();
 		System.out.println("writeLinkRelations");
-		writeLinkRelations();
+		writeLinkRelationsToFile();
+	}
+
+	public void writeNoRelations() {
+		init();
+		System.out.println("Write meta files.");
+		writeMetaFiles();
+		System.out.println("writeEvents");
+		writeEvents();
+		System.out.println("writeEntities");
+		writeEntities();
+		System.out.println("writeBaseRelations");
+		writeBaseRelations();
+	}
+
+	public void writeRelations() {
+
+		this.generateIdsFromPreviousEventKG = true;
+
+		init();
+		initIds();
+
+		System.out.println("writeNamedEventRelations");
+		writeNamedEventRelations();
+		System.out.println("writeOtherRelations");
+		writeOtherRelations();
+		System.out.println("writeLiteralsRelations");
+		writeLiteralsRelations();
+		System.out.println("writePropertyLabels");
+		writePropertyLabels();
+	}
+
+	public void writeLinkRelations() {
+
+		this.generateIdsFromPreviousEventKG = true;
+
+		System.out.println("Init mapping.");
+		init();
+		System.out.println("Init IDs.");
+		initIds();
+
+		System.out.println("Write link relations");
+		writeLinkRelationsToFile();
 	}
 
 	private void writeMetaFiles() {
@@ -89,6 +141,47 @@ public class DataStoreWriter {
 			this.idGenerator = new EntityIdGenerator();
 			this.idGenerator.load();
 		}
+	}
+
+	private void initIds() {
+		Set<Entity> allEntities = new HashSet<Entity>();
+		allEntities.addAll(DataStore.getInstance().getEntities());
+		allEntities.addAll(DataStore.getInstance().getEvents());
+
+		for (Entity entity : DataStore.getInstance().getEntities()) {
+			String entityId = generateEntityId(entity);
+			if (entityId == null) {
+				System.out.println("error: missing entity ID for " + entity.getWikidataId() + ", "
+						+ entity.getWikipediaLabelsString(this.languages));
+				if (entity.getWikidataId().equals("Q5193991"))
+					System.out.println("Test case: error: missing ID for " + entity.getWikidataId() + ", "
+							+ entity.getWikipediaLabelsString(this.languages));
+				// entityId = "<entity_" + String.valueOf(entityNo) + ">";
+				// entityNo += 1;
+			}
+			entity.setId(entityId);
+		}
+
+		Map<Event, String> descriptionMap = createDescriptionMap();
+
+		for (Event event : DataStore.getInstance().getEvents()) {
+			String eventId = generateEventId(event, descriptionMap.get(event));
+			if (eventId == null) {
+				System.out.println("error: missing event ID for " + event.getWikidataId() + ", "
+						+ event.getWikipediaLabelsString(this.languages));
+				if (descriptionMap.get(event) != null) {
+					System.out.println("\tdescriptionMap:");
+					System.out.println("\t\t" + descriptionMap.get(event));
+				}
+				// entityId = "<entity_" + String.valueOf(entityNo) + ">";
+				// entityNo += 1;
+			} else if (event.getWikidataId() == null) {
+				// System.out.println("success: Found " + eventId + " -> " +
+				// descriptionMap.get(event));
+			}
+			event.setId(eventId);
+		}
+
 	}
 
 	private void writePropertyLabels() {
@@ -200,14 +293,14 @@ public class DataStoreWriter {
 
 	}
 
-	private void writeEvents() {
+	private Map<Event, String> createDescriptionMap() {
+		Map<Event, String> descriptionMap = new HashMap<Event, String>();
 
-		int eventNo = 0;
+		Map<Event, Set<String>> descriptions = new HashMap<Event, Set<String>>();
+		Map<Event, Set<String>> otherURLs = new HashMap<Event, Set<String>>();
 
-		if (generateIdsFromPreviousEventKG)
-			eventNo = this.idGenerator.getLastEventNo() + 1;
-
-		Map<Event, Map<DataSet, Set<String>>> descriptionMap = new HashMap<Event, Map<DataSet, Set<String>>>();
+		// must be 100% aligned to initEventIdMapping() in
+		// EventKGIdMappingLoader!!!
 
 		for (Description description : dataStore.getDescriptions()) {
 			if (description.getSubject() == null)
@@ -216,14 +309,74 @@ public class DataStoreWriter {
 				Event event = (Event) description.getSubject();
 				if (event == null)
 					event = (Event) description.getSubject();
-				if (!descriptionMap.containsKey(event))
-					descriptionMap.put(event, new HashMap<DataSet, Set<String>>());
-				if (!descriptionMap.get(event).containsKey(description.getDataSet()))
-					descriptionMap.get(event).put(description.getDataSet(), new HashSet<String>());
 
-				descriptionMap.get(event).get(description.getDataSet()).add(description.getLabel());
+				if (!descriptions.containsKey(event)) {
+					descriptions.put(event, new HashSet<String>());
+					otherURLs.put(event, new HashSet<String>());
+				}
+
+				descriptions.get(event).add(description.getDataSet().getId() + ":" + description.getLabel());
+
+				if (event.getOtherUrls() != null) {
+					for (DataSet dataSet : event.getOtherUrls().keySet()) {
+						for (String otherUrl : event.getOtherUrls().get(dataSet)) {
+							otherURLs.get(event).add(dataSet.getId() + ":" + otherUrl);
+						}
+					}
+				}
+
+				// if (!descriptionMap.containsKey(event))
+				// descriptionMap.put(event, new HashMap<DataSet,
+				// Set<String>>());
+				// if
+				// (!descriptionMap.get(event).containsKey(description.getDataSet()))
+				// descriptionMap.get(event).put(description.getDataSet(), new
+				// HashSet<String>());
+				//
+				// descriptionMap.get(event).get(description.getDataSet()).add(description.getLabel());
 			}
 		}
+
+		int examples = 10;
+		for (Event event : descriptions.keySet()) {
+			List<String> otherUrlsOfEvent = new ArrayList<String>();
+			otherUrlsOfEvent.addAll(otherURLs.get(event));
+			Collections.sort(otherUrlsOfEvent);
+
+			List<String> descriptionsOfEvent = new ArrayList<String>();
+			descriptionsOfEvent.addAll(descriptions.get(event));
+			Collections.sort(descriptionsOfEvent);
+
+			String description = StringUtils.join(otherUrlsOfEvent, ";") + "-"
+					+ StringUtils.join(descriptionsOfEvent, ";");
+
+			descriptionMap.put(event, description);
+
+			if (examples > 0) {
+				System.out.println("Map2: " + description);
+			}
+
+			if (description.contains("The Independent International Commission on Decommissioning"))
+				System.out.println("Map1TC_a: " + event.getId() + " -> " + description);
+			if (description.contains("Bei den russischen Präsidentschaftswahlen wird der kommissarische"))
+				System.out.println("Map1TC_b: " + event.getId() + " -> " + description);
+			if (description.contains("runway at Davao International Airport in Davao, the"))
+				System.out.println("Map1TC_c: " + event.getId() + " -> " + description);
+
+			examples -= 1;
+		}
+
+		return descriptionMap;
+	}
+
+	private void writeEvents() {
+
+		int eventNo = 0;
+
+		if (generateIdsFromPreviousEventKG)
+			eventNo = this.idGenerator.getLastEventNo() + 1;
+
+		Map<Event, String> descriptionMap = createDescriptionMap();
 
 		PrintWriter writer = null;
 		PrintWriter writerPreview = null;
@@ -300,6 +453,7 @@ public class DataStoreWriter {
 							"<" + prefix.getUrlPrefix() + event.getWikipediaLabels().get(language) + ">", false,
 							dataSets.getDataSet(language, Source.DBPEDIA));
 				}
+
 			}
 
 			System.out.println("#Wikipedia labels: " + dataStore.getWikipediaLabels().size() + ".");
@@ -444,6 +598,23 @@ public class DataStoreWriter {
 							dataSets.getDataSet(language, Source.DBPEDIA));
 				}
 
+				// if (!entity.getPositions().isEmpty()) {
+				// for (Position position : entity.getPositions()) {
+				// DataSet dataSet =
+				// entity.getPositionsWithDataSets().get(position);
+				// writeTriple(writer, writerPreview, lineNo, entity.getId(),
+				// PrefixEnum.SCHEMA_ORG.getAbbr() + "latitude",
+				// createLiteral(String.valueOf(position.getLatitude()),
+				// LiteralDataType.DOUBLE), false,
+				// dataSet);
+				// writeTriple(writer, writerPreview, lineNo, entity.getId(),
+				// PrefixEnum.SCHEMA_ORG.getAbbr() + "longitude",
+				// createLiteral(String.valueOf(position.getLongitude()),
+				// LiteralDataType.DOUBLE), false,
+				// dataSet);
+				// }
+				// }
+
 			}
 
 			lineNo = 0;
@@ -509,21 +680,48 @@ public class DataStoreWriter {
 
 		Set<String> entityIds = new HashSet<String>();
 
+		if (entity.getWikidataId().equals("Q5193991")) {
+			System.out.println("Test case 1: " + entity.getWikidataId());
+			System.out.println("Test case 2: " + this.idGenerator.getEntityLabelsMap()
+					.get(DataSets.getInstance().getDataSetWithoutLanguage(Source.WIKIDATA)).size());
+			System.out.println("Test case 3: " + this.idGenerator.getEntityLabelsMap()
+					.get(DataSets.getInstance().getDataSetWithoutLanguage(Source.WIKIDATA))
+					.get(entity.getWikidataId()));
+		}
+
 		if (entity.getWikidataId() != null && this.idGenerator.getEntityLabelsMap()
 				.containsKey(DataSets.getInstance().getDataSetWithoutLanguage(Source.WIKIDATA))) {
 			entityIds.add(this.idGenerator.getEntityLabelsMap()
 					.get(DataSets.getInstance().getDataSetWithoutLanguage(Source.WIKIDATA))
 					.get(entity.getWikidataId()));
+			if (entity.getWikidataId().equals("Q5193991")) {
+				System.out.println("Test case 4: " + this.idGenerator.getEntityLabelsMap()
+						.get(DataSets.getInstance().getDataSetWithoutLanguage(Source.WIKIDATA))
+						.get(entity.getWikidataId()));
+			}
 		}
 
 		for (Language language : entity.getWikipediaLabels().keySet()) {
 			if (entity.getWikidataId() != null && this.idGenerator.getEntityLabelsMap()
 					.containsKey(DataSets.getInstance().getDataSet(language, Source.DBPEDIA))) {
+				if (entity.getWikidataId().equals("Q5193991")) {
+					System.out.println(
+							"Test case 5: " + language + ", " + entity.getWikipediaLabels().get(language) + " -> "
+									+ this.idGenerator.getEntityLabelsMap()
+											.get(DataSets.getInstance().getDataSet(language, Source.DBPEDIA))
+											.get(entity.getWikipediaLabels().get(language)));
+				}
 				entityIds.add(this.idGenerator.getEntityLabelsMap()
 						.get(DataSets.getInstance().getDataSet(language, Source.DBPEDIA))
 						.get(entity.getWikipediaLabels().get(language)));
 			}
 
+		}
+
+		if (entity.getWikidataId().equals("Q5193991")) {
+			for (String entityId : entityIds) {
+				System.out.println("Test case 6: " + entityId);
+			}
 		}
 
 		entityIds.remove(null);
@@ -536,7 +734,7 @@ public class DataStoreWriter {
 		return null;
 	}
 
-	private String generateEventId(Event event, Map<DataSet, Set<String>> descriptionMap) {
+	private String generateEventId(Event event, String description) {
 
 		if (!generateIdsFromPreviousEventKG)
 			return null;
@@ -544,31 +742,45 @@ public class DataStoreWriter {
 		Set<String> eventIds = new HashSet<String>();
 
 		if (event.getWikidataId() == null && event.getWikipediaLabels().isEmpty()) {
-			// Textual events
-			for (DataSet dataSet : descriptionMap.keySet()) {
-				if (this.idGenerator.getEventDescriptionsMap().containsKey(dataSet)) {
-					for (String description : descriptionMap.get(dataSet)) {
-						if (this.idGenerator.getEventDescriptionsMap().get(dataSet).containsKey(description))
-							eventIds.add(this.idGenerator.getEventDescriptionsMap().get(dataSet).get(description));
-					}
-				}
+
+			if (description == null) {
+				System.out.println("descriptionMap is null: " + event.getWikidataId() + ", "
+						+ event.getWikipediaLabelsString(this.languages));
+				return null;
 			}
-		} else {
+
+			// Textual events
+			if (this.idGenerator.getEventDescriptionsMap().containsKey(description)) {
+				eventIds.add(this.idGenerator.getEventDescriptionsMap().get(description));
+			}
+		} else
+
+		{
 			// Wikidata
 			if (event.getWikidataId() != null && this.idGenerator.getEventLabelsMap()
 					.containsKey(DataSets.getInstance().getDataSetWithoutLanguage(Source.WIKIDATA))) {
-				eventIds.add(this.idGenerator.getEventLabelsMap()
+
+				String eventId = this.idGenerator.getEventLabelsMap()
 						.get(DataSets.getInstance().getDataSetWithoutLanguage(Source.WIKIDATA))
-						.get(event.getWikidataId()));
+						.get(event.getWikidataId());
+
+				if (eventId != null)
+					eventIds.add(eventId);
+
 			}
 
 			for (Language language : event.getWikipediaLabels().keySet()) {
 				// DBpedia
 				if (event.getWikidataId() != null && this.idGenerator.getEventLabelsMap()
 						.containsKey(DataSets.getInstance().getDataSet(language, Source.DBPEDIA))) {
-					eventIds.add(this.idGenerator.getEventLabelsMap()
+
+					String eventId = this.idGenerator.getEventLabelsMap()
 							.get(DataSets.getInstance().getDataSet(language, Source.DBPEDIA))
-							.get(event.getWikipediaLabels().get(language)));
+							.get(event.getWikipediaLabels().get(language));
+
+					if (eventId != null)
+						eventIds.add(eventId);
+
 				}
 
 			}
@@ -595,6 +807,10 @@ public class DataStoreWriter {
 			prefixes.add(prefixList.getPrefix(PrefixEnum.SCHEMA_ORG));
 			prefixes.add(prefixList.getPrefix(PrefixEnum.SEM));
 			prefixes.add(prefixList.getPrefix(PrefixEnum.DBPEDIA_ONTOLOGY));
+			prefixes.add(prefixList.getPrefix(PrefixEnum.XSD));
+			prefixes.add(prefixList.getPrefix(PrefixEnum.EVENT_KG_SCHEMA));
+			prefixes.add(prefixList.getPrefix(PrefixEnum.TIME));
+
 			for (String line : createIntro(prefixes, this.prefixList)) {
 				writer.write(line + Config.NL);
 				writerPreview.write(line + Config.NL);
@@ -623,7 +839,9 @@ public class DataStoreWriter {
 				lineNo += 1;
 				writeTriple(writer, writerPreview, lineNo, startTime.getSubject().getId(),
 						prefixList.getPrefix(PrefixEnum.SEM).getAbbr() + "hasBeginTimeStamp",
-						standardFormat.format(startTime.getStartTime()), false, startTime.getDataSet(), null);
+						standardFormat.format(startTime.getStartTime().getDate()), false, startTime.getDataSet(), null);
+				writeDateGranularityTriple(writer, writerPreview, lineNo, startTime.getSubject().getId(),
+						startTime.getStartTime().getGranularity(), false, startTime.getDataSet(), true);
 			}
 
 			lineNo = 0;
@@ -641,7 +859,9 @@ public class DataStoreWriter {
 				lineNo += 1;
 				writeTriple(writer, writerPreview, lineNo, endTime.getSubject().getId(),
 						prefixList.getPrefix(PrefixEnum.SEM).getAbbr() + "hasEndTimeStamp",
-						standardFormat.format(endTime.getEndTime()), false, endTime.getDataSet(), null);
+						standardFormat.format(endTime.getEndTime().getDate()), false, endTime.getDataSet(), null);
+				writeDateGranularityTriple(writer, writerPreview, lineNo, endTime.getSubject().getId(),
+						endTime.getEndTime().getGranularity(), false, endTime.getDataSet(), false);
 			}
 
 			lineNo = 0;
@@ -679,6 +899,21 @@ public class DataStoreWriter {
 
 					}
 
+					if (!entity.getPositions().isEmpty()) {
+						lineNo += 1;
+						for (Position position : entity.getPositions()) {
+							DataSet dataSet = entity.getPositionsWithDataSets().get(position);
+							writeTriple(writer, writerPreview, lineNo, entity.getId(),
+									PrefixEnum.SCHEMA_ORG.getAbbr() + "latitude",
+									createLiteral(String.valueOf(position.getLatitude()), LiteralDataType.DOUBLE),
+									false, dataSet);
+							writeTriple(writer, writerPreview, lineNo, entity.getId(),
+									PrefixEnum.SCHEMA_ORG.getAbbr() + "longitude",
+									createLiteral(String.valueOf(position.getLongitude()), LiteralDataType.DOUBLE),
+									false, dataSet);
+						}
+					}
+
 				}
 			}
 
@@ -707,6 +942,21 @@ public class DataStoreWriter {
 							previousEvent.getId(), false, null);
 				}
 
+				if (!event.getPositions().isEmpty()) {
+					lineNo += 1;
+					for (Position position : event.getPositions()) {
+						DataSet dataSet = event.getPositionsWithDataSets().get(position);
+						writeTriple(writer, writerPreview, lineNo, event.getId(),
+								PrefixEnum.SCHEMA_ORG.getAbbr() + "latitude",
+								createLiteral(String.valueOf(position.getLatitude()), LiteralDataType.DOUBLE), false,
+								dataSet);
+						writeTriple(writer, writerPreview, lineNo, event.getId(),
+								PrefixEnum.SCHEMA_ORG.getAbbr() + "longitude",
+								createLiteral(String.valueOf(position.getLongitude()), LiteralDataType.DOUBLE), false,
+								dataSet);
+					}
+				}
+
 				lineNo = Math.min(lineNo, lineNoPlusOne);
 			}
 
@@ -719,7 +969,131 @@ public class DataStoreWriter {
 
 	}
 
-	private void writeLinkRelations() {
+	// private void writeLinkRelationsToFile() {
+	//
+	// PrintWriter writerEventLinks = null;
+	// PrintWriter writerEventLinksPreview = null;
+	// PrintWriter writerEntityLinks = null;
+	// PrintWriter writerEntityLinksPreview = null;
+	// try {
+	// writerEventLinks =
+	// FileLoader.getWriter(FileName.ALL_TTL_EVENTS_LINK_RELATIONS);
+	// writerEventLinksPreview =
+	// FileLoader.getWriter(FileName.ALL_TTL_EVENTS_LINK_RELATIONS_PREVIEW);
+	// writerEntityLinks =
+	// FileLoader.getWriter(FileName.ALL_TTL_ENTITY_LINK_RELATIONS);
+	// writerEntityLinksPreview =
+	// FileLoader.getWriter(FileName.ALL_TTL_ENTITY_LINK_RELATIONS_PREVIEW);
+	// List<Prefix> prefixes = new ArrayList<Prefix>();
+	// // prefixes.add(Prefix.RDF);
+	// // prefixes.add(Prefix.EVENT_KG);
+	// prefixes.add(prefixList.getPrefix(PrefixEnum.XSD));
+	// prefixes.add(prefixList.getPrefix(PrefixEnum.EVENT_KG_SCHEMA));
+	// prefixes.add(prefixList.getPrefix(PrefixEnum.RDF));
+	//
+	// for (String line : createIntro(prefixes, this.prefixList)) {
+	// writerEventLinks.write(line + Config.NL);
+	// writerEventLinksPreview.write(line + Config.NL);
+	// writerEntityLinks.write(line + Config.NL);
+	// writerEntityLinksPreview.write(line + Config.NL);
+	// }
+	//
+	// int lineNo = 0;
+	// int lineNoEvents = 0;
+	// int lineNoEntities = 0;
+	//
+	// System.out.println("Link subjects: " +
+	// dataStore.getLinkRelationsBySubjectAndObject().keySet().size());
+	//
+	// int svov = 0;
+	// int snov = 0;
+	// int svon = 0;
+	// int snon = 0;
+	//
+	// for (Entity subject :
+	// dataStore.getLinkRelationsBySubjectAndObject().keySet()) {
+	// for (Entity object :
+	// dataStore.getLinkRelationsBySubjectAndObject().get(subject).keySet()) {
+	//
+	// boolean isEntityRelation = true;
+	//
+	// String subjectId = subject.getId();
+	// if (subject.isEvent())
+	// isEntityRelation = false;
+	//
+	// String objectId = object.getId();
+	// if (object.isEvent())
+	// isEntityRelation = false;
+	//
+	// if (subject.isEvent() && object.isEvent())
+	// svov += 1;
+	// else if (!subject.isEvent() && object.isEvent())
+	// snov += 1;
+	// else if (subject.isEvent() && !object.isEvent())
+	// svon += 1;
+	// else if (!subject.isEvent() && !object.isEvent())
+	// snon += 1;
+	//
+	// PrintWriter writer = null;
+	// PrintWriter writerPreview = null;
+	//
+	// Integer lineNoWriter = null;
+	// if (isEntityRelation) {
+	// lineNoWriter = lineNoEntities;
+	// lineNoEntities += 1;
+	// writer = writerEntityLinks;
+	// writerPreview = writerEntityLinksPreview;
+	// } else {
+	// lineNoWriter = lineNoEvents;
+	// lineNoEvents += 1;
+	// writer = writerEventLinks;
+	// writerPreview = writerEventLinksPreview;
+	// }
+	// lineNo += 1;
+	//
+	// String relationId = "<eventkg_link_relation_" + String.valueOf(lineNo) +
+	// ">";
+	//
+	// writeTriple(writer, writerPreview, lineNoWriter, relationId,
+	// PrefixEnum.RDF.getAbbr() + "type",
+	// prefixList.getPrefix(PrefixEnum.EVENT_KG_SCHEMA).getAbbr() + "Relation",
+	// false, null);
+	// writeTriple(writer, writerPreview, lineNoWriter, relationId,
+	// prefixList.getPrefix(PrefixEnum.RDF).getAbbr() + "subject", subjectId,
+	// false, null);
+	// writeTriple(writer, writerPreview, lineNoWriter, relationId,
+	// prefixList.getPrefix(PrefixEnum.RDF).getAbbr() + "object", objectId,
+	// false, null);
+	//
+	// for (GenericRelation relation :
+	// dataStore.getLinkRelationsBySubjectAndObject().get(subject)
+	// .get(object)) {
+	// writeTriple(writer, writerPreview, lineNoWriter, relationId,
+	// relation.getPrefix().getAbbr() + relation.getProperty(),
+	// "\"" + String.valueOf(relation.getWeight().intValue()) +
+	// "\"^^xsd:nonNegativeInteger",
+	// false, relation.getDataSet());
+	// }
+	// }
+	// }
+	//
+	// System.out.println("Subject is event, Object is event:\t" + svov);
+	// System.out.println("Subject is no event, Object is event:\t" + snov);
+	// System.out.println("Subject is event, Object is no event:\t" + svon);
+	// System.out.println("Subject is no event, Object is no event:\t" + snon);
+	//
+	// } catch (FileNotFoundException e) {
+	// e.printStackTrace();
+	// } finally {
+	// writerEventLinks.close();
+	// writerEventLinksPreview.close();
+	// writerEntityLinks.close();
+	// writerEntityLinksPreview.close();
+	// }
+	//
+	// }
+
+	private void writeLinkRelationsToFile() {
 
 		PrintWriter writerEventLinks = null;
 		PrintWriter writerEventLinksPreview = null;
@@ -733,7 +1107,7 @@ public class DataStoreWriter {
 			List<Prefix> prefixes = new ArrayList<Prefix>();
 			// prefixes.add(Prefix.RDF);
 			// prefixes.add(Prefix.EVENT_KG);
-			// prefixes.add(Prefix.XSD);
+			prefixes.add(prefixList.getPrefix(PrefixEnum.XSD));
 			prefixes.add(prefixList.getPrefix(PrefixEnum.EVENT_KG_SCHEMA));
 			prefixes.add(prefixList.getPrefix(PrefixEnum.RDF));
 
@@ -748,62 +1122,78 @@ public class DataStoreWriter {
 			int lineNoEvents = 0;
 			int lineNoEntities = 0;
 
-			System.out.println("Link subjects: " + dataStore.getLinkRelationsBySubjectAndObject().keySet().size());
+			int svov = 0;
+			int snov = 0;
+			int svon = 0;
+			int snon = 0;
 
-			for (Entity subject : dataStore.getLinkRelationsBySubjectAndObject().keySet()) {
-				for (Entity object : dataStore.getLinkRelationsBySubjectAndObject().get(subject).keySet()) {
+			for (Set<GenericRelation> relations : dataStore.getLinkRelationsBySubjectAndObjectGroup().values()) {
 
-					boolean isEntityRelation = true;
+				GenericRelation exampleRelation = null;
+				for (GenericRelation relation : relations) {
+					exampleRelation = relation;
+					break;
+				}
 
-					String subjectId = subject.getId();
-					if (subject.isEvent()) {
-						isEntityRelation = false;
-					}
-					if (subject.isEvent())
-						isEntityRelation = false;
+				boolean isEntityRelation = true;
 
-					String objectId = object.getId();
-					if (object.isEvent()) {
-						isEntityRelation = false;
-					}
-					if (object.isEvent())
-						isEntityRelation = false;
+				Entity subject = exampleRelation.getSubject();
+				String subjectId = subject.getId();
+				if (subject.isEvent())
+					isEntityRelation = false;
 
-					PrintWriter writer = null;
-					PrintWriter writerPreview = null;
+				Entity object = exampleRelation.getObject();
+				String objectId = object.getId();
+				if (object.isEvent())
+					isEntityRelation = false;
 
-					Integer lineNoWriter = null;
-					if (isEntityRelation) {
-						lineNoWriter = lineNoEntities;
-						lineNoEntities += 1;
-						writer = writerEntityLinks;
-						writerPreview = writerEntityLinksPreview;
-					} else {
-						lineNoWriter = lineNoEvents;
-						lineNoEvents += 1;
-						writer = writerEventLinks;
-						writerPreview = writerEventLinksPreview;
-					}
-					lineNo += 1;
+				if (subject.isEvent() && object.isEvent())
+					svov += 1;
+				else if (!subject.isEvent() && object.isEvent())
+					snov += 1;
+				else if (subject.isEvent() && !object.isEvent())
+					svon += 1;
+				else if (!subject.isEvent() && !object.isEvent())
+					snon += 1;
 
-					String relationId = "<eventkg_link_relation_" + String.valueOf(lineNo) + ">";
+				PrintWriter writer = null;
+				PrintWriter writerPreview = null;
 
-					writeTriple(writer, writerPreview, lineNoWriter, relationId, PrefixEnum.RDF.getAbbr() + "type",
-							prefixList.getPrefix(PrefixEnum.EVENT_KG_SCHEMA).getAbbr() + "Relation", false, null);
+				Integer lineNoWriter = null;
+				if (isEntityRelation) {
+					lineNoWriter = lineNoEntities;
+					lineNoEntities += 1;
+					writer = writerEntityLinks;
+					writerPreview = writerEntityLinksPreview;
+				} else {
+					lineNoWriter = lineNoEvents;
+					lineNoEvents += 1;
+					writer = writerEventLinks;
+					writerPreview = writerEventLinksPreview;
+				}
+				lineNo += 1;
+
+				String relationId = "<eventkg_link_relation_" + String.valueOf(lineNo) + ">";
+
+				writeTriple(writer, writerPreview, lineNoWriter, relationId, PrefixEnum.RDF.getAbbr() + "type",
+						prefixList.getPrefix(PrefixEnum.EVENT_KG_SCHEMA).getAbbr() + "Relation", false, null);
+				writeTriple(writer, writerPreview, lineNoWriter, relationId,
+						prefixList.getPrefix(PrefixEnum.RDF).getAbbr() + "subject", subjectId, false, null);
+				writeTriple(writer, writerPreview, lineNoWriter, relationId,
+						prefixList.getPrefix(PrefixEnum.RDF).getAbbr() + "object", objectId, false, null);
+
+				for (GenericRelation relation : relations) {
 					writeTriple(writer, writerPreview, lineNoWriter, relationId,
-							prefixList.getPrefix(PrefixEnum.RDF).getAbbr() + "subject", subjectId, false, null);
-					writeTriple(writer, writerPreview, lineNoWriter, relationId,
-							prefixList.getPrefix(PrefixEnum.RDF).getAbbr() + "object", objectId, false, null);
-
-					for (GenericRelation relation : dataStore.getLinkRelationsBySubjectAndObject().get(subject)
-							.get(object)) {
-						writeTriple(writer, writerPreview, lineNoWriter, relationId,
-								relation.getPrefix().getAbbr() + relation.getProperty(),
-								"\"" + String.valueOf(relation.getWeight().intValue()) + "\"^^xsd:nonNegativeInteger",
-								false, relation.getDataSet());
-					}
+							relation.getPrefix().getAbbr() + relation.getProperty(),
+							"\"" + String.valueOf(relation.getWeight().intValue()) + "\"^^xsd:nonNegativeInteger",
+							false, relation.getDataSet());
 				}
 			}
+
+			System.out.println("Subject is event, Object is event:\t" + svov);
+			System.out.println("Subject is no event, Object is event:\t" + snov);
+			System.out.println("Subject is event, Object is no event:\t" + svon);
+			System.out.println("Subject is no event, Object is no event:\t" + snon);
 
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
@@ -879,19 +1269,32 @@ public class DataStoreWriter {
 				// relationId, false,
 				// relation.getDataSet());
 
-				writeTriple(writer, writerPreview, this.relationNo, relationId,
-						prefixList.getPrefix(PrefixEnum.SEM).getAbbr() + "roleType",
-						relation.getPrefix().getAbbr() + relation.getProperty(), false, relation.getDataSet());
+				if (relation.getProperties() == null) {
+					writeTriple(writer, writerPreview, this.relationNo, relationId,
+							prefixList.getPrefix(PrefixEnum.SEM).getAbbr() + "roleType",
+							relation.getPrefix().getAbbr() + relation.getProperty(), false, relation.getDataSet());
+				} else {
+					for (SubProperty property : relation.getProperties()) {
+						writeTriple(writer, writerPreview, this.relationNo, relationId,
+								prefixList.getPrefix(PrefixEnum.SEM).getAbbr() + "roleType",
+								property.getPrefix().getAbbr() + property.getProperty(), false, property.getDataSet());
+					}
+				}
 
-				if (relation.getStartTime() != null)
+				if (relation.getStartTime() != null) {
 					writeTriple(writer, writerPreview, this.relationNo, relationId,
 							prefixList.getPrefix(PrefixEnum.SEM).getAbbr() + "hasBeginTimeStamp",
-							standardFormat.format(relation.getStartTime()), false, relation.getDataSet());
-				if (relation.getEndTime() != null)
+							standardFormat.format(relation.getStartTime().getDate()), false, relation.getDataSet());
+					writeDateGranularityTriple(writer, writerPreview, this.relationNo, relationId,
+							relation.getStartTime().getGranularity(), false, relation.getDataSet(), true);
+				}
+				if (relation.getEndTime() != null) {
 					writeTriple(writer, writerPreview, this.relationNo, relationId,
 							prefixList.getPrefix(PrefixEnum.SEM).getAbbr() + "hasEndTimeStamp",
-							standardFormat.format(relation.getEndTime()), false, relation.getDataSet());
-
+							standardFormat.format(relation.getEndTime().getDate()), false, relation.getDataSet());
+					writeDateGranularityTriple(writer, writerPreview, this.relationNo, relationId,
+							relation.getEndTime().getGranularity(), false, relation.getDataSet(), false);
+				}
 			}
 
 		} catch (FileNotFoundException e) {
@@ -902,6 +1305,115 @@ public class DataStoreWriter {
 		}
 
 		this.relationNo += 1;
+
+	}
+
+	private void writeLiteralsRelations() {
+
+		PrintWriter writer = null;
+		PrintWriter writerPreview = null;
+		try {
+
+			writer = FileLoader.getWriter(FileName.ALL_TTL_EVENT_LITERALS_RELATIONS);
+			writerPreview = FileLoader.getWriter(FileName.ALL_TTL_EVENT_LITERALS_RELATIONS_PREVIEW);
+
+			List<Prefix> prefixes = new ArrayList<Prefix>();
+			// prefixes.add(Prefix.EVENT_KG_SCHEMA);
+			// prefixes.add(Prefix.RDF);
+
+			// add all prefixes, because they could all be in the
+			// eventKGRelations
+			for (Prefix prefix : prefixList.getAllPrefixes())
+				prefixes.add(prefix);
+
+			for (String line : createIntro(prefixes, this.prefixList)) {
+				writer.write(line + Config.NL);
+				writerPreview.write(line + Config.NL);
+			}
+
+			int withoutProperties = 0;
+			int withoutPrefix = 0;
+			int withoutPropertiesAndWithoutPrefix = 0;
+			for (LiteralRelation relation : dataStore.getLiteralRelations()) {
+				if (relation.getProperties() == null)
+					withoutProperties += 1;
+				if (relation.getPrefix() == null) {
+					withoutPrefix += 1;
+					if (relation.getProperties() == null)
+						withoutPropertiesAndWithoutPrefix += 1;
+				}
+			}
+			System.out.println("LiteralRelations: " + dataStore.getLiteralRelations().size());
+			System.out.println(" without properties: " + withoutProperties);
+			System.out.println(" without prefix: " + withoutPrefix);
+			System.out.println(" without properties and without prefix: " + withoutPropertiesAndWithoutPrefix);
+
+			int lineNo = 0;
+			for (LiteralRelation relation : dataStore.getLiteralRelations()) {
+
+				if (relation.getDataType() == null) {
+					System.out.println("Missing data type. Ignore relation: " + relation.getSubject().getId() + "\t"
+							+ relation.getProperty() + "\t" + relation.getObject());
+					continue;
+				}
+
+				String object = relation.getObject();
+
+				lineNo += 1;
+				String relationId = "<eventkg_relation_" + String.valueOf(this.relationNo) + ">";
+				this.relationNo += 1;
+
+				writeTriple(writer, writerPreview, lineNo, relationId, PrefixEnum.RDF.getAbbr() + "type",
+						prefixList.getPrefix(PrefixEnum.EVENT_KG_SCHEMA).getAbbr() + "Relation", false,
+						relation.getDataSet());
+				writeTriple(writer, writerPreview, lineNo, relationId,
+						prefixList.getPrefix(PrefixEnum.RDF).getAbbr() + "subject", relation.getSubject().getId(),
+						false, relation.getDataSet());
+
+				writeTriple(writer, writerPreview, lineNo, relationId,
+						prefixList.getPrefix(PrefixEnum.RDF).getAbbr() + "object",
+						createLiteral(object, relation.getDataType(), relation.getLanguageCode()), false,
+						relation.getDataSet());
+
+				if (relation.getProperties() == null) {
+					if (relation.getPrefix() == null) {
+						System.out.println("Missing prefix: " + relation.getSubject().getId() + "\t"
+								+ relation.getProperty() + "\t" + relation.getObject());
+					}
+					writeTriple(writer, writerPreview, lineNo, relationId,
+							prefixList.getPrefix(PrefixEnum.SEM).getAbbr() + "roleType",
+							relation.getPrefix().getAbbr() + relation.getProperty(), false, relation.getDataSet());
+				} else {
+					for (SubProperty property : relation.getProperties()) {
+						writeTriple(writer, writerPreview, lineNo, relationId,
+								prefixList.getPrefix(PrefixEnum.SEM).getAbbr() + "roleType",
+								property.getPrefix().getAbbr() + property.getProperty(), false, property.getDataSet());
+					}
+				}
+
+				if (relation.getStartTime() != null) {
+					writeTriple(writer, writerPreview, lineNo, relationId,
+							prefixList.getPrefix(PrefixEnum.SEM).getAbbr() + "hasBeginTimeStamp",
+							standardFormat.format(relation.getStartTime().getDate()), false, relation.getDataSet());
+					writeDateGranularityTriple(writer, writerPreview, lineNo, relationId,
+							relation.getStartTime().getGranularity(), false, relation.getDataSet(), true);
+				}
+				if (relation.getEndTime() != null) {
+					writeTriple(writer, writerPreview, lineNo, relationId,
+							prefixList.getPrefix(PrefixEnum.SEM).getAbbr() + "hasEndTimeStamp",
+							standardFormat.format(relation.getEndTime().getDate()), false, relation.getDataSet());
+					writeDateGranularityTriple(writer, writerPreview, lineNo, relationId,
+							relation.getEndTime().getGranularity(), false, relation.getDataSet(), false);
+				}
+
+			}
+
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} finally {
+			writer.close();
+			writerPreview.close();
+		}
 
 	}
 
@@ -976,18 +1488,32 @@ public class DataStoreWriter {
 						prefixList.getPrefix(PrefixEnum.RDF).getAbbr() + "object", object.getId(), false,
 						relation.getDataSet());
 
-				writeTriple(writer, writerPreview, lineNo, relationId,
-						prefixList.getPrefix(PrefixEnum.SEM).getAbbr() + "roleType",
-						relation.getPrefix().getAbbr() + relation.getProperty(), false, relation.getDataSet());
+				if (relation.getProperties() == null) {
+					writeTriple(writer, writerPreview, lineNo, relationId,
+							prefixList.getPrefix(PrefixEnum.SEM).getAbbr() + "roleType",
+							relation.getPrefix().getAbbr() + relation.getProperty(), false, relation.getDataSet());
+				} else {
+					for (SubProperty property : relation.getProperties()) {
+						writeTriple(writer, writerPreview, lineNo, relationId,
+								prefixList.getPrefix(PrefixEnum.SEM).getAbbr() + "roleType",
+								property.getPrefix().getAbbr() + property.getProperty(), false, property.getDataSet());
+					}
+				}
 
-				if (relation.getStartTime() != null)
+				if (relation.getStartTime() != null) {
 					writeTriple(writer, writerPreview, lineNo, relationId,
 							prefixList.getPrefix(PrefixEnum.SEM).getAbbr() + "hasBeginTimeStamp",
-							standardFormat.format(relation.getStartTime()), false, relation.getDataSet());
-				if (relation.getEndTime() != null)
+							standardFormat.format(relation.getStartTime().getDate()), false, relation.getDataSet());
+					writeDateGranularityTriple(writer, writerPreview, lineNo, relationId,
+							relation.getStartTime().getGranularity(), false, relation.getDataSet(), true);
+				}
+				if (relation.getEndTime() != null) {
 					writeTriple(writer, writerPreview, lineNo, relationId,
 							prefixList.getPrefix(PrefixEnum.SEM).getAbbr() + "hasEndTimeStamp",
-							standardFormat.format(relation.getEndTime()), false, relation.getDataSet());
+							standardFormat.format(relation.getEndTime().getDate()), false, relation.getDataSet());
+					writeDateGranularityTriple(writer, writerPreview, lineNo, relationId,
+							relation.getEndTime().getGranularity(), false, relation.getDataSet(), false);
+				}
 
 				// if (relation.getPropertyLabels() != null) {
 				// for (Language language :
@@ -1023,6 +1549,9 @@ public class DataStoreWriter {
 
 			// ignore base relation
 			if (prefix.getPrefixEnum() == PrefixEnum.EVENT_KG_RESOURCE)
+				continue;
+
+			if (prefix.getPrefixEnum() == PrefixEnum.NO_PREFIX)
 				continue;
 
 			lines.add(
@@ -1066,6 +1595,76 @@ public class DataStoreWriter {
 			object = object.replace("\\", "\\\\");
 			object = object.replaceAll("\"", "\\\\\"");
 			object = "\"" + object + "\"";
+		}
+
+		String line = null;
+		if (dataSet == null) {
+			line = subject + Config.SEP + property + Config.SEP + object + Config.SEP + "." + Config.NL;
+		} else
+			line = subject + Config.SEP + property + Config.SEP + object + Config.SEP
+					+ PrefixEnum.EVENT_KG_GRAPH.getAbbr() + dataSet.getId() + Config.SEP + "." + Config.NL;
+
+		writer.write(line);
+		if (writerPreview != null && lineNo <= NUMBER_OF_LINES_IN_PREVIEW)
+			writerPreview.write(line);
+	}
+
+	private String createLiteral(String value, LiteralDataType dataType) {
+		return createLiteral(value, dataType, null);
+	}
+
+	private String createLiteral(String value, LiteralDataType dataType, String languageCode) {
+
+		String literal = value;
+
+		// escape un-escaped quotation marks
+		if (literal.contains("\"")) {
+			literal = literal.replaceAll("(?<!\\\\)\"", "\\\\\"");
+		}
+
+		literal = "\"" + literal + "\"";
+
+		if (languageCode != null)
+			literal += "@" + languageCode;
+
+		if (!dataType.getDataTypeRdf().isEmpty())
+			literal += "^^" + dataType.getDataTypeRdf();
+
+		return literal;
+	}
+
+	public static void writeDateGranularityTriple(PrintWriter writer, PrintWriter writerPreview, Integer lineNo,
+			String subject, DateGranularity granularity, boolean quoteObject, DataSet dataSet, boolean start) {
+
+		if (granularity == null)
+			return;
+
+		String property = "eventKG-s:";
+		if (start)
+			property += "start";
+		else
+			property += "end";
+		property += "UnitType";
+
+		String object = "";
+		switch (granularity) {
+		case DAY:
+			object = "time:unitDay";
+			break;
+		case MONTH:
+			object = "time:unitMonth";
+			break;
+		case YEAR:
+			object = "time:unitYear";
+			break;
+		case DECADE:
+			object = "eventKG-s:unitDecade";
+			break;
+		case CENTURY:
+			object = "eventKG-s:unitCentury";
+			break;
+		default:
+			break;
 		}
 
 		String line = null;

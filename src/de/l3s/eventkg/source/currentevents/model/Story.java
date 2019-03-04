@@ -6,13 +6,13 @@ public class Story {
 
 	private String name;
 
-	private String url;
+	private String wikipediaUrl;
 
 	public Story(long id, String name, String url) {
 		super();
 		this.id = id;
 		this.name = name;
-		this.url = url;
+		this.wikipediaUrl = url;
 	}
 
 	public long getId() {
@@ -31,12 +31,12 @@ public class Story {
 		this.name = name;
 	}
 
-	public String getUrl() {
-		return url;
+	public String getWikipediaUrl() {
+		return wikipediaUrl;
 	}
 
-	public void setUrl(String url) {
-		this.url = url;
+	public void setWikipediaUrl(String url) {
+		this.wikipediaUrl = url;
 	}
 
 }

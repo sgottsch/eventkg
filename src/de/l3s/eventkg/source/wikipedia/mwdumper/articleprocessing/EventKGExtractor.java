@@ -83,7 +83,7 @@ public class EventKGExtractor implements DumpWriter {
 
 		if (this.pageIsMainArticle) {
 
-			System.out.println("Wiki Page: " + String.valueOf(this._pageId) + ": " + this.pageTitle);
+			// System.out.println("Wiki Page: " + String.valueOf(this._pageId) + ": " + this.pageTitle);
 
 			TextExtractorNew extractor = new TextExtractorNew(revision.Text, this._pageId, true, language,
 					this.pageTitle, redirects);

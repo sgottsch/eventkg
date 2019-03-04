@@ -70,6 +70,9 @@ public class SubLocationsExtractor implements EntityDocumentDumpProcessor {
 	public SubLocationsExtractor() throws IOException {
 		// open files for writing results
 		outLocations = FileLoader.getPrintStream(FileName.WIKIDATA_SUB_LOCATIONS);
+		outLocations.print("parent/sub" + Config.TAB + "subjectId" + Config.TAB + "subjectLabel" + Config.TAB
+				+ "locationId" + Config.TAB + "propertyId" + Config.TAB + "subjectWikiEnLabel");
+		outLocations.println();
 		loadLocationPropertyIds();
 	}
 

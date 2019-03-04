@@ -11,12 +11,20 @@ import java.util.Set;
 import de.l3s.eventkg.integration.AllEventPagesDataSet;
 import de.l3s.eventkg.integration.DataCollector;
 import de.l3s.eventkg.integration.DataSets;
+import de.l3s.eventkg.integration.DataStore;
 import de.l3s.eventkg.integration.DataStoreWriter;
-import de.l3s.eventkg.integration.LocationsIntegrator;
-import de.l3s.eventkg.integration.SubLocationsCollector;
-import de.l3s.eventkg.integration.TemporalRelationsCollector;
-import de.l3s.eventkg.integration.TimesIntegrator;
 import de.l3s.eventkg.integration.TypesWriter;
+import de.l3s.eventkg.integration.collection.EventAndTemporalRelationsCollector;
+import de.l3s.eventkg.integration.collection.LiteralRelationsCollector;
+import de.l3s.eventkg.integration.collection.SubLocationsCollector;
+import de.l3s.eventkg.integration.integrator.LiteralRelationsIntegrator;
+import de.l3s.eventkg.integration.integrator.LocationsIntegrator;
+import de.l3s.eventkg.integration.integrator.PositionsIntegrator;
+import de.l3s.eventkg.integration.integrator.RelationsIntegrator;
+import de.l3s.eventkg.integration.integrator.TimesIntegrator;
+import de.l3s.eventkg.integration.model.Event;
+import de.l3s.eventkg.integration.model.relation.DataSet;
+import de.l3s.eventkg.integration.model.relation.Description;
 import de.l3s.eventkg.integration.model.relation.prefix.PrefixList;
 import de.l3s.eventkg.meta.Language;
 import de.l3s.eventkg.meta.Source;
@@ -27,6 +35,7 @@ import de.l3s.eventkg.source.dbpedia.DBpediaDBOEventsLoader;
 import de.l3s.eventkg.source.dbpedia.DBpediaEventLocationsExtractor;
 import de.l3s.eventkg.source.dbpedia.DBpediaEventRelationsExtractor;
 import de.l3s.eventkg.source.dbpedia.DBpediaPartOfLoader;
+import de.l3s.eventkg.source.dbpedia.DBpediaPositionsExtractor;
 import de.l3s.eventkg.source.dbpedia.DBpediaTimesExtractor;
 import de.l3s.eventkg.source.wikidata.WikidataEventsFromFileFinder;
 import de.l3s.eventkg.source.wikidata.WikidataExtractionWithEventPages;
@@ -40,6 +49,7 @@ import de.l3s.eventkg.source.yago.YAGOEventLocationsExtractor;
 import de.l3s.eventkg.source.yago.YAGOEventRelationsExtractor;
 import de.l3s.eventkg.source.yago.YAGOExistenceTimeExtractor;
 import de.l3s.eventkg.source.yago.YAGOIDExtractor;
+import de.l3s.eventkg.source.yago.YAGOPositionsExtractor;
 import de.l3s.eventkg.textual_events.TextualEventsExtractor;
 
 public class Pipeline {
@@ -94,17 +104,42 @@ public class Pipeline {
 		} else
 			System.out.println("Skip step 4: Continue extraction -> Extract relations between events.");
 
+		// if (steps.contains(5)) {
+		// System.out.println("Step 5: Integration step 2.");
+		// pipeline.pipelineStep5();
+		// } else
+		// System.out.println("Skip step 5: Integration step 2.");
+		//
+		// if (steps.contains(6)) {
+		// System.out.println("Step 6: Type extraction step 2.");
+		// pipeline.pipelineStep6();
+		// } else
+		// System.out.println("Skip step 6: Type extraction step 2.");
+
 		if (steps.contains(5)) {
-			System.out.println("Step 5: Integration step 2.");
+			System.out.println("Step 5: Write output (entities and events).");
 			pipeline.pipelineStep5();
 		} else
-			System.out.println("Skip step 5: Integration step 2.");
+			System.out.println("Skip step 5: Write output (entities and events).");
 
 		if (steps.contains(6)) {
-			System.out.println("Step 6: Type extraction step 2.");
+			System.out.println("Step 6: Write output (relations).");
 			pipeline.pipelineStep6();
 		} else
-			System.out.println("Skip step 6: Type extraction step 2.");
+			System.out.println("Skip step 6: Write output (relations).");
+
+		if (steps.contains(7)) {
+			System.out.println("Step 7: Write output (link relations).");
+			pipeline.pipelineStep7();
+		} else
+			System.out.println("Skip step 7: Write output (link relations).");
+
+		if (steps.contains(8)) {
+			System.out.println("Step 8: Type extraction.");
+			pipeline.pipelineStep8();
+		} else
+			System.out.println("Skip step 8: Type extraction.");
+
 	}
 
 	public Pipeline(List<Language> languages) {
@@ -116,6 +151,7 @@ public class Pipeline {
 		downloader.createFolders();
 		downloader.copyMetaFiles();
 		downloader.downloadFiles();
+		System.out.println("Fisnished download files.");
 	}
 
 	private void pipelineStep2() {
@@ -130,12 +166,14 @@ public class Pipeline {
 		// YAGO
 		extractors.add(new YAGOExistenceTimeExtractor(languages));
 		extractors.add(new YAGOEventLocationsExtractor(languages));
+		extractors.add(new YAGOPositionsExtractor(languages));
 
 		// dbPedia
 		extractors.add(new DBpediaDBOEventsLoader(languages));
 		extractors.add(new DBpediaEventLocationsExtractor(languages));
 		extractors.add(new DBpediaTimesExtractor(languages));
 		extractors.add(new DBpediaPartOfLoader(languages));
+		extractors.add(new DBpediaPositionsExtractor(languages));
 
 		// Wikipedia
 		extractors.add(new WikipediaEventsByCategoryNameLoader(languages));
@@ -155,7 +193,7 @@ public class Pipeline {
 
 		extractors.add(new WikidataEventsFromFileFinder(languages));
 		extractors.add(new DBpediaAllLocationsLoader(languages));
-		// // First step of integration
+		// First step of integration
 		extractors.add(new DataCollector(languages));
 
 		for (Extractor extractor : extractors) {
@@ -169,10 +207,10 @@ public class Pipeline {
 		List<Extractor> extractors = new ArrayList<Extractor>();
 
 		// Collect relations from/to events
-		extractors.add(new DBpediaEventRelationsExtractor(languages, getAllEventPagesDataSet()));
-		extractors.add(new CurrentEventsRelationsExtraction(languages, getAllEventPagesDataSet()));
-		extractors.add(new YAGOEventRelationsExtractor(languages, getAllEventPagesDataSet()));
-		extractors.add(new WikidataExtractionWithEventPages(languages, getAllEventPagesDataSet()));
+		extractors.add(new DBpediaEventRelationsExtractor(languages, getAllEventPagesDataSet(true)));
+		extractors.add(new CurrentEventsRelationsExtraction(languages, getAllEventPagesDataSet(true)));
+		extractors.add(new YAGOEventRelationsExtractor(languages, getAllEventPagesDataSet(true)));
+		extractors.add(new WikidataExtractionWithEventPages(languages, getAllEventPagesDataSet(true)));
 
 		for (Extractor extractor : extractors) {
 			System.out.println(extractor.getName() + ", " + extractor.getSource() + " - " + extractor.getDescription());
@@ -181,19 +219,105 @@ public class Pipeline {
 
 	}
 
+	// private void pipelineStep5() {
+	//
+	// List<Extractor> extractors = new ArrayList<Extractor>();
+	// getAllEventPagesDataSet();
+	// extractors.add(new TextualEventsExtractor(languages,
+	// getAllEventPagesDataSet()));
+	// extractors.add(new SubLocationsCollector(languages,
+	// getAllEventPagesDataSet())); //
+	// extractors.add(new PositionsIntegrator(languages));
+	// extractors.add(new LocationsIntegrator(languages));
+	// extractors.add(new LiteralRelationsCollector(languages,
+	// getAllEventPagesDataSet())); //
+	// extractors.add(new TemporalRelationsCollector(languages,
+	// getAllEventPagesDataSet())); //
+	// extractors.add(new TimesIntegrator(languages));
+	// extractors.add(new YAGOIDExtractor(languages,
+	// getAllEventPagesDataSet())); //
+	// extractors.add(new WikipediaLinkCountsExtractor(languages,
+	// getAllEventPagesDataSet())); //
+	// extractors.add(new WikipediaLinkSetsExtractor(languages,
+	// getAllEventPagesDataSet())); //
+	// extractors.add(new LabelsAndDescriptionsExtractor(languages,
+	// getAllEventPagesDataSet())); //
+	// extractors.add(new RelationsIntegrator(languages)); //
+	// extractors.add(new LiteralRelationsIntegrator(languages)); //
+	//
+	// for (Extractor extractor : extractors) {
+	// System.out.println(extractor.getName() + ", " + extractor.getSource() + "
+	// - " + extractor.getDescription());
+	// extractor.run();
+	// }
+	//
+	// DataStoreWriter outputWriter = new DataStoreWriter(languages);
+	// outputWriter.write();
+	//
+	// System.out.println("Done.");
+	// }
+
 	private void pipelineStep5() {
 
 		List<Extractor> extractors = new ArrayList<Extractor>();
-		getAllEventPagesDataSet();
-		extractors.add(new TextualEventsExtractor(languages, getAllEventPagesDataSet()));
-		extractors.add(new SubLocationsCollector(languages, getAllEventPagesDataSet())); //
+		getAllEventPagesDataSet(true);
+		extractors.add(new TextualEventsExtractor(languages, getAllEventPagesDataSet(true)));
+		extractors.add(new SubLocationsCollector(languages, getAllEventPagesDataSet(true))); //
+		extractors.add(new PositionsIntegrator(languages));
 		extractors.add(new LocationsIntegrator(languages));
-		extractors.add(new TemporalRelationsCollector(languages, getAllEventPagesDataSet())); //
 		extractors.add(new TimesIntegrator(languages));
-		extractors.add(new YAGOIDExtractor(languages, getAllEventPagesDataSet())); //
-		extractors.add(new WikipediaLinkCountsExtractor(languages, getAllEventPagesDataSet())); //
-		extractors.add(new WikipediaLinkSetsExtractor(languages, getAllEventPagesDataSet())); //
-		extractors.add(new LabelsAndDescriptionsExtractor(languages, getAllEventPagesDataSet())); //
+		extractors.add(new YAGOIDExtractor(languages, getAllEventPagesDataSet(true))); //
+		extractors.add(new LabelsAndDescriptionsExtractor(languages, getAllEventPagesDataSet(true))); //
+
+		for (Extractor extractor : extractors) {
+			System.out.println(extractor.getName() + ", " + extractor.getSource() + " - " + extractor.getDescription());
+			extractor.run();
+		}
+
+		// for(Event event: DataStore.getInstance().getEvents()) {
+		// if(event.getD)
+		// }
+		//
+
+		for (Description description : DataStore.getInstance().getDescriptions()) {
+			if (description.getLabel().contains("English defeat Irish rebels and their")) {
+				System.out.println("TCY|" + description.getLabel() + ", " + description.getDataSet().getId());
+				Event e = (Event) description.getSubject();
+				System.out.println("e: " + e + " /" + description.getSubject());
+				for (DataSet ds : e.getOtherUrls().keySet()) {
+					System.out.println(ds.getId() + " -> " + e.getOtherUrls().get(ds));
+				}
+			}
+			if (description.getLabel().contains("des Espagnols et des rebelles irlandais")) {
+				System.out.println("TCW|" + description.getLabel() + ", " + description.getDataSet().getId());
+				Event e = (Event) description.getSubject();
+				System.out.println("e: " + e + " /" + description.getSubject());
+				for (DataSet ds : e.getOtherUrls().keySet()) {
+					System.out.println(ds.getId() + " -> " + e.getOtherUrls().get(ds));
+				}
+			}
+		}
+
+		DataStoreWriter outputWriter = new DataStoreWriter(languages);
+		outputWriter.writeNoRelations();
+
+		System.out.println("Done.");
+	}
+
+	private void pipelineStep6() {
+
+		List<Extractor> extractors = new ArrayList<Extractor>();
+		getAllEventPagesDataSet(false);
+
+		// textual events needs to be loaded again, because they are only
+		// identified trough their descriptions
+		extractors.add(new TextualEventsExtractor(languages, getAllEventPagesDataSet(true)));
+
+		extractors.add(new LiteralRelationsCollector(languages, getAllEventPagesDataSet(false)));
+		extractors.add(new LiteralRelationsIntegrator(languages));
+
+		extractors.add(new EventAndTemporalRelationsCollector(languages, getAllEventPagesDataSet(false)));
+		extractors.add(new RelationsIntegrator(languages));
 
 		for (Extractor extractor : extractors) {
 			System.out.println(extractor.getName() + ", " + extractor.getSource() + " - " + extractor.getDescription());
@@ -201,19 +325,45 @@ public class Pipeline {
 		}
 
 		DataStoreWriter outputWriter = new DataStoreWriter(languages);
-		outputWriter.write();
+		outputWriter.writeRelations();
 
 		System.out.println("Done.");
 	}
 
-	private void pipelineStep6() {
+	private void pipelineStep7() {
+
+		List<Extractor> extractors = new ArrayList<Extractor>();
+		getAllEventPagesDataSet(false);
+
+		extractors.add(new TextualEventsExtractor(languages, getAllEventPagesDataSet(true)));
+
+		// We need to find relation to find connected entities. Non-event
+		// entities only get link information if they are connected.
+		extractors.add(new EventAndTemporalRelationsCollector(languages, getAllEventPagesDataSet(false)));
+
+		extractors.add(new WikipediaLinkCountsExtractor(languages, getAllEventPagesDataSet(false)));
+		extractors.add(new WikipediaLinkSetsExtractor(languages, getAllEventPagesDataSet(false)));
+
+		for (Extractor extractor : extractors) {
+			System.out.println(extractor.getName() + ", " + extractor.getSource() + " - " + extractor.getDescription());
+			extractor.run();
+		}
+
+		DataStoreWriter outputWriter = new DataStoreWriter(languages);
+		outputWriter.writeLinkRelations();
+
+		System.out.println("Done.");
+	}
+
+	private void pipelineStep8() {
 		TypesWriter extractor = new TypesWriter(languages);
 		extractor.run();
 	}
 
-	private AllEventPagesDataSet getAllEventPagesDataSet() {
+	private AllEventPagesDataSet getAllEventPagesDataSet(boolean loadEntityAndEventInfo) {
 		if (allEventPagesDataSet == null) {
 			this.allEventPagesDataSet = new AllEventPagesDataSet(languages);
+			this.allEventPagesDataSet.setLoadEntityAndEventInfo(loadEntityAndEventInfo);
 			this.allEventPagesDataSet.init();
 		}
 		return this.allEventPagesDataSet;

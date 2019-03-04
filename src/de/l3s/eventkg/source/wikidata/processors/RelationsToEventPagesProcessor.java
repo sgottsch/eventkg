@@ -5,22 +5,40 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.util.HashSet;
+import java.util.Iterator;
+import java.util.LinkedHashSet;
 import java.util.Set;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.wikidata.wdtk.datamodel.interfaces.DatatypeIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.EntityDocumentDumpProcessor;
+import org.wikidata.wdtk.datamodel.interfaces.EntityIdValue;
+import org.wikidata.wdtk.datamodel.interfaces.GlobeCoordinatesValue;
 import org.wikidata.wdtk.datamodel.interfaces.ItemDocument;
 import org.wikidata.wdtk.datamodel.interfaces.ItemIdValue;
+import org.wikidata.wdtk.datamodel.interfaces.MonolingualTextValue;
 import org.wikidata.wdtk.datamodel.interfaces.PropertyDocument;
+import org.wikidata.wdtk.datamodel.interfaces.QuantityValue;
+import org.wikidata.wdtk.datamodel.interfaces.Reference;
+import org.wikidata.wdtk.datamodel.interfaces.Snak;
 import org.wikidata.wdtk.datamodel.interfaces.Statement;
 import org.wikidata.wdtk.datamodel.interfaces.StatementGroup;
+import org.wikidata.wdtk.datamodel.interfaces.StringValue;
+import org.wikidata.wdtk.datamodel.interfaces.TimeValue;
+import org.wikidata.wdtk.datamodel.interfaces.ValueVisitor;
 
 import de.l3s.eventkg.integration.AllEventPagesDataSet;
+import de.l3s.eventkg.source.wikidata.WikidataSnakType;
 import de.l3s.eventkg.util.FileLoader;
 import de.l3s.eventkg.util.FileName;
+import edu.stanford.nlp.util.StringUtils;
 
 public class RelationsToEventPagesProcessor implements EntityDocumentDumpProcessor {
 
 	public static final String TAB = "\t";
+	public static final String TAB2 = "|";
 
 	private int itemsWithEventCount = 0;
 	private int itemsWithEntityRelationCount = 0;
@@ -28,6 +46,7 @@ public class RelationsToEventPagesProcessor implements EntityDocumentDumpProcess
 	private int itemCount = 0;
 
 	private PrintStream outEventRelations;
+	private PrintStream outEventLiteralRelations;
 	private PrintStream outEntityRelations;
 
 	private Set<String> targetEventIds;
@@ -42,6 +61,7 @@ public class RelationsToEventPagesProcessor implements EntityDocumentDumpProcess
 
 		try {
 			outEventRelations = FileLoader.getPrintStream(FileName.WIKIDATA_EVENT_RELATIONS);
+			outEventLiteralRelations = FileLoader.getPrintStream(FileName.WIKIDATA_EVENT_LITERALS_RELATIONS);
 			outEntityRelations = FileLoader.getPrintStream(FileName.WIKIDATA_ENTITY_RELATIONS);
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -69,32 +89,52 @@ public class RelationsToEventPagesProcessor implements EntityDocumentDumpProcess
 
 		Set<String> propertyIds = new HashSet<String>();
 
-		BufferedReader br = null;
-		try {
+		if (fileName.getFileName().toLowerCase().endsWith("json")) {
 			try {
-				br = FileLoader.getReader(fileName);
-			} catch (FileNotFoundException e1) {
-				e1.printStackTrace();
+				JSONObject wikidataJSON = new JSONObject(FileLoader.readFile(fileName));
+				JSONArray bindings = wikidataJSON.getJSONObject("results").getJSONArray("bindings");
+				for (int i = 0; i < bindings.length(); i++) {
+					JSONObject binding = bindings.getJSONObject(i);
+
+					JSONObject property1JSON = binding.getJSONObject("property");
+					String property1 = property1JSON.getString("value");
+					property1 = property1.substring(property1.lastIndexOf("/") + 1);
+
+					propertyIds.add(property1);
+				}
+
+			} catch (JSONException | IOException e) {
+				e.printStackTrace();
 			}
 
-			String line;
-			while ((line = br.readLine()) != null) {
+		} else {
 
-				String[] parts = line.split("\t");
-				propertyIds.add(parts[0]);
-
-			}
-		} catch (IOException e) {
-			e.printStackTrace();
-		} finally {
+			BufferedReader br = null;
 			try {
-				br.close();
+				try {
+					br = FileLoader.getReader(fileName);
+				} catch (FileNotFoundException e1) {
+					e1.printStackTrace();
+				}
+				String line;
+				while ((line = br.readLine()) != null) {
+					String[] parts = line.split("\t");
+					propertyIds.add(parts[0]);
+				}
+
 			} catch (IOException e) {
 				e.printStackTrace();
+			} finally {
+				try {
+					br.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
 			}
 		}
 
 		return propertyIds;
+
 	}
 
 	@Override
@@ -168,7 +208,109 @@ public class RelationsToEventPagesProcessor implements EntityDocumentDumpProcess
 							}
 
 						} catch (ClassCastException e) {
-							continue;
+
+							// literals
+
+							if (subjectIsEvent) {
+
+								String res = statement.getClaim().getMainSnak().getValue()
+										.accept(new ValueVisitor<String>() {
+
+											@Override
+											public String visit(DatatypeIdValue val) {
+												return null;
+											}
+
+											@Override
+											public String visit(EntityIdValue val) {
+												return null;
+											}
+
+											@Override
+											public String visit(GlobeCoordinatesValue val) {
+												return WikidataSnakType.GLOBE_COORDINATE.toString() + TAB
+														+ val.getLatitude() + TAB2 + val.getLongitude() + TAB2
+														+ val.getPrecision() + TAB2 + val.getGlobe();
+											}
+
+											@Override
+											public String visit(MonolingualTextValue val) {
+												return WikidataSnakType.MONOLINGUAL_TEXT.toString() + TAB
+														+ tabify(val.getText()) + TAB2 + val.getLanguageCode();
+											}
+
+											@Override
+											public String visit(QuantityValue val) {
+												return WikidataSnakType.QUANTITY.toString() + TAB
+														+ val.getNumericValue() + TAB2 + val.getLowerBound() + TAB2
+														+ val.getUpperBound() + TAB2 + val.getUnit();
+											}
+
+											@Override
+											public String visit(StringValue val) {
+
+												// ignore images (file formats
+												// see here:
+												// https://www.wikidata.org/wiki/Property:P18)
+												String stringValue = val.getString().toLowerCase();
+												if (stringValue.contains(".") && (stringValue.endsWith(".png")
+														|| stringValue.endsWith(".svg") || stringValue.endsWith(".jpg")
+														|| stringValue.endsWith(".jpeg") || stringValue.endsWith(".jpe")
+														|| stringValue.endsWith(".tif") || stringValue.endsWith(".tiff")
+														|| stringValue.endsWith(".gif") || stringValue.endsWith(".xcf")
+														|| stringValue.endsWith(".pdf") || stringValue.endsWith(".djvu")
+														|| stringValue.endsWith(".webp")))
+													return null;
+
+												return WikidataSnakType.STRING.toString() + TAB
+														+ tabify(val.getString());
+											}
+
+											@Override
+											public String visit(TimeValue val) {
+												return WikidataSnakType.TIME.toString() + TAB + val.getYear() + TAB2
+														+ val.getMonth() + TAB2 + val.getDay() + TAB2 + val.getMinute()
+														+ TAB2 + val.getSecond() + TAB2 + val.getPrecision();
+											}
+
+										});
+
+								if (res == null)
+									continue;
+
+								Set<String> refStrings = new LinkedHashSet<String>();
+
+								// collect the temporal validity of the literal
+								// fact. Unfortunately, it is sometimes stored
+								// as
+								// qualifier, sometimes as reference.
+
+								for (Reference reference : statement.getReferences()) {
+									for (Iterator<Snak> it = reference.getAllSnaks(); it.hasNext();) {
+										Snak snak = it.next();
+										if (this.temporalPropertyIds.contains(snak.getPropertyId().getId())) {
+											if (snak.getValue() == null)
+												continue;
+											refStrings.add(
+													snak.getPropertyId().getId() + " " + snak.getValue().toString());
+										}
+									}
+								}
+
+								for (Iterator<Snak> it = statement.getClaim().getAllQualifiers(); it.hasNext();) {
+									Snak snak = it.next();
+									if (this.temporalPropertyIds.contains(snak.getPropertyId().getId())) {
+										if (snak.getValue() == null)
+											continue;
+										refStrings.add(snak.getPropertyId().getId() + " " + snak.getValue().toString());
+									}
+								}
+
+								this.outEventLiteralRelations.print(itemDocument.getItemId().getId() + TAB + propertyId
+										+ TAB + res + TAB + statement.getRank() + TAB
+										+ StringUtils.join(refStrings, TAB2) + "\n");
+							}
+
 						}
 					}
 				}
@@ -196,11 +338,19 @@ public class RelationsToEventPagesProcessor implements EntityDocumentDumpProcess
 	public void close() {
 		printStatus();
 		this.outEventRelations.close();
+		this.outEventLiteralRelations.close();
 		this.outEntityRelations.close();
 	}
 
 	@Override
 	public void open() {
+	}
+
+	private String tabify(String text) {
+		if (text.contains(TAB2))
+			return null;
+		text = text.replace(TAB, "   ");
+		return text;
 	}
 
 }

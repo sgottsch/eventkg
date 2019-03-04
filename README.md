@@ -9,14 +9,14 @@ Create a configuration file like the following to state where to store your Even
 
 ```
 data_folder	/home/....../data
-languages	en,de,ru,fr,pt
-enwiki	20170420
-dewiki	20170420
-frwiki	20170420
-ruwiki	20170420
-ptwiki	20170420
+languages	en,de,ru,fr,pt,it
+enwiki	20190101
+dewiki	20190101
+frwiki	20190101
+ruwiki	20190101
+ptwiki	20190101
 dbpedia	2016-10
-wikidata	20170424
+wikidata	20181231
 ```
 Currently, the five languages English (en), German (de), Russian (ru), French (fr), and Portuguese (pt) are supported.
 Timestamps of current Wikipedia dumps can be found on [https://dumps.wikimedia.org/enwiki](https://dumps.wikimedia.org/enwiki/). Usually, the dump dates are consistent between languages. The chosen dump needs to say "Dump complete" on the dump's website.
@@ -43,7 +43,7 @@ The EventKG extraction pipeline consists of several steps described in the follo
 
 5. Start the final steps of extraction:
 
-```java -jar Pipeline.jar path_to_config_file.txt 4,5```
+```java -jar Pipeline.jar path_to_config_file.txt 4,5,6,7,8```
 
 6. The resulting *.nq* files can be found in the folder `data/output`.
 

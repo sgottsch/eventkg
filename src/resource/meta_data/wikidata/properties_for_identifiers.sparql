@@ -1,0 +1,9 @@
+SELECT DISTINCT ?property ?propertyLabel
+WHERE 
+{
+  ?property wdt:P31/wdt:P279* wd:Q19847637 .
+  
+  SERVICE wikibase:label {
+    bd:serviceParam wikibase:language "en" .
+  }
+}

@@ -120,8 +120,13 @@ public class TextExtractorNew {
 		ptMap.put(327699, "Lista de filmes de terror");
 		exampleTexts.put(Language.PT, ptMap);
 
-		Language language = Language.EN;
-		int id = 18224;
+		Map<Integer, String> itMap = new HashMap<Integer, String>();
+		itMap.put(4714697, "Barack Obama");
+		itMap.put(3862, "Seconda guerra mondiale");
+		exampleTexts.put(Language.IT, itMap);
+
+		Language language = Language.IT;
+		int id = 3862;
 
 		languages.clear();
 		languages.add(language);
@@ -260,31 +265,36 @@ public class TextExtractorNew {
 		}
 	}
 
-	private void mergeLines() {
-		ArrayList<String> lines = new ArrayList<String>();
-		String currentLine = "";
-		for (String line : this.text.split("\n")) {
-			if (line.startsWith(LINE_START_TO_REMOVE))
-				continue;
-			if ((line = line.replaceAll("\n", "").replaceAll("\r", "")).startsWith("==") && line.endsWith("==")) {
-				if (!currentLine.replaceAll("\n", "").replaceAll("\r", "").trim().isEmpty()) {
-					lines.add(currentLine);
-				}
-				currentLine = "";
-				lines.add(line);
-			} else if (line.isEmpty()) {
-				if (!currentLine.replaceAll("\n", "").replaceAll("\r", "").trim().isEmpty()) {
-					lines.add(currentLine);
-				}
-				currentLine = "";
-			} else {
-				currentLine = line.endsWith("}}") || line.endsWith("|}") || line.endsWith("]]")
-						? String.valueOf(currentLine) + line + "\n" : String.valueOf(currentLine) + line;
-			}
-		}
-		lines.add(currentLine);
-		this.text = StringUtils.join(lines, "\n\n");
-	}
+	// private void mergeLines() {
+	// ArrayList<String> lines = new ArrayList<String>();
+	// String currentLine = "";
+	// for (String line : this.text.split("\n")) {
+	// if (line.startsWith(LINE_START_TO_REMOVE))
+	// continue;
+	// if ((line = line.replaceAll("\n", "").replaceAll("\r",
+	// "")).startsWith("==") && line.endsWith("==")) {
+	// if (!currentLine.replaceAll("\n", "").replaceAll("\r",
+	// "").trim().isEmpty()) {
+	// lines.add(currentLine);
+	// }
+	// currentLine = "";
+	// lines.add(line);
+	// } else if (line.isEmpty()) {
+	// if (!currentLine.replaceAll("\n", "").replaceAll("\r",
+	// "").trim().isEmpty()) {
+	// lines.add(currentLine);
+	// }
+	// currentLine = "";
+	// } else {
+	// currentLine = line.endsWith("}}") || line.endsWith("|}") ||
+	// line.endsWith("]]")
+	// ? String.valueOf(currentLine) + line + "\n" : String.valueOf(currentLine)
+	// + line;
+	// }
+	// }
+	// lines.add(currentLine);
+	// this.text = StringUtils.join(lines, "\n\n");
+	// }
 
 	private void divideIntoParagraphs() {
 		int id = 0;
@@ -330,6 +340,8 @@ public class TextExtractorNew {
 						line = line.substring("{{quote|".length(), line.length() - 2);
 					}
 					if (line.startsWith("[[" + WikiWords.getInstance().getCategoryLabel(language) + ":"))
+						break;
+					if (line.startsWith("[[" + WikiWords.getInstance().getTemplateLabel(language) + ":"))
 						break;
 
 					// Lists should consistently start with "* "
@@ -703,7 +715,8 @@ public class TextExtractorNew {
 		extractSentencesAndLinks(this.articleParagraph);
 
 		if (sentences.isEmpty()) {
-			System.out.println("Did not find sentences for " + this.pageId + ", " + this.pageTitle + ".");
+			// System.out.println("Did not find sentences for " + this.pageId +
+			// ", " + this.pageTitle + ".");
 			return;
 		}
 

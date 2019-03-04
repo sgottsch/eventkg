@@ -71,6 +71,9 @@ File
 # categoryLabel
 Kategorie
 
+# templateLabel
+Vorlage
+
 # imageLabels
 Datei
 File
@@ -84,6 +87,9 @@ Listen_
 
 # categoryPrefixes
 Kategorie:
+
+# templatePrefixes
+Vorlage:
 
 # eventsLabels
 Ereignisse

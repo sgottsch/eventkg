@@ -1,4 +1,4 @@
-package de.l3s.eventkg.integration;
+package de.l3s.eventkg.integration.integrator;
 
 import java.util.HashSet;
 import java.util.List;
@@ -6,6 +6,8 @@ import java.util.Set;
 
 import com.google.common.collect.Sets;
 
+import de.l3s.eventkg.integration.DataSets;
+import de.l3s.eventkg.integration.DataStore;
 import de.l3s.eventkg.integration.model.Entity;
 import de.l3s.eventkg.integration.model.Event;
 import de.l3s.eventkg.integration.model.relation.Location;

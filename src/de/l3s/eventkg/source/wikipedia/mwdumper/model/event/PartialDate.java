@@ -9,6 +9,8 @@ import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
 
+import de.l3s.eventkg.integration.model.DateGranularity;
+
 public class PartialDate {
 
 	public static void main(String[] args) {
@@ -147,20 +149,14 @@ public class PartialDate {
 		return date;
 	}
 
-	public Granularity getGranularity() {
+	public DateGranularity getGranularity() {
 		if (!this.days.isEmpty()) {
-			return Granularity.DAY;
+			return DateGranularity.DAY;
 		}
 		if (!this.months.isEmpty()) {
-			return Granularity.MONTH;
+			return DateGranularity.MONTH;
 		}
-		return Granularity.YEAR;
-	}
-
-	public static enum Granularity {
-		YEAR,
-		MONTH,
-		DAY;
+		return DateGranularity.YEAR;
 	}
 
 	public void resetMonths() {

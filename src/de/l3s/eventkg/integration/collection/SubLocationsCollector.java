@@ -1,4 +1,4 @@
-package de.l3s.eventkg.integration;
+package de.l3s.eventkg.integration.collection;
 
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
@@ -7,6 +7,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import de.l3s.eventkg.integration.AllEventPagesDataSet;
+import de.l3s.eventkg.integration.DataCollector;
 import de.l3s.eventkg.integration.model.Entity;
 import de.l3s.eventkg.meta.Language;
 import de.l3s.eventkg.meta.Source;

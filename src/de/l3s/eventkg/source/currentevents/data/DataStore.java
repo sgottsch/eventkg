@@ -34,10 +34,9 @@ public class DataStore {
 		this.stories = new HashMap<Long, Story>();
 	}
 
-	public WCEEntity getEntity(Long id, String name, String url) {
+	public WCEEntity getEntity(Long id, String url) {
 		if (!this.entities.containsKey(id)) {
-			WCEEntity entity = new WCEEntity(id, name, url);
-			entity.setMethod("ev");
+			WCEEntity entity = new WCEEntity(id, url);
 			this.entities.put(id, entity);
 			return entity;
 		}

@@ -102,7 +102,7 @@ public class EntityIdGenerator {
 
 	public void load() {
 
-		this.mappingLoader = new EventKGIdMappingLoader(true);
+		this.mappingLoader = new EventKGIdMappingLoader(false);
 
 		System.out.println("ID Generator: initEventIdMapping");
 		mappingLoader.initEventIdMapping();
@@ -288,7 +288,7 @@ public class EntityIdGenerator {
 		return this.mappingLoader.getEventLabelsMap();
 	}
 
-	public Map<DataSet, Map<String, String>> getEventDescriptionsMap() {
+	public Map<String, String> getEventDescriptionsMap() {
 		return this.mappingLoader.getEventDescriptionsMap();
 	}
 

@@ -50,6 +50,9 @@ File
 # categoryLabel
 Category
 
+# templateLabel
+Template
+
 # imageLabels
 Image
 File
@@ -62,6 +65,9 @@ Chronological_list_of_
 
 # categoryPrefixes
 Category:
+
+# templatePrefixes
+Template:
 
 # eventsLabels
 Events

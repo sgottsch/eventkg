@@ -20,7 +20,11 @@ public enum FileName {
 
 	YAGO_EVENT_FACTS("yago_event_facts.tsv", Source.YAGO, FileType.RESULTS, false, false, false),
 
+	YAGO_EVENT_LITERALS_FACTS("yago_event_literals_facts.tsv", Source.YAGO, FileType.RESULTS, false, false, false),
+
 	YAGO_ENTITY_FACTS("yago_entity_facts.tsv", Source.YAGO, FileType.RESULTS, false, false, false),
+
+	YAGO_POSITIONS("yago_positions.tsv", Source.YAGO, FileType.RESULTS, false, true, false),
 
 	/**
 	 * All YAGO facts that are assigned temporal information by reification
@@ -71,7 +75,8 @@ public enum FileName {
 	WIKIDATA_EVENTS("event_instances.tsv", Source.WIKIDATA, FileType.RESULTS, false, false, false),
 	WIKIDATA_NO_EVENTS("no_event_instances.tsv", Source.WIKIDATA, FileType.RESULTS, false, false, false),
 	WIKIDATA_LOCATIONS("wikidata_locations.tsv", Source.WIKIDATA, FileType.RESULTS, false, false, false),
-	WIKIDATA_SUB_LOCATIONS("wikidata_sub_locations.tsv", Source.WIKIDATA, FileType.RESULTS, false, false, false),
+	WIKIDATA_SUB_LOCATIONS("wikidata_sub_locations.tsv", Source.WIKIDATA, FileType.RESULTS, false, true, false),
+	WIKIDATA_POSITIONS("wikidata_positions.tsv", Source.WIKIDATA, FileType.RESULTS, false, true, false),
 	WIKIDATA_TEMPORAL_PROPERTY_LIST_FILE_NAME(
 			"temporal_property_names.tsv",
 			Source.WIKIDATA,
@@ -101,7 +106,14 @@ public enum FileName {
 			false,
 			false),
 	WIKIDATA_EXTERNAL_IDS_PROPERTY_NAMES(
-			"external_ids_property_names.tsv",
+			"external_ids_property_names.json",
+			Source.WIKIDATA,
+			FileType.META,
+			false,
+			false,
+			false),
+	WIKIDATA_WIKIPEDIA_INTERNAL_ITEMS(
+			"wikipedia_internal_items.json",
 			Source.WIKIDATA,
 			FileType.META,
 			false,
@@ -117,6 +129,13 @@ public enum FileName {
 	WIKIDATA_TEMPORAL_FACTS("wikidata_temporal_facts.tsv", Source.WIKIDATA, FileType.RESULTS, false, false, false),
 
 	WIKIDATA_EVENT_RELATIONS("wikidata_event_relations.tsv", Source.WIKIDATA, FileType.RESULTS, false, false, false),
+	WIKIDATA_EVENT_LITERALS_RELATIONS(
+			"wikidata_event_literals_relations.tsv",
+			Source.WIKIDATA,
+			FileType.RESULTS,
+			false,
+			false,
+			false),
 	WIKIDATA_ENTITY_RELATIONS("wikidata_entity_relations.tsv", Source.WIKIDATA, FileType.RESULTS, false, false, false),
 	WIKIDATA_PROPERTY_EQUALITIES(
 			"wikidata_property_equalities.json",
@@ -153,9 +172,19 @@ public enum FileName {
 	DBPEDIA_TIMES("dbpedia_times.tsv", Source.DBPEDIA, FileType.RESULTS, false, true, false),
 
 	/**
+	 * Entities with positions (points).
+	 */
+	DBPEDIA_POSITIONS("dbpedia_positions.tsv", Source.DBPEDIA, FileType.RESULTS, false, true, false),
+
+	/**
 	 * Triples where the subject or the object is an event page.
 	 */
 	DBPEDIA_EVENT_RELATIONS("dbpedia_event_relations.tsv", Source.DBPEDIA, FileType.RESULTS, false, false, false),
+
+	/**
+	 * Triples where the subject is an event page and the object is a literal.
+	 */
+	DBPEDIA_EVENT_LITERAL_RELATIONS("dbpedia_event_literal_relations.tsv", Source.DBPEDIA, FileType.RESULTS, false, false, false),
 
 	/**
 	 * Triples where the subject and the object is an entity with existence time
@@ -178,8 +207,9 @@ public enum FileName {
 	ALL_TTL_EVENTS_WITH_TEXTS("events.nq", FileType.OUTPUT, false, false, false),
 	ALL_TTL_ENTITIES_WITH_TEXTS("entities.nq", FileType.OUTPUT, false, false, false),
 	ALL_TTL_EVENTS_BASE_RELATIONS("relations_base.nq", FileType.OUTPUT, false, false, false),
-	ALL_TTL_EVENTS_LINK_RELATIONS("relations_links.nq", FileType.OUTPUT, false, false, false),
+	ALL_TTL_EVENTS_LINK_RELATIONS("relations_event_links.nq", FileType.OUTPUT, false, false, false),
 	ALL_TTL_ENTITY_LINK_RELATIONS("relations_entity_links.nq", FileType.OUTPUT, false, false, false),
+	ALL_TTL_EVENT_LITERALS_RELATIONS("relations_event_literals.nq", FileType.OUTPUT, false, false, false),
 	ALL_TTL_EVENTS_OTHER_RELATIONS("relations_other.nq", FileType.OUTPUT, false, false, false),
 	ALL_TTL_ENTITIES_TEMPORAL_RELATIONS("relations_entities_temporal.nq", FileType.OUTPUT, false, false, false),
 	ALL_TTL_ENTITIES_OTHER_RELATIONS("relations_entities_other.nq", FileType.OUTPUT, false, false, false),
@@ -195,7 +225,7 @@ public enum FileName {
 	ALL_TTL_EVENTS_WITH_TEXTS_PREVIEW("events_preview.nq", FileType.OUTPUT_PREVIEW, false, false, false),
 	ALL_TTL_ENTITIES_WITH_TEXTS_PREVIEW("entities_preview.nq", FileType.OUTPUT_PREVIEW, false, false, false),
 	ALL_TTL_EVENTS_BASE_RELATIONS_PREVIEW("relations_base_preview.nq", FileType.OUTPUT_PREVIEW, false, false, false),
-	ALL_TTL_EVENTS_LINK_RELATIONS_PREVIEW("relations_links_preview.nq", FileType.OUTPUT_PREVIEW, false, false, false),
+	ALL_TTL_EVENTS_LINK_RELATIONS_PREVIEW("relations_event_links_preview.nq", FileType.OUTPUT_PREVIEW, false, false, false),
 	ALL_TTL_ENTITY_LINK_RELATIONS_PREVIEW(
 			"relations_entity_links_preview.nq",
 			FileType.OUTPUT_PREVIEW,
@@ -203,6 +233,12 @@ public enum FileName {
 			false,
 			false),
 	ALL_TTL_PROPERTY_LABELS_PREVIEW("property_labels_preview.nq", FileType.OUTPUT_PREVIEW, false, false, false),
+	ALL_TTL_EVENT_LITERALS_RELATIONS_PREVIEW(
+			"relations_event_literals_preview.nq",
+			FileType.OUTPUT_PREVIEW,
+			false,
+			false,
+			false),
 	ALL_TTL_EVENTS_OTHER_RELATIONS_PREVIEW("relations_other_preview.nq", FileType.OUTPUT_PREVIEW, false, false, false),
 	ALL_TTL_ENTITIES_TEMPORAL_RELATIONS_PREVIEW(
 			"relations_entities_temporal_preview.nq",
@@ -265,6 +301,7 @@ public enum FileName {
 	 */
 	ALL_LOCATIONS("all_event_locations.tsv", Source.ALL, FileType.RESULTS, false, false, false),
 	ALL_SUB_LOCATIONS("all_sub_locations.tsv", Source.ALL, FileType.RESULTS, false, false, false),
+	ALL_POSITIONS("all_positions.tsv", Source.ALL, FileType.RESULTS, false, false, false),
 
 	ALL_TEMPORAL_RELATIONS("all_temporal_relations.tsv", Source.ALL, FileType.RESULTS, false, false, false),
 
@@ -303,6 +340,7 @@ public enum FileName {
 			false,
 			false),
 	DBPEDIA_GEONAMES_LINKS("geonames_links_$lang$.ttl", Source.DBPEDIA, FileType.RAW_DATA, false, false, false),
+	DBPEDIA_GEO_COORDINATES("geo_coordinates_$lang$.ttl", Source.DBPEDIA, FileType.RAW_DATA, false, false, false),
 
 	DBPEDIA_PART_OF_PROPERTIES("part_of_properties.tsv", Source.DBPEDIA, FileType.META, false, false, false),
 
@@ -339,7 +377,8 @@ public enum FileName {
 			false),
 
 	// Wikipedia Current Events
-	WCE_EVENTS_FOLDER("events_", Source.WCE, FileType.RAW_DATA, true, false, false),
+	WCE_EVENTS_WIKIPEDIA_FOLDER("events_", Source.WCE, FileType.RAW_DATA, true, false, false),
+	WCE_EVENTS_FOLDER("events_", Source.WCE, FileType.RESULTS, true, false, false),
 
 	// Wikipedia
 	WIKIPEDIA_REDIRECTS("redirects.sql.gz", Source.WIKIPEDIA, FileType.RAW_DATA, false, false, true),

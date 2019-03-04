@@ -49,6 +49,9 @@ File
 # categoryLabel
 Categoria
 
+# templateLabel
+Template
+
 # imageLabels
 Image
 File
@@ -60,6 +63,9 @@ Lista_dei_
 
 # categoryPrefixes
 Categoria:
+
+# templatePrefixes
+Template:
 
 # eventsLabels
 Eventi

@@ -45,6 +45,9 @@ File
 # categoryLabel
 Catégorie
 
+# templateLabel
+Modèle
+
 # imageLabels
 Файл
 Image
@@ -55,6 +58,9 @@ Liste_
 
 # categoryPrefixes
 Catégorie:
+
+# templatePrefixes
+Modèle:
 
 # eventsLabels
 Événements

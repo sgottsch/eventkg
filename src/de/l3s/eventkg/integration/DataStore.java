@@ -12,6 +12,7 @@ import de.l3s.eventkg.integration.model.relation.Description;
 import de.l3s.eventkg.integration.model.relation.EndTime;
 import de.l3s.eventkg.integration.model.relation.GenericRelation;
 import de.l3s.eventkg.integration.model.relation.Label;
+import de.l3s.eventkg.integration.model.relation.LiteralRelation;
 import de.l3s.eventkg.integration.model.relation.Location;
 import de.l3s.eventkg.integration.model.relation.PropertyLabel;
 import de.l3s.eventkg.integration.model.relation.StartTime;
@@ -34,8 +35,7 @@ public class DataStore {
 	private Set<Location> locations = new HashSet<Location>();
 
 	private Set<GenericRelation> genericRelations = new HashSet<GenericRelation>();
-
-	private Set<GenericRelation> linkRelations = new HashSet<GenericRelation>();
+	private Set<LiteralRelation> literalRelations = new HashSet<LiteralRelation>();
 
 	private Set<Label> wikipediaLabels = new HashSet<Label>();
 	private Set<Label> wikidataLabels = new HashSet<Label>();
@@ -48,7 +48,11 @@ public class DataStore {
 
 	private static DataStore instance;
 
-	private Map<Entity, Map<Entity, Set<GenericRelation>>> linkRelationsBySubjectAndObject = new HashMap<Entity, Map<Entity, Set<GenericRelation>>>();
+	// private Map<Entity, Map<Entity, Set<GenericRelation>>>
+	// linkRelationsBySubjectAndObject = new HashMap<Entity, Map<Entity,
+	// Set<GenericRelation>>>();
+
+	private Map<String, Set<GenericRelation>> linkRelationsBySubjectAndObjectGroup = new HashMap<String, Set<GenericRelation>>();
 
 	public static DataStore getInstance() {
 		if (instance == null) {
@@ -92,8 +96,12 @@ public class DataStore {
 		return genericRelations;
 	}
 
-	public Set<GenericRelation> getLinkRelations() {
-		return linkRelations;
+	public Set<LiteralRelation> getLiteralRelations() {
+		return literalRelations;
+	}
+
+	public void setLiteralRelations(Set<LiteralRelation> literalRelations) {
+		this.literalRelations = literalRelations;
 	}
 
 	public Set<Label> getWikipediaLabels() {
@@ -126,6 +134,10 @@ public class DataStore {
 		this.descriptions.add(description);
 	}
 
+	public void addLiteralRelation(LiteralRelation relation) {
+		this.literalRelations.add(relation);
+	}
+
 	public void addGenericRelation(GenericRelation relation) {
 
 		if (relation.getSubject().isEvent() || relation.getObject().isEvent()) {
@@ -147,20 +159,31 @@ public class DataStore {
 		this.genericRelations.add(relation);
 	}
 
+	// public void addLinkRelationOld(GenericRelation genericRelation) {
+	//
+	// if
+	// (!linkRelationsBySubjectAndObject.containsKey(genericRelation.getSubject()))
+	// linkRelationsBySubjectAndObject.put(genericRelation.getSubject(),
+	// new HashMap<Entity, Set<GenericRelation>>());
+	//
+	// if
+	// (!linkRelationsBySubjectAndObject.get(genericRelation.getSubject()).containsKey(genericRelation.getObject()))
+	// linkRelationsBySubjectAndObject.get(genericRelation.getSubject()).put(genericRelation.getObject(),
+	// new HashSet<GenericRelation>());
+	//
+	// linkRelationsBySubjectAndObject.get(genericRelation.getSubject()).get(genericRelation.getObject())
+	// .add(genericRelation);
+	// }
+
 	public void addLinkRelation(GenericRelation genericRelation) {
 
-		if (!linkRelationsBySubjectAndObject.containsKey(genericRelation.getSubject()))
-			linkRelationsBySubjectAndObject.put(genericRelation.getSubject(),
-					new HashMap<Entity, Set<GenericRelation>>());
+		String groupId = genericRelation.getSubject().getWikidataId() + "-"
+				+ genericRelation.getObject().getWikidataId();
 
-		if (!linkRelationsBySubjectAndObject.get(genericRelation.getSubject()).containsKey(genericRelation.getObject()))
-			linkRelationsBySubjectAndObject.get(genericRelation.getSubject()).put(genericRelation.getObject(),
-					new HashSet<GenericRelation>());
+		if (!linkRelationsBySubjectAndObjectGroup.containsKey(groupId))
+			linkRelationsBySubjectAndObjectGroup.put(groupId, new HashSet<GenericRelation>());
 
-		linkRelationsBySubjectAndObject.get(genericRelation.getSubject()).get(genericRelation.getObject())
-				.add(genericRelation);
-
-		this.linkRelations.add(genericRelation);
+		linkRelationsBySubjectAndObjectGroup.get(groupId).add(genericRelation);
 	}
 
 	public void addEndTime(EndTime endTime) {
@@ -191,9 +214,10 @@ public class DataStore {
 		return propertyLabels;
 	}
 
-	public Map<Entity, Map<Entity, Set<GenericRelation>>> getLinkRelationsBySubjectAndObject() {
-		return linkRelationsBySubjectAndObject;
-	}
+	// public Map<Entity, Map<Entity, Set<GenericRelation>>>
+	// getLinkRelationsBySubjectAndObject() {
+	// return linkRelationsBySubjectAndObject;
+	// }
 
 	public Map<Entity, Set<Entity>> getConnectedEntities() {
 		return connectedEntities;
@@ -206,6 +230,10 @@ public class DataStore {
 	public void setMentionCountsFromTextualEvents(
 			Map<Language, Map<Entity, Map<Entity, Integer>>> mentionCountsFromTextualEvents) {
 		this.mentionCountsFromTextualEvents = mentionCountsFromTextualEvents;
+	}
+
+	public Map<String, Set<GenericRelation>> getLinkRelationsBySubjectAndObjectGroup() {
+		return linkRelationsBySubjectAndObjectGroup;
 	}
 
 }

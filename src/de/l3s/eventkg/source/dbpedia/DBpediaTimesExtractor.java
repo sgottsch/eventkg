@@ -54,7 +54,7 @@ public class DBpediaTimesExtractor extends Extractor {
 				e1.printStackTrace();
 			}
 
-			resultsWriter.write("subject" + "\t" + "time" + "\n");
+			resultsWriter.write("subject" + Config.TAB + "time" + Config.TAB + "start/end/both/no" + Config.NL);
 
 			String line;
 			while ((line = br.readLine()) != null) {
@@ -103,7 +103,7 @@ public class DBpediaTimesExtractor extends Extractor {
 
 	}
 
-	private static Map<String, TimeSymbol> loadTimeProperties() {
+	public static Map<String, TimeSymbol> loadTimeProperties() {
 
 		// Extract this from a meta file
 

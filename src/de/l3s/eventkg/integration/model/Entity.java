@@ -1,7 +1,6 @@
 package de.l3s.eventkg.integration.model;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -31,15 +30,25 @@ public class Entity {
 	private Set<Entity> parentLocations = new HashSet<Entity>();
 	private Set<Entity> allParentLocations = new HashSet<Entity>();
 
-	private Set<Date> startTimes = new HashSet<Date>();;
-	private Map<Date, Set<DataSet>> startTimesWithDataSets = new HashMap<Date, Set<DataSet>>();
+	private Set<DateWithGranularity> startTimes = new HashSet<DateWithGranularity>();;
+	private Map<DateWithGranularity, Set<DataSet>> startTimesWithDataSets = new HashMap<DateWithGranularity, Set<DataSet>>();
+	private Map<DataSet, DateWithGranularity> dataSetsWithStartTimes = new HashMap<DataSet, DateWithGranularity>();
 
-	private Set<Date> endTimes = new HashSet<Date>();;
-	private Map<Date, Set<DataSet>> endTimesWithDataSets = new HashMap<Date, Set<DataSet>>();
+	private Set<DateWithGranularity> endTimes = new HashSet<DateWithGranularity>();;
+	private Map<DateWithGranularity, Set<DataSet>> endTimesWithDataSets = new HashMap<DateWithGranularity, Set<DataSet>>();
+	private Map<DataSet, DateWithGranularity> dataSetsWithEndTimes = new HashMap<DataSet, DateWithGranularity>();
+
+	private Set<Position> positions = new HashSet<Position>();
+	private Map<Position, DataSet> positionsWithDataSets = new HashMap<Position, DataSet>();
+	private Map<DataSet, Set<Position>> dataSetsWithPositions = new HashMap<DataSet, Set<Position>>();
 
 	private boolean isLocation = false;
 
 	private boolean isActor = false;
+
+	public Entity() {
+
+	}
 
 	public Entity(String wikidataId) {
 		super();
@@ -159,33 +168,35 @@ public class Entity {
 		this.allParentLocations.add(allParentLocation);
 	}
 
-	public void addStartTime(Date startTime, DataSet dataSet) {
+	public void addStartTime(DateWithGranularity startTime, DataSet dataSet) {
 		this.startTimes.add(startTime);
 		if (!this.startTimesWithDataSets.containsKey(startTime))
 			startTimesWithDataSets.put(startTime, new HashSet<DataSet>());
 		this.startTimesWithDataSets.get(startTime).add(dataSet);
+		this.dataSetsWithStartTimes.put(dataSet, startTime);
 	}
 
-	public void addEndTime(Date endTime, DataSet dataSet) {
+	public void addEndTime(DateWithGranularity endTime, DataSet dataSet) {
 		this.endTimes.add(endTime);
 		if (!this.endTimesWithDataSets.containsKey(endTime))
 			endTimesWithDataSets.put(endTime, new HashSet<DataSet>());
 		this.endTimesWithDataSets.get(endTime).add(dataSet);
+		this.dataSetsWithEndTimes.put(dataSet, endTime);
 	}
 
-	public Set<Date> getStartTimes() {
+	public Set<DateWithGranularity> getStartTimes() {
 		return startTimes;
 	}
 
-	public Map<Date, Set<DataSet>> getStartTimesWithDataSets() {
+	public Map<DateWithGranularity, Set<DataSet>> getStartTimesWithDataSets() {
 		return startTimesWithDataSets;
 	}
 
-	public Set<Date> getEndTimes() {
+	public Set<DateWithGranularity> getEndTimes() {
 		return endTimes;
 	}
 
-	public Map<Date, Set<DataSet>> getEndTimesWithDataSets() {
+	public Map<DateWithGranularity, Set<DataSet>> getEndTimesWithDataSets() {
 		return endTimesWithDataSets;
 	}
 
@@ -211,6 +222,37 @@ public class Entity {
 
 	public void setActor(boolean isActor) {
 		this.isActor = isActor;
+	}
+
+	public Map<DataSet, DateWithGranularity> getDataSetsWithStartTimes() {
+		return dataSetsWithStartTimes;
+	}
+
+	public Map<DataSet, DateWithGranularity> getDataSetsWithEndTimes() {
+		return dataSetsWithEndTimes;
+	}
+
+	public void addPosition(Position position, DataSet dataSet) {
+		this.positions.add(position);
+
+		this.positionsWithDataSets.put(position, dataSet);
+
+		if (!this.dataSetsWithPositions.containsKey(dataSet))
+			this.dataSetsWithPositions.put(dataSet, new HashSet<Position>());
+
+		this.dataSetsWithPositions.get(dataSet).add(position);
+	}
+
+	public Set<Position> getPositions() {
+		return positions;
+	}
+
+	public Set<Position> getPositionsOfDataSet(DataSet dataSet) {
+		return dataSetsWithPositions.get(dataSet);
+	}
+
+	public Map<Position, DataSet> getPositionsWithDataSets() {
+		return positionsWithDataSets;
 	}
 
 }

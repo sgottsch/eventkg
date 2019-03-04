@@ -5,6 +5,8 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
+import de.l3s.eventkg.integration.model.DateGranularity;
+
 public class Event {
 
 	private Date startDate;
@@ -12,9 +14,10 @@ public class Event {
 	private String categories;
 	private String rawText;
 	private String originalText;
-	private PartialDate.Granularity granularity;
+	private DateGranularity granularity;
 
 	private Set<String> links;
+	private String leadingLink;
 
 	public Event(Date startDate, Date endDate, String rawText) {
 		this.startDate = startDate;
@@ -55,11 +58,11 @@ public class Event {
 		this.rawText = rawText;
 	}
 
-	public PartialDate.Granularity getGranularity() {
+	public DateGranularity getGranularity() {
 		return this.granularity;
 	}
 
-	public void setGranularity(PartialDate.Granularity granularity) {
+	public void setGranularity(DateGranularity granularity) {
 		this.granularity = granularity;
 	}
 
@@ -88,6 +91,14 @@ public class Event {
 
 	public void addLink(String link) {
 		this.links.add(link);
+	}
+
+	public String getLeadingLink() {
+		return leadingLink;
+	}
+
+	public void setLeadingLink(String leadingLink) {
+		this.leadingLink = leadingLink;
 	}
 
 }

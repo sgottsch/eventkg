@@ -4,15 +4,16 @@ import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.text.ParseException;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import de.l3s.eventkg.integration.model.DateWithGranularity;
 import de.l3s.eventkg.integration.model.Entity;
 import de.l3s.eventkg.integration.model.Event;
+import de.l3s.eventkg.integration.model.Position;
 import de.l3s.eventkg.integration.model.relation.DataSet;
 import de.l3s.eventkg.integration.model.relation.EndTime;
 import de.l3s.eventkg.integration.model.relation.Location;
@@ -38,6 +39,7 @@ public class AllEventPagesDataSet {
 	private WikidataIdMappings wikidataIdMappings;
 
 	private List<Language> languages;
+	private boolean loadEntityAndEventInfo = true;
 
 	public AllEventPagesDataSet() {
 	}
@@ -120,18 +122,22 @@ public class AllEventPagesDataSet {
 			}
 		}
 
-		System.out.println("loadEventTimes");
-		loadEventTimes();
-		System.out.println("Load entities with existence times.");
-		loadEntitiesWithExistenceTimes();
-		System.out.println("loadEventLocations");
-		loadEventLocations();
-		System.out.println("loadSubEvents");
-		loadSubEvents();
-		System.out.println("loadPreviousEvents");
-		loadPreviousEvents();
-		System.out.println("loadNextEvents");
-		loadNextEvents();
+		if (loadEntityAndEventInfo) {
+			System.out.println("loadEventTimes");
+			loadEventTimes();
+			System.out.println("Load entities with existence times.");
+			loadEntitiesWithExistenceTimes();
+			System.out.println("loadEventLocations");
+			loadEventLocations();
+			System.out.println("loadSubEvents");
+			loadSubEvents();
+			System.out.println("loadPreviousEvents");
+			loadPreviousEvents();
+			System.out.println("loadNextEvents");
+			loadNextEvents();
+			System.out.println("loadPositions");
+			loadPositions();
+		}
 	}
 
 	private void loadEntitiesWithExistenceTimes() {
@@ -170,9 +176,6 @@ public class AllEventPagesDataSet {
 							entity);
 			}
 		}
-
-		System.out.println("Q567: " + this.entitiesWithExistenceTimeByWikidataId.get("Q567"));
-		System.out.println("Q2522577: " + this.entitiesWithExistenceTimeByWikidataId.get("Q2522577"));
 
 		System.out.println("Entities with existence time: " + entitiesWithExistenceTimeByWikidataId.size());
 	}
@@ -220,6 +223,12 @@ public class AllEventPagesDataSet {
 				Event event = null;
 				if (entity.isEvent()) {
 					event = (Event) entity;
+
+					// Events in YAGO very often have wrong times when the
+					// "wasDestroyedOnDate" property is used. Ignore them.
+					if (parts[1].equals("<wasDestroyedOnDate>"))
+						continue;
+
 				}
 
 				// System.out.println("Event: " + event + " -");
@@ -230,8 +239,8 @@ public class AllEventPagesDataSet {
 				TimeSymbol type = TimeSymbol.fromString(parts[3]);
 
 				try {
-					Date date1 = TimeTransformer.generateEarliestTimeFromXsd(timeString);
-					Date date1L = TimeTransformer.generateLatestTimeFromXsd(timeString);
+					DateWithGranularity date1 = TimeTransformer.generateEarliestTimeFromXsd(timeString);
+					DateWithGranularity date1L = TimeTransformer.generateLatestTimeFromXsd(timeString);
 
 					if (date1 != null && (type == TimeSymbol.START_TIME || type == TimeSymbol.START_AND_END_TIME)) {
 
@@ -308,7 +317,7 @@ public class AllEventPagesDataSet {
 
 					if (type == TimeSymbol.START_TIME || type == TimeSymbol.START_AND_END_TIME) {
 
-						Date dateEarliest = TimeTransformer.generateEarliestTimeForWikidata(timeString);
+						DateWithGranularity dateEarliest = TimeTransformer.generateEarliestTimeForWikidata(timeString);
 
 						if (dateEarliest != null) {
 
@@ -324,7 +333,7 @@ public class AllEventPagesDataSet {
 						}
 					}
 					if (type == TimeSymbol.END_TIME || type == TimeSymbol.START_AND_END_TIME) {
-						Date dateLatest = TimeTransformer.generateLatestTimeForWikidata(timeString);
+						DateWithGranularity dateLatest = TimeTransformer.generateLatestTimeForWikidata(timeString);
 
 						if (dateLatest != null) {
 
@@ -389,7 +398,7 @@ public class AllEventPagesDataSet {
 						event = (Event) entity;
 					}
 
-					Date date;
+					DateWithGranularity date;
 					try {
 						date = TimeTransformer.generateTimeForDBpedia(timeString);
 
@@ -490,6 +499,46 @@ public class AllEventPagesDataSet {
 				DataSet dataSet = DataSets.getInstance().getDataSetById(dataSetId);
 
 				event.addParent(parentEvent, dataSet);
+
+				// GenericRelation relation = new GenericRelation(event2,
+				// dataSet,
+				// PrefixList.getInstance().getPrefix(PrefixEnum.SEM),
+				// "hasSubEvent", event1, null, false);
+				// DataStore.getInstance().addGenericRelation(relation);
+
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				br.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+
+	}
+
+	private void loadPositions() {
+		BufferedReader br = null;
+
+		try {
+			br = FileLoader.getReader(FileName.ALL_POSITIONS);
+
+			String line;
+			while ((line = br.readLine()) != null) {
+
+				String[] parts = line.split("\t");
+
+				Entity entity = getWikidataIdMappings().getEntityByWikidataId(parts[0]);
+				if (entity == null) {
+					continue;
+				}
+
+				String dataSetId = parts[4];
+				DataSet dataSet = DataSets.getInstance().getDataSetById(dataSetId);
+
+				entity.addPosition(new Position(Double.valueOf(parts[2]), Double.valueOf(parts[3])), dataSet);
 
 				// GenericRelation relation = new GenericRelation(event2,
 				// dataSet,
@@ -641,4 +690,9 @@ public class AllEventPagesDataSet {
 	public Entity getEntityWithExistenceTimeByWikipediaLabel(Language language, String wikipediaLabel) {
 		return entitiesWithExistenceTimeByWikipediaLabel.get(language).get(wikipediaLabel);
 	}
+
+	public void setLoadEntityAndEventInfo(boolean loadEntityAndEventInfo) {
+		this.loadEntityAndEventInfo = loadEntityAndEventInfo;
+	}
+
 }
