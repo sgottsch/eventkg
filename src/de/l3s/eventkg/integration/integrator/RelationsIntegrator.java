@@ -19,6 +19,7 @@ import de.l3s.eventkg.integration.DataStore;
 import de.l3s.eventkg.integration.model.DateGranularity;
 import de.l3s.eventkg.integration.model.DateWithGranularity;
 import de.l3s.eventkg.integration.model.Entity;
+import de.l3s.eventkg.integration.model.relation.DataSet;
 import de.l3s.eventkg.integration.model.relation.GenericRelation;
 import de.l3s.eventkg.integration.model.relation.SubProperty;
 import de.l3s.eventkg.meta.Language;
@@ -61,15 +62,19 @@ public class RelationsIntegrator extends Extractor {
 
 		Entity e1 = new Entity();
 		e1.setId("e1");
+		e1.setWikidataId("e1");
 		DataStore.getInstance().getEntities().add(e1);
 		Entity e2 = new Entity();
 		e2.setId("e2");
+		e2.setWikidataId("e2");
 		DataStore.getInstance().getEntities().add(e2);
 		Entity e3 = new Entity();
 		e3.setId("e3");
+		e3.setWikidataId("e3");
 		DataStore.getInstance().getEntities().add(e3);
 		Entity e4 = new Entity();
 		e4.setId("e4");
+		e4.setWikidataId("e4");
 		DataStore.getInstance().getEntities().add(e4);
 
 		// e1 marriedTo e2
@@ -77,27 +82,31 @@ public class RelationsIntegrator extends Extractor {
 		r1.setSubject(e1);
 		r1.setObject(e2);
 		r1.setStartTime(new DateWithGranularity(dateFormat.parse("2007-07-17"), DateGranularity.DAY));
-		r1.setProperty("yago:isMarriedTo");
+		r1.setProperty("isMarriedTo");
+		r1.setDataSet(DataSets.getInstance().getDataSetWithoutLanguage(Source.YAGO));
 		DataStore.getInstance().getGenericRelations().add(r1);
 
 		GenericRelation r2 = new GenericRelation();
 		r2.setSubject(e1);
 		r2.setObject(e2);
 		r2.setStartTime(new DateWithGranularity(dateFormat.parse("2007-07-10"), DateGranularity.DAY));
-		r2.setProperty("wikidata:P26");
+		r2.setProperty("P26");
+		r2.setDataSet(DataSets.getInstance().getDataSetWithoutLanguage(Source.WIKIDATA));
 		DataStore.getInstance().getGenericRelations().add(r2);
 
 		GenericRelation r3 = new GenericRelation();
 		r3.setSubject(e1);
 		r3.setObject(e2);
 		r3.setStartTime(new DateWithGranularity(dateFormat.parse("2007-07-17"), DateGranularity.DAY));
-		r3.setProperty("dbpedia_en:spouse");
+		r3.setProperty("spouse");
+		r3.setDataSet(DataSets.getInstance().getDataSet(Language.EN, Source.DBPEDIA));
 		DataStore.getInstance().getGenericRelations().add(r3);
 
 		GenericRelation r3b = new GenericRelation();
 		r3b.setSubject(e1);
 		r3b.setObject(e2);
-		r3b.setProperty("dbpedia_en:spouse");
+		r3b.setProperty("spouse");
+		r3b.setDataSet(DataSets.getInstance().getDataSet(Language.EN, Source.DBPEDIA));
 		DataStore.getInstance().getGenericRelations().add(r3b);
 
 		// single relation
@@ -105,7 +114,8 @@ public class RelationsIntegrator extends Extractor {
 		GenericRelation r4 = new GenericRelation();
 		r4.setSubject(e1);
 		r4.setObject(e3);
-		r4.setProperty("yago:isMarriedTo");
+		r4.setProperty("isMarriedTo");
+		r4.setDataSet(DataSets.getInstance().getDataSetWithoutLanguage(Source.YAGO));
 		DataStore.getInstance().getGenericRelations().add(r4);
 
 		// e2 died in e3
@@ -113,13 +123,15 @@ public class RelationsIntegrator extends Extractor {
 		GenericRelation r5 = new GenericRelation();
 		r5.setSubject(e2);
 		r5.setObject(e3);
-		r5.setProperty("dbpedia_en:deathPlace");
+		r5.setProperty("deathPlace");
+		r5.setDataSet(DataSets.getInstance().getDataSet(Language.EN, Source.DBPEDIA));
 		DataStore.getInstance().getGenericRelations().add(r5);
 
 		GenericRelation r6 = new GenericRelation();
 		r6.setSubject(e2);
 		r6.setObject(e3);
-		r6.setProperty("wikidata:P20");
+		r6.setProperty("P20"); // place of death
+		r6.setDataSet(DataSets.getInstance().getDataSetWithoutLanguage(Source.WIKIDATA));
 		DataStore.getInstance().getGenericRelations().add(r6);
 
 		// single relation
@@ -127,8 +139,25 @@ public class RelationsIntegrator extends Extractor {
 		GenericRelation r7 = new GenericRelation();
 		r7.setSubject(e2);
 		r7.setObject(e3);
-		r7.setProperty("dbpedia_en:publisher");
+		r7.setProperty("publisher");
+		r7.setDataSet(DataSets.getInstance().getDataSet(Language.EN, Source.DBPEDIA));
 		DataStore.getInstance().getGenericRelations().add(r7);
+
+		// two identical relations
+
+		GenericRelation r8 = new GenericRelation();
+		r8.setSubject(e2);
+		r8.setObject(e3);
+		r8.setProperty("abcde");
+		r8.setDataSet(DataSets.getInstance().getDataSet(Language.EN, Source.DBPEDIA));
+		DataStore.getInstance().getGenericRelations().add(r8);
+
+		GenericRelation r9 = new GenericRelation();
+		r9.setSubject(e2);
+		r9.setObject(e3);
+		r9.setProperty("abcde");
+		r9.setDataSet(DataSets.getInstance().getDataSet(Language.EN, Source.DBPEDIA));
+		DataStore.getInstance().getGenericRelations().add(r9);
 
 	}
 
@@ -335,6 +364,24 @@ public class RelationsIntegrator extends Extractor {
 		// System.out.println("");
 		// }
 
+		// add all DBpedia language editions
+		for (PropertyGroup propertyGroup : propertyGroups) {
+			Set<String> newProperties = new HashSet<String>();
+			for (String property : propertyGroup.getProperties()) {
+				if (property.startsWith("dbpedia_en:")) {
+					for (Language language : languages) {
+						if (language == Language.EN)
+							continue;
+						String newProperty = property.replace("dbpedia_en",
+								"dbpedia_" + language.getLanguageLowerCase());
+						newProperties.add(newProperty);
+						this.propertyGroups.put(newProperty, propertyGroup);
+					}
+				}
+			}
+			propertyGroup.getProperties().addAll(newProperties);
+		}
+
 	}
 
 	private class PropertyGroup {
@@ -425,7 +472,25 @@ public class RelationsIntegrator extends Extractor {
 			Map<PropertyGroup, Set<GenericRelation>> relationsByPropertyGroup = new HashMap<PropertyGroup, Set<GenericRelation>>();
 
 			for (GenericRelation relation : relationGroup) {
-				PropertyGroup propertyGroup = propertyGroups.get(buildPropertyString(relation));
+				String propertyString = buildPropertyString(relation);
+				PropertyGroup propertyGroup = propertyGroups.get(propertyString);
+
+				// create a new property group that only contains the property
+				// itself (to group identical relations from different sources)
+				if (propertyGroup == null) {
+					Set<String> properties = new HashSet<String>();
+					properties.add(propertyString);
+					if (relation.getDataSet().getSource() == Source.DBPEDIA) {
+						for (Language language : languages) {
+							properties.add(buildPropertyString(relation,
+									DataSets.getInstance().getDataSet(language, Source.DBPEDIA)));
+						}
+					}
+					propertyGroup = new PropertyGroup(properties);
+					for (String property : properties)
+						propertyGroups.put(property, propertyGroup);
+				}
+
 				if (propertyGroup != null) {
 					if (!relationsByPropertyGroup.containsKey(propertyGroup))
 						relationsByPropertyGroup.put(propertyGroup, new HashSet<GenericRelation>());
@@ -484,6 +549,10 @@ public class RelationsIntegrator extends Extractor {
 
 	private String buildPropertyString(GenericRelation relation) {
 		return relation.getDataSet().getId() + ":" + relation.getProperty();
+	}
+
+	private String buildPropertyString(GenericRelation relation, DataSet dataSet) {
+		return dataSet.getId() + ":" + relation.getProperty();
 	}
 
 	private void integrateRelationGroups(Set<Set<GenericRelation>> relationGroups) {
