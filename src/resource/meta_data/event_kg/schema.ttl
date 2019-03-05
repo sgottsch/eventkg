@@ -4,6 +4,7 @@
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 @prefix sem: <http://semanticweb.cs.vu.nl/2009/11/sem/> .
 @prefix time: <http://www.w3.org/2006/time#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
 
 eventKG-s:Relation rdfs:subClassOf sem:Role .
 eventKG-s:links rdfs:domain eventKG-s:Relation .
@@ -15,7 +16,7 @@ eventKG-s:extractedFrom rdfs:range rdf:Resource .
 
 eventKG-s:unitDecade rdf:type time:TemporalUnit .
 eventKG-s:unitCentury rdf:type time:TemporalUnit .
-eventKG-s:startUnitType rdf:type owl:ObjectProperty ;
-eventKG-s:startUnitType rdfs:range time:TemporalUnit ;
-eventKG-s:endUnitType rdf:type owl:ObjectProperty ;
-eventKG-s:endUnitType rdfs:range time:TemporalUnit ;
+eventKG-s:startUnitType rdf:type owl:ObjectProperty .
+eventKG-s:startUnitType rdfs:range time:TemporalUnit .
+eventKG-s:endUnitType rdf:type owl:ObjectProperty .
+eventKG-s:endUnitType rdfs:range time:TemporalUnit .
