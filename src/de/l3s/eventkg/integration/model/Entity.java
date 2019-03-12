@@ -20,6 +20,7 @@ public class Entity {
 	private String wikidataId;
 	private String yagoId;
 	private int numericWikidataId;
+	private String temporaryId;
 
 	private String eventKGId;
 
@@ -253,6 +254,14 @@ public class Entity {
 
 	public Map<Position, DataSet> getPositionsWithDataSets() {
 		return positionsWithDataSets;
+	}
+
+	public String getTemporaryId() {
+		return temporaryId;
+	}
+
+	public void setTemporaryId(String temporaryId) {
+		this.temporaryId = temporaryId;
 	}
 
 }

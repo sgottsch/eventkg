@@ -175,15 +175,23 @@ public class DataStore {
 	// .add(genericRelation);
 	// }
 
-	public void addLinkRelation(GenericRelation genericRelation) {
+	public String addLinkRelation(GenericRelation genericRelation) {
 
-		String groupId = genericRelation.getSubject().getWikidataId() + "-"
-				+ genericRelation.getObject().getWikidataId();
+		String subjectId = genericRelation.getSubject().getWikidataId();
+		String objectId = genericRelation.getObject().getWikidataId();
+
+		if (subjectId == null) {
+			subjectId = genericRelation.getSubject().getTemporaryId();
+		}
+
+		String groupId = subjectId + "-" + objectId;
 
 		if (!linkRelationsBySubjectAndObjectGroup.containsKey(groupId))
 			linkRelationsBySubjectAndObjectGroup.put(groupId, new HashSet<GenericRelation>());
 
 		linkRelationsBySubjectAndObjectGroup.get(groupId).add(genericRelation);
+
+		return groupId;
 	}
 
 	public void addEndTime(EndTime endTime) {

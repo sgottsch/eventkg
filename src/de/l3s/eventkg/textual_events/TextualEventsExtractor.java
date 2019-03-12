@@ -34,7 +34,6 @@ import de.l3s.eventkg.pipeline.Extractor;
 import de.l3s.eventkg.source.currentevents.EventsFromFileExtractor;
 import de.l3s.eventkg.source.currentevents.model.WCEEntity;
 import de.l3s.eventkg.source.currentevents.model.WCEEvent;
-import de.l3s.eventkg.source.dbpedia.DBpediaAllLocationsLoader;
 import de.l3s.eventkg.source.wikipedia.model.LinksToCount;
 import de.l3s.eventkg.util.FileLoader;
 import de.l3s.eventkg.util.FileName;
@@ -86,6 +85,36 @@ public class TextualEventsExtractor extends Extractor {
 		this.textualEvents = new HashSet<TextualEvent>();
 		this.eventsToTextualEvents = new HashMap<Event, Set<TextualEvent>>();
 
+		loadTextualEventsFromWikipedia();
+		loadTextualEventsFromWCE();
+		System.out.println("Total number of textual events: " + this.textualEvents.size() + ".");
+
+		mergeEvents();
+
+		for (Description description : DataStore.getInstance().getDescriptions()) {
+			if (description.getSubject() == null)
+				continue;
+			if (description.getSubject().isEvent()) {
+				if (description.getLabel().startsWith("CEBIT")) {
+					System.out.println("Found CEBIT event: " + description.getLabel());
+				}
+			}
+		}
+	}
+
+	private void loadTextualEventsFromWCE() {
+
+		System.out.println("Load events from the Wikipedia Current Events Portal.");
+
+		int numberOfWCEvents = loadWCEEvents();
+
+		System.out.println("Number of extracted events from the Wikipedia Current Events Portal: " + numberOfWCEvents);
+	}
+
+	private void loadTextualEventsFromWikipedia() {
+
+		System.out.println("Load textual events from Wikipedia.");
+
 		for (Language language : this.languages) {
 			for (File child : FileLoader.getFilesList(FileName.WIKIPEDIA_TEXTUAL_EVENTS, language)) {
 				processFile(child, language);
@@ -94,14 +123,6 @@ public class TextualEventsExtractor extends Extractor {
 
 		System.out.println("Number of extracted Wikipedia events: " + numberOfExtractedWikiEvents + " / "
 				+ this.textualEvents.size() + ".");
-
-		System.out.println("Load WCE events.");
-		loadWCEEvents();
-		System.out.println("Total: " + this.textualEvents.size() + ".");
-
-		mergeEvents();
-
-		// writeResults();
 	}
 
 	private void mergeEvents() {
@@ -111,16 +132,20 @@ public class TextualEventsExtractor extends Extractor {
 					new HashMap<Entity, Map<Entity, Integer>>());
 		}
 
-		// TODO: Is each location mentioned in the text a location of the event?
+		// Is each location mentioned in the text a location of the event?
 		// Sometimes, they are just actors ("Ethiopia begins a massive offensive
 		// in Eritrea.")
-		Set<Entity> locationEntities = DBpediaAllLocationsLoader.loadLocationEntities(this.languages,
-				this.allEventPagesDataSet.getWikidataIdMappings());
+		// Set<Entity> locationEntities =
+		// DBpediaAllLocationsLoader.loadLocationEntities(this.languages,
+		// this.allEventPagesDataSet.getWikidataIdMappings());
 
-		Set<Set<TextualEvent>> mergedEvents = new HashSet<Set<TextualEvent>>();
+		Set<Set<TextualEvent>> eventGroups = new HashSet<Set<TextualEvent>>();
 
 		System.out.println("Merge textual events and named events.");
 
+		// === 1. Create groups of events ===
+		// Two events are out in the same set, if they have the same event date
+		// and their sets of related entities are non-empty and overlap.
 		for (String date : this.eventsByDates.keySet()) {
 			Set<TextualEvent> doneEvents = new HashSet<TextualEvent>();
 			for (TextualEvent event1 : this.eventsByDates.get(date)) {
@@ -141,33 +166,37 @@ public class TextualEventsExtractor extends Extractor {
 		for (TextualEvent event : this.textualEvents) {
 			Set<TextualEvent> cluster = new HashSet<TextualEvent>();
 			extendEvent(event, cluster);
-			mergedEvents.add(cluster);
+			eventGroups.add(cluster);
 		}
+
+		// === 2. Merge the events in each event group ===
 
 		// three options:
 		// cluster is completely new
 		// cluster is new sub event
 		// cluster is same as named event (=> just a new description)
 
+		int eventNumber = 0;
 		// map textual events to events
-		for (Set<TextualEvent> cluster : mergedEvents) {
+		for (Set<TextualEvent> eventGroup : eventGroups) {
 
 			// TODO: Extra case for story (WCE) / mainEvent
 			// TODO: Count by language
 
 			Set<Event> relatedEvents = new HashSet<Event>();
-			Map<Entity, DataSet> relatedLocations = new HashMap<Entity, DataSet>();
 			Map<Language, Map<Entity, Integer>> relatedEntities = new HashMap<Language, Map<Entity, Integer>>();
+			// Map<Entity, DataSet> relatedLocations = new HashMap<Entity,
+			// DataSet>();
 
 			Map<DataSet, Set<String>> urls = new HashMap<DataSet, Set<String>>();
 
-			// for each event cluster, keep track of the events' datasets; to
-			// finally take the most frequent one.
+			// keep track of the events' datasets; to finally take the most
+			// frequent one.
 			Map<DataSet, Integer> dataSetsWithCount = new HashMap<DataSet, Integer>();
 
 			Date start = null;
 			Date end = null;
-			for (TextualEvent event : cluster) {
+			for (TextualEvent event : eventGroup) {
 
 				DataSet dataSet = DataSets.getInstance().getDataSet(event.getLanguage(), event.getSource());
 				if (!dataSetsWithCount.containsKey(dataSet))
@@ -189,8 +218,8 @@ public class TextualEventsExtractor extends Extractor {
 						relatedEntities.get(event.getLanguage()).put(relatedEntity,
 								relatedEntities.get(event.getLanguage()).get(relatedEntity) + 1);
 
-					if (locationEntities.contains(relatedEntity))
-						relatedLocations.put(relatedEntity, dataSet);
+					// if (locationEntities.contains(relatedEntity))
+					// relatedLocations.put(relatedEntity, dataSet);
 
 				}
 				relatedEvents.addAll(event.getRelatedEvents());
@@ -223,34 +252,18 @@ public class TextualEventsExtractor extends Extractor {
 			if (relatedEvents.size() == 1) {
 				for (Event relatedEvent : relatedEvents)
 					namedEvent = relatedEvent;
-				// if (start.equals(eventTmp.getStartTime()) &&
-				// end.equals(eventTmp.getEndTime())) {
-				// }
 			}
 
-			// avoid duplicates in texts
-//			Map<Language, Set<String>> descriptions = new HashMap<Language, Set<String>>();
-//			Set<TextualEvent> textualEventsWithUniqueDescriptions = new HashSet<TextualEvent>();
-//			for (TextualEvent eventInCluster : cluster) {
-//
-//				if (!descriptions.containsKey(eventInCluster.getLanguage()))
-//					descriptions.put(eventInCluster.getLanguage(), new HashSet<String>());
-//				else if (descriptions.get(eventInCluster.getLanguage()).contains(eventInCluster.getText()))
-//					continue;
-//
-//				textualEventsWithUniqueDescriptions.add(eventInCluster);
-//
-//				descriptions.get(eventInCluster.getLanguage()).add(eventInCluster.getText());
-//			}
-
+			// --- create a new event for the event group or take a
+			// representative named event
 			Event event = null;
 
 			if (namedEvent != null && start.equals(namedEvent.getStartTime()) && end.equals(namedEvent.getEndTime())) {
 				event = namedEvent;
 			} else {
 				event = new Event();
-
-				// event.setId("tevent_" + String.valueOf(currentEventId));
+				eventNumber += 1;
+				event.setTemporaryId("T" + String.valueOf(eventNumber));
 
 				DataStore.getInstance().addEvent(event);
 
@@ -262,13 +275,14 @@ public class TextualEventsExtractor extends Extractor {
 			}
 
 			// descriptions
-			for (TextualEvent eventInCluster : cluster) {
+			for (TextualEvent eventInCluster : eventGroup) {
 				Description description = new Description(event,
 						DataSets.getInstance().getDataSet(eventInCluster.getLanguage(), eventInCluster.getSource()),
 						eventInCluster.getText(), eventInCluster.getLanguage());
 				DataStore.getInstance().addDescription(description);
 			}
 
+			// URLs
 			event.setOtherURLs(urls);
 
 			// add links
@@ -279,6 +293,7 @@ public class TextualEventsExtractor extends Extractor {
 				for (Entity entity1 : relatedEntities.get(language).keySet()) {
 					LinksToCount linkCount = new LinksToCount(event, entity1,
 							relatedEntities.get(language).get(entity1), language, true);
+
 					DataStore.getInstance().addLinkRelation(linkCount.toGenericRelation());
 
 					if (PUT_ENTITIES_LINKED_IN_THE_SAME_EVENT_IN_LINK_SET) {
@@ -320,8 +335,11 @@ public class TextualEventsExtractor extends Extractor {
 			// relatedLocations.get(entity), entity, null));
 			// }
 
+			// --- collect start and end times (they are the same for each
+			// dataset of the events in the group)
+
 			Set<DataSet> dataSets = new HashSet<DataSet>();
-			for (TextualEvent eventInCluster : cluster) {
+			for (TextualEvent eventInCluster : eventGroup) {
 				dataSets.add(
 						DataSets.getInstance().getDataSet(eventInCluster.getLanguage(), eventInCluster.getSource()));
 			}
@@ -435,6 +453,7 @@ public class TextualEventsExtractor extends Extractor {
 				return;
 
 			for (String line : content.split(Config.NL)) {
+
 				String[] parts = line.split(Config.TAB);
 				// if(parts.length<4)
 
@@ -472,6 +491,7 @@ public class TextualEventsExtractor extends Extractor {
 					for (String entityName : linksAndLeadingLink) {
 						Entity entity = allEventPagesDataSet.getWikidataIdMappings().getEntityByWikipediaLabel(language,
 								entityName);
+
 						if (entity == null)
 							continue;
 						relatedEntities.add(entity);
@@ -511,7 +531,7 @@ public class TextualEventsExtractor extends Extractor {
 
 	}
 
-	private void loadWCEEvents() {
+	private int loadWCEEvents() {
 
 		int numberOfWCEEvents = 0;
 
@@ -521,6 +541,8 @@ public class TextualEventsExtractor extends Extractor {
 		extractor.loadFiles();
 
 		for (WCEEvent wceEvent : extractor.getDataStore().getEvents()) {
+
+			numberOfWCEEvents += 1;
 
 			String startDate = dateFormat.format(wceEvent.getDate());
 			String endDate = dateFormat.format(wceEvent.getDate());
@@ -571,11 +593,10 @@ public class TextualEventsExtractor extends Extractor {
 					this.eventsToTextualEvents.put(event, new HashSet<TextualEvent>());
 				this.eventsToTextualEvents.get(event).add(textualEvent);
 				textualEvent.addRelatedEvent(event);
-				numberOfWCEEvents += 1;
 			}
 		}
 
-		System.out.println("Number of WCE events: " + numberOfWCEEvents);
+		return numberOfWCEEvents;
 	}
 
 }
