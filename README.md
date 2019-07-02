@@ -69,8 +69,8 @@ Several relations are directly mapped to properties defined in the EventKG schem
 For each language, a list of terms is needed that is used when extracting data from Wikipedia.
 
 Examples:
- - [English file](https://github.com/sgottsch/eventkg/blob/master/src/resource/meta_data/wikipedia/en/event_date_expressions.txt)
- - [German file](https://github.com/sgottsch/eventkg/blob/master/src/resource/meta_data/wikipedia/de/event_date_expressions.txt)
+ - [English file](https://github.com/sgottsch/eventkg/blob/master/src/resource/meta_data/wikipedia/en/words.txt)
+ - [German file](https://github.com/sgottsch/eventkg/blob/master/src/resource/meta_data/wikipedia/de/words.txt)
 
 | Name | Meaning | Examples (en) |
 |--|--|--|
