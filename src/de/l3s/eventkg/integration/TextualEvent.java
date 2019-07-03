@@ -3,6 +3,7 @@ package de.l3s.eventkg.integration;
 import java.util.HashSet;
 import java.util.Set;
 
+import de.l3s.eventkg.integration.model.DateGranularity;
 import de.l3s.eventkg.integration.model.Entity;
 import de.l3s.eventkg.integration.model.Event;
 import de.l3s.eventkg.meta.Language;
@@ -31,8 +32,10 @@ public class TextualEvent {
 
 	private String wikipediaPage;
 
+	private DateGranularity granularity;
+
 	public TextualEvent(Language language, Source source, String id, String text, Set<Entity> relatedEntities,
-			String startDate, String endDate, String wikipediaPage) {
+			String startDate, String endDate, String wikipediaPage, DateGranularity granularity) {
 		super();
 		this.language = language;
 		this.source = source;
@@ -42,6 +45,7 @@ public class TextualEvent {
 		this.startDate = startDate;
 		this.endDate = endDate;
 		this.wikipediaPage = wikipediaPage;
+		this.granularity = granularity;
 	}
 
 	public Language getLanguage() {
@@ -138,6 +142,14 @@ public class TextualEvent {
 
 	public void setWikipediaPage(String wikipediaPage) {
 		this.wikipediaPage = wikipediaPage;
+	}
+
+	public DateGranularity getGranularity() {
+		return granularity;
+	}
+
+	public void setGranularity(DateGranularity granularity) {
+		this.granularity = granularity;
 	}
 
 }

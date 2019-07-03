@@ -94,11 +94,6 @@ public class TextualEventsExtractor extends Extractor {
 		for (Description description : DataStore.getInstance().getDescriptions()) {
 			if (description.getSubject() == null)
 				continue;
-			if (description.getSubject().isEvent()) {
-				if (description.getLabel().startsWith("CEBIT")) {
-					System.out.println("Found CEBIT event: " + description.getLabel());
-				}
-			}
 		}
 	}
 
@@ -195,7 +190,9 @@ public class TextualEventsExtractor extends Extractor {
 			Map<DataSet, Integer> dataSetsWithCount = new HashMap<DataSet, Integer>();
 
 			Date start = null;
+			DateGranularity startGranularity = null;
 			Date end = null;
+			DateGranularity endGranularity = null;
 			for (TextualEvent event : eventGroup) {
 
 				DataSet dataSet = DataSets.getInstance().getDataSet(event.getLanguage(), event.getSource());
@@ -228,7 +225,9 @@ public class TextualEventsExtractor extends Extractor {
 				if (start == null) {
 					try {
 						start = dateFormat.parse(event.getStartDate());
+						startGranularity=event.getGranularity();
 						end = dateFormat.parse(event.getEndDate());
+						endGranularity=event.getGranularity();
 					} catch (ParseException e) {
 						e.printStackTrace();
 					}
@@ -273,7 +272,7 @@ public class TextualEventsExtractor extends Extractor {
 					event.addParent(namedEvent, dataSet);
 				}
 			}
-
+		
 			// descriptions
 			for (TextualEvent eventInCluster : eventGroup) {
 				Description description = new Description(event,
@@ -347,10 +346,10 @@ public class TextualEventsExtractor extends Extractor {
 			for (DataSet dataSetWithTime : dataSets) {
 				if (start != null)
 					DataStore.getInstance().addStartTime(
-							new StartTime(event, dataSetWithTime, new DateWithGranularity(start, DateGranularity.DAY)));
+							new StartTime(event, dataSetWithTime, new DateWithGranularity(start, startGranularity)));
 				if (end != null)
 					DataStore.getInstance().addEndTime(
-							new EndTime(event, dataSetWithTime, new DateWithGranularity(end, DateGranularity.DAY)));
+							new EndTime(event, dataSetWithTime, new DateWithGranularity(end, endGranularity)));
 			}
 
 		}
@@ -471,6 +470,8 @@ public class TextualEventsExtractor extends Extractor {
 				String endDate = parts[6];
 				String text = parts[7];
 
+				DateGranularity granularity = DateGranularity.valueOf(parts[9]);
+
 				if (text.trim().equals("No events.") || text.trim().equals("No events")
 						|| text.trim().equals("no events") || text.trim().equals("no events."))
 					continue;
@@ -502,7 +503,7 @@ public class TextualEventsExtractor extends Extractor {
 				}
 
 				TextualEvent textualEvent = new TextualEvent(language, Source.WIKIPEDIA, null, text, relatedEntities,
-						startDate, endDate, wikipediaPage);
+						startDate, endDate, wikipediaPage, granularity);
 				this.textualEvents.add(textualEvent);
 
 				numberOfExtractedWikiEvents += 1;
@@ -578,7 +579,7 @@ public class TextualEventsExtractor extends Extractor {
 			wikipediaPage += dateFormatPageTitle.format(wceEvent.getDate());
 
 			TextualEvent textualEvent = new TextualEvent(language, Source.WCE, null, text, relatedEntities, startDate,
-					endDate, wikipediaPage);
+					endDate, wikipediaPage, DateGranularity.DAY);
 			this.textualEvents.add(textualEvent);
 
 			if (!this.eventsByDates.containsKey(startDate + endDate))
