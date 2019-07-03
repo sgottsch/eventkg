@@ -495,6 +495,8 @@ public class DataCollector extends Extractor {
 
 		System.out.println("loadWikidataEvents.");
 		loadWikidataEvents();
+		System.out.println("loadWikidataRecurringEvents.");
+		loadWikidataRecurringEvents();
 		System.out.println("loadDBpediaEvents.");
 		loadDBpediaEvents();
 		System.out.println("loadWikipediaEvents.");
@@ -1315,6 +1317,48 @@ public class DataCollector extends Extractor {
 		}
 
 		System.out.println("Number of events extracted from Wikidata: " + numberOfWikidataEvents);
+	}
+
+	private void loadWikidataRecurringEvents() {
+
+		int numberOfWikidataEvents = 0;
+
+		BufferedReader br = null;
+		try {
+			try {
+				br = FileLoader.getReader(FileName.WIKIDATA_RECURRING_EVENTS);
+			} catch (FileNotFoundException e1) {
+				e1.printStackTrace();
+			}
+
+			String line;
+			while ((line = br.readLine()) != null) {
+
+				String[] parts = line.split(Config.TAB);
+				String wikiLabel = parts[2].replaceAll(" ", "_");
+
+				// TODO: Is this correct?
+				wikiLabel = wikiLabel.replaceAll(" ", "_");
+				if (wikiLabel.startsWith("List_of_") || wikiLabel.startsWith("Lists_of_"))
+					continue;
+
+				Entity entityTmp = getEntityFromWikidataId(parts[0]);
+				if (entityTmp != null && entityTmp.isEvent()) {
+					((Event) entityTmp).setRecurring(true);
+					numberOfWikidataEvents += 1;
+				}
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				br.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+
+		System.out.println("Number of recurring events extracted from Wikidata: " + numberOfWikidataEvents);
 	}
 
 	private void collectSubLocationsWikidata() {

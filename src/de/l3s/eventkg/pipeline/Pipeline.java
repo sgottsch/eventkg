@@ -40,6 +40,7 @@ import de.l3s.eventkg.source.dbpedia.DBpediaTimesExtractor;
 import de.l3s.eventkg.source.wikidata.WikidataEventsFromFileFinder;
 import de.l3s.eventkg.source.wikidata.WikidataExtractionWithEventPages;
 import de.l3s.eventkg.source.wikidata.WikidataExtractionWithoutEventPages;
+import de.l3s.eventkg.source.wikidata.WikidataRecurringEventsFromFileFinder;
 import de.l3s.eventkg.source.wikipedia.LabelsAndDescriptionsExtractor;
 import de.l3s.eventkg.source.wikipedia.WikiWords;
 import de.l3s.eventkg.source.wikipedia.WikipediaEventsByCategoryNameLoader;
@@ -192,6 +193,7 @@ public class Pipeline {
 		List<Extractor> extractors = new ArrayList<Extractor>();
 
 		extractors.add(new WikidataEventsFromFileFinder(languages));
+		extractors.add(new WikidataRecurringEventsFromFileFinder(languages));
 		extractors.add(new DBpediaAllLocationsLoader(languages));
 		// First step of integration
 		extractors.add(new DataCollector(languages));

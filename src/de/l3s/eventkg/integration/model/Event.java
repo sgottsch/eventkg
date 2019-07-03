@@ -40,6 +40,8 @@ public class Event extends Entity {
 
 	private Map<DataSet, Set<String>> eventInstancesPerDataSet = new HashMap<DataSet, Set<String>>();
 
+	private boolean isRecurring = false;
+
 	public Event() {
 		super(null);
 		setEvent(true);
@@ -237,6 +239,14 @@ public class Event extends Entity {
 
 	public Map<DataSet, Set<Entity>> getDataSetsWithLocations() {
 		return dataSetsWithLocations;
+	}
+
+	public boolean isRecurring() {
+		return isRecurring;
+	}
+
+	public void setRecurring(boolean isRecurring) {
+		this.isRecurring = isRecurring;
 	}
 
 }
