@@ -17,6 +17,7 @@ import org.apache.commons.lang3.StringUtils;
 import de.l3s.eventkg.integration.model.DateGranularity;
 import de.l3s.eventkg.integration.model.Entity;
 import de.l3s.eventkg.integration.model.Event;
+import de.l3s.eventkg.integration.model.FileType;
 import de.l3s.eventkg.integration.model.Position;
 import de.l3s.eventkg.integration.model.relation.Alias;
 import de.l3s.eventkg.integration.model.relation.DataSet;
@@ -41,13 +42,19 @@ import de.l3s.eventkg.util.FileName;
 
 public class DataStoreWriter {
 
+	// .nq (N-QUADS) and .nt do not allow the use of directives, so no prefix
+	// definitions may be used. It is, however, still possible to import them in
+	// OpenLink Virtuoso.
+	private static final boolean ALLOW_DIRECTIVES = false;
+
 	private static final int NUMBER_OF_LINES_IN_PREVIEW = 50;
 	private DataStore dataStore;
 	private DataSets dataSets;
 
 	private boolean generateIdsFromPreviousEventKG = false;
 
-	private static SimpleDateFormat standardFormat = new SimpleDateFormat("\"yyyy-MM-dd\"'^^xsd:date'");
+	private static SimpleDateFormat standardFormat = new SimpleDateFormat(
+			"\"yyyy-MM-dd\"'^^<" + PrefixEnum.XSD.getUrlPrefix() + "date>'");
 
 	private PrefixList prefixList;
 
@@ -56,6 +63,13 @@ public class DataStoreWriter {
 	private Set<String> propertiesUsedInNamedEventRelations = new HashSet<String>();
 	private int relationNo;
 	private EntityIdGenerator idGenerator;
+
+	private Prefix basePrefix;
+
+	public static void main(String[] args) {
+
+		System.out.println(standardFormat.format(new Date()));
+	}
 
 	public DataStoreWriter(List<Language> languages) {
 		this.dataStore = DataStore.getInstance();
@@ -141,6 +155,13 @@ public class DataStoreWriter {
 			this.idGenerator = new EntityIdGenerator();
 			this.idGenerator.load();
 		}
+
+		this.basePrefix = prefixList.getPrefix(PrefixEnum.EVENT_KG_RESOURCE);
+	}
+
+	public void initPrefixes() {
+		prefixList = PrefixList.getInstance();
+		this.basePrefix = prefixList.getPrefix(PrefixEnum.EVENT_KG_RESOURCE);
 	}
 
 	private void initIds() {
@@ -185,6 +206,9 @@ public class DataStoreWriter {
 	}
 
 	private void writePropertyLabels() {
+
+		FileType fileType = FileType.NQ;
+
 		PrintWriter writer = null;
 		PrintWriter writerPreview = null;
 		try {
@@ -194,7 +218,7 @@ public class DataStoreWriter {
 			prefixes.add(prefixList.getPrefix(PrefixEnum.RDFS));
 			prefixes.add(prefixList.getPrefix(PrefixEnum.WIKIDATA_PROPERTY));
 			prefixes.add(prefixList.getPrefix(PrefixEnum.EVENT_KG_SCHEMA));
-			for (String line : createIntro(prefixes, this.prefixList)) {
+			for (String line : createIntro(prefixes, this.prefixList, fileType)) {
 				writer.write(line + Config.NL);
 				writerPreview.write(line + Config.NL);
 			}
@@ -202,16 +226,13 @@ public class DataStoreWriter {
 			int lineNo = 0;
 			for (PropertyLabel propertyLabel : dataStore.getPropertyLabels()) {
 				lineNo += 1;
-				writeTriple(writer, writerPreview, lineNo,
-						propertyLabel.getPrefix().getAbbr() + propertyLabel.getProperty(),
-						PrefixEnum.RDFS.getAbbr() + "label", propertyLabel.getLabel(), true, propertyLabel.getDataSet(),
-						propertyLabel.getLanguage());
+				writeTriple(writer, writerPreview, lineNo, propertyLabel.getPrefix(), propertyLabel.getProperty(),
+						prefixList.getPrefix(PrefixEnum.RDFS), "label", null, propertyLabel.getLabel(), true,
+						propertyLabel.getDataSet(), propertyLabel.getLanguage(), FileType.NQ);
 				if (propertiesUsedInNamedEventRelations.contains(propertyLabel.getProperty()))
-					writeTriple(writer, writerPreview, lineNo,
-							propertyLabel.getPrefix().getAbbr() + propertyLabel.getProperty(),
-							PrefixEnum.RDF.getAbbr() + "type",
-							prefixList.getPrefix(PrefixEnum.SEM).getAbbr() + "RoleType", true,
-							propertyLabel.getDataSet(), propertyLabel.getLanguage());
+					writeTriple(writer, writerPreview, lineNo, propertyLabel.getPrefix(), propertyLabel.getProperty(),
+							prefixList.getPrefix(PrefixEnum.RDF), "type", prefixList.getPrefix(PrefixEnum.SEM),
+							"RoleType", true, propertyLabel.getDataSet(), propertyLabel.getLanguage(), fileType);
 
 			}
 
@@ -224,6 +245,9 @@ public class DataStoreWriter {
 	}
 
 	private void writeDataSetDescriptions() {
+
+		FileType fileType = FileType.TTL;
+
 		PrintWriter writer = null;
 		try {
 			writer = FileLoader.getWriter(FileName.ALL_TTL_DATASETS);
@@ -234,20 +258,22 @@ public class DataStoreWriter {
 			prefixes.add(prefixList.getPrefix(PrefixEnum.RDF));
 			prefixes.add(prefixList.getPrefix(PrefixEnum.EVENT_KG_SCHEMA));
 			prefixes.add(prefixList.getPrefix(PrefixEnum.DCTERMS));
-			for (String line : createIntro(prefixes, this.prefixList)) {
+			prefixes.add(prefixList.getPrefix(PrefixEnum.XSD));
+			for (String line : createIntro(prefixes, this.prefixList, fileType)) {
 				writer.write(line + Config.NL);
 			}
 
 			for (DataSet dataSet : dataSets.getAllDataSets()) {
-				writeTriple(writer, null, null, PrefixEnum.EVENT_KG_GRAPH.getAbbr() + dataSet.getId(),
-						prefixList.getPrefix(PrefixEnum.RDF).getAbbr() + "type", PrefixEnum.FOAF.getAbbr() + "Dataset",
-						false, null);
-				writeTriple(writer, null, null, PrefixEnum.EVENT_KG_GRAPH.getAbbr() + dataSet.getId(),
-						prefixList.getPrefix(PrefixEnum.FOAF).getAbbr() + "homepage", dataSet.getUrl(), false, null);
+				writeTriple(writer, null, null, prefixList.getPrefix(PrefixEnum.EVENT_KG_GRAPH), dataSet.getId(),
+						prefixList.getPrefix(PrefixEnum.RDF), "type", prefixList.getPrefix(PrefixEnum.FOAF), "Dataset",
+						false, null, fileType);
+				writeTriple(writer, null, null, prefixList.getPrefix(PrefixEnum.EVENT_KG_GRAPH), dataSet.getId(),
+						prefixList.getPrefix(PrefixEnum.FOAF), "homepage", null, dataSet.getUrl(), false, null,
+						fileType);
 				if (dataSet.getDate() != null)
-					writeTriple(writer, null, null, PrefixEnum.EVENT_KG_GRAPH.getAbbr() + dataSet.getId(),
-							prefixList.getPrefix(PrefixEnum.DCTERMS).getAbbr() + "created",
-							standardFormat.format(dataSet.getDate()), false, null);
+					writeTriple(writer, null, null, prefixList.getPrefix(PrefixEnum.EVENT_KG_GRAPH), dataSet.getId(),
+							prefixList.getPrefix(PrefixEnum.DCTERMS), "created", null,
+							standardFormat.format(dataSet.getDate()), false, null, fileType);
 			}
 
 		} catch (FileNotFoundException e) {
@@ -371,6 +397,8 @@ public class DataStoreWriter {
 
 	private void writeEvents() {
 
+		FileType fileType = FileType.NQ;
+
 		int eventNo = 0;
 
 		if (generateIdsFromPreviousEventKG)
@@ -398,7 +426,7 @@ public class DataStoreWriter {
 			for (Language language : this.languages)
 				prefixes.add(prefixList.getPrefix(PrefixEnum.DBPEDIA_RESOURCE, language));
 
-			for (String line : createIntro(prefixes, this.prefixList)) {
+			for (String line : createIntro(prefixes, this.prefixList, fileType)) {
 				writer.write(line + Config.NL);
 				writerPreview.write(line + Config.NL);
 			}
@@ -416,42 +444,43 @@ public class DataStoreWriter {
 
 				String eventId = generateEventId(event, descriptionMap.get(event));
 				if (eventId == null) {
-					eventId = "<event_" + String.valueOf(eventNo) + ">";
+					eventId = "event_" + String.valueOf(eventNo);
 					eventNo += 1;
 				}
 				event.setId(eventId);
 
 				lineNo += 1;
-				writeTriple(writer, writerPreview, lineNo, event.getId(), PrefixEnum.RDF.getAbbr() + "type",
-						prefixList.getPrefix(PrefixEnum.SEM).getAbbr() + "Event", false,
-						DataSets.getInstance().getDataSetWithoutLanguage(Source.EVENT_KG));
+				writeTriple(writer, writerPreview, lineNo, this.basePrefix, event.getId(),
+						prefixList.getPrefix(PrefixEnum.RDF), "type", prefixList.getPrefix(PrefixEnum.SEM), "Event",
+						false, DataSets.getInstance().getDataSetWithoutLanguage(Source.EVENT_KG), fileType);
 
 				if (event.getWikidataId() != null)
-					writeTriple(writer, writerPreview, lineNo, event.getId(), PrefixEnum.OWL.getAbbr() + "sameAs",
-							"<" + prefixList.getPrefix(PrefixEnum.WIKIDATA_ENTITY).getUrlPrefix()
-									+ event.getWikidataId() + ">",
-							false, dataSets.getDataSetWithoutLanguage(Source.WIKIDATA));
+					writeTriple(writer, writerPreview, lineNo, this.basePrefix, event.getId(),
+							prefixList.getPrefix(PrefixEnum.OWL), "sameAs",
+							prefixList.getPrefix(PrefixEnum.WIKIDATA_ENTITY), event.getWikidataId(), false,
+							dataSets.getDataSetWithoutLanguage(Source.WIKIDATA), fileType);
 
 				if (event.getYagoId() != null)
-					writeTriple(writer, writerPreview, lineNo, event.getId(), PrefixEnum.OWL.getAbbr() + "sameAs",
-							"<" + prefixList.getPrefix(PrefixEnum.YAGO).getUrlPrefix() + event.getYagoId() + ">", false,
-							dataSets.getDataSetWithoutLanguage(Source.YAGO));
+					writeTriple(writer, writerPreview, lineNo, this.basePrefix, event.getId(),
+							prefixList.getPrefix(PrefixEnum.OWL), "sameAs", prefixList.getPrefix(PrefixEnum.YAGO),
+							event.getYagoId(), false, dataSets.getDataSetWithoutLanguage(Source.YAGO), fileType);
 
 				if (event.getOtherUrls() != null) {
 					for (DataSet dataSet : event.getOtherUrls().keySet()) {
 						for (String otherUrl : event.getOtherUrls().get(dataSet)) {
-							writeTriple(writer, writerPreview, lineNo, event.getId(),
-									prefixList.getPrefix(PrefixEnum.EVENT_KG_SCHEMA).getAbbr() + "extractedFrom",
-									"<" + otherUrl + ">", false, dataSet);
+							writeTriple(writer, writerPreview, lineNo, this.basePrefix, event.getId(),
+									prefixList.getPrefix(PrefixEnum.EVENT_KG_SCHEMA), "extractedFrom", null,
+									"<" + otherUrl + ">", false, dataSet, fileType);
 						}
 					}
 				}
 
 				for (Language language : event.getWikipediaLabels().keySet()) {
 					Prefix prefix = prefixList.getPrefix(PrefixEnum.DBPEDIA_RESOURCE, language);
-					writeTriple(writer, writerPreview, lineNo, event.getId(), PrefixEnum.OWL.getAbbr() + "sameAs",
-							"<" + prefix.getUrlPrefix() + event.getWikipediaLabels().get(language) + ">", false,
-							dataSets.getDataSet(language, Source.DBPEDIA));
+					writeTriple(writer, writerPreview, lineNo, this.basePrefix, event.getId(),
+							prefixList.getPrefix(PrefixEnum.OWL), "sameAs", prefix,
+							event.getWikipediaLabels().get(language), false,
+							dataSets.getDataSet(language, Source.DBPEDIA), fileType);
 				}
 
 			}
@@ -461,9 +490,9 @@ public class DataStoreWriter {
 			for (Label label : dataStore.getWikipediaLabels()) {
 				if (label.getSubject().isEvent()) {
 					lineNo += 1;
-					writeTriple(writer, writerPreview, lineNo, label.getSubject().getId(),
-							prefixList.getPrefix(PrefixEnum.RDFS).getAbbr() + "label",
-							label.getLabel().replaceAll("_", " "), true, label.getDataSet(), label.getLanguage());
+					writeTriple(writer, writerPreview, lineNo, this.basePrefix, label.getSubject().getId(),
+							prefixList.getPrefix(PrefixEnum.RDFS), "label", null, label.getLabel().replaceAll("_", " "),
+							true, label.getDataSet(), label.getLanguage(), fileType);
 				}
 			}
 
@@ -473,9 +502,9 @@ public class DataStoreWriter {
 				if (label.getSubject().isEvent()) {
 					Event event = (Event) label.getSubject();
 					lineNo += 1;
-					writeTriple(writer, writerPreview, lineNo, event.getId(),
-							prefixList.getPrefix(PrefixEnum.RDFS).getAbbr() + "label", label.getLabel(), true,
-							label.getDataSet(), label.getLanguage());
+					writeTriple(writer, writerPreview, lineNo, this.basePrefix, event.getId(),
+							prefixList.getPrefix(PrefixEnum.RDFS), "label", null, label.getLabel(), true,
+							label.getDataSet(), label.getLanguage(), fileType);
 				}
 			}
 
@@ -485,9 +514,9 @@ public class DataStoreWriter {
 				if (alias.getSubject().isEvent()) {
 					Event event = (Event) alias.getSubject();
 					lineNo += 1;
-					writeTriple(writer, writerPreview, lineNo, event.getId(),
-							prefixList.getPrefix(PrefixEnum.DCTERMS).getAbbr() + "alternative", alias.getLabel(), true,
-							alias.getDataSet(), alias.getLanguage());
+					writeTriple(writer, writerPreview, lineNo, this.basePrefix, event.getId(),
+							prefixList.getPrefix(PrefixEnum.DCTERMS), "alternative", null, alias.getLabel(), true,
+							alias.getDataSet(), alias.getLanguage(), fileType);
 				}
 			}
 
@@ -499,9 +528,9 @@ public class DataStoreWriter {
 				if (description.getSubject().isEvent()) {
 					Event event = (Event) description.getSubject();
 					lineNo += 1;
-					writeTriple(writer, writerPreview, lineNo, event.getId(),
-							prefixList.getPrefix(PrefixEnum.DCTERMS).getAbbr() + "description", description.getLabel(),
-							true, description.getDataSet(), description.getLanguage());
+					writeTriple(writer, writerPreview, lineNo, this.basePrefix, event.getId(),
+							prefixList.getPrefix(PrefixEnum.DCTERMS), "description", null, description.getLabel(), true,
+							description.getDataSet(), description.getLanguage(), fileType);
 				}
 			}
 
@@ -515,6 +544,8 @@ public class DataStoreWriter {
 	}
 
 	private void writeEntities() {
+
+		FileType fileType = FileType.NQ;
 
 		// String entityId = "entity_";
 		int entityNo = 0;
@@ -540,7 +571,7 @@ public class DataStoreWriter {
 				prefixes.add(prefixList.getPrefix(PrefixEnum.DBPEDIA_RESOURCE, language));
 			prefixes.add(prefixList.getPrefix(PrefixEnum.WIKIDATA_ENTITY));
 
-			for (String line : createIntro(prefixes, this.prefixList)) {
+			for (String line : createIntro(prefixes, this.prefixList, fileType)) {
 				writer.write(line + Config.NL);
 				writerPreview.write(line + Config.NL);
 			}
@@ -560,42 +591,43 @@ public class DataStoreWriter {
 
 				String entityId = generateEntityId(entity);
 				if (entityId == null) {
-					entityId = "<entity_" + String.valueOf(entityNo) + ">";
+					entityId = "entity_" + String.valueOf(entityNo);
 					entityNo += 1;
 				}
 				entity.setId(entityId);
 
 				if (entity.isActor())
-					writeTriple(writer, writerPreview, lineNo, entity.getId(),
-							prefixList.getPrefix(PrefixEnum.RDF).getAbbr() + "type",
-							prefixList.getPrefix(PrefixEnum.SEM).getAbbr() + "Actor", false, null);
+					writeTriple(writer, writerPreview, lineNo, this.basePrefix, entity.getId(),
+							prefixList.getPrefix(PrefixEnum.RDF), "type", prefixList.getPrefix(PrefixEnum.SEM), "Actor",
+							false, null, fileType);
 
 				if (entity.isLocation())
-					writeTriple(writer, writerPreview, lineNo, entity.getId(),
-							prefixList.getPrefix(PrefixEnum.RDF).getAbbr() + "type",
-							prefixList.getPrefix(PrefixEnum.SEM).getAbbr() + "Place", false, null);
+					writeTriple(writer, writerPreview, lineNo, this.basePrefix, entity.getId(),
+							prefixList.getPrefix(PrefixEnum.RDF), "type", prefixList.getPrefix(PrefixEnum.SEM), "Place",
+							false, null, fileType);
 
 				if (!entity.isActor() && !entity.isLocation())
-					writeTriple(writer, writerPreview, lineNo, entity.getId(),
-							prefixList.getPrefix(PrefixEnum.RDF).getAbbr() + "type",
-							prefixList.getPrefix(PrefixEnum.SEM).getAbbr() + "Core", false, null);
+					writeTriple(writer, writerPreview, lineNo, this.basePrefix, entity.getId(),
+							prefixList.getPrefix(PrefixEnum.RDF), "type", prefixList.getPrefix(PrefixEnum.SEM), "Core",
+							false, null, fileType);
 
 				if (entity.getWikidataId() != null)
-					writeTriple(writer, writerPreview, lineNo, entity.getId(), PrefixEnum.OWL.getAbbr() + "sameAs",
-							"<" + prefixList.getPrefix(PrefixEnum.WIKIDATA_ENTITY).getUrlPrefix()
-									+ entity.getWikidataId() + ">",
-							false, dataSets.getDataSetWithoutLanguage(Source.WIKIDATA));
+					writeTriple(writer, writerPreview, lineNo, this.basePrefix, entity.getId(),
+							prefixList.getPrefix(PrefixEnum.OWL), "sameAs",
+							prefixList.getPrefix(PrefixEnum.WIKIDATA_ENTITY), entity.getWikidataId(), false,
+							dataSets.getDataSetWithoutLanguage(Source.WIKIDATA), fileType);
 
 				if (entity.getYagoId() != null)
-					writeTriple(writer, writerPreview, lineNo, entity.getId(), PrefixEnum.OWL.getAbbr() + "sameAs",
-							"<" + prefixList.getPrefix(PrefixEnum.YAGO).getUrlPrefix() + entity.getYagoId() + ">",
-							false, dataSets.getDataSetWithoutLanguage(Source.YAGO));
+					writeTriple(writer, writerPreview, lineNo, this.basePrefix, entity.getId(),
+							prefixList.getPrefix(PrefixEnum.OWL), "sameAs", prefixList.getPrefix(PrefixEnum.YAGO),
+							entity.getYagoId(), false, dataSets.getDataSetWithoutLanguage(Source.YAGO), fileType);
 
 				for (Language language : entity.getWikipediaLabels().keySet()) {
 					Prefix prefix = prefixList.getPrefix(PrefixEnum.DBPEDIA_RESOURCE, language);
-					writeTriple(writer, writerPreview, lineNo, entity.getId(), PrefixEnum.OWL.getAbbr() + "sameAs",
-							"<" + prefix.getUrlPrefix() + entity.getWikipediaLabels().get(language) + ">", false,
-							dataSets.getDataSet(language, Source.DBPEDIA));
+					writeTriple(writer, writerPreview, lineNo, this.basePrefix, entity.getId(),
+							prefixList.getPrefix(PrefixEnum.OWL), "sameAs", prefix,
+							entity.getWikipediaLabels().get(language), false,
+							dataSets.getDataSet(language, Source.DBPEDIA), fileType);
 				}
 
 				// if (!entity.getPositions().isEmpty()) {
@@ -621,9 +653,9 @@ public class DataStoreWriter {
 			for (Label label : dataStore.getWikipediaLabels()) {
 				if (!label.getSubject().isEvent()) {
 					lineNo += 1;
-					writeTriple(writer, writerPreview, lineNo, label.getSubject().getId(),
-							prefixList.getPrefix(PrefixEnum.RDFS).getAbbr() + "label",
-							label.getLabel().replaceAll("_", " "), true, label.getDataSet(), label.getLanguage());
+					writeTriple(writer, writerPreview, lineNo, this.basePrefix, label.getSubject().getId(),
+							prefixList.getPrefix(PrefixEnum.RDFS), "label", null, label.getLabel().replaceAll("_", " "),
+							true, label.getDataSet(), label.getLanguage(), fileType);
 				}
 			}
 
@@ -631,9 +663,9 @@ public class DataStoreWriter {
 			for (Label label : dataStore.getWikidataLabels()) {
 				if (!label.getSubject().isEvent()) {
 					lineNo += 1;
-					writeTriple(writer, writerPreview, lineNo, label.getSubject().getId(),
-							prefixList.getPrefix(PrefixEnum.RDFS).getAbbr() + "label", label.getLabel(), true,
-							label.getDataSet(), label.getLanguage());
+					writeTriple(writer, writerPreview, lineNo, this.basePrefix, label.getSubject().getId(),
+							prefixList.getPrefix(PrefixEnum.RDFS), "label", null, label.getLabel(), true,
+							label.getDataSet(), label.getLanguage(), fileType);
 				}
 			}
 
@@ -798,6 +830,8 @@ public class DataStoreWriter {
 
 	private void writeBaseRelations() {
 
+		FileType fileType = FileType.NQ;
+
 		PrintWriter writer = null;
 		PrintWriter writerPreview = null;
 		try {
@@ -811,7 +845,7 @@ public class DataStoreWriter {
 			prefixes.add(prefixList.getPrefix(PrefixEnum.EVENT_KG_SCHEMA));
 			prefixes.add(prefixList.getPrefix(PrefixEnum.TIME));
 
-			for (String line : createIntro(prefixes, this.prefixList)) {
+			for (String line : createIntro(prefixes, this.prefixList, fileType)) {
 				writer.write(line + Config.NL);
 				writerPreview.write(line + Config.NL);
 			}
@@ -819,9 +853,9 @@ public class DataStoreWriter {
 			int lineNo = 0;
 			for (Location location : dataStore.getLocations()) {
 				lineNo += 1;
-				writeTriple(writer, writerPreview, lineNo, location.getSubject().getId(),
-						prefixList.getPrefix(PrefixEnum.SEM).getAbbr() + "hasPlace", location.getLocation().getId(),
-						false, location.getDataSet(), null);
+				writeTriple(writer, writerPreview, lineNo, this.basePrefix, location.getSubject().getId(),
+						prefixList.getPrefix(PrefixEnum.SEM), "hasPlace", this.basePrefix,
+						location.getLocation().getId(), false, location.getDataSet(), null);
 			}
 
 			lineNo = 0;
@@ -837,11 +871,12 @@ public class DataStoreWriter {
 				}
 
 				lineNo += 1;
-				writeTriple(writer, writerPreview, lineNo, startTime.getSubject().getId(),
-						prefixList.getPrefix(PrefixEnum.SEM).getAbbr() + "hasBeginTimeStamp",
+				writeTriple(writer, writerPreview, lineNo, this.basePrefix, startTime.getSubject().getId(),
+						prefixList.getPrefix(PrefixEnum.SEM), "hasBeginTimeStamp", null,
 						standardFormat.format(startTime.getStartTime().getDate()), false, startTime.getDataSet(), null);
-				writeDateGranularityTriple(writer, writerPreview, lineNo, startTime.getSubject().getId(),
-						startTime.getStartTime().getGranularity(), false, startTime.getDataSet(), true);
+				writeDateGranularityTriple(writer, writerPreview, lineNo, this.basePrefix,
+						startTime.getSubject().getId(), startTime.getStartTime().getGranularity(), false,
+						startTime.getDataSet(), true, fileType);
 			}
 
 			lineNo = 0;
@@ -857,11 +892,11 @@ public class DataStoreWriter {
 				}
 
 				lineNo += 1;
-				writeTriple(writer, writerPreview, lineNo, endTime.getSubject().getId(),
-						prefixList.getPrefix(PrefixEnum.SEM).getAbbr() + "hasEndTimeStamp",
+				writeTriple(writer, writerPreview, lineNo, this.basePrefix, endTime.getSubject().getId(),
+						prefixList.getPrefix(PrefixEnum.SEM), "hasEndTimeStamp", null,
 						standardFormat.format(endTime.getEndTime().getDate()), false, endTime.getDataSet(), null);
-				writeDateGranularityTriple(writer, writerPreview, lineNo, endTime.getSubject().getId(),
-						endTime.getEndTime().getGranularity(), false, endTime.getDataSet(), false);
+				writeDateGranularityTriple(writer, writerPreview, lineNo, this.basePrefix, endTime.getSubject().getId(),
+						endTime.getEndTime().getGranularity(), false, endTime.getDataSet(), false, fileType);
 			}
 
 			lineNo = 0;
@@ -892,9 +927,9 @@ public class DataStoreWriter {
 									+ parentLocation.getWikipediaLabel(Language.EN) + " - " + entity.isEvent());
 						else {
 							lineNo += 1;
-							writeTriple(writer, writerPreview, lineNo, entity.getId(),
-									prefixList.getPrefix(PrefixEnum.SCHEMA_ORG).getAbbr() + "containedInPlace",
-									parentLocation.getId(), false, null);
+							writeTriple(writer, writerPreview, lineNo, this.basePrefix, entity.getId(),
+									prefixList.getPrefix(PrefixEnum.SCHEMA_ORG), "containedInPlace", this.basePrefix,
+									parentLocation.getId(), false, null, fileType);
 						}
 
 					}
@@ -903,14 +938,14 @@ public class DataStoreWriter {
 						lineNo += 1;
 						for (Position position : entity.getPositions()) {
 							DataSet dataSet = entity.getPositionsWithDataSets().get(position);
-							writeTriple(writer, writerPreview, lineNo, entity.getId(),
-									PrefixEnum.SCHEMA_ORG.getAbbr() + "latitude",
+							writeTriple(writer, writerPreview, lineNo, this.basePrefix, entity.getId(),
+									prefixList.getPrefix(PrefixEnum.SCHEMA_ORG), "latitude", null,
 									createLiteral(String.valueOf(position.getLatitude()), LiteralDataType.DOUBLE),
-									false, dataSet);
-							writeTriple(writer, writerPreview, lineNo, entity.getId(),
-									PrefixEnum.SCHEMA_ORG.getAbbr() + "longitude",
+									false, dataSet, fileType);
+							writeTriple(writer, writerPreview, lineNo, this.basePrefix, entity.getId(),
+									prefixList.getPrefix(PrefixEnum.SCHEMA_ORG), "longitude", null,
 									createLiteral(String.valueOf(position.getLongitude()), LiteralDataType.DOUBLE),
-									false, dataSet);
+									false, dataSet, fileType);
 						}
 					}
 
@@ -922,38 +957,45 @@ public class DataStoreWriter {
 
 				int lineNoPlusOne = lineNo + 1;
 
+				if (event.isRecurring()) {
+					writeTriple(writer, writerPreview, lineNo, this.basePrefix, event.getId(),
+							prefixList.getPrefix(PrefixEnum.EVENT_KG_SCHEMA), "isRecurring", null,
+							createLiteral("true", LiteralDataType.BOOLEAN), false, null, fileType);
+				}
+
 				for (Event parentEvent : event.getParents()) {
 					lineNo += 1;
-					writeTriple(writer, writerPreview, lineNo, parentEvent.getId(),
-							prefixList.getPrefix(PrefixEnum.SEM).getAbbr() + "hasSubEvent", event.getId(), false, null);
+					writeTriple(writer, writerPreview, lineNo, this.basePrefix, parentEvent.getId(),
+							prefixList.getPrefix(PrefixEnum.SEM), "hasSubEvent", this.basePrefix, event.getId(), false,
+							null, fileType);
 				}
 
 				for (Event nextEvent : event.getNextEvents()) {
 					lineNo += 1;
-					writeTriple(writer, writerPreview, lineNo, event.getId(),
-							prefixList.getPrefix(PrefixEnum.DBPEDIA_ONTOLOGY).getAbbr() + "nextEvent",
-							nextEvent.getId(), false, null);
+					writeTriple(writer, writerPreview, lineNo, this.basePrefix, event.getId(),
+							prefixList.getPrefix(PrefixEnum.DBPEDIA_ONTOLOGY), "nextEvent", this.basePrefix,
+							nextEvent.getId(), false, null, fileType);
 				}
 
 				for (Event previousEvent : event.getPreviousEvents()) {
 					lineNo += 1;
-					writeTriple(writer, writerPreview, lineNo, event.getId(),
-							prefixList.getPrefix(PrefixEnum.DBPEDIA_ONTOLOGY).getAbbr() + "previousEvent",
-							previousEvent.getId(), false, null);
+					writeTriple(writer, writerPreview, lineNo, this.basePrefix, event.getId(),
+							prefixList.getPrefix(PrefixEnum.DBPEDIA_ONTOLOGY), "previousEvent", this.basePrefix,
+							previousEvent.getId(), false, null, fileType);
 				}
 
 				if (!event.getPositions().isEmpty()) {
 					lineNo += 1;
 					for (Position position : event.getPositions()) {
 						DataSet dataSet = event.getPositionsWithDataSets().get(position);
-						writeTriple(writer, writerPreview, lineNo, event.getId(),
-								PrefixEnum.SCHEMA_ORG.getAbbr() + "latitude",
+						writeTriple(writer, writerPreview, lineNo, this.basePrefix, event.getId(),
+								prefixList.getPrefix(PrefixEnum.SCHEMA_ORG), "latitude", null,
 								createLiteral(String.valueOf(position.getLatitude()), LiteralDataType.DOUBLE), false,
-								dataSet);
-						writeTriple(writer, writerPreview, lineNo, event.getId(),
-								PrefixEnum.SCHEMA_ORG.getAbbr() + "longitude",
+								dataSet, fileType);
+						writeTriple(writer, writerPreview, lineNo, this.basePrefix, event.getId(),
+								prefixList.getPrefix(PrefixEnum.SCHEMA_ORG), "longitude", null,
 								createLiteral(String.valueOf(position.getLongitude()), LiteralDataType.DOUBLE), false,
-								dataSet);
+								dataSet, fileType);
 					}
 				}
 
@@ -969,131 +1011,9 @@ public class DataStoreWriter {
 
 	}
 
-	// private void writeLinkRelationsToFile() {
-	//
-	// PrintWriter writerEventLinks = null;
-	// PrintWriter writerEventLinksPreview = null;
-	// PrintWriter writerEntityLinks = null;
-	// PrintWriter writerEntityLinksPreview = null;
-	// try {
-	// writerEventLinks =
-	// FileLoader.getWriter(FileName.ALL_TTL_EVENTS_LINK_RELATIONS);
-	// writerEventLinksPreview =
-	// FileLoader.getWriter(FileName.ALL_TTL_EVENTS_LINK_RELATIONS_PREVIEW);
-	// writerEntityLinks =
-	// FileLoader.getWriter(FileName.ALL_TTL_ENTITY_LINK_RELATIONS);
-	// writerEntityLinksPreview =
-	// FileLoader.getWriter(FileName.ALL_TTL_ENTITY_LINK_RELATIONS_PREVIEW);
-	// List<Prefix> prefixes = new ArrayList<Prefix>();
-	// // prefixes.add(Prefix.RDF);
-	// // prefixes.add(Prefix.EVENT_KG);
-	// prefixes.add(prefixList.getPrefix(PrefixEnum.XSD));
-	// prefixes.add(prefixList.getPrefix(PrefixEnum.EVENT_KG_SCHEMA));
-	// prefixes.add(prefixList.getPrefix(PrefixEnum.RDF));
-	//
-	// for (String line : createIntro(prefixes, this.prefixList)) {
-	// writerEventLinks.write(line + Config.NL);
-	// writerEventLinksPreview.write(line + Config.NL);
-	// writerEntityLinks.write(line + Config.NL);
-	// writerEntityLinksPreview.write(line + Config.NL);
-	// }
-	//
-	// int lineNo = 0;
-	// int lineNoEvents = 0;
-	// int lineNoEntities = 0;
-	//
-	// System.out.println("Link subjects: " +
-	// dataStore.getLinkRelationsBySubjectAndObject().keySet().size());
-	//
-	// int svov = 0;
-	// int snov = 0;
-	// int svon = 0;
-	// int snon = 0;
-	//
-	// for (Entity subject :
-	// dataStore.getLinkRelationsBySubjectAndObject().keySet()) {
-	// for (Entity object :
-	// dataStore.getLinkRelationsBySubjectAndObject().get(subject).keySet()) {
-	//
-	// boolean isEntityRelation = true;
-	//
-	// String subjectId = subject.getId();
-	// if (subject.isEvent())
-	// isEntityRelation = false;
-	//
-	// String objectId = object.getId();
-	// if (object.isEvent())
-	// isEntityRelation = false;
-	//
-	// if (subject.isEvent() && object.isEvent())
-	// svov += 1;
-	// else if (!subject.isEvent() && object.isEvent())
-	// snov += 1;
-	// else if (subject.isEvent() && !object.isEvent())
-	// svon += 1;
-	// else if (!subject.isEvent() && !object.isEvent())
-	// snon += 1;
-	//
-	// PrintWriter writer = null;
-	// PrintWriter writerPreview = null;
-	//
-	// Integer lineNoWriter = null;
-	// if (isEntityRelation) {
-	// lineNoWriter = lineNoEntities;
-	// lineNoEntities += 1;
-	// writer = writerEntityLinks;
-	// writerPreview = writerEntityLinksPreview;
-	// } else {
-	// lineNoWriter = lineNoEvents;
-	// lineNoEvents += 1;
-	// writer = writerEventLinks;
-	// writerPreview = writerEventLinksPreview;
-	// }
-	// lineNo += 1;
-	//
-	// String relationId = "<eventkg_link_relation_" + String.valueOf(lineNo) +
-	// ">";
-	//
-	// writeTriple(writer, writerPreview, lineNoWriter, relationId,
-	// PrefixEnum.RDF.getAbbr() + "type",
-	// prefixList.getPrefix(PrefixEnum.EVENT_KG_SCHEMA).getAbbr() + "Relation",
-	// false, null);
-	// writeTriple(writer, writerPreview, lineNoWriter, relationId,
-	// prefixList.getPrefix(PrefixEnum.RDF).getAbbr() + "subject", subjectId,
-	// false, null);
-	// writeTriple(writer, writerPreview, lineNoWriter, relationId,
-	// prefixList.getPrefix(PrefixEnum.RDF).getAbbr() + "object", objectId,
-	// false, null);
-	//
-	// for (GenericRelation relation :
-	// dataStore.getLinkRelationsBySubjectAndObject().get(subject)
-	// .get(object)) {
-	// writeTriple(writer, writerPreview, lineNoWriter, relationId,
-	// relation.getPrefix().getAbbr() + relation.getProperty(),
-	// "\"" + String.valueOf(relation.getWeight().intValue()) +
-	// "\"^^xsd:nonNegativeInteger",
-	// false, relation.getDataSet());
-	// }
-	// }
-	// }
-	//
-	// System.out.println("Subject is event, Object is event:\t" + svov);
-	// System.out.println("Subject is no event, Object is event:\t" + snov);
-	// System.out.println("Subject is event, Object is no event:\t" + svon);
-	// System.out.println("Subject is no event, Object is no event:\t" + snon);
-	//
-	// } catch (FileNotFoundException e) {
-	// e.printStackTrace();
-	// } finally {
-	// writerEventLinks.close();
-	// writerEventLinksPreview.close();
-	// writerEntityLinks.close();
-	// writerEntityLinksPreview.close();
-	// }
-	//
-	// }
-
 	private void writeLinkRelationsToFile() {
+
+		FileType fileType = FileType.NQ;
 
 		PrintWriter writerEventLinks = null;
 		PrintWriter writerEventLinksPreview = null;
@@ -1111,7 +1031,7 @@ public class DataStoreWriter {
 			prefixes.add(prefixList.getPrefix(PrefixEnum.EVENT_KG_SCHEMA));
 			prefixes.add(prefixList.getPrefix(PrefixEnum.RDF));
 
-			for (String line : createIntro(prefixes, this.prefixList)) {
+			for (String line : createIntro(prefixes, this.prefixList, fileType)) {
 				writerEventLinks.write(line + Config.NL);
 				writerEventLinksPreview.write(line + Config.NL);
 				writerEntityLinks.write(line + Config.NL);
@@ -1175,18 +1095,22 @@ public class DataStoreWriter {
 
 				String relationId = "<eventkg_link_relation_" + String.valueOf(lineNo) + ">";
 
-				writeTriple(writer, writerPreview, lineNoWriter, relationId, PrefixEnum.RDF.getAbbr() + "type",
-						prefixList.getPrefix(PrefixEnum.EVENT_KG_SCHEMA).getAbbr() + "Relation", false, null);
-				writeTriple(writer, writerPreview, lineNoWriter, relationId,
-						prefixList.getPrefix(PrefixEnum.RDF).getAbbr() + "subject", subjectId, false, null);
-				writeTriple(writer, writerPreview, lineNoWriter, relationId,
-						prefixList.getPrefix(PrefixEnum.RDF).getAbbr() + "object", objectId, false, null);
+				writeTriple(writer, writerPreview, lineNoWriter, this.basePrefix, relationId,
+						prefixList.getPrefix(PrefixEnum.RDF), "type", prefixList.getPrefix(PrefixEnum.EVENT_KG_SCHEMA),
+						"Relation", false, null, fileType);
+				writeTriple(writer, writerPreview, lineNoWriter, this.basePrefix, relationId,
+						prefixList.getPrefix(PrefixEnum.RDF), "subject", this.basePrefix, subjectId, false, null,
+						fileType);
+				writeTriple(writer, writerPreview, lineNoWriter, this.basePrefix, relationId,
+						prefixList.getPrefix(PrefixEnum.RDF), "object", this.basePrefix, objectId, false, null,
+						fileType);
 
 				for (GenericRelation relation : relations) {
-					writeTriple(writer, writerPreview, lineNoWriter, relationId,
-							relation.getPrefix().getAbbr() + relation.getProperty(),
-							"\"" + String.valueOf(relation.getWeight().intValue()) + "\"^^xsd:nonNegativeInteger",
-							false, relation.getDataSet());
+					writeTriple(writer, writerPreview, lineNoWriter, this.basePrefix, relationId, relation.getPrefix(),
+							relation.getProperty(), null,
+							"\"" + String.valueOf(relation.getWeight().intValue()) + "\"^^<"
+									+ prefixList.getPrefix(PrefixEnum.XSD).getUrlPrefix() + "nonNegativeInteger>",
+							false, relation.getDataSet(), fileType);
 				}
 			}
 
@@ -1208,6 +1132,8 @@ public class DataStoreWriter {
 
 	private void writeNamedEventRelations() {
 
+		FileType fileType = FileType.NQ;
+
 		PrintWriter writer = null;
 		PrintWriter writerPreview = null;
 		try {
@@ -1224,7 +1150,7 @@ public class DataStoreWriter {
 			for (Prefix prefix : prefixList.getAllPrefixes())
 				prefixes.add(prefix);
 
-			for (String line : createIntro(prefixes, this.prefixList)) {
+			for (String line : createIntro(prefixes, this.prefixList, fileType)) {
 				writer.write(line + Config.NL);
 				writerPreview.write(line + Config.NL);
 			}
@@ -1236,20 +1162,20 @@ public class DataStoreWriter {
 				if (!relation.getSubject().isEvent() && !relation.getObject().isEvent())
 					continue;
 
-				String relationId = "<eventkg_relation_" + String.valueOf(this.relationNo) + ">";
+				String relationId = "eventkg_relation_" + String.valueOf(this.relationNo);
 				this.relationNo += 1;
 
-				writeTriple(writer, writerPreview, this.relationNo, relationId, PrefixEnum.RDF.getAbbr() + "type",
-						prefixList.getPrefix(PrefixEnum.EVENT_KG_SCHEMA).getAbbr() + "Relation", false,
-						relation.getDataSet());
+				writeTriple(writer, writerPreview, this.relationNo, this.basePrefix, relationId,
+						prefixList.getPrefix(PrefixEnum.RDF), "type", prefixList.getPrefix(PrefixEnum.EVENT_KG_SCHEMA),
+						"Relation", false, relation.getDataSet(), fileType);
 
-				writeTriple(writer, writerPreview, this.relationNo, relationId,
-						prefixList.getPrefix(PrefixEnum.RDF).getAbbr() + "subject", relation.getSubject().getId(),
-						false, relation.getDataSet());
+				writeTriple(writer, writerPreview, this.relationNo, this.basePrefix, relationId,
+						prefixList.getPrefix(PrefixEnum.RDF), "subject", this.basePrefix, relation.getSubject().getId(),
+						false, relation.getDataSet(), fileType);
 
-				writeTriple(writer, writerPreview, this.relationNo, relationId,
-						prefixList.getPrefix(PrefixEnum.RDF).getAbbr() + "object", relation.getObject().getId(), false,
-						relation.getDataSet());
+				writeTriple(writer, writerPreview, this.relationNo, this.basePrefix, relationId,
+						prefixList.getPrefix(PrefixEnum.RDF), "object", this.basePrefix, relation.getObject().getId(),
+						false, relation.getDataSet(), fileType);
 
 				// writeTriple(writer, writerPreview, lineNo, relationId,
 				// prefixList.getPrefix(PrefixEnum.RDF).getAbbr() + "value",
@@ -1270,30 +1196,32 @@ public class DataStoreWriter {
 				// relation.getDataSet());
 
 				if (relation.getProperties() == null) {
-					writeTriple(writer, writerPreview, this.relationNo, relationId,
-							prefixList.getPrefix(PrefixEnum.SEM).getAbbr() + "roleType",
-							relation.getPrefix().getAbbr() + relation.getProperty(), false, relation.getDataSet());
+					writeTriple(writer, writerPreview, this.relationNo, this.basePrefix, relationId,
+							prefixList.getPrefix(PrefixEnum.SEM), "roleType", relation.getPrefix(),
+							relation.getProperty(), false, relation.getDataSet(), fileType);
 				} else {
 					for (SubProperty property : relation.getProperties()) {
-						writeTriple(writer, writerPreview, this.relationNo, relationId,
-								prefixList.getPrefix(PrefixEnum.SEM).getAbbr() + "roleType",
-								property.getPrefix().getAbbr() + property.getProperty(), false, property.getDataSet());
+						writeTriple(writer, writerPreview, this.relationNo, this.basePrefix, relationId,
+								prefixList.getPrefix(PrefixEnum.SEM), "roleType", property.getPrefix(),
+								property.getProperty(), false, property.getDataSet(), fileType);
 					}
 				}
 
 				if (relation.getStartTime() != null) {
-					writeTriple(writer, writerPreview, this.relationNo, relationId,
-							prefixList.getPrefix(PrefixEnum.SEM).getAbbr() + "hasBeginTimeStamp",
-							standardFormat.format(relation.getStartTime().getDate()), false, relation.getDataSet());
-					writeDateGranularityTriple(writer, writerPreview, this.relationNo, relationId,
-							relation.getStartTime().getGranularity(), false, relation.getDataSet(), true);
+					writeTriple(writer, writerPreview, this.relationNo, this.basePrefix, relationId,
+							prefixList.getPrefix(PrefixEnum.SEM), "hasBeginTimeStamp", null,
+							standardFormat.format(relation.getStartTime().getDate()), false, relation.getDataSet(),
+							fileType);
+					writeDateGranularityTriple(writer, writerPreview, this.relationNo, this.basePrefix, relationId,
+							relation.getStartTime().getGranularity(), false, relation.getDataSet(), true, fileType);
 				}
 				if (relation.getEndTime() != null) {
-					writeTriple(writer, writerPreview, this.relationNo, relationId,
-							prefixList.getPrefix(PrefixEnum.SEM).getAbbr() + "hasEndTimeStamp",
-							standardFormat.format(relation.getEndTime().getDate()), false, relation.getDataSet());
-					writeDateGranularityTriple(writer, writerPreview, this.relationNo, relationId,
-							relation.getEndTime().getGranularity(), false, relation.getDataSet(), false);
+					writeTriple(writer, writerPreview, this.relationNo, this.basePrefix, relationId,
+							prefixList.getPrefix(PrefixEnum.SEM), "hasEndTimeStamp", null,
+							standardFormat.format(relation.getEndTime().getDate()), false, relation.getDataSet(),
+							fileType);
+					writeDateGranularityTriple(writer, writerPreview, this.relationNo, this.basePrefix, relationId,
+							relation.getEndTime().getGranularity(), false, relation.getDataSet(), false, fileType);
 				}
 			}
 
@@ -1309,6 +1237,8 @@ public class DataStoreWriter {
 	}
 
 	private void writeLiteralsRelations() {
+
+		FileType fileType = FileType.NQ;
 
 		PrintWriter writer = null;
 		PrintWriter writerPreview = null;
@@ -1326,7 +1256,7 @@ public class DataStoreWriter {
 			for (Prefix prefix : prefixList.getAllPrefixes())
 				prefixes.add(prefix);
 
-			for (String line : createIntro(prefixes, this.prefixList)) {
+			for (String line : createIntro(prefixes, this.prefixList, fileType)) {
 				writer.write(line + Config.NL);
 				writerPreview.write(line + Config.NL);
 			}
@@ -1360,50 +1290,52 @@ public class DataStoreWriter {
 				String object = relation.getObject();
 
 				lineNo += 1;
-				String relationId = "<eventkg_relation_" + String.valueOf(this.relationNo) + ">";
+				String relationId = "eventkg_relation_" + String.valueOf(this.relationNo);
 				this.relationNo += 1;
 
-				writeTriple(writer, writerPreview, lineNo, relationId, PrefixEnum.RDF.getAbbr() + "type",
-						prefixList.getPrefix(PrefixEnum.EVENT_KG_SCHEMA).getAbbr() + "Relation", false,
-						relation.getDataSet());
-				writeTriple(writer, writerPreview, lineNo, relationId,
-						prefixList.getPrefix(PrefixEnum.RDF).getAbbr() + "subject", relation.getSubject().getId(),
-						false, relation.getDataSet());
+				writeTriple(writer, writerPreview, lineNo, this.basePrefix, relationId,
+						prefixList.getPrefix(PrefixEnum.RDF), "type", prefixList.getPrefix(PrefixEnum.EVENT_KG_SCHEMA),
+						"Relation", false, relation.getDataSet(), fileType);
+				writeTriple(writer, writerPreview, lineNo, this.basePrefix, relationId,
+						prefixList.getPrefix(PrefixEnum.RDF), "subject", this.basePrefix, relation.getSubject().getId(),
+						false, relation.getDataSet(), fileType);
 
-				writeTriple(writer, writerPreview, lineNo, relationId,
-						prefixList.getPrefix(PrefixEnum.RDF).getAbbr() + "object",
+				writeTriple(writer, writerPreview, lineNo, this.basePrefix, relationId,
+						prefixList.getPrefix(PrefixEnum.RDF), "object", null,
 						createLiteral(object, relation.getDataType(), relation.getLanguageCode()), false,
-						relation.getDataSet());
+						relation.getDataSet(), fileType);
 
 				if (relation.getProperties() == null) {
 					if (relation.getPrefix() == null) {
 						System.out.println("Missing prefix: " + relation.getSubject().getId() + "\t"
 								+ relation.getProperty() + "\t" + relation.getObject());
 					}
-					writeTriple(writer, writerPreview, lineNo, relationId,
-							prefixList.getPrefix(PrefixEnum.SEM).getAbbr() + "roleType",
-							relation.getPrefix().getAbbr() + relation.getProperty(), false, relation.getDataSet());
+					writeTriple(writer, writerPreview, lineNo, this.basePrefix, relationId,
+							prefixList.getPrefix(PrefixEnum.SEM), "roleType", relation.getPrefix(),
+							relation.getProperty(), false, relation.getDataSet(), fileType);
 				} else {
 					for (SubProperty property : relation.getProperties()) {
-						writeTriple(writer, writerPreview, lineNo, relationId,
-								prefixList.getPrefix(PrefixEnum.SEM).getAbbr() + "roleType",
-								property.getPrefix().getAbbr() + property.getProperty(), false, property.getDataSet());
+						writeTriple(writer, writerPreview, lineNo, this.basePrefix, relationId,
+								prefixList.getPrefix(PrefixEnum.SEM), "roleType", property.getPrefix(),
+								property.getProperty(), false, property.getDataSet(), fileType);
 					}
 				}
 
 				if (relation.getStartTime() != null) {
-					writeTriple(writer, writerPreview, lineNo, relationId,
-							prefixList.getPrefix(PrefixEnum.SEM).getAbbr() + "hasBeginTimeStamp",
-							standardFormat.format(relation.getStartTime().getDate()), false, relation.getDataSet());
-					writeDateGranularityTriple(writer, writerPreview, lineNo, relationId,
-							relation.getStartTime().getGranularity(), false, relation.getDataSet(), true);
+					writeTriple(writer, writerPreview, lineNo, this.basePrefix, relationId,
+							prefixList.getPrefix(PrefixEnum.SEM), "hasBeginTimeStamp", null,
+							standardFormat.format(relation.getStartTime().getDate()), false, relation.getDataSet(),
+							fileType);
+					writeDateGranularityTriple(writer, writerPreview, lineNo, this.basePrefix, relationId,
+							relation.getStartTime().getGranularity(), false, relation.getDataSet(), true, fileType);
 				}
 				if (relation.getEndTime() != null) {
-					writeTriple(writer, writerPreview, lineNo, relationId,
-							prefixList.getPrefix(PrefixEnum.SEM).getAbbr() + "hasEndTimeStamp",
-							standardFormat.format(relation.getEndTime().getDate()), false, relation.getDataSet());
-					writeDateGranularityTriple(writer, writerPreview, lineNo, relationId,
-							relation.getEndTime().getGranularity(), false, relation.getDataSet(), false);
+					writeTriple(writer, writerPreview, lineNo, this.basePrefix, relationId,
+							prefixList.getPrefix(PrefixEnum.SEM), "hasEndTimeStamp", null,
+							standardFormat.format(relation.getEndTime().getDate()), false, relation.getDataSet(),
+							fileType);
+					writeDateGranularityTriple(writer, writerPreview, lineNo, this.basePrefix, relationId,
+							relation.getEndTime().getGranularity(), false, relation.getDataSet(), false, fileType);
 				}
 
 			}
@@ -1418,6 +1350,8 @@ public class DataStoreWriter {
 	}
 
 	private void writeOtherRelations() {
+
+		FileType fileType = FileType.NQ;
 
 		PrintWriter writerEntityTemporalRelations = null;
 		PrintWriter writerEntityTemporalRelationsPreview = null;
@@ -1439,7 +1373,7 @@ public class DataStoreWriter {
 			for (Prefix prefix : prefixList.getAllPrefixes())
 				prefixes.add(prefix);
 
-			for (String line : createIntro(prefixes, this.prefixList)) {
+			for (String line : createIntro(prefixes, this.prefixList, fileType)) {
 				writerEntityTemporalRelations.write(line + Config.NL);
 				writerEntityTemporalRelationsPreview.write(line + Config.NL);
 				writerEntityRelations.write(line + Config.NL);
@@ -1475,44 +1409,46 @@ public class DataStoreWriter {
 				}
 
 				lineNo += 1;
-				String relationId = "<eventkg_relation_" + String.valueOf(this.relationNo) + ">";
+				String relationId = "eventkg_relation_" + String.valueOf(this.relationNo);
 				this.relationNo += 1;
 
-				writeTriple(writer, writerPreview, lineNo, relationId, PrefixEnum.RDF.getAbbr() + "type",
-						prefixList.getPrefix(PrefixEnum.EVENT_KG_SCHEMA).getAbbr() + "Relation", false,
-						relation.getDataSet());
-				writeTriple(writer, writerPreview, lineNo, relationId,
-						prefixList.getPrefix(PrefixEnum.RDF).getAbbr() + "subject", relation.getSubject().getId(),
-						false, relation.getDataSet());
-				writeTriple(writer, writerPreview, lineNo, relationId,
-						prefixList.getPrefix(PrefixEnum.RDF).getAbbr() + "object", object.getId(), false,
-						relation.getDataSet());
+				writeTriple(writer, writerPreview, lineNo, this.basePrefix, relationId,
+						prefixList.getPrefix(PrefixEnum.RDF), "type", prefixList.getPrefix(PrefixEnum.EVENT_KG_SCHEMA),
+						"Relation", false, relation.getDataSet(), fileType);
+				writeTriple(writer, writerPreview, lineNo, this.basePrefix, relationId,
+						prefixList.getPrefix(PrefixEnum.RDF), "subject", this.basePrefix, relation.getSubject().getId(),
+						false, relation.getDataSet(), fileType);
+				writeTriple(writer, writerPreview, lineNo, this.basePrefix, relationId,
+						prefixList.getPrefix(PrefixEnum.RDF), "object", this.basePrefix, object.getId(), false,
+						relation.getDataSet(), fileType);
 
 				if (relation.getProperties() == null) {
-					writeTriple(writer, writerPreview, lineNo, relationId,
-							prefixList.getPrefix(PrefixEnum.SEM).getAbbr() + "roleType",
-							relation.getPrefix().getAbbr() + relation.getProperty(), false, relation.getDataSet());
+					writeTriple(writer, writerPreview, lineNo, this.basePrefix, relationId,
+							prefixList.getPrefix(PrefixEnum.SEM), "roleType", relation.getPrefix(),
+							relation.getProperty(), false, relation.getDataSet(), fileType);
 				} else {
 					for (SubProperty property : relation.getProperties()) {
-						writeTriple(writer, writerPreview, lineNo, relationId,
-								prefixList.getPrefix(PrefixEnum.SEM).getAbbr() + "roleType",
-								property.getPrefix().getAbbr() + property.getProperty(), false, property.getDataSet());
+						writeTriple(writer, writerPreview, lineNo, this.basePrefix, relationId,
+								prefixList.getPrefix(PrefixEnum.SEM), "roleType", property.getPrefix(),
+								property.getProperty(), false, property.getDataSet(), fileType);
 					}
 				}
 
 				if (relation.getStartTime() != null) {
-					writeTriple(writer, writerPreview, lineNo, relationId,
-							prefixList.getPrefix(PrefixEnum.SEM).getAbbr() + "hasBeginTimeStamp",
-							standardFormat.format(relation.getStartTime().getDate()), false, relation.getDataSet());
-					writeDateGranularityTriple(writer, writerPreview, lineNo, relationId,
-							relation.getStartTime().getGranularity(), false, relation.getDataSet(), true);
+					writeTriple(writer, writerPreview, lineNo, this.basePrefix, relationId,
+							prefixList.getPrefix(PrefixEnum.SEM), "hasBeginTimeStamp", null,
+							standardFormat.format(relation.getStartTime().getDate()), false, relation.getDataSet(),
+							fileType);
+					writeDateGranularityTriple(writer, writerPreview, lineNo, this.basePrefix, relationId,
+							relation.getStartTime().getGranularity(), false, relation.getDataSet(), true, fileType);
 				}
 				if (relation.getEndTime() != null) {
-					writeTriple(writer, writerPreview, lineNo, relationId,
-							prefixList.getPrefix(PrefixEnum.SEM).getAbbr() + "hasEndTimeStamp",
-							standardFormat.format(relation.getEndTime().getDate()), false, relation.getDataSet());
-					writeDateGranularityTriple(writer, writerPreview, lineNo, relationId,
-							relation.getEndTime().getGranularity(), false, relation.getDataSet(), false);
+					writeTriple(writer, writerPreview, lineNo, this.basePrefix, relationId,
+							prefixList.getPrefix(PrefixEnum.SEM), "hasEndTimeStamp", null,
+							standardFormat.format(relation.getEndTime().getDate()), false, relation.getDataSet(),
+							fileType);
+					writeDateGranularityTriple(writer, writerPreview, lineNo, this.basePrefix, relationId,
+							relation.getEndTime().getGranularity(), false, relation.getDataSet(), false, fileType);
 				}
 
 				// if (relation.getPropertyLabels() != null) {
@@ -1537,7 +1473,7 @@ public class DataStoreWriter {
 
 	}
 
-	public static List<String> createIntro(List<Prefix> prefixes, PrefixList prefixList) {
+	public List<String> createIntro(List<Prefix> prefixes, PrefixList prefixList, FileType fileType) {
 
 		if (!prefixes.contains(PrefixEnum.EVENT_KG_GRAPH))
 			prefixes.add(prefixList.getPrefix(PrefixEnum.EVENT_KG_GRAPH));
@@ -1558,10 +1494,12 @@ public class DataStoreWriter {
 					"@prefix" + Config.SEP + prefix.getAbbr() + " <" + prefix.getUrlPrefix() + ">" + Config.SEP + ".");
 		}
 
-		lines.add("@base" + Config.SEP + "<" + prefixList.getPrefix(PrefixEnum.EVENT_KG_RESOURCE).getUrlPrefix() + ">"
-				+ Config.SEP + ".");
+		lines.add("@base" + Config.SEP + "<" + this.basePrefix.getUrlPrefix() + ">" + Config.SEP + ".");
 
 		lines.add("");
+
+		if (!ALLOW_DIRECTIVES && fileType == FileType.NQ)
+			lines.clear();
 
 		return lines;
 	}
@@ -1585,30 +1523,6 @@ public class DataStoreWriter {
 	//
 	// }
 
-	public static void writeTriple(PrintWriter writer, PrintWriter writerPreview, Integer lineNo, String subject,
-			String property, String object, boolean quoteObject, DataSet dataSet) {
-
-		if (object == null)
-			return;
-
-		if (quoteObject) {
-			object = object.replace("\\", "\\\\");
-			object = object.replaceAll("\"", "\\\\\"");
-			object = "\"" + object + "\"";
-		}
-
-		String line = null;
-		if (dataSet == null) {
-			line = subject + Config.SEP + property + Config.SEP + object + Config.SEP + "." + Config.NL;
-		} else
-			line = subject + Config.SEP + property + Config.SEP + object + Config.SEP
-					+ PrefixEnum.EVENT_KG_GRAPH.getAbbr() + dataSet.getId() + Config.SEP + "." + Config.NL;
-
-		writer.write(line);
-		if (writerPreview != null && lineNo <= NUMBER_OF_LINES_IN_PREVIEW)
-			writerPreview.write(line);
-	}
-
 	private String createLiteral(String value, LiteralDataType dataType) {
 		return createLiteral(value, dataType, null);
 	}
@@ -1627,14 +1541,20 @@ public class DataStoreWriter {
 		if (languageCode != null)
 			literal += "@" + languageCode;
 
-		if (!dataType.getDataTypeRdf().isEmpty())
-			literal += "^^" + dataType.getDataTypeRdf();
+		if (!dataType.getDataTypeRdf().isEmpty()) {
+			if (!ALLOW_DIRECTIVES)
+				literal += "^^<" + dataType.getDataTypeRdf().replace("xsd:", PrefixEnum.XSD.getUrlPrefix() + ">");
+			else
+				literal += "^^" + dataType.getDataTypeRdf();
+
+		}
 
 		return literal;
 	}
 
-	public static void writeDateGranularityTriple(PrintWriter writer, PrintWriter writerPreview, Integer lineNo,
-			String subject, DateGranularity granularity, boolean quoteObject, DataSet dataSet, boolean start) {
+	public void writeDateGranularityTriple(PrintWriter writer, PrintWriter writerPreview, Integer lineNo,
+			Prefix subjectPrefix, String subject, DateGranularity granularity, boolean quoteObject, DataSet dataSet,
+			boolean start, FileType fileType) {
 
 		if (granularity == null)
 			return;
@@ -1668,10 +1588,12 @@ public class DataStoreWriter {
 		}
 
 		String line = null;
+		String subjectWithPrefix = createResourceWithPrefix(subjectPrefix, subject, fileType);
+
 		if (dataSet == null) {
-			line = subject + Config.SEP + property + Config.SEP + object + Config.SEP + "." + Config.NL;
+			line = subjectWithPrefix + Config.SEP + property + Config.SEP + object + Config.SEP + "." + Config.NL;
 		} else
-			line = subject + Config.SEP + property + Config.SEP + object + Config.SEP
+			line = subjectWithPrefix + Config.SEP + property + Config.SEP + object + Config.SEP
 					+ PrefixEnum.EVENT_KG_GRAPH.getAbbr() + dataSet.getId() + Config.SEP + "." + Config.NL;
 
 		writer.write(line);
@@ -1689,8 +1611,42 @@ public class DataStoreWriter {
 	// Config.SEP + "." + Config.NL);
 	// }
 
-	private void writeTriple(PrintWriter writer, PrintWriter writerPreview, Integer lineNo, String subject,
-			String property, String object, boolean quoteObject, DataSet dataSet, Language language) {
+	public void writeTriple(PrintWriter writer, PrintWriter writerPreview, Integer lineNo, Prefix subjectPrefix,
+			String subject, Prefix propertyPrefix, String property, Prefix objectPrefix, String object,
+			boolean quoteObject, DataSet dataSet, FileType fileType) {
+
+		if (object == null)
+			return;
+
+		if (quoteObject) {
+			object = object.replace("\\", "\\\\");
+			object = object.replaceAll("\"", "\\\\\"");
+			object = "\"" + object + "\"";
+		}
+
+		String line = null;
+
+		String subjectWithPrefix = createResourceWithPrefix(subjectPrefix, subject, fileType);
+		String propertyWithPrefix = createResourceWithPrefix(propertyPrefix, property, fileType);
+		String objectWithPrefix = object;
+		if (!quoteObject)
+			objectWithPrefix = createResourceWithPrefix(objectPrefix, object, fileType);
+
+		if (dataSet == null) {
+			line = subjectWithPrefix + Config.SEP + propertyWithPrefix + Config.SEP + objectWithPrefix + Config.SEP
+					+ "." + Config.NL;
+		} else
+			line = subjectWithPrefix + Config.SEP + propertyWithPrefix + Config.SEP + objectWithPrefix + Config.SEP
+					+ PrefixEnum.EVENT_KG_GRAPH.getAbbr() + dataSet.getId() + Config.SEP + "." + Config.NL;
+
+		writer.write(line);
+		if (writerPreview != null && lineNo <= NUMBER_OF_LINES_IN_PREVIEW)
+			writerPreview.write(line);
+	}
+
+	private void writeTriple(PrintWriter writer, PrintWriter writerPreview, Integer lineNo, Prefix subjectPrefix,
+			String subject, Prefix propertyPrefix, String property, Prefix objectPrefix, String object,
+			boolean quoteObject, DataSet dataSet, Language language, FileType fileType) {
 
 		if (object == null)
 			return;
@@ -1715,16 +1671,46 @@ public class DataStoreWriter {
 
 		String line = null;
 
+		String subjectWithPrefix = createResourceWithPrefix(subjectPrefix, subject, fileType);
+		String propertyWithPrefix = createResourceWithPrefix(propertyPrefix, property, fileType);
+		String objectWithPrefix = object;
+		if (!quoteObject)
+			createResourceWithPrefix(objectPrefix, object, fileType);
+
 		if (dataSet == null) {
-			line = subject + Config.SEP + property + Config.SEP + object + Config.SEP + "." + Config.NL;
+			line = subjectWithPrefix + Config.SEP + propertyWithPrefix + Config.SEP + objectWithPrefix + Config.SEP
+					+ "." + Config.NL;
 		} else
-			line = subject + Config.SEP + property + Config.SEP + object + Config.SEP
+			line = subjectWithPrefix + Config.SEP + propertyWithPrefix + Config.SEP + objectWithPrefix + Config.SEP
 					+ PrefixEnum.EVENT_KG_GRAPH.getAbbr() + dataSet.getId() + Config.SEP + "." + Config.NL;
 
 		writer.write(line);
 		if (writerPreview != null && lineNo <= NUMBER_OF_LINES_IN_PREVIEW)
 			writerPreview.write(line);
 
+	}
+
+	private String createResourceWithPrefix(Prefix prefix, String value, FileType fileType) {
+
+		if (prefix == null)
+			return value;
+
+		String resourceWithPrefix = null;
+		if (ALLOW_DIRECTIVES || fileType == FileType.TTL) {
+			if (prefix == this.basePrefix)
+				resourceWithPrefix = "<" + value + ">";
+			else
+				resourceWithPrefix = prefix.getAbbr() + value;
+		} else
+			resourceWithPrefix = prefix.getUrlPrefix() + value;
+
+		resourceWithPrefix = "<" + resourceWithPrefix + ">";
+
+		return resourceWithPrefix;
+	}
+
+	public Prefix getBasePrefix() {
+		return basePrefix;
 	}
 
 }

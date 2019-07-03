@@ -14,6 +14,7 @@ import java.util.Set;
 import de.l3s.eventkg.integration.DataSets;
 import de.l3s.eventkg.integration.DataStoreWriter;
 import de.l3s.eventkg.integration.EventKGIdMappingLoader;
+import de.l3s.eventkg.integration.model.FileType;
 import de.l3s.eventkg.integration.model.relation.DataSet;
 import de.l3s.eventkg.integration.model.relation.prefix.Prefix;
 import de.l3s.eventkg.integration.model.relation.prefix.PrefixEnum;
@@ -44,10 +45,15 @@ public class DBpediaTypesExtractor extends Extractor {
 
 		PrefixList prefixList = PrefixList.getInstance();
 
+		FileType fileType = FileType.NQ;
+
 		PrintWriter writer = null;
 		PrintWriter writerPreview = null;
 		PrintWriter writerOntology = null;
 		PrintWriter writerOntologyPreview = null;
+
+		DataStoreWriter dataStoreWriter = new DataStoreWriter(languages);
+		dataStoreWriter.initPrefixes();
 
 		try {
 			writer = FileLoader.getWriter(FileName.ALL_TTL_TYPES_DBPEDIA);
@@ -60,16 +66,17 @@ public class DBpediaTypesExtractor extends Extractor {
 			prefixes.add(prefixList.getPrefix(PrefixEnum.RDFS));
 			prefixes.add(prefixList.getPrefix(PrefixEnum.OWL));
 			prefixes.add(prefixList.getPrefix(PrefixEnum.DBPEDIA_ONTOLOGY));
-			for (String line : DataStoreWriter.createIntro(prefixes, prefixList)) {
+			for (String line : dataStoreWriter.createIntro(prefixes, prefixList, fileType)) {
 				writer.write(line + Config.NL);
 				writerPreview.write(line + Config.NL);
 				writerOntology.write(line + Config.NL);
 				writerOntologyPreview.write(line + Config.NL);
 			}
 
-			writeSubclasses(writerOntology, writerOntologyPreview, prefixList);
+			writeSubclasses(writerOntology, writerOntologyPreview, prefixList, fileType, dataStoreWriter);
 
 			for (Language language : languages) {
+
 				Set<String> usedLines = new HashSet<String>();
 				int lineNo = 0;
 				BufferedReader br = null;
@@ -94,6 +101,10 @@ public class DBpediaTypesExtractor extends Extractor {
 						// types)
 						if (language == Language.RU && type.equals("Book"))
 							continue;
+						// manually solve bug in Italian DBpedia (many "Person"
+						// types)
+						if (language == Language.RU && type.equals("Person"))
+							continue;
 
 						String resource = parts[0];
 						resource = resource.substring(resource.lastIndexOf("/") + 1, resource.length() - 1);
@@ -117,9 +128,9 @@ public class DBpediaTypesExtractor extends Extractor {
 
 						typesPerEntity.get(eventKGId).add(type);
 
-						DataStoreWriter.writeTriple(writer, writerPreview, lineNo, eventKGId,
-								prefixList.getPrefix(PrefixEnum.RDF).getAbbr() + "type",
-								prefixList.getPrefix(PrefixEnum.DBPEDIA_ONTOLOGY).getAbbr() + type, false, dataSet);
+						dataStoreWriter.writeTriple(writer, writerPreview, lineNo, dataStoreWriter.getBasePrefix(),
+								eventKGId, prefixList.getPrefix(PrefixEnum.RDF), "type",
+								prefixList.getPrefix(PrefixEnum.DBPEDIA_ONTOLOGY), type, false, dataSet, fileType);
 					}
 				} catch (FileNotFoundException e1) {
 					e1.printStackTrace();
@@ -154,7 +165,8 @@ public class DBpediaTypesExtractor extends Extractor {
 		return types;
 	}
 
-	private void writeSubclasses(PrintWriter writer, PrintWriter writerPreview, PrefixList prefixList) {
+	private void writeSubclasses(PrintWriter writer, PrintWriter writerPreview, PrefixList prefixList,
+			FileType fileType, DataStoreWriter dataStoreWriter) {
 		int lineNo = 0;
 		BufferedReader br = null;
 
@@ -202,11 +214,11 @@ public class DBpediaTypesExtractor extends Extractor {
 						parentClasses.put(type1, new HashSet<String>());
 					parentClasses.get(type1).add(type2);
 
-					DataStoreWriter.writeTriple(writer, writerPreview, lineNo,
-							prefixList.getPrefix(PrefixEnum.DBPEDIA_ONTOLOGY).getAbbr() + type1,
-							prefixList.getPrefix(PrefixEnum.RDFS).getAbbr() + "subClassOf",
-							prefixList.getPrefix(PrefixEnum.DBPEDIA_ONTOLOGY).getAbbr() + type2, false,
-							DataSets.getInstance().getDataSetWithoutLanguage(Source.DBPEDIA));
+					dataStoreWriter.writeTriple(writer, writerPreview, lineNo,
+							prefixList.getPrefix(PrefixEnum.DBPEDIA_ONTOLOGY), type1,
+							prefixList.getPrefix(PrefixEnum.RDFS), "subClassOf",
+							prefixList.getPrefix(PrefixEnum.DBPEDIA_ONTOLOGY), type2, false,
+							DataSets.getInstance().getDataSetWithoutLanguage(Source.DBPEDIA), fileType);
 				} else if (parts[1].equals("<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>")
 						&& parts[2].equals("<http://www.w3.org/2002/07/owl#Class>")) {
 					String type1 = parts[0];
@@ -216,11 +228,10 @@ public class DBpediaTypesExtractor extends Extractor {
 
 					lineNo += 1;
 
-					DataStoreWriter.writeTriple(writer, writerPreview, lineNo,
-							prefixList.getPrefix(PrefixEnum.DBPEDIA_ONTOLOGY).getAbbr() + type1,
-							prefixList.getPrefix(PrefixEnum.RDF).getAbbr() + "type",
-							prefixList.getPrefix(PrefixEnum.OWL).getAbbr() + "Class", false,
-							DataSets.getInstance().getDataSetWithoutLanguage(Source.DBPEDIA));
+					dataStoreWriter.writeTriple(writer, writerPreview, lineNo,
+							prefixList.getPrefix(PrefixEnum.DBPEDIA_ONTOLOGY), type1,
+							prefixList.getPrefix(PrefixEnum.RDF), "type", prefixList.getPrefix(PrefixEnum.OWL), "Class",
+							false, DataSets.getInstance().getDataSetWithoutLanguage(Source.DBPEDIA), fileType);
 				}
 			}
 		} catch (IOException e1) {

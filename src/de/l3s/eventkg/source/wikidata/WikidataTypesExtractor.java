@@ -14,6 +14,7 @@ import java.util.Set;
 import de.l3s.eventkg.integration.DataSets;
 import de.l3s.eventkg.integration.DataStoreWriter;
 import de.l3s.eventkg.integration.EventKGIdMappingLoader;
+import de.l3s.eventkg.integration.model.FileType;
 import de.l3s.eventkg.integration.model.relation.DataSet;
 import de.l3s.eventkg.integration.model.relation.prefix.Prefix;
 import de.l3s.eventkg.integration.model.relation.prefix.PrefixEnum;
@@ -42,8 +43,13 @@ public class WikidataTypesExtractor extends Extractor {
 
 		PrefixList prefixList = PrefixList.getInstance();
 
+		FileType fileType = FileType.NQ;
+
 		PrintWriter writer = null;
 		PrintWriter writerPreview = null;
+
+		DataStoreWriter dataStoreWriter = new DataStoreWriter(languages);
+		dataStoreWriter.initPrefixes();
 
 		try {
 			writer = FileLoader.getWriter(FileName.ALL_TTL_TYPES_WIKIDATA);
@@ -53,7 +59,7 @@ public class WikidataTypesExtractor extends Extractor {
 			prefixes.add(prefixList.getPrefix(PrefixEnum.RDF));
 			prefixes.add(prefixList.getPrefix(PrefixEnum.RDFS));
 			prefixes.add(prefixList.getPrefix(PrefixEnum.WIKIDATA_ENTITY));
-			for (String line : DataStoreWriter.createIntro(prefixes, prefixList)) {
+			for (String line : dataStoreWriter.createIntro(prefixes, prefixList, fileType)) {
 				writer.write(line + Config.NL);
 				writerPreview.write(line + Config.NL);
 			}
@@ -94,9 +100,9 @@ public class WikidataTypesExtractor extends Extractor {
 
 					typesPerEntity.get(eventKGId).add(type);
 
-					DataStoreWriter.writeTriple(writer, writerPreview, lineNo, eventKGId,
-							prefixList.getPrefix(PrefixEnum.RDF).getAbbr() + "type",
-							prefixList.getPrefix(PrefixEnum.WIKIDATA_ENTITY).getAbbr() + type, false, dataSet);
+					dataStoreWriter.writeTriple(writer, writerPreview, lineNo, dataStoreWriter.getBasePrefix(),
+							eventKGId, prefixList.getPrefix(PrefixEnum.RDF), "type",
+							prefixList.getPrefix(PrefixEnum.WIKIDATA_ENTITY), type, false, dataSet, fileType);
 
 				}
 			} catch (FileNotFoundException e1) {

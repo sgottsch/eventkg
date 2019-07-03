@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import de.l3s.eventkg.integration.model.FileType;
 import de.l3s.eventkg.integration.model.relation.DataSet;
 import de.l3s.eventkg.integration.model.relation.prefix.Prefix;
 import de.l3s.eventkg.integration.model.relation.prefix.PrefixEnum;
@@ -81,14 +82,19 @@ public class TypesWriter extends Extractor {
 		int lineNo = 0;
 		DataSet dataSet = DataSets.getInstance().getDataSetWithoutLanguage(Source.EVENT_KG);
 
+		FileType fileType = FileType.NQ;
+		
+		DataStoreWriter dataStoreWriter= new DataStoreWriter(languages);
+		dataStoreWriter.initPrefixes();
+
 		try {
-			writer = FileLoader.getWriter(FileName.ALL_TTL_TYPES);
-			writerPreview = FileLoader.getWriter(FileName.ALL_TTL_TYPES_PREVIEW);
+			writer = FileLoader.getWriter(FileName.ALL_NQ_TYPES);
+			writerPreview = FileLoader.getWriter(FileName.ALL_NQ_TYPES_PREVIEW);
 
 			List<Prefix> prefixes = new ArrayList<Prefix>();
 			prefixes.add(prefixList.getPrefix(PrefixEnum.RDF));
 			prefixes.add(prefixList.getPrefix(PrefixEnum.DBPEDIA_ONTOLOGY));
-			for (String line : DataStoreWriter.createIntro(prefixes, prefixList)) {
+			for (String line : dataStoreWriter.createIntro(prefixes, prefixList, fileType)) {
 				writer.write(line + Config.NL);
 				writerPreview.write(line + Config.NL);
 			}
@@ -143,9 +149,9 @@ public class TypesWriter extends Extractor {
 							eventClasses.put(type, eventClasses.get(type) + 1);
 					}
 
-					DataStoreWriter.writeTriple(writer, writerPreview, lineNo, eventKGId,
-							prefixList.getPrefix(PrefixEnum.RDF).getAbbr() + "type",
-							prefixList.getPrefix(PrefixEnum.DBPEDIA_ONTOLOGY).getAbbr() + type, false, dataSet);
+					dataStoreWriter.writeTriple(writer, writerPreview, lineNo, dataStoreWriter.getBasePrefix(),eventKGId,
+							prefixList.getPrefix(PrefixEnum.RDF), "type",
+							prefixList.getPrefix(PrefixEnum.DBPEDIA_ONTOLOGY), type, false, dataSet, fileType);
 				}
 				lineNo += 1;
 
