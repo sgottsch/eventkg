@@ -52,58 +52,63 @@ public class DBpediaEventRelationsExtractor extends Extractor {
 		try {
 			eventResultsWriter = FileLoader.getWriter(FileName.DBPEDIA_EVENT_RELATIONS, language);
 			entityResultsWriter = FileLoader.getWriter(FileName.DBPEDIA_ENTITY_RELATIONS, language);
-			br = FileLoader.getReader(FileName.DBPEDIA_MAPPINGS, language);
 
-			String line;
-			while ((line = br.readLine()) != null) {
-				if (line.startsWith("#"))
-					continue;
+			if (FileLoader.fileExists(FileName.DBPEDIA_MAPPINGS, language)) {
 
-				String[] parts = line.split(" ");
-				String object = parts[2];
-				String subject = parts[0];
-				String property = parts[1];
+				br = FileLoader.getReader(FileName.DBPEDIA_MAPPINGS, language);
 
-				// TODO: ignore even more
-				// ignore locations
-				if (forbiddenProperties.contains(property)) {
-					continue;
+				String line;
+				while ((line = br.readLine()) != null) {
+					if (line.startsWith("#"))
+						continue;
+
+					String[] parts = line.split(" ");
+					String object = parts[2];
+					String subject = parts[0];
+					String property = parts[1];
+
+					// TODO: ignore even more
+					// ignore locations
+					if (forbiddenProperties.contains(property)) {
+						continue;
+					}
+					if (property.equals("rdf-schema#seeAlso") || property.equals("owl#differentFrom"))
+						continue;
+
+					if (!subject.contains("resource"))
+						continue;
+
+					if (!object.contains("resource"))
+						continue;
+
+					try {
+						subject = subject.substring(subject.lastIndexOf("resource/") + 9, subject.lastIndexOf(">"));
+						object = object.substring(object.lastIndexOf("/") + 1, object.lastIndexOf(">"));
+					} catch (StringIndexOutOfBoundsException e) {
+						// skip objects like
+						// "http://fr.dbpedia.org/resource/Sultanat_d'Égypte__1"@fr
+						// .
+						continue;
+					}
+
+					if (this.allEventPagesDataSet.getEventByWikipediaLabel(language, subject) != null
+							|| this.allEventPagesDataSet.getEventByWikipediaLabel(language, object) != null) {
+						eventResultsWriter.write(subject + Config.TAB + property + Config.TAB + object + Config.NL);
+					} else if (this.allEventPagesDataSet.getEntityWithExistenceTimeByWikipediaLabel(language,
+							subject) != null
+							|| this.allEventPagesDataSet.getEntityWithExistenceTimeByWikipediaLabel(language,
+									object) != null) {
+						entityResultsWriter.write(subject + Config.TAB + property + Config.TAB + object + Config.NL);
+					}
+
 				}
-				if (property.equals("rdf-schema#seeAlso") || property.equals("owl#differentFrom"))
-					continue;
-
-				if (!subject.contains("resource"))
-					continue;
-
-				if (!object.contains("resource"))
-					continue;
-
-				try {
-					subject = subject.substring(subject.lastIndexOf("resource/") + 9, subject.lastIndexOf(">"));
-					object = object.substring(object.lastIndexOf("/") + 1, object.lastIndexOf(">"));
-				} catch (StringIndexOutOfBoundsException e) {
-					// skip objects like
-					// "http://fr.dbpedia.org/resource/Sultanat_d'Égypte__1"@fr
-					// .
-					continue;
-				}
-
-				if (this.allEventPagesDataSet.getEventByWikipediaLabel(language, subject) != null
-						|| this.allEventPagesDataSet.getEventByWikipediaLabel(language, object) != null) {
-					eventResultsWriter.write(subject + Config.TAB + property + Config.TAB + object + Config.NL);
-				} else if (this.allEventPagesDataSet.getEntityWithExistenceTimeByWikipediaLabel(language,
-						subject) != null
-						|| this.allEventPagesDataSet.getEntityWithExistenceTimeByWikipediaLabel(language,
-								object) != null) {
-					entityResultsWriter.write(subject + Config.TAB + property + Config.TAB + object + Config.NL);
-				}
-
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
 		} finally {
 			try {
-				br.close();
+				if (br != null)
+					br.close();
 				eventResultsWriter.close();
 				entityResultsWriter.close();
 			} catch (IOException e) {

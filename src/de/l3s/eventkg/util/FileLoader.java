@@ -282,4 +282,10 @@ public class FileLoader {
 		byte[] encoded = Files.readAllBytes(Paths.get(path));
 		return new String(encoded);
 	}
+
+	public static boolean fileExists(FileName fileName, Language language) {
+		String path = getPath(fileName, language);
+		File f = new File(path);
+		return f.exists();
+	}
 }

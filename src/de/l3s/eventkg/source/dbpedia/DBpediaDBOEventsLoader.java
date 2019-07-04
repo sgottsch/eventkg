@@ -47,57 +47,61 @@ public class DBpediaDBOEventsLoader extends Extractor {
 		}
 
 		BufferedReader br = null;
-		try {
+
+		if (FileLoader.fileExists(FileName.DBPEDIA_TYPES_TRANSITIVE, language)) {
+
 			try {
-				br = FileLoader.getReader(FileName.DBPEDIA_RELATIONS_TRANSITIVE, language);
-			} catch (FileNotFoundException e1) {
-				e1.printStackTrace();
-			}
-
-			String line;
-			while ((line = br.readLine()) != null) {
-				if (line.startsWith("#"))
-					continue;
-
-				String[] parts = line.split(" ");
-				String object = parts[2];
-
-				boolean onBlackList = blacklistObjects.contains(object);
-
-				if (targetObjects.contains(object) || onBlackList) {
-
-					String subject = parts[0];
-					String property = parts[1];
-
-					if (!subject.contains("resource"))
-						continue;
-
-					subject = subject.substring(subject.lastIndexOf("resource/") + 9, subject.lastIndexOf(">"));
-					object = object.substring(object.lastIndexOf("/") + 1, object.lastIndexOf(">"));
-
-					String fileLine = subject + Config.TAB + property + Config.TAB + object;
-					if (foundEvents.contains(fileLine))
-						continue;
-
-					if (onBlackList)
-						resultsWriterBlacklist.write(fileLine + Config.NL);
-					else
-						resultsWriter.write(fileLine + Config.NL);
-
-					foundEvents.add(fileLine);
-					uniqueFoundEvents.add(subject);
+				try {
+					br = FileLoader.getReader(FileName.DBPEDIA_TYPES_TRANSITIVE, language);
+				} catch (FileNotFoundException e1) {
+					e1.printStackTrace();
 				}
 
-			}
-		} catch (IOException e) {
-			e.printStackTrace();
-		} finally {
-			try {
-				br.close();
-				resultsWriter.close();
-				resultsWriterBlacklist.close();
+				String line;
+				while ((line = br.readLine()) != null) {
+					if (line.startsWith("#"))
+						continue;
+
+					String[] parts = line.split(" ");
+					String object = parts[2];
+
+					boolean onBlackList = blacklistObjects.contains(object);
+
+					if (targetObjects.contains(object) || onBlackList) {
+
+						String subject = parts[0];
+						String property = parts[1];
+
+						if (!subject.contains("resource"))
+							continue;
+
+						subject = subject.substring(subject.lastIndexOf("resource/") + 9, subject.lastIndexOf(">"));
+						object = object.substring(object.lastIndexOf("/") + 1, object.lastIndexOf(">"));
+
+						String fileLine = subject + Config.TAB + property + Config.TAB + object;
+						if (foundEvents.contains(fileLine))
+							continue;
+
+						if (onBlackList)
+							resultsWriterBlacklist.write(fileLine + Config.NL);
+						else
+							resultsWriter.write(fileLine + Config.NL);
+
+						foundEvents.add(fileLine);
+						uniqueFoundEvents.add(subject);
+					}
+
+				}
 			} catch (IOException e) {
 				e.printStackTrace();
+			} finally {
+				try {
+					br.close();
+					resultsWriter.close();
+					resultsWriterBlacklist.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
 			}
 		}
 

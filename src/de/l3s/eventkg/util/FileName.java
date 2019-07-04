@@ -330,7 +330,7 @@ public enum FileName {
 
 	DBPEDIA_ONTOLOGY("dbpedia_ontology.nt", Source.DBPEDIA, FileType.RAW_DATA, false, false, false),
 	DBPEDIA_TYPES("instance_types_$lang$.ttl", Source.DBPEDIA, FileType.RAW_DATA, false, false, false),
-	DBPEDIA_RELATIONS_TRANSITIVE(
+	DBPEDIA_TYPES_TRANSITIVE(
 			"instance_types_transitive_$lang$.ttl",
 			Source.DBPEDIA,
 			FileType.RAW_DATA,

@@ -49,39 +49,41 @@ public class DBpediaAllLocationsLoader extends Extractor {
 	private void extractLocations(Language language) {
 
 		this.locationEntities.put(language, new HashSet<String>());
-
 		BufferedReader br = null;
 
-		try {
-			br = FileLoader.getReader(FileName.DBPEDIA_RELATIONS_TRANSITIVE, language);
+		if (FileLoader.fileExists(FileName.DBPEDIA_TYPES_TRANSITIVE, language)) {
 
-			String line;
-			while ((line = br.readLine()) != null) {
-				String[] parts = line.split(" ");
-				String type = parts[2];
-
-				String subject = parts[0];
-				if (!subject.contains("resource"))
-					continue;
-
-				try {
-					subject = subject.substring(subject.lastIndexOf("resource/") + 9, subject.lastIndexOf(">"));
-				} catch (StringIndexOutOfBoundsException e) {
-					continue;
-				}
-
-				if (type.equals("<http://dbpedia.org/ontology/Place>")) {
-					this.locationEntities.get(language).add(subject);
-				}
-			}
-
-		} catch (IOException e) {
-			e.printStackTrace();
-		} finally {
 			try {
-				br.close();
+				br = FileLoader.getReader(FileName.DBPEDIA_TYPES_TRANSITIVE, language);
+
+				String line;
+				while ((line = br.readLine()) != null) {
+					String[] parts = line.split(" ");
+					String type = parts[2];
+
+					String subject = parts[0];
+					if (!subject.contains("resource"))
+						continue;
+
+					try {
+						subject = subject.substring(subject.lastIndexOf("resource/") + 9, subject.lastIndexOf(">"));
+					} catch (StringIndexOutOfBoundsException e) {
+						continue;
+					}
+
+					if (type.equals("<http://dbpedia.org/ontology/Place>")) {
+						this.locationEntities.get(language).add(subject);
+					}
+				}
+
 			} catch (IOException e) {
 				e.printStackTrace();
+			} finally {
+				try {
+					br.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
 			}
 		}
 

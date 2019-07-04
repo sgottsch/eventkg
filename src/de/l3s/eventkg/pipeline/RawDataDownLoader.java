@@ -15,9 +15,11 @@ import java.io.UnsupportedEncodingException;
 import java.io.Writer;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.URLConnection;
 import java.net.URLEncoder;
 import java.nio.channels.Channels;
 import java.nio.channels.ReadableByteChannel;
+import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -252,6 +254,10 @@ public class RawDataDownLoader {
 	}
 
 	private void downloadWCEFiles() {
+
+		if (!languages.contains(Language.EN))
+			return;
+
 		// wikitimes is out of service!
 		// String url =
 		// "http://wikitimes.l3s.de/webresources/WebService/getEvents/json/$yyyy$-01-01/$yyyy$-12-31";
@@ -321,7 +327,22 @@ public class RawDataDownLoader {
 
 				String url = "https://query.wikidata.org/sparql?query=" + URLEncoder.encode(query, "UTF-8")
 						+ "&format=json";
-				String res = IOUtils.toString(new URL(url), "UTF-8");
+				// String res = IOUtils.toString(new URL(url), "UTF-8");
+
+				URLConnection connection = new URL(url).openConnection();
+				connection.setRequestProperty("User-Agent",
+						"Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.11 (KHTML, like Gecko) Chrome/23.0.1271.95 Safari/537.11");
+				connection.connect();
+
+				BufferedReader r = new BufferedReader(
+						new InputStreamReader(connection.getInputStream(), Charset.forName("UTF-8")));
+
+				StringBuilder sb = new StringBuilder();
+				String line;
+				while ((line = r.readLine()) != null) {
+					sb.append(line);
+				}
+				String res = sb.toString();
 
 				writer = FileLoader.getWriter(fileName);
 				writer.write(res);
@@ -371,15 +392,17 @@ public class RawDataDownLoader {
 						out.write(buffer, 0, n);
 					}
 				} catch (FileNotFoundException e) {
-					e.printStackTrace();
+					continue;
 				} catch (IOException e) {
 					e.printStackTrace();
 				} finally {
 					try {
-						fin.close();
-						out.close();
-						bzIn.close();
-						Files.delete(downloadedFile.toPath());
+						if (fin != null) {
+							fin.close();
+							out.close();
+							bzIn.close();
+							Files.delete(downloadedFile.toPath());
+						}
 					} catch (IOException e) {
 						e.printStackTrace();
 					}
@@ -581,7 +604,8 @@ public class RawDataDownLoader {
 				fos.getChannel().transferFrom(rbc, 0, Long.MAX_VALUE);
 				succ = true;
 			} catch (FileNotFoundException e) {
-				e.printStackTrace();
+				System.out.println(" Warning: File does not exist.");
+				succ = true;
 			} catch (IOException e) {
 				if (e.getMessage().contains("response code: 503")) {
 

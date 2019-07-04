@@ -82,60 +82,65 @@ public class DBpediaTypesExtractor extends Extractor {
 				BufferedReader br = null;
 				DataSet dataSet = DataSets.getInstance().getDataSet(language, Source.DBPEDIA);
 
-				try {
-					br = FileLoader.getReader(FileName.DBPEDIA_TYPES, language);
-					String line;
-					while ((line = br.readLine()) != null) {
-						if (line.startsWith("#"))
-							continue;
+				if (FileLoader.fileExists(FileName.DBPEDIA_TYPES, language)) {
 
-						String[] parts = line.split(" ");
+					try {
+						br = FileLoader.getReader(FileName.DBPEDIA_TYPES, language);
+						String line;
+						while ((line = br.readLine()) != null) {
+							if (line.startsWith("#"))
+								continue;
 
-						String type = parts[2];
+							String[] parts = line.split(" ");
 
-						if (!type.startsWith("<http://dbpedia.org/ontology"))
-							continue;
-						type = type.substring(type.lastIndexOf("/") + 1, type.length() - 1);
+							String type = parts[2];
 
-						// manually solve bug in Russian DBpedia (many "book"
-						// types)
-						if (language == Language.RU && type.equals("Book"))
-							continue;
-						// manually solve bug in Italian DBpedia (many "Person"
-						// types)
-						if (language == Language.RU && type.equals("Person"))
-							continue;
+							if (!type.startsWith("<http://dbpedia.org/ontology"))
+								continue;
+							type = type.substring(type.lastIndexOf("/") + 1, type.length() - 1);
 
-						String resource = parts[0];
-						resource = resource.substring(resource.lastIndexOf("/") + 1, resource.length() - 1);
-						if (resource.contains("__"))
-							resource = resource.substring(0, resource.lastIndexOf("__"));
+							// manually solve bug in Russian DBpedia (many
+							// "book"
+							// types)
+							if (language == Language.RU && type.equals("Book"))
+								continue;
+							// manually solve bug in Italian DBpedia (many
+							// "Person"
+							// types)
+							if (language == Language.RU && type.equals("Person"))
+								continue;
 
-						String eventKGId = eventKGIdMapping.getEventKGId(dataSet, resource);
-						if (eventKGId == null) {
-							continue;
+							String resource = parts[0];
+							resource = resource.substring(resource.lastIndexOf("/") + 1, resource.length() - 1);
+							if (resource.contains("__"))
+								resource = resource.substring(0, resource.lastIndexOf("__"));
+
+							String eventKGId = eventKGIdMapping.getEventKGId(dataSet, resource);
+							if (eventKGId == null) {
+								continue;
+							}
+							lineNo += 1;
+
+							String lineId = resource + " " + type;
+
+							if (usedLines.contains(lineId))
+								continue;
+							usedLines.add(lineId);
+
+							if (!typesPerEntity.containsKey(eventKGId))
+								typesPerEntity.put(eventKGId, new HashSet<String>());
+
+							typesPerEntity.get(eventKGId).add(type);
+
+							dataStoreWriter.writeTriple(writer, writerPreview, lineNo, dataStoreWriter.getBasePrefix(),
+									eventKGId, prefixList.getPrefix(PrefixEnum.RDF), "type",
+									prefixList.getPrefix(PrefixEnum.DBPEDIA_ONTOLOGY), type, false, dataSet, fileType);
 						}
-						lineNo += 1;
-
-						String lineId = resource + " " + type;
-
-						if (usedLines.contains(lineId))
-							continue;
-						usedLines.add(lineId);
-
-						if (!typesPerEntity.containsKey(eventKGId))
-							typesPerEntity.put(eventKGId, new HashSet<String>());
-
-						typesPerEntity.get(eventKGId).add(type);
-
-						dataStoreWriter.writeTriple(writer, writerPreview, lineNo, dataStoreWriter.getBasePrefix(),
-								eventKGId, prefixList.getPrefix(PrefixEnum.RDF), "type",
-								prefixList.getPrefix(PrefixEnum.DBPEDIA_ONTOLOGY), type, false, dataSet, fileType);
+					} catch (FileNotFoundException e1) {
+						e1.printStackTrace();
+					} finally {
+						br.close();
 					}
-				} catch (FileNotFoundException e1) {
-					e1.printStackTrace();
-				} finally {
-					br.close();
 				}
 
 			}

@@ -52,47 +52,50 @@ public class DBpediaPartOfLoader extends Extractor {
 
 		BufferedReader br = null;
 		try {
-			try {
-				br = FileLoader.getReader(FileName.DBPEDIA_MAPPINGS, language);
-			} catch (FileNotFoundException e1) {
-				e1.printStackTrace();
-			}
-
-			String line;
-			while ((line = br.readLine()) != null) {
-				if (line.startsWith("#"))
-					continue;
-
-				String[] parts = line.split(" ");
-				String property = parts[1];
-
-				if (targetProperties.contains(property) || targetPropertiesNext.contains(property)
-						|| targetPropertiesPrevious.contains(property)) {
-
-					String object = parts[2];
-					String subject = parts[0];
-
-					String fileLine = subject + Config.TAB + property + Config.TAB + object;
-
-					if (foundEvents.contains(fileLine))
-						continue;
-
-					if (targetProperties.contains(property))
-						resultsWriter.write(fileLine + "\n");
-					else if (targetPropertiesNext.contains(property))
-						resultsWriterNextEvents.write(fileLine + "\n");
-					else if (targetPropertiesPrevious.contains(property))
-						resultsWriterPreviousEvents.write(fileLine + "\n");
-
-					foundEvents.add(fileLine);
+			if (FileLoader.fileExists(FileName.DBPEDIA_MAPPINGS, language)) {
+				try {
+					br = FileLoader.getReader(FileName.DBPEDIA_MAPPINGS, language);
+				} catch (FileNotFoundException e1) {
+					e1.printStackTrace();
 				}
 
+				String line;
+				while ((line = br.readLine()) != null) {
+					if (line.startsWith("#"))
+						continue;
+
+					String[] parts = line.split(" ");
+					String property = parts[1];
+
+					if (targetProperties.contains(property) || targetPropertiesNext.contains(property)
+							|| targetPropertiesPrevious.contains(property)) {
+
+						String object = parts[2];
+						String subject = parts[0];
+
+						String fileLine = subject + Config.TAB + property + Config.TAB + object;
+
+						if (foundEvents.contains(fileLine))
+							continue;
+
+						if (targetProperties.contains(property))
+							resultsWriter.write(fileLine + "\n");
+						else if (targetPropertiesNext.contains(property))
+							resultsWriterNextEvents.write(fileLine + "\n");
+						else if (targetPropertiesPrevious.contains(property))
+							resultsWriterPreviousEvents.write(fileLine + "\n");
+
+						foundEvents.add(fileLine);
+					}
+
+				}
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
 		} finally {
 			try {
-				br.close();
+				if (br != null)
+					br.close();
 				resultsWriter.close();
 				resultsWriterPreviousEvents.close();
 				resultsWriterNextEvents.close();
