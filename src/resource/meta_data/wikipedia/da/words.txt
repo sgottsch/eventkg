@@ -1,0 +1,107 @@
+# forbiddenLinks
+
+# forbiddenNameSpaces
+Artikler
+Bruger
+Wikipedia
+Fil
+MediaWiki
+Skabelon
+Hjælp
+Hilfe
+Kategori
+Portal
+Artikeldata
+Modul
+Gadget
+Gadget definition
+Special
+Media
+Wikipedia
+WP
+Brugerdiskussion
+Wikipedia-diskussion
+Fildiskussion
+MediaWiki-diskussion
+Skabelondiskussion
+Hjælp-diskussion
+Kategoridiskussion
+Portaldiskussion
+Artikeldatadiskussion
+Moduldiskussion
+
+# talkSuffix
+
+# talkPrefix
+
+# forbiddenInternalLinks
+WP:
+H:
+P:
+WD:
+HD:
+PD:
+
+# tableOfContents
+Indholdsfortegnelse
+
+# seeAlsoLinkClasses
+detail
+
+# titlesNotToTranslate
+Referencer
+Eksterne henvisninger
+Noter
+Se også
+Kilder
+
+# fileLabels
+Fil
+
+# categoryLabel
+Kategori
+
+# templateLabel
+Skabelon
+
+# imageLabels
+Fil
+Billede
+
+# listPrefixes
+Listen_
+
+# categoryPrefixes
+Kategorie:
+
+# templatePrefixes
+Vorlage:
+
+# eventsLabels
+Begivenheder;Politik;Økonomi;Sport;Årsdage;Forudsigelser og planlagte hændelser;Rummet;Teknologi;Bøger;Musik;Film
+
+# monthNames
+januar;Januar
+februar;Februar
+marts;Marts
+april;April
+maj;Maj
+juni;Juni
+juli;Juli
+august;August
+september;September
+oktober;Oktober
+november;November
+december;December
+
+# weekdayNames
+mandag;Mandag
+tirsdag;Tirsdag
+onsdag;Onsdag
+torsdag;Torsdag
+fredag;Fredag
+lørdag;Lørdag
+søndag;Søndag
+
+# eventCategoryRegexes
+^Begivenheder i .+$
