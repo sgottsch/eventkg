@@ -152,7 +152,7 @@ public class Pipeline {
 		downloader.createFolders();
 		downloader.copyMetaFiles();
 		downloader.downloadFiles();
-		System.out.println("Fisnished download files.");
+		System.out.println("Finished download files.");
 	}
 
 	private void pipelineStep2() {
