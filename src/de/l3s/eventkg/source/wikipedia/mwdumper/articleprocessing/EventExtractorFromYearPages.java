@@ -5,6 +5,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -23,6 +24,7 @@ import de.l3s.eventkg.source.wikipedia.WikiWords;
 import de.l3s.eventkg.source.wikipedia.mwdumper.model.event.Event;
 import de.l3s.eventkg.source.wikipedia.mwdumper.model.event.LineNode;
 import de.l3s.eventkg.source.wikipedia.mwdumper.model.event.PartialDate;
+import de.l3s.eventkg.source.wikipedia.mwdumper.model.event.LineNode.NodeType;
 
 public class EventExtractorFromYearPages {
 	private String text;
@@ -66,6 +68,7 @@ public class EventExtractorFromYearPages {
 		enMap.put(2843484, "1965 in Australia");
 		enMap.put(49041453, "2016 in Philippine sports");
 		enMap.put(34632, "1941");
+		enMap.put(19684, "May 21");
 		exampleTexts.put(Language.EN, enMap);
 
 		Map<Integer, String> deMap = new HashMap<Integer, String>();
@@ -74,6 +77,7 @@ public class EventExtractorFromYearPages {
 		deMap.put(499753, "2014");
 		deMap.put(1531063, "2017");
 		deMap.put(6996295, "Musikjahr 1862");
+		deMap.put(6175, "6. Mai");
 		exampleTexts.put(Language.DE, deMap);
 
 		Map<Integer, String> ruMap = new HashMap<Integer, String>();
@@ -102,8 +106,21 @@ public class EventExtractorFromYearPages {
 		itMap.put(4676, "1987");
 		exampleTexts.put(Language.IT, itMap);
 
-		Language language = Language.IT;
-		int id = 4676;
+		Map<Integer, String> daMap = new HashMap<Integer, String>();
+		daMap.put(13060, "1910");
+		exampleTexts.put(Language.DA, daMap);
+
+		// for (Language language : exampleTexts.keySet()) {
+		// for (int id : exampleTexts.get(language).keySet()) {
+		// Language language = Language.DA;
+		// int id = 13060;
+
+		// Language language = Language.PT;
+		// int id = 28422;
+		Language language = Language.DE;
+		int id = 499753;
+
+		System.out.println(language + " | " + exampleTexts.get(language).get(id));
 
 		// TODO: Do this before
 		WikiWords.getInstance().init(language);
@@ -123,6 +140,9 @@ public class EventExtractorFromYearPages {
 		}
 
 		System.out.println(extr.getEventsOutput());
+		// }
+		// }
+
 	}
 
 	public EventExtractorFromYearPages(String text, int pageId, String title, Language language,
@@ -158,7 +178,6 @@ public class EventExtractorFromYearPages {
 	}
 
 	private void identifyDayPage(String title) {
-
 		MatcherResult mRes = match(EventDateExpressionsAll.getInstance().getDayTitle(), title);
 		if (mRes.getDatePart() != null) {
 			this.day = Integer.valueOf(mRes.getMatcher().group("d1"));
@@ -202,203 +221,260 @@ public class EventExtractorFromYearPages {
 	}
 
 	public void extractEvents() {
-		boolean inEvents = false;
 
-		LineNode root = null;
-		LineNode currentNode = null;
-		LineNode currentSectionNode = null;
+		this.events = new ArrayList<Event>();
 
-		for (String line : this.text.split("\n")) {
+		Set<String> eventLabels = new HashSet<String>();
+		eventLabels.addAll(WikiWords.getInstance().getEventsLabels(language));
+		Map<String, Integer> months = new HashMap<String, Integer>();
+		int monthNo = 1;
+		for (Set<String> monthNames : WikiWords.getInstance().getMonthNames(language)) {
+			for (String monthName : monthNames)
+				months.put(monthName, monthNo);
+			eventLabels.addAll(monthNames);
+			monthNo += 1;
+		}
 
-			try {
+		eventLabelLoop: for (String eventLabel : eventLabels) {
+			boolean inEvents = false;
+			LineNode root = null;
+			LineNode currentNode = null;
+			LineNode currentSectionNode = null;
+			Integer dateLinkResolverLevel = null;
+			LineNode previousNode = null;
+			for (String line : this.text.split("\n")) {
 
-				line = line.trim();
-				// String lineText = StringUtils.strip(line, "= ");
+				try {
 
-				// if (line.replace(" ", "").trim().startsWith("==") &&
-				// !line.replace(" ", "").trim().startsWith("===")) {
-				if (containsAny(line.replace(" ", "").trim(), WikiWords.getInstance().getEventsLabels(language))) {
-					root = new LineNode(line, 0);
-					root.setType(LineNode.NodeType.TITLE);
-					root.getPartialDate().setYear(this.year);
-					if (this.month != null)
-						root.getPartialDate().addMonth(this.month);
-					if (this.day != null)
-						root.getPartialDate().addDay(this.day);
-					currentNode = root;
-					currentSectionNode = root;
-					inEvents = true;
-				}
-				// else if (!inEvents && line.startsWith("=") &&
-				// line.endsWith("="))
-				// {
-				// if (lineText.matches("^"+this.regexMonth+"$")) {
-				// root = new LineNode(line, 0);
-				// root.setType(LineNode.NodeType.TITLE);
-				// root.getPartialDate().setYear(this.year);
-				// if (this.month != null)
-				// root.getPartialDate().addMonth(this.month);
-				// if (this.day != null)
-				// root.getPartialDate().addDay(this.day);
-				// currentNode = root;
-				// currentSectionNode = root;
-				// inEvents = true;
-				// }
-				// }
-				else {
-					if (inEvents && line.trim().matches("^==[^=].*")) {
-						inEvents = false;
-						break;
+					line = line.trim();
+					// String lineText = StringUtils.strip(line, "= ");
+					// if (line.replace(" ", "").trim().startsWith("==") &&
+					// !line.replace(" ", "").trim().startsWith("===")) {
+					// if (line.startsWith("==")&&containsAny(line.replace(" ",
+					// "").trim(),
+					// WikiWords.getInstance().getEventsLabels(language))) {
+					if (line.startsWith("==") && line.endsWith("==") && !line.startsWith("===")
+							&& StringUtils.strip(line.replace(" ", "").trim(), "=").equals(eventLabel)) {
+						root = new LineNode(line, 0);
+						root.setType(LineNode.NodeType.TITLE);
+						root.getPartialDate().setYear(this.year);
+						if (months.containsKey(eventLabel)) {
+							root.getPartialDate().addMonth(months.get(eventLabel));
+						}
+						if (this.month != null)
+							root.getPartialDate().addMonth(this.month);
+						if (this.day != null)
+							root.getPartialDate().addDay(this.day);
+
+						currentNode = root;
+						currentSectionNode = root;
+						inEvents = true;
 					}
-					if (inEvents && !line.isEmpty()) {
-						if (line.startsWith("*") || line.startsWith("=")) {
+					// else if (!inEvents && line.startsWith("=") &&
+					// line.endsWith("="))
+					// {
+					// if (lineText.matches("^"+this.regexMonth+"$")) {
+					// root = new LineNode(line, 0);
+					// root.setType(LineNode.NodeType.TITLE);
+					// root.getPartialDate().setYear(this.year);
+					// if (this.month != null)
+					// root.getPartialDate().addMonth(this.month);
+					// if (this.day != null)
+					// root.getPartialDate().addDay(this.day);
+					// currentNode = root;
+					// currentSectionNode = root;
+					// inEvents = true;
+					// }
+					// }
+					else {
+						if (inEvents && line.trim().matches("^==[^=].*")) {
+							inEvents = false;
+							break;
+						}
+						if (inEvents && !line.isEmpty()) {
 
-							if (line.startsWith("=")) {
-								int level = countOccurencesOfCharacter(line, Character.valueOf('=')) - 2;
+							boolean foundDateLink = false;
 
-								line = StringUtils.stripStart(line, "=");
-								line = StringUtils.stripEnd(line, "=").trim();
-								if (!line.isEmpty()) {
+							for (Pattern dateLinkResolver : this.eventDateExpressions.getDateLinkResolvers()) {
+								Matcher matcher = dateLinkResolver.matcher(line);
+								if (matcher.matches()) {
+									// Portuguese page have situations like
+									// [[3 de agosto]]
+									// * Neymar é oficialmente contratado ...
+									if (dateLinkResolverLevel == null)
+										dateLinkResolverLevel = currentNode.getLevel() + 1;
+
+									int level = dateLinkResolverLevel;
 									LineNode node = new LineNode(line, level);
-									node.setType(LineNode.NodeType.TITLE);
+									node.setType(NodeType.DATE);
+									currentNode.addChild(node);
+									previousNode = currentNode;
+									currentSectionNode = node;
+									currentNode = node;
+									foundDateLink = true;
+									break;
+								}
+							}
+
+							if (!foundDateLink && (line.startsWith("*") || line.startsWith("="))) {
+
+								if (line.startsWith("=")) {
+									int level = countOccurencesOfCharacter(line, Character.valueOf('=')) - 2;
+
+									line = StringUtils.stripStart(line, "=");
+									line = StringUtils.stripEnd(line, "=").trim();
+									if (!line.isEmpty()) {
+										LineNode node = new LineNode(line, level);
+										node.setType(LineNode.NodeType.TITLE);
+										if (currentNode.getLevel() == level) {
+											currentNode.getParent().addChild(node);
+										} else if (currentNode.getLevel() < level) {
+											currentNode.addChild(node);
+										} else {
+											try {
+												currentNode.getParentAtLevel(level - 1).addChild(node);
+											} catch (NullPointerException e) {
+												System.err.println(
+														"Error with page " + this.pageId + ": " + this.pageTitle);
+												System.err.println(e.getMessage() + "\n" + e.getStackTrace());
+											}
+										}
+										currentSectionNode = node;
+										currentNode = node;
+									}
+								} else if (line.startsWith("*")) {
+									int level = countOccurencesOfCharacter(line, Character.valueOf('*'));
+									line = line.substring(countOccurencesOfCharacter(line, Character.valueOf('*')),
+											line.length()).trim();
+									level += currentSectionNode.getLevel();
+									LineNode node = new LineNode(line, level);
+									node.setType(LineNode.NodeType.LINE);
 									if (currentNode.getLevel() == level) {
 										currentNode.getParent().addChild(node);
 									} else if (currentNode.getLevel() < level) {
 										currentNode.addChild(node);
 									} else {
-										try {
-											currentNode.getParentAtLevel(level - 1).addChild(node);
-										} catch (NullPointerException e) {
-											System.err
-													.println("Error with page " + this.pageId + ": " + this.pageTitle);
-											System.err.println(e.getMessage() + "\n" + e.getStackTrace());
-										}
+										currentNode.getParentAtLevel(level - 1).addChild(node);
 									}
-									currentSectionNode = node;
 									currentNode = node;
 								}
-							} else if (line.startsWith("*")) {
-								int level = countOccurencesOfCharacter(line, Character.valueOf('*'));
-								line = line.substring(countOccurencesOfCharacter(line, Character.valueOf('*')),
-										line.length()).trim();
-								level += currentSectionNode.getLevel();
-								LineNode node = new LineNode(line, level);
-								node.setType(LineNode.NodeType.LINE);
-								if (currentNode.getLevel() == level) {
-									currentNode.getParent().addChild(node);
-								} else if (currentNode.getLevel() < level) {
-									currentNode.addChild(node);
-								} else {
-									currentNode.getParentAtLevel(level - 1).addChild(node);
-								}
-								currentNode = node;
+							} else if (!foundDateLink && previousNode != null) {
+								currentSectionNode = root;
+								currentNode = root;
 							}
 						}
 					}
-				}
 
-			} catch (NullPointerException e) {
-				System.err.println("Error 1 with page " + this.pageId + ": " + this.pageTitle);
-				System.err.println(e.getMessage() + "\n" + e.getStackTrace());
+				} catch (NullPointerException e) {
+					System.err.println("Error 1 with page " + this.pageId + ": " + this.pageTitle);
+					System.err.println(e.getMessage() + "\n" + e.getStackTrace());
+				}
 			}
-		}
 
-		if (root == null) {
-			return;
-		}
-		PartialDate rootDate = new PartialDate();
-		root.setPartialDate(rootDate);
+			// if (root == null) {
+			// return;
+			// }
 
-		if (this.year != null)
+			if (root == null)
+				continue eventLabelLoop;
+
+			PartialDate rootDate = new PartialDate();
+			root.setPartialDate(rootDate);
+
 			root.getPartialDate().setYear(this.year);
-		if (this.month != null) {
-			root.getPartialDate().addMonth(this.month);
-			root.getPartialDate().addDay(this.day);
-		}
-		extractDates(root, this.pageTitle.replace(">", "-"));
+			if (this.month != null) {
+				root.getPartialDate().addMonth(this.month);
+				root.getPartialDate().addDay(this.day);
+			}
+			if (months.containsKey(eventLabel)) {
+				root.getPartialDate().addMonth(months.get(eventLabel));
+			}
+			extractDates(root, this.pageTitle.replace(">", "-"));
 
-		this.events = new ArrayList<Event>();
-		extractEvents(root);
+			extractEvents(root);
 
-		for (Event event : this.events) {
+			for (Event event : this.events) {
 
-			try {
-				boolean changed = true;
-				while (changed) {
+				try {
+					boolean changed = true;
+					while (changed) {
 
-					changed = false;
-					Pattern p = ReferenceAndTemplateRemover.getInstance(language).getLinksFindPattern();
+						changed = false;
+						Pattern p = ReferenceAndTemplateRemover.getInstance(language).getLinksFindPattern();
 
-					// on https://en.wikipedia.org/wiki/1941, it says "Below,
-					// the events of World War II have the "WWII" prefix."
-					// Resolve that.
-					String rawText = event.getRawText();
-					if (language == Language.EN && rawText.startsWith("WWII:"))
-						rawText = rawText.replaceFirst("WWII:", "[[World_War_II]]:");
-					if (language == Language.EN && rawText.startsWith("WWI:"))
-						rawText = rawText.replaceFirst("WWI:", "[[World_War_I]]:");
+						// on https://en.wikipedia.org/wiki/1941, it says
+						// "Below,
+						// the events of World War II have the "WWII" prefix."
+						// Resolve that.
+						String rawText = event.getRawText();
+						if (language == Language.EN && rawText.startsWith("WWII:"))
+							rawText = rawText.replaceFirst("WWII:", "[[World_War_II]]:");
+						if (language == Language.EN && rawText.startsWith("WWI:"))
+							rawText = rawText.replaceFirst("WWI:", "[[World_War_I]]:");
 
-					Matcher m = p.matcher(rawText);
+						Matcher m = p.matcher(rawText);
 
-					StringBuffer sb = new StringBuffer();
-					while (m.find()) {
-						String linkName;
-						changed = true;
-						String anchorText = linkName = m.group().substring(2, m.group().length() - 2);
+						StringBuffer sb = new StringBuffer();
+						while (m.find()) {
+							String linkName;
+							changed = true;
+							String anchorText = linkName = m.group().substring(2, m.group().length() - 2);
 
-						boolean starts = false;
-						for (String label : WikiWords.getInstance().getFileLabel(language))
-							if (linkName.startsWith(label + ":"))
-								starts = true;
-						for (String label : WikiWords.getInstance().getImageLabels(language))
-							if (linkName.startsWith(label + ":"))
-								starts = true;
+							boolean starts = false;
+							for (String label : WikiWords.getInstance().getFileLabel(language))
+								if (linkName.startsWith(label + ":"))
+									starts = true;
+							for (String label : WikiWords.getInstance().getImageLabels(language))
+								if (linkName.startsWith(label + ":"))
+									starts = true;
 
-						if (starts) {
-							m.appendReplacement(sb, "");
-							continue;
-						}
+							if (starts) {
+								m.appendReplacement(sb, "");
+								continue;
+							}
 
-						// detect leading links as in "Stati Uniti: tragico
-						// suicidio in diretta televisiva". The link needs to
-						// stay, but it should be removed from the text.
-						boolean isLeadingLink = false;
-						if (m.start() == 0 && rawText.length() > m.end() && rawText.charAt(m.end()) == ':')
-							isLeadingLink = true;
+							// detect leading links as in "Stati Uniti: tragico
+							// suicidio in diretta televisiva". The link needs
+							// to
+							// stay, but it should be removed from the text.
+							boolean isLeadingLink = false;
+							if (m.start() == 0 && rawText.length() > m.end() && rawText.charAt(m.end()) == ':')
+								isLeadingLink = true;
 
-						if (linkName.contains("|")) {
-							anchorText = linkName.substring(linkName.indexOf("|") + 1, linkName.length());
-							linkName = linkName.substring(0, linkName.indexOf("|"));
-						}
-						String insertedAnchorText = Matcher.quoteReplacement(anchorText);
+							if (linkName.contains("|")) {
+								anchorText = linkName.substring(linkName.indexOf("|") + 1, linkName.length());
+								linkName = linkName.substring(0, linkName.indexOf("|"));
+							}
+							String insertedAnchorText = Matcher.quoteReplacement(anchorText);
 
-						if (isLeadingLink)
-							m.appendReplacement(sb, "");
-						else
-							m.appendReplacement(sb, insertedAnchorText);
-
-						if (linkName.equals("#"))
-							continue;
-
-						linkName = resolveRedirects(linkName);
-						if (linkName == null)
-							continue;
-
-						if (!linkName.contains("#")) {
 							if (isLeadingLink)
-								event.setLeadingLink(linkName);
+								m.appendReplacement(sb, "");
 							else
-								event.addLink(linkName);
+								m.appendReplacement(sb, insertedAnchorText);
+
+							if (linkName.equals("#"))
+								continue;
+
+							linkName = resolveRedirects(linkName);
+							if (linkName == null)
+								continue;
+
+							if (!linkName.contains("#")) {
+								if (isLeadingLink)
+									event.setLeadingLink(linkName);
+								else
+									event.addLink(linkName);
+							}
+
 						}
-
+						m.appendTail(sb);
+						event.setRawText(sb.toString());
 					}
-					m.appendTail(sb);
-					event.setRawText(sb.toString());
-				}
 
-			} catch (NullPointerException e) {
-				System.err.println("Error 2 with page " + this.pageId + ": " + this.pageTitle);
-				System.err.println(e.getMessage() + "\n" + e.getStackTrace());
+				} catch (NullPointerException e) {
+					System.err.println("Error 2 with page " + this.pageId + ": " + this.pageTitle);
+					System.err.println(e.getMessage() + "\n" + e.getStackTrace());
+				}
 			}
 		}
 
@@ -423,15 +499,6 @@ public class EventExtractorFromYearPages {
 		}
 
 		this.eventsOutput = StringUtils.join(lines, Config.NL);
-	}
-
-	private boolean containsAny(String stack, Set<String> needles) {
-
-		for (String needle : needles)
-			if (stack.contains(needle))
-				return true;
-
-		return false;
 	}
 
 	private String resolveRedirects(String linkName) {
@@ -470,9 +537,9 @@ public class EventExtractorFromYearPages {
 	private void extractEvents(LineNode node) {
 		Date startDate = null;
 		Date endDate = null;
+
 		if (node.getLine() != null && node.getType() != LineNode.NodeType.DATE
 				&& node.getPartialDate().getYear() != null) {
-
 			startDate = node.getPartialDate().transformToStartDate();
 			endDate = node.getPartialDate().transformToEndDate();
 
@@ -537,7 +604,7 @@ public class EventExtractorFromYearPages {
 		line = removeDateLinks(line);
 
 		// remove leading weekdays
-		line = line.replaceAll("^" + eventDateExpressions.getRegexWeekdays(), "");
+		line = line.replaceAll("^" + EventDateExpressionsAll.getInstance().getRegexWeekdays(), "");
 		// remove leading "?" for unknown exact dates as in " ? - Conquista do
 		// Japão na Coreia."
 		line = line.replaceAll("^\\?", "");
@@ -550,16 +617,18 @@ public class EventExtractorFromYearPages {
 		String textPart = line;
 
 		for (DatePattern datePattern : this.eventDateExpressions.getDatePatterns()) {
-			// System.out.println(datePattern.getPattern());
 			MatcherResult mRes = match(datePattern.getPattern(), line);
 			if (mRes.getDatePart() != null) {
 				if (this.year != null && (datePattern.hasM1() || !datePattern.hasM2()))
 					date.resetMonths();
 
-				if (datePattern.hasD1())
+				if (datePattern.hasD1()) {
+					date.resetDays();
 					date.addDay(Integer.valueOf(mRes.getMatcher().group("d1")));
-				if (datePattern.hasD2())
+				}
+				if (datePattern.hasD2()) {
 					date.addDay(Integer.valueOf(mRes.getMatcher().group("d2")));
+				}
 
 				if (datePattern.hasM1())
 					date.addMonth(
@@ -618,6 +687,7 @@ public class EventExtractorFromYearPages {
 	}
 
 	private MatcherResult match(Pattern pattern, String line) {
+
 		Matcher matcher = pattern.matcher(line);
 		String datePart = null;
 		String textPart = line;

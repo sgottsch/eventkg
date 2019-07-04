@@ -137,15 +137,16 @@ public class PartialDate {
 		}
 		Calendar calendar = Calendar.getInstance();
 		calendar.clear();
-		calendar.set(1, this.year.intValue());
-		calendar.set(2, month.intValue());
-		if (day == null) {
-			calendar.set(5, calendar.getActualMaximum(5));
-		} else {
-			calendar.set(5, day.intValue());
-		}
-		Date date = calendar.getTime();
+		calendar.set(Calendar.YEAR, this.year.intValue());
+		calendar.set(Calendar.MONTH, month.intValue());
 
+		if (day == null) {
+			calendar.set(Calendar.DAY_OF_MONTH, calendar.getActualMaximum(5));
+		} else {
+			calendar.set(Calendar.DAY_OF_MONTH, day.intValue());
+		}
+
+		Date date = calendar.getTime();
 		return date;
 	}
 
@@ -161,5 +162,9 @@ public class PartialDate {
 
 	public void resetMonths() {
 		this.months = new ArrayList<Integer>();
+	}
+
+	public void resetDays() {
+		this.days = new ArrayList<Integer>();
 	}
 }

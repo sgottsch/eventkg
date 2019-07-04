@@ -58,7 +58,6 @@ public class EventDateExpressionsAll {
 		this.language = language;
 
 		this.monthNames = WikiWords.getInstance().getMonthNames(language);
-
 		this.regexMonth = WikiWords.getInstance().getMonthRegex(language);
 		this.regexWeekdays = WikiWords.getInstance().getWeekdayRegex(language);
 		String regexMonth1 = "(?<m1>" + this.regexMonth.substring(1);
@@ -108,7 +107,6 @@ public class EventDateExpressionsAll {
 		this.dayTitle = Pattern.compile(createPatternString(this.entriesPerType.get("dayTitle").get(0)));
 
 		initYearTitlePatterns();
-		
 	}
 
 	private void parseFile() {
@@ -145,7 +143,7 @@ public class EventDateExpressionsAll {
 
 		for (String line : entriesPerType.get("new regexes")) {
 			String placeholderId = line.split("\t")[0].trim();
-			placeholderId=placeholderId.substring(1, placeholderId.length()-1);
+			placeholderId = placeholderId.substring(1, placeholderId.length() - 1);
 			this.placeHolders.put(placeholderId, createPatternString(line.split("\t")[1].trim()));
 		}
 
@@ -194,7 +192,6 @@ public class EventDateExpressionsAll {
 	}
 
 	public Integer getMonth(String monthName) {
-
 		for (int i = 0; i < this.monthNames.size(); i++) {
 			if (this.monthNames.get(i).contains(monthName)) {
 				return Integer.valueOf(i + 1);

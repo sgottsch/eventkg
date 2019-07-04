@@ -34,8 +34,6 @@ public class WikiWords {
 	private HashMap<Language, Set<String>> categoryPrefixes = new HashMap<Language, Set<String>>();
 	private Map<Language, Set<String>> eventsLabels = new HashMap<Language, Set<String>>();
 
-	private Map<Language, List<Set<String>>> monthNames;
-	private Map<Language, List<Set<String>>> weekdayNames;
 	private Map<Language, String> monthRegex = new HashMap<Language, String>();
 	private Map<Language, String> weekdayRegex = new HashMap<Language, String>();
 
@@ -45,9 +43,8 @@ public class WikiWords {
 
 	private Set<String> forbiddenImages;
 
-	private Map<Language, List<String>> monthNamesOfLanguage = new HashMap<Language, List<String>>();
-
-	private Map<Language, List<String>> weekdayNamesOfLanguage = new HashMap<Language, List<String>>();
+	private Map<Language, List<Set<String>>> monthNames = new HashMap<Language, List<Set<String>>>();
+	private Map<Language, List<Set<String>>> weekdayNames = new HashMap<Language, List<Set<String>>>();
 
 	public static WikiWords getInstance() {
 		if (instance == null) {
@@ -71,7 +68,7 @@ public class WikiWords {
 			try {
 				br = FileLoader.getReader(FileName.WIKIPEDIA_META_WORDS, language);
 
-				Map<String, List<String>> entriesPerType = new HashMap<String, List<String>>();
+				Map<String, List<Set<String>>> entriesPerType = new HashMap<String, List<Set<String>>>();
 				Map<String, String> singleEntriesPerType = new HashMap<String, String>();
 				String line;
 				String currentType = null;
@@ -82,9 +79,12 @@ public class WikiWords {
 						currentType = line.substring(1).trim();
 					else {
 						if (!entriesPerType.containsKey(currentType)) {
-							entriesPerType.put(currentType, new ArrayList<String>());
+							entriesPerType.put(currentType, new ArrayList<Set<String>>());
 						}
-						entriesPerType.get(currentType).add(line.trim());
+						Set<String> words = new HashSet<String>();
+						entriesPerType.get(currentType).add(words);
+						for (String word : line.trim().split(";"))
+							words.add(word);
 						// if (singleEntriesPerType.containsKey(currentType)) {
 						// throw new IllegalArgumentException(currentType + "
 						// may only have one value.");
@@ -126,12 +126,18 @@ public class WikiWords {
 							talkPrefix = singleEntriesPerType.get(type);
 						break;
 					case "forbiddenNameSpaces":
-						for (String value : entriesPerType.get(type))
-							forbiddenNameSpaces.add(value);
+						for (Set<String> values : entriesPerType.get(type)) {
+							for (String value : values) {
+								forbiddenNameSpaces.add(value);
+							}
+						}
 						break;
 					case "forbiddenInternalLinks":
-						for (String value : entriesPerType.get(type))
-							forbiddenInternalLinksOfLanguage.add(value);
+						for (Set<String> values : entriesPerType.get(type)) {
+							for (String value : values) {
+								forbiddenInternalLinksOfLanguage.add(value);
+							}
+						}
 						break;
 					case "categoryLabel":
 						this.categoryLabels.put(language, singleEntriesPerType.get(type));
@@ -155,17 +161,19 @@ public class WikiWords {
 						addValues(this.eventsLabels, language, entriesPerType, type);
 						break;
 					case "monthNames":
-						addValuesInOrder(this.monthNamesOfLanguage, language, entriesPerType, type);
+						addValuesInOrder(this.monthNames, language, entriesPerType, type);
 						break;
 					case "weekdayNames":
-						addValuesInOrder(this.weekdayNamesOfLanguage, language, entriesPerType, type);
+						addValuesInOrder(this.weekdayNames, language, entriesPerType, type);
 						break;
 					case "eventCategoryRegexes":
 						if (this.eventCategoryRegexes == null)
 							this.eventCategoryRegexes = new HashMap<Language, Set<Pattern>>();
 						this.eventCategoryRegexes.put(language, new HashSet<Pattern>());
-						for (String value : entriesPerType.get(type))
-							this.eventCategoryRegexes.get(language).add(Pattern.compile(value));
+						for (Set<String> values : entriesPerType.get(type)) {
+							for (String value : values)
+								this.eventCategoryRegexes.get(language).add(Pattern.compile(value));
+						}
 						break;
 					default:
 						break;
@@ -203,19 +211,36 @@ public class WikiWords {
 
 	}
 
-	private void addValues(Map<Language, Set<String>> map, Language language, Map<String, List<String>> entriesPerType,
-			String type) {
-		map.put(language, new HashSet<String>());
-		for (String value : entriesPerType.get(type))
-			map.get(language).add(value);
+	private void addValuesInOrder(Map<Language, List<Set<String>>> map, Language language,
+			Map<String, List<Set<String>>> entriesPerType, String type) {
+
+		map.put(language, new ArrayList<Set<String>>());
+
+		for (Set<String> values : entriesPerType.get(type)) {
+			Set<String> aliases = new HashSet<String>();
+			for (String alias : values)
+				aliases.add(alias);
+			map.get(language).add(aliases);
+		}
 	}
 
-	private void addValuesInOrder(Map<Language, List<String>> map, Language language,
-			Map<String, List<String>> entriesPerType, String type) {
-		map.put(language, new ArrayList<String>());
-		for (String value : entriesPerType.get(type))
-			map.get(language).add(value);
+	private void addValues(Map<Language, Set<String>> map, Language language,
+			Map<String, List<Set<String>>> entriesPerType, String type) {
+		map.put(language, new HashSet<String>());
+		for (Set<String> values : entriesPerType.get(type)) {
+			for (String value : values)
+				map.get(language).add(value);
+		}
 	}
+
+	// private void addValuesInOrder(Map<Language, List<String>> map, Language
+	// language,
+	// Map<String, List<String>> entriesPerType, String type) {
+	// map.put(language, new ArrayList<String>());
+	// for (String value : entriesPerType.get(type)) {
+	// map.get(language).add(value);
+	// }
+	// }
 
 	public Set<String> getForbiddenInternalLinks(Language language) {
 		return this.forbiddenInternalLinks.get(language);
@@ -312,14 +337,6 @@ public class WikiWords {
 		return imageLabels.get(language);
 	}
 
-	private List<String> getMonthNamesSemicolonSeparated(Language language) {
-		return this.monthNamesOfLanguage.get(language);
-	}
-
-	private List<String> getWeekdayNamesSemicolonSeparated(Language language) {
-		return this.weekdayNamesOfLanguage.get(language);
-	}
-
 	public Set<String> getListPrefixes(Language language) {
 		return listPrefixes.get(language);
 	}
@@ -337,49 +354,11 @@ public class WikiWords {
 	}
 
 	public List<Set<String>> getMonthNames(Language language) {
-
-		if (this.monthNames == null)
-			this.monthNames = new HashMap<Language, List<Set<String>>>();
-
-		if (this.monthNames.containsKey(language))
-			return this.monthNames.get(language);
-
-		List<Set<String>> monthNamesOfLanguage = new ArrayList<Set<String>>();
-		this.monthNames.put(language, monthNamesOfLanguage);
-
-		List<String> monthNamesSeparated = getMonthNamesSemicolonSeparated(language);
-
-		for (int i = 0; i < 12; i++) {
-			Set<String> monthNameOptions = new HashSet<String>();
-			for (String name : monthNamesSeparated.get(i).split(";"))
-				monthNameOptions.add(name);
-			monthNamesOfLanguage.add(monthNameOptions);
-		}
-
-		return monthNamesOfLanguage;
+		return this.monthNames.get(language);
 	}
 
 	public List<Set<String>> getWeekdayNames(Language language) {
-
-		if (this.weekdayNames == null)
-			this.weekdayNames = new HashMap<Language, List<Set<String>>>();
-
-		if (this.weekdayNames.containsKey(language))
-			return this.weekdayNames.get(language);
-
-		List<Set<String>> weekdayNamesOfLanguage = new ArrayList<Set<String>>();
-		this.weekdayNames.put(language, weekdayNamesOfLanguage);
-
-		List<String> weekdayNamesSeparated = getWeekdayNamesSemicolonSeparated(language);
-
-		for (int i = 0; i < 7; i++) {
-			Set<String> weekdayNameOptions = new HashSet<String>();
-			for (String name : weekdayNamesSeparated.get(i).split(";"))
-				weekdayNameOptions.add(name);
-			weekdayNamesOfLanguage.add(weekdayNameOptions);
-		}
-
-		return weekdayNamesOfLanguage;
+		return weekdayNames.get(language);
 	}
 
 	public String getMonthRegex(Language language) {

@@ -13,7 +13,6 @@ public class EventDateExpressions {
 	private List<DatePattern> datePatterns;
 
 	private String regexMonth;
-	private String regexWeekdays;
 
 	private Set<Pattern> dateTemplatePatterns;
 
@@ -31,7 +30,7 @@ public class EventDateExpressions {
 	public void init() {
 
 		String regexDay1 = EventDateExpressionsAll.getInstance().getPlaceHolder("regexDay1");
-		String regexYear = EventDateExpressionsAll.getInstance().getPlaceHolder("regexYear	");
+		String regexYear = EventDateExpressionsAll.getInstance().getPlaceHolder("regexYear");
 		String regexMonth1 = EventDateExpressionsAll.getInstance().getPlaceHolder("regexMonth1");
 
 		this.datePatterns = new ArrayList<DatePattern>();
@@ -288,10 +287,6 @@ public class EventDateExpressions {
 
 	public String getRegexMonth() {
 		return regexMonth;
-	}
-
-	public String getRegexWeekdays() {
-		return regexWeekdays;
 	}
 
 	public Set<Pattern> getDateTemplatePatterns() {
