@@ -104,10 +104,13 @@ public class EventExtractorFromYearPages {
 
 		Map<Integer, String> itMap = new HashMap<Integer, String>();
 		itMap.put(4676, "1987");
+		itMap.put(4947, "30 gennaio");
 		exampleTexts.put(Language.IT, itMap);
 
 		Map<Integer, String> daMap = new HashMap<Integer, String>();
 		daMap.put(13060, "1910");
+		daMap.put(482, "1972");
+		daMap.put(11529, "30. januar");
 		exampleTexts.put(Language.DA, daMap);
 
 		// for (Language language : exampleTexts.keySet()) {
@@ -117,8 +120,8 @@ public class EventExtractorFromYearPages {
 
 		// Language language = Language.PT;
 		// int id = 28422;
-		Language language = Language.DE;
-		int id = 499753;
+		Language language = Language.EN;
+		int id = 19684;
 
 		System.out.println(language + " | " + exampleTexts.get(language).get(id));
 
@@ -139,6 +142,7 @@ public class EventExtractorFromYearPages {
 			e.printStackTrace();
 		}
 
+		System.out.println("isYearOrDayPage: " + extr.isYearOrDayPage());
 		System.out.println(extr.getEventsOutput());
 		// }
 		// }
