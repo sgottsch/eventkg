@@ -172,7 +172,7 @@ public class WikiWords {
 						this.eventCategoryRegexes.put(language, new HashSet<Pattern>());
 						for (Set<String> values : entriesPerType.get(type)) {
 							for (String value : values)
-								this.eventCategoryRegexes.get(language).add(Pattern.compile(value));
+								this.eventCategoryRegexes.get(language).add(Pattern.compile(value.replace(" ", "_")));
 						}
 						break;
 					default:

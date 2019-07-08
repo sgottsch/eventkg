@@ -454,6 +454,13 @@ public class DataStoreWriter {
 						prefixList.getPrefix(PrefixEnum.RDF), "type", prefixList.getPrefix(PrefixEnum.SEM), "Event",
 						false, DataSets.getInstance().getDataSetWithoutLanguage(Source.EVENT_KG), fileType);
 
+				if (event.isRecurring()) {
+					writeTriple(writer, writerPreview, lineNo, this.basePrefix, event.getId(),
+							prefixList.getPrefix(PrefixEnum.RDF), "type",
+							prefixList.getPrefix(PrefixEnum.EVENT_KG_SCHEMA), "EventSeries", false,
+							DataSets.getInstance().getDataSetWithoutLanguage(Source.EVENT_KG), fileType);
+				}
+
 				if (event.getWikidataId() != null)
 					writeTriple(writer, writerPreview, lineNo, this.basePrefix, event.getId(),
 							prefixList.getPrefix(PrefixEnum.OWL), "sameAs",
@@ -956,12 +963,6 @@ public class DataStoreWriter {
 			for (Event event : dataStore.getEvents()) {
 
 				int lineNoPlusOne = lineNo + 1;
-
-				if (event.isRecurring()) {
-					writeTriple(writer, writerPreview, lineNo, this.basePrefix, event.getId(),
-							prefixList.getPrefix(PrefixEnum.EVENT_KG_SCHEMA), "isRecurring", null,
-							createLiteral("true", LiteralDataType.BOOLEAN), false, null, fileType);
-				}
 
 				for (Event parentEvent : event.getParents()) {
 					lineNo += 1;

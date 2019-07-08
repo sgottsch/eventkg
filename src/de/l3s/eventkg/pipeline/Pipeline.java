@@ -40,6 +40,7 @@ import de.l3s.eventkg.source.dbpedia.DBpediaTimesExtractor;
 import de.l3s.eventkg.source.wikidata.WikidataEventsFromFileFinder;
 import de.l3s.eventkg.source.wikidata.WikidataExtractionWithEventPages;
 import de.l3s.eventkg.source.wikidata.WikidataExtractionWithoutEventPages;
+import de.l3s.eventkg.source.wikidata.WikidataRecurringEventEditionsFromFileFinder;
 import de.l3s.eventkg.source.wikidata.WikidataRecurringEventsFromFileFinder;
 import de.l3s.eventkg.source.wikipedia.LabelsAndDescriptionsExtractor;
 import de.l3s.eventkg.source.wikipedia.WikiWords;
@@ -183,7 +184,7 @@ public class Pipeline {
 		extractors.add(new WikidataExtractionWithoutEventPages(languages));
 
 		for (Extractor extractor : extractors) {
-			System.out.println(extractor.getName() + ", " + extractor.getSource() + " - " + extractor.getDescription());
+			extractor.printInformation();
 			extractor.run();
 		}
 	}
@@ -194,12 +195,13 @@ public class Pipeline {
 
 		extractors.add(new WikidataEventsFromFileFinder(languages));
 		extractors.add(new WikidataRecurringEventsFromFileFinder(languages));
+		extractors.add(new WikidataRecurringEventEditionsFromFileFinder(languages));
 		extractors.add(new DBpediaAllLocationsLoader(languages));
 		// First step of integration
 		extractors.add(new DataCollector(languages));
 
 		for (Extractor extractor : extractors) {
-			System.out.println(extractor.getName() + ", " + extractor.getSource() + " - " + extractor.getDescription());
+			extractor.printInformation();
 			extractor.run();
 		}
 	}
@@ -215,7 +217,7 @@ public class Pipeline {
 		extractors.add(new WikidataExtractionWithEventPages(languages, getAllEventPagesDataSet(true)));
 
 		for (Extractor extractor : extractors) {
-			System.out.println(extractor.getName() + ", " + extractor.getSource() + " - " + extractor.getDescription());
+			extractor.printInformation();
 			extractor.run();
 		}
 
@@ -272,7 +274,7 @@ public class Pipeline {
 		extractors.add(new LabelsAndDescriptionsExtractor(languages, getAllEventPagesDataSet(true))); //
 
 		for (Extractor extractor : extractors) {
-			System.out.println(extractor.getName() + ", " + extractor.getSource() + " - " + extractor.getDescription());
+			extractor.printInformation();
 			extractor.run();
 		}
 
@@ -322,7 +324,7 @@ public class Pipeline {
 		extractors.add(new RelationsIntegrator(languages));
 
 		for (Extractor extractor : extractors) {
-			System.out.println(extractor.getName() + ", " + extractor.getSource() + " - " + extractor.getDescription());
+			extractor.printInformation();
 			extractor.run();
 		}
 
@@ -347,7 +349,7 @@ public class Pipeline {
 		extractors.add(new WikipediaLinkSetsExtractor(languages, getAllEventPagesDataSet(false)));
 
 		for (Extractor extractor : extractors) {
-			System.out.println(extractor.getName() + ", " + extractor.getSource() + " - " + extractor.getDescription());
+			extractor.printInformation();
 			extractor.run();
 		}
 
@@ -359,6 +361,7 @@ public class Pipeline {
 
 	private void pipelineStep8() {
 		TypesWriter extractor = new TypesWriter(languages);
+		extractor.printInformation();
 		extractor.run();
 	}
 

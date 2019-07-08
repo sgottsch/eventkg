@@ -1358,6 +1358,42 @@ public class DataCollector extends Extractor {
 			}
 		}
 
+		BufferedReader br2 = null;
+		try {
+			try {
+				br2 = FileLoader.getReader(FileName.WIKIDATA_RECURRENT_EVENT_EDITIONS);
+			} catch (FileNotFoundException e1) {
+				e1.printStackTrace();
+			}
+
+			String line;
+			while ((line = br2.readLine()) != null) {
+
+				String[] parts = line.split(Config.TAB);
+				String wikiLabel = parts[2].replaceAll(" ", "_");
+
+				// TODO: Is this correct?
+				wikiLabel = wikiLabel.replaceAll(" ", "_");
+				if (wikiLabel.startsWith("List_of_") || wikiLabel.startsWith("Lists_of_"))
+					continue;
+
+				Entity entityTmp = getEntityFromWikidataId(parts[0]);
+				if (entityTmp != null && entityTmp.isEvent()) {
+					((Event) entityTmp).setRecurring(false);
+					((Event) entityTmp).setRecurrentEventEdition(true);
+					numberOfWikidataEvents += 1;
+				}
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				br2.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+
 		System.out.println("Number of recurring events extracted from Wikidata: " + numberOfWikidataEvents);
 	}
 

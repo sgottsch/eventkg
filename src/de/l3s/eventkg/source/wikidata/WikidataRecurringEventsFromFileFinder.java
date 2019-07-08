@@ -110,6 +110,7 @@ public class WikidataRecurringEventsFromFileFinder extends Extractor {
 		for (String line : FileLoader.readLines(FileName.WIKIDATA_EVENT_BLACKLIST_CLASSES)) {
 			forbiddenClasses.add(line.split("\t")[0]);
 		}
+		forbiddenClasses.add(WikidataResource.RECURRENT_EVENT_EDITION.getId());
 
 		Set<String> allClasses = new HashSet<String>();
 

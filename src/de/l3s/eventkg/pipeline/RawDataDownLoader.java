@@ -205,6 +205,9 @@ public class RawDataDownLoader {
 
 		for (Language language : this.languages) {
 
+			if (language != Language.DA)
+				continue;
+
 			String wikiName = language.getWiki();
 			String dumpDate = Config.getValue(wikiName);
 
@@ -217,12 +220,33 @@ public class RawDataDownLoader {
 				Document doc = Jsoup.connect(baseUrl).get();
 				Elements links = doc.select("a[href]");
 
+				// Big Wikipedias have singles files like
+				// "itwiki-20190701-pages-meta-current2.xml-p277092p1057872.bz2"
+				// and a combined file like
+				// "itwiki-20190701-pages-meta-current.xml.bz2". For the dumper,
+				// make sure that you download the single files and not the
+				// combined one. Small Wikipedia have the combined file only,
+				// but no single file. In that case make sure that the
+				// combinedone is downloaded.
+
+				boolean hasParts = false;
+				for (Element link : links) {
+					String url = link.attr("href");
+					url = url.substring(1);
+					if (url.contains("pages-meta-current") && url.endsWith(".bz2")
+							&& !url.endsWith("pages-meta-current.xml.bz2")) {
+						hasParts = true;
+						break;
+					}
+				}
+
 				for (Element link : links) {
 					String url = link.attr("href");
 					url = url.substring(1);
 
-					if (url.contains("pages-meta-current") && url.endsWith(".bz2")
-							&& !url.endsWith("pages-meta-current.xml.bz2")) {
+					if ((hasParts && (url.contains("pages-meta-current") && url.endsWith(".bz2")
+							&& !url.endsWith("pages-meta-current.xml.bz2")))
+							|| (!hasParts && url.endsWith("pages-meta-current.xml.bz2"))) {
 						downloadFile(baseUrl + url.substring(url.lastIndexOf("/")),
 								FileLoader.getPath(FileName.WIKIPEDIA_DUMPS, language) + "/"
 										+ url.substring(url.lastIndexOf("/")));

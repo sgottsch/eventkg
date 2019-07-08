@@ -21,4 +21,4 @@ eventKG-s:startUnitType rdfs:range time:TemporalUnit .
 eventKG-s:endUnitType rdf:type owl:ObjectProperty .
 eventKG-s:endUnitType rdfs:range time:TemporalUnit .
 
-eventKG-s:isRecurring rdfs:range xsd:boolean .
+eventKG-s:EventSeries rdfs:subClassOf sem:Event .

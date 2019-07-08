@@ -74,6 +74,13 @@ public enum FileName {
 	WIKIDATA_PROPERTY_NAMES("property_names.tsv", Source.WIKIDATA, FileType.RESULTS, false, false, false),
 	WIKIDATA_EVENTS("event_instances.tsv", Source.WIKIDATA, FileType.RESULTS, false, false, false),
 	WIKIDATA_RECURRING_EVENTS("recurring_event_instances.tsv", Source.WIKIDATA, FileType.RESULTS, false, false, false),
+	WIKIDATA_RECURRENT_EVENT_EDITIONS(
+			"recurring_event_editions.tsv",
+			Source.WIKIDATA,
+			FileType.RESULTS,
+			false,
+			false,
+			false),
 	WIKIDATA_NO_EVENTS("no_event_instances.tsv", Source.WIKIDATA, FileType.RESULTS, false, false, false),
 	WIKIDATA_LOCATIONS("wikidata_locations.tsv", Source.WIKIDATA, FileType.RESULTS, false, false, false),
 	WIKIDATA_SUB_LOCATIONS("wikidata_sub_locations.tsv", Source.WIKIDATA, FileType.RESULTS, false, true, false),

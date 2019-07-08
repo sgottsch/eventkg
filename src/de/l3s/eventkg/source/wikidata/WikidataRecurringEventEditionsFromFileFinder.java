@@ -24,12 +24,12 @@ import edu.stanford.nlp.util.StringUtils;
 
 /**
  * Given the "subclass of" and "instance of" relations extracted from the
- * Wikidata dump, creates a file listing all event items in Wikidata.
+ * Wikidata dump, creates a file listing all recurring event edition items in
+ * Wikidata.
  */
-public class WikidataEventsFromFileFinder extends Extractor {
+public class WikidataRecurringEventEditionsFromFileFinder extends Extractor {
 
 	private PrintWriter resultsWriter;
-	private PrintWriter blacklistResultsWriter;
 
 	private boolean printTree = false;
 	private Map<String, Set<String>> allTransitiveParentClasses = new HashMap<String, Set<String>>();
@@ -40,13 +40,13 @@ public class WikidataEventsFromFileFinder extends Extractor {
 		Config.init(args[0]);
 		List<Language> ls = new ArrayList<Language>();
 		ls.add(Language.EN);
-		WikidataEventsFromFileFinder ff = new WikidataEventsFromFileFinder(ls);
+		WikidataRecurringEventEditionsFromFileFinder ff = new WikidataRecurringEventEditionsFromFileFinder(ls);
 		ff.run();
 	}
 
-	public WikidataEventsFromFileFinder(List<Language> languages) {
-		super("WikidataEventsFromFileFinder", Source.WIKIDATA,
-				"Given the \"subclass of\" and \"instance of\" relations extracted from the Wikidata dump, creates a file listing all event items in Wikidata",
+	public WikidataRecurringEventEditionsFromFileFinder(List<Language> languages) {
+		super("WikidataRecurringEventEditionsFromFileFinder", Source.WIKIDATA,
+				"Given the \"subclass of\" and \"instance of\" relations extracted from the Wikidata dump, creates a file listing all recurring event edition items in Wikidata",
 				languages);
 	}
 
@@ -105,15 +105,13 @@ public class WikidataEventsFromFileFinder extends Extractor {
 		// subClasses.get("Q350604").add("Q198");
 
 		Set<String> targetClasses = new HashSet<String>();
-		targetClasses.add(WikidataResource.OCCURRENCE.getId());
-		targetClasses.add(WikidataResource.EVENT.getId());
+		targetClasses.add(WikidataResource.RECURRENT_EVENT_EDITION.getId());
 
 		for (String line : FileLoader.readLines(FileName.WIKIDATA_EVENT_BLACKLIST_CLASSES)) {
 			forbiddenClasses.add(line.split("\t")[0]);
 		}
 
 		Set<String> allClasses = new HashSet<String>();
-		allClasses.addAll(targetClasses);
 
 		boolean changed = true;
 		String indent = "";
@@ -202,16 +200,10 @@ public class WikidataEventsFromFileFinder extends Extractor {
 
 	private void extractEventInstances(Set<String> eventClasses) {
 
-		Set<String> blacklistClasses = new HashSet<String>();
-		blacklistClasses.add(WikidataResource.DETERMINATOR_FOR_DATE_OF_PERIODIC_OCCURRENCE.getId());
-		blacklistClasses.add(WikidataResource.HUMAN.getId());
-		blacklistClasses.add(WikidataResource.FICTIONAL_HUMAN.getId());
-
 		Map<String, Integer> instancesCount = new HashMap<String, Integer>();
 
 		try {
-			resultsWriter = FileLoader.getWriter(FileName.WIKIDATA_EVENTS);
-			blacklistResultsWriter = FileLoader.getWriter(FileName.WIKIDATA_NO_EVENTS);
+			resultsWriter = FileLoader.getWriter(FileName.WIKIDATA_RECURRENT_EVENT_EDITIONS);
 		} catch (FileNotFoundException e2) {
 			e2.printStackTrace();
 		}
@@ -230,15 +222,6 @@ public class WikidataEventsFromFileFinder extends Extractor {
 				String[] parts = line.split(Config.TAB);
 
 				String parentClass = parts[2];
-
-				if (blacklistClasses.contains(parentClass)) {
-					String id = parts[0];
-					String labelEn = parts[1];
-					String wikiLabelEn = parts[3];
-
-					blacklistResultsWriter.write(id + Config.TAB + labelEn + Config.TAB + wikiLabelEn + Config.TAB
-							+ parentClass + Config.NL);
-				}
 
 				if (eventClasses.contains(parentClass)) {
 
@@ -266,7 +249,6 @@ public class WikidataEventsFromFileFinder extends Extractor {
 			try {
 				br.close();
 				resultsWriter.close();
-				blacklistResultsWriter.close();
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
