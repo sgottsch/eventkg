@@ -3,7 +3,9 @@ package de.l3s.eventkg.source.yago;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import de.l3s.eventkg.meta.Language;
 import de.l3s.eventkg.meta.Source;
@@ -34,6 +36,8 @@ public class YAGOEventLocationsExtractor extends Extractor {
 		PrintWriter locationsWriter = null;
 		BufferedReader br = null;
 
+		Set<String> targetProperties = loadLocationProperties();
+
 		try {
 			locationsWriter = FileLoader.getWriter(FileName.YAGO_LOCATIONS);
 
@@ -53,7 +57,7 @@ public class YAGOEventLocationsExtractor extends Extractor {
 				String property = parts[1];
 
 				// a) Locations
-				if (property.equals("<isLocatedIn>") || property.equals("<happenedIn>")) {
+				if (targetProperties.contains(property)) {
 					locationsWriter
 							.write(wikipediaLabel1 + Config.TAB + property + Config.TAB + wikipediaLabel2 + Config.NL);
 					continue;
@@ -71,6 +75,16 @@ public class YAGOEventLocationsExtractor extends Extractor {
 			}
 		}
 
+	}
+
+	public static Set<String> loadLocationProperties() {
+
+		Set<String> targetProperties = new HashSet<String>();
+
+		targetProperties.add("<isLocatedIn>");
+		targetProperties.add("<happenedIn>");
+
+		return targetProperties;
 	}
 
 }

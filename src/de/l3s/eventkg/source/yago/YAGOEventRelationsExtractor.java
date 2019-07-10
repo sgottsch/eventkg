@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -42,7 +43,7 @@ public class YAGOEventRelationsExtractor extends Extractor {
 
 	private void extractTriples(Map<String, Set<YAGOMetaFact>> temporalMetaFacts) {
 
-		System.out.println("Collect meta facts.");
+		System.out.println("Collect YAGO meta facts.");
 
 		// Properties:
 		// <isLeaderOf>, <owns>, <isLocatedIn>, <isCitizenOf>, <hasMusicalRole>
@@ -163,6 +164,9 @@ public class YAGOEventRelationsExtractor extends Extractor {
 
 		System.out.println("Collect YAGO facts with events and literals.");
 
+		Set<String> forbiddenProperties = new HashSet<String>();
+		forbiddenProperties.addAll(YAGOEventLocationsExtractor.loadLocationProperties());
+
 		PrintWriter eventLiteralsFactsWriter = null;
 		try {
 			eventLiteralsFactsWriter = FileLoader.getWriter(FileName.YAGO_EVENT_LITERALS_FACTS);
@@ -201,6 +205,8 @@ public class YAGOEventRelationsExtractor extends Extractor {
 					// transformation is done later).
 
 					String property = parts[1];
+					if (forbiddenProperties.contains(property))
+						continue;
 
 					Set<YAGOMetaFact> metaFactsOfFact = temporalMetaFacts.get(previousId);
 

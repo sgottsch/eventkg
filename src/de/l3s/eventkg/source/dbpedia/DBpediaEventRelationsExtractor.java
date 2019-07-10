@@ -46,6 +46,7 @@ public class DBpediaEventRelationsExtractor extends Extractor {
 		forbiddenProperties.addAll(DBpediaPartOfLoader.loadPartOfProperties());
 		forbiddenProperties.addAll(DBpediaPartOfLoader.loadNextEventProperties());
 		forbiddenProperties.addAll(DBpediaPartOfLoader.loadPreviousEventProperties());
+		forbiddenProperties.addAll(loadBlacklistProperties());
 
 		BufferedReader br = null;
 
@@ -72,8 +73,6 @@ public class DBpediaEventRelationsExtractor extends Extractor {
 					if (forbiddenProperties.contains(property)) {
 						continue;
 					}
-					if (property.equals("rdf-schema#seeAlso") || property.equals("owl#differentFrom"))
-						continue;
 
 					if (!subject.contains("resource"))
 						continue;
@@ -123,6 +122,7 @@ public class DBpediaEventRelationsExtractor extends Extractor {
 		Set<String> forbiddenProperties = DBpediaEventLocationsExtractor.loadLocationProperties();
 		forbiddenProperties.addAll(DBpediaTimesExtractor.loadTimeProperties().keySet());
 		forbiddenProperties.addAll(loadLabelsAndDescriptionProperties());
+		forbiddenProperties.addAll(loadBlacklistProperties());
 
 		BufferedReader br = null;
 
@@ -148,8 +148,6 @@ public class DBpediaEventRelationsExtractor extends Extractor {
 				if (forbiddenProperties.contains(property)) {
 					continue;
 				}
-				if (property.equals("rdf-schema#seeAlso") || property.equals("owl#differentFrom"))
-					continue;
 
 				if (!subject.contains("resource"))
 					continue;
@@ -193,4 +191,19 @@ public class DBpediaEventRelationsExtractor extends Extractor {
 		return properties;
 	}
 
+	public static Set<String> loadBlacklistProperties() {
+
+		Set<String> blacklistRelations = new HashSet<String>();
+
+		blacklistRelations.add("rdf-schema#seeAlso");
+		blacklistRelations.add("owl#differentFrom");
+		blacklistRelations.add("depictionDescription");
+		blacklistRelations.add("individualisedGnd");
+		blacklistRelations.add("lccn");
+		blacklistRelations.add("ndlId");
+		blacklistRelations.add("endDate");
+		blacklistRelations.add("startDate");
+
+		return blacklistRelations;
+	}
 }

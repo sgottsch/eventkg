@@ -37,7 +37,7 @@ public class DBpediaDBOEventsLoader extends Extractor {
 		Set<String> foundEvents = new HashSet<String>();
 		Set<String> uniqueFoundEvents = new HashSet<String>();
 		Set<String> targetObjects = loadEventObjects();
-		Set<String> blacklistObjects = loadBlacklistObjects();
+		Set<String> blacklistObjects = loadBlacklistObjects(language);
 
 		try {
 			resultsWriter = FileLoader.getWriter(FileName.DBPEDIA_DBO_EVENTS_FILE_NAME, language);
@@ -120,7 +120,7 @@ public class DBpediaDBOEventsLoader extends Extractor {
 		return targetProperties;
 	}
 
-	public static Set<String> loadBlacklistObjects() {
+	public static Set<String> loadBlacklistObjects(Language language) {
 
 		// create a set of entities that cannot be events. This e.g. applies to
 		// football leagues which are seen as events in the French DBpedia, but
@@ -130,7 +130,11 @@ public class DBpediaDBOEventsLoader extends Extractor {
 
 		blacklistObjects.add("<http://dbpedia.org/ontology/Organisation>");
 		blacklistObjects.add("<http://schema.org/Organization>");
-		blacklistObjects.add("<http://schema.org/Person>");
+
+		// there is a bug in the Italian DBpedia which makes a lot of events
+		// so:Person
+		if (language != Language.IT)
+			blacklistObjects.add("<http://schema.org/Person>");
 
 		return blacklistObjects;
 	}
