@@ -225,9 +225,9 @@ public class TextualEventsExtractor extends Extractor {
 				if (start == null) {
 					try {
 						start = dateFormat.parse(event.getStartDate());
-						startGranularity=event.getGranularity();
+						startGranularity = event.getGranularity();
 						end = dateFormat.parse(event.getEndDate());
-						endGranularity=event.getGranularity();
+						endGranularity = event.getGranularity();
 					} catch (ParseException e) {
 						e.printStackTrace();
 					}
@@ -272,13 +272,18 @@ public class TextualEventsExtractor extends Extractor {
 					event.addParent(namedEvent, dataSet);
 				}
 			}
-		
-			// descriptions
+
+			// descriptions and categories
 			for (TextualEvent eventInCluster : eventGroup) {
 				Description description = new Description(event,
 						DataSets.getInstance().getDataSet(eventInCluster.getLanguage(), eventInCluster.getSource()),
 						eventInCluster.getText(), eventInCluster.getLanguage());
 				DataStore.getInstance().addDescription(description);
+				if (eventInCluster.getEnglishWCECategory() != null) {
+					// categories from WCE (English only)
+					event.addCategory(DataSets.getInstance().getDataSetWithoutLanguage(Source.WCE), Language.EN,
+							eventInCluster.getEnglishWCECategory());
+				}
 			}
 
 			// URLs
@@ -580,7 +585,10 @@ public class TextualEventsExtractor extends Extractor {
 
 			TextualEvent textualEvent = new TextualEvent(language, Source.WCE, null, text, relatedEntities, startDate,
 					endDate, wikipediaPage, DateGranularity.DAY);
+
 			this.textualEvents.add(textualEvent);
+			if (wceEvent.getCategory() != null)
+				textualEvent.setEnglishWCECategory(wceEvent.getCategory().getName());
 
 			if (!this.eventsByDates.containsKey(startDate + endDate))
 				this.eventsByDates.put(startDate + endDate, new HashSet<TextualEvent>());

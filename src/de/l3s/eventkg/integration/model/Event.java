@@ -30,6 +30,8 @@ public class Event extends Entity {
 	private Map<Entity, Set<DataSet>> locationsWithDataSets = new HashMap<Entity, Set<DataSet>>();
 	private Map<DataSet, Set<Entity>> dataSetsWithLocations = new HashMap<DataSet, Set<Entity>>();
 
+	private Map<DataSet, Map<Language, Set<String>>> categories = new HashMap<DataSet, Map<Language, Set<String>>>();
+
 	private DateWithGranularity startTime;
 
 	private DateWithGranularity endTime;
@@ -256,6 +258,18 @@ public class Event extends Entity {
 
 	public void setRecurrentEventEdition(boolean isRecurrentEventEdition) {
 		this.isRecurrentEventEdition = isRecurrentEventEdition;
+	}
+
+	public void addCategory(DataSet dataSet, Language language, String category) {
+		if (!this.categories.containsKey(dataSet))
+			this.categories.put(dataSet, new HashMap<Language, Set<String>>());
+		if (!this.categories.get(dataSet).containsKey(language))
+			this.categories.get(dataSet).put(language, new HashSet<String>());
+		this.categories.get(dataSet).get(language).add(category);
+	}
+
+	public Map<DataSet, Map<Language, Set<String>>> getCategories() {
+		return categories;
 	}
 
 }

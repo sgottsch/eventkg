@@ -34,6 +34,8 @@ public class TextualEvent {
 
 	private DateGranularity granularity;
 
+	private String englishWCECategory;
+
 	public TextualEvent(Language language, Source source, String id, String text, Set<Entity> relatedEntities,
 			String startDate, String endDate, String wikipediaPage, DateGranularity granularity) {
 		super();
@@ -150,6 +152,14 @@ public class TextualEvent {
 
 	public void setGranularity(DateGranularity granularity) {
 		this.granularity = granularity;
+	}
+
+	public String getEnglishWCECategory() {
+		return englishWCECategory;
+	}
+
+	public void setEnglishWCECategory(String category) {
+		this.englishWCECategory = category;
 	}
 
 }

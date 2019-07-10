@@ -985,6 +985,19 @@ public class DataStoreWriter {
 							previousEvent.getId(), false, null, fileType);
 				}
 
+				for (DataSet categoryDataSet : event.getCategories().keySet()) {
+					for (Language categoryLanguage : event.getCategories().get(categoryDataSet).keySet()) {
+						for (String category : event.getCategories().get(categoryDataSet).get(categoryLanguage)) {
+							lineNo += 1;
+							writeTriple(writer, writerPreview, lineNo, this.basePrefix, event.getId(),
+									prefixList.getPrefix(PrefixEnum.DBPEDIA_ONTOLOGY),
+									"previousEvent", this.basePrefix, createLiteral(category,
+											LiteralDataType.LANG_STRING, categoryLanguage.getLanguageLowerCase()),
+									false, categoryDataSet, fileType);
+						}
+					}
+				}
+
 				if (!event.getPositions().isEmpty()) {
 					lineNo += 1;
 					for (Position position : event.getPositions()) {
