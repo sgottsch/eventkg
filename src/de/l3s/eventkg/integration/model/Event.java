@@ -45,6 +45,8 @@ public class Event extends Entity {
 	private boolean isRecurring = false;
 	private boolean isRecurrentEventEdition = false;
 
+	private Map<DataSet, Set<String>> sources = new HashMap<DataSet, Set<String>>();
+
 	public Event() {
 		super(null);
 		setEvent(true);
@@ -268,8 +270,18 @@ public class Event extends Entity {
 		this.categories.get(dataSet).get(language).add(category);
 	}
 
+	public void addSource(DataSet dataSet, String source) {
+		if (!this.sources.containsKey(dataSet))
+			this.sources.put(dataSet, new HashSet<String>());
+		this.sources.get(dataSet).add(source);
+	}
+
 	public Map<DataSet, Map<Language, Set<String>>> getCategories() {
 		return categories;
+	}
+
+	public Map<DataSet, Set<String>> getSources() {
+		return sources;
 	}
 
 }

@@ -82,6 +82,11 @@ public class DBpediaDBOEventsLoader extends Extractor {
 						if (foundEvents.contains(fileLine))
 							continue;
 
+						// Manual corrections of erronous DBpedia entries
+						if (subject.equals("Dunblane_school_massacre")
+								|| subject.equals("San_Ysidro_McDonald's_massacre"))
+							onBlackList = false;
+
 						if (onBlackList)
 							resultsWriterBlacklist.write(fileLine + Config.NL);
 						else

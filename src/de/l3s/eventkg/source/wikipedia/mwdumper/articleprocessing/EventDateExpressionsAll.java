@@ -29,6 +29,7 @@ public class EventDateExpressionsAll {
 	private List<Set<String>> monthNames;
 
 	private Pattern dayTitle;
+	private Pattern monthTitle;
 
 	private Set<Pattern> dateTemplatePatterns;
 
@@ -105,6 +106,9 @@ public class EventDateExpressionsAll {
 		// pt: 22 de janeiro
 		// ru: 22 января
 		this.dayTitle = Pattern.compile(createPatternString(this.entriesPerType.get("dayTitle").get(0)));
+
+		if (this.entriesPerType.containsKey("monthTitle"))
+			this.monthTitle = Pattern.compile(createPatternString(this.entriesPerType.get("monthTitle").get(0)));
 
 		initYearTitlePatterns();
 	}
@@ -203,6 +207,10 @@ public class EventDateExpressionsAll {
 
 	public Pattern getDayTitle() {
 		return dayTitle;
+	}
+
+	public Pattern getMonthTitle() {
+		return monthTitle;
 	}
 
 	public Set<Pattern> getDateTemplatePatterns() {

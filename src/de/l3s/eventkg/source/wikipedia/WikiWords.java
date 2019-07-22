@@ -21,7 +21,8 @@ public class WikiWords {
 
 	private Map<Language, Set<String>> forbiddenLinks = new HashMap<Language, Set<String>>();
 	private Map<Language, Set<String>> forbiddenInternalLinks = new HashMap<Language, Set<String>>();
-	private Map<Language, Set<String>> titlesNotToTranslate = new HashMap<Language, Set<String>>();
+	private Map<Language, Set<String>> titlesOfParagraphsNotToRead = new HashMap<Language, Set<String>>();
+	private Map<Language, Set<String>> eventTitlesNotToUseAsCategory = new HashMap<Language, Set<String>>();
 
 	private Map<Language, String> tocNames = new HashMap<Language, String>();
 
@@ -63,7 +64,11 @@ public class WikiWords {
 	}
 
 	public void init(List<Language> languages) {
+
 		for (Language language : languages) {
+
+			this.eventTitlesNotToUseAsCategory.put(language, new HashSet<String>());
+
 			BufferedReader br = null;
 			try {
 				br = FileLoader.getReader(FileName.WIKIPEDIA_META_WORDS, language);
@@ -111,8 +116,11 @@ public class WikiWords {
 					case "seeAlsoLinkClasses":
 						addValues(this.seeAlsoLinkClasses, language, entriesPerType, type);
 						break;
-					case "titlesNotToTranslate":
-						addValues(this.titlesNotToTranslate, language, entriesPerType, type);
+					case "titlesOfParagraphsNotToRead":
+						addValues(this.titlesOfParagraphsNotToRead, language, entriesPerType, type);
+						break;
+					case "eventTitlesNotToUseAsCategory":
+						addValues(this.eventTitlesNotToUseAsCategory, language, entriesPerType, type);
 						break;
 					case "fileLabels":
 						addValues(this.fileLabels, language, entriesPerType, type);
@@ -250,8 +258,12 @@ public class WikiWords {
 		return this.forbiddenLinks.get(language);
 	}
 
-	public Set<String> getTitlesOfParagraphsNotToTranslate(Language language) {
-		return titlesNotToTranslate.get(language);
+	public Set<String> getTitlesOfParagraphsNotToRead(Language language) {
+		return titlesOfParagraphsNotToRead.get(language);
+	}
+
+	public Set<String> getEventTitlesNotToUseAsCategory(Language language) {
+		return eventTitlesNotToUseAsCategory.get(language);
 	}
 
 	public String getTOCName(Language language) {

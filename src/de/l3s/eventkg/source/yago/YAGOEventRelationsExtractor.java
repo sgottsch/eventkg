@@ -60,6 +60,10 @@ public class YAGOEventRelationsExtractor extends Extractor {
 		PrintWriter eventFactsWriter = null;
 		PrintWriter entityFactsWriter = null;
 		PrintWriter temporalFactsWriter = null;
+
+		Set<String> forbiddenProperties = new HashSet<String>();
+		forbiddenProperties.addAll(YAGOEventLocationsExtractor.loadLocationProperties());
+
 		try {
 			eventFactsWriter = FileLoader.getWriter(FileName.YAGO_EVENT_FACTS);
 			entityFactsWriter = FileLoader.getWriter(FileName.YAGO_ENTITY_FACTS);
@@ -106,6 +110,8 @@ public class YAGOEventRelationsExtractor extends Extractor {
 					// transformation is done later).
 
 					String property = parts[1];
+					if (forbiddenProperties.contains(property))
+						continue;
 
 					Set<YAGOMetaFact> metaFactsOfFact = temporalMetaFacts.get(previousId);
 

@@ -320,7 +320,7 @@ public class TextExtractorNew {
 					}
 					levelBefore = level;
 					title = title.replaceAll("=+$", "").trim();
-					if (WikiWords.getInstance().getTitlesOfParagraphsNotToTranslate(language).contains(title))
+					if (WikiWords.getInstance().getTitlesOfParagraphsNotToRead(language).contains(title))
 						break;
 					// if (title.equals("Images"))
 					// continue;

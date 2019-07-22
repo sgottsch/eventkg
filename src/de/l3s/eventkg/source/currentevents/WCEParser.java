@@ -53,9 +53,8 @@ public class WCEParser {
 		// p.getEvents("June_2017");
 		// p.getEvents("August_2002");
 		// p.getEvents("March_2001");
-
+		p.print = true;
 		p.getEvents("May_2008");
-
 	}
 
 	public void getEvents(String month) throws JSONException, MalformedURLException, IOException {
@@ -148,8 +147,10 @@ public class WCEParser {
 										continue;
 									sourceName = sourceName.substring(1, sourceName.length() - 1);
 
+									text = text.replace("(" + sourceName + ")", "").trim();
+
 									if (print)
-										System.out.println("Source: " + link + " - " + sourceName);
+										System.out.println("aSource: " + link + " - " + sourceName);
 
 									Source source = new Source(this.sourceId, link, "article", sourceName);
 									eventSources.add(source);
@@ -263,8 +264,10 @@ public class WCEParser {
 											continue;
 										sourceName = sourceName.substring(1, sourceName.length() - 1);
 
+										text = text.replace("(" + sourceName + ")", "").trim();
+
 										if (print)
-											System.out.println("Source: " + link + " - " + sourceName);
+											System.out.println("bSource: " + link + " - " + sourceName);
 
 										Source source = new Source(this.sourceId, link, "article", sourceName);
 										eventSources.add(source);

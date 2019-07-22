@@ -16,14 +16,17 @@ public class Event {
 	private String originalText;
 	private DateGranularity granularity;
 
+	private Set<String> titles;
+
 	private Set<String> links;
 	private String leadingLink;
 
-	public Event(Date startDate, Date endDate, String rawText) {
+	public Event(Date startDate, Date endDate, String rawText, Set<String> titles) {
 		this.startDate = startDate;
 		this.endDate = endDate;
 		this.rawText = rawText;
 		this.links = new HashSet<String>();
+		this.titles = titles;
 	}
 
 	public Date getStartDate() {
@@ -99,6 +102,14 @@ public class Event {
 
 	public void setLeadingLink(String leadingLink) {
 		this.leadingLink = leadingLink;
+	}
+
+	public Set<String> getTitles() {
+		return titles;
+	}
+
+	public void setTitles(Set<String> titles) {
+		this.titles = titles;
 	}
 
 }

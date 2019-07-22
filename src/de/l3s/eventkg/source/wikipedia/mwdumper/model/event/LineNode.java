@@ -14,6 +14,8 @@ public class LineNode {
 	private String originalLine;
 	private String titles;
 
+	private boolean titleContainsDateInformation;
+
 	public LineNode(String line, int level) {
 		this.line = line;
 		this.originalLine = line;
@@ -92,7 +94,10 @@ public class LineNode {
 	}
 
 	public static enum NodeType {
-		DATE, TITLE, EVENT, LINE;
+		DATE,
+		TITLE,
+		EVENT,
+		LINE;
 	}
 
 	public PartialDate getPartialDate() {
@@ -118,4 +123,13 @@ public class LineNode {
 	public void setTitles(String titles) {
 		this.titles = titles;
 	}
+
+	public boolean titleContainsDateInformation() {
+		return titleContainsDateInformation;
+	}
+
+	public void setTitleContainsDateInformation(boolean titleContainsDateInformation) {
+		this.titleContainsDateInformation = titleContainsDateInformation;
+	}
+
 }

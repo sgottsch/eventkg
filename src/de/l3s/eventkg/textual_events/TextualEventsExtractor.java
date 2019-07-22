@@ -179,6 +179,7 @@ public class TextualEventsExtractor extends Extractor {
 			// TODO: Count by language
 
 			Set<Event> relatedEvents = new HashSet<Event>();
+
 			Map<Language, Map<Entity, Integer>> relatedEntities = new HashMap<Language, Map<Entity, Integer>>();
 			// Map<Entity, DataSet> relatedLocations = new HashMap<Entity,
 			// DataSet>();
@@ -284,6 +285,15 @@ public class TextualEventsExtractor extends Extractor {
 					event.addCategory(DataSets.getInstance().getDataSetWithoutLanguage(Source.WCE), Language.EN,
 							eventInCluster.getEnglishWCECategory());
 				}
+				for (Language language : eventInCluster.getOtherCategories().keySet()) {
+					for (String otherCategory : eventInCluster.getOtherCategories().get(language)) {
+						// categories from date page section titles
+						event.addCategory(DataSets.getInstance().getDataSet(language, Source.WIKIPEDIA), language,
+								otherCategory);
+					}
+				}
+				for (String source : eventInCluster.getSources())
+					event.addSource(DataSets.getInstance().getDataSetWithoutLanguage(Source.WCE), source);
 			}
 
 			// URLs
@@ -484,14 +494,22 @@ public class TextualEventsExtractor extends Extractor {
 				Set<Entity> relatedEntities = new HashSet<Entity>();
 				Set<Event> relatedEvents = new HashSet<Event>();
 
-				if (parts.length > 10) {
+				Map<Language, Set<String>> categories = new HashMap<Language, Set<String>>();
+				categories.put(language, new HashSet<String>());
+
+				if (parts.length > 9) {
 					List<String> linksAndLeadingLink = new ArrayList<String>();
 
 					for (String entityName : parts[10].split(" ")) {
 						linksAndLeadingLink.add(entityName);
 					}
-					if (parts.length > 11 && !parts[11].equals("null")) {
+					if (parts.length > 10 && !parts[11].equals("null")) {
 						linksAndLeadingLink.add(parts[11]);
+					}
+
+					if (parts.length > 11 && !parts[12].equals("null")) {
+						for (String category : parts[12].split(";"))
+							categories.get(language).add(category);
 					}
 
 					for (String entityName : linksAndLeadingLink) {
@@ -509,6 +527,9 @@ public class TextualEventsExtractor extends Extractor {
 
 				TextualEvent textualEvent = new TextualEvent(language, Source.WIKIPEDIA, null, text, relatedEntities,
 						startDate, endDate, wikipediaPage, granularity);
+
+				textualEvent.setOtherCategories(categories);
+
 				this.textualEvents.add(textualEvent);
 
 				numberOfExtractedWikiEvents += 1;
@@ -556,6 +577,7 @@ public class TextualEventsExtractor extends Extractor {
 
 			Set<Entity> relatedEntities = new HashSet<Entity>();
 			Set<Event> relatedEvents = new HashSet<Event>();
+			Set<String> sources = new HashSet<String>();
 
 			for (WCEEntity wceEntity : wceEvent.getEntities()) {
 				Entity entity = allEventPagesDataSet.getWikidataIdMappings().getEntityByWikipediaLabel(language,
@@ -565,6 +587,10 @@ public class TextualEventsExtractor extends Extractor {
 				relatedEntities.add(entity);
 				if (entity.isEvent())
 					relatedEvents.add((Event) entity);
+			}
+
+			for (de.l3s.eventkg.source.currentevents.model.Source source : wceEvent.getSources()) {
+				sources.add(source.getUrl());
 			}
 
 			Entity storyEntity = null;
@@ -585,6 +611,7 @@ public class TextualEventsExtractor extends Extractor {
 
 			TextualEvent textualEvent = new TextualEvent(language, Source.WCE, null, text, relatedEntities, startDate,
 					endDate, wikipediaPage, DateGranularity.DAY);
+			textualEvent.setSources(sources);
 
 			this.textualEvents.add(textualEvent);
 			if (wceEvent.getCategory() != null)

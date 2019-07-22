@@ -90,6 +90,24 @@ public class DataCollector extends Extractor {
 	// }
 
 	private void init() {
+
+		Set<String> labels = new HashSet<String>();
+		// labels.add("Columbine_High_School_massacre");
+		// labels.add("Fusillade_de_Columbine");
+		// labels.add("Massacro_della_Columbine_High_School");
+		// labels.add("Massacre_de_Columbine");
+		// labels.add("Amoklauf_an_der_Columbine_High_School");
+		// labels.add("Массовое_убийство_в_школе_«Колумбайн»");
+		// labels.add("Massakren_på_Columbine_High_School");
+
+		labels.add("2017_German_federal_election");
+		labels.add("Élections_fédérales_allemandes_de_2017");
+		labels.add("Bundestagswahl_2017");
+		labels.add("Forbundsdagsvalget_2017");
+		labels.add("Elezioni_federali_in_Germania_del_2017");
+		labels.add("Парламентские_выборы_в_Германии_(2017)");
+		labels.add("Eleição_federal_na_Alemanha_em_2017");
+
 		this.wikidataIdMappings = new WikidataIdMappings(this.languages);
 		wikidataIdMappings.load();
 		wikidataIdMappings.loadTemporalProperties();
@@ -1031,7 +1049,7 @@ public class DataCollector extends Extractor {
 
 				String line;
 				while ((line = br.readLine()) != null) {
-					createBlacklistEvent(language, line, "loadLocationsBlacklistEvents");
+					createBlacklistEvent(language, line, "loadDBpediaLocationsBlacklistEvents");
 
 					dbPediaLocationsBlackListEvents.add(line);
 				}
@@ -1122,6 +1140,8 @@ public class DataCollector extends Extractor {
 
 	private Entity createBlacklistEventByWikidataID(String wikidataId, String comment) {
 
+		System.out.println("createBlacklistEventByWikidataID: " + wikidataId + " -> " + comment);
+
 		Entity entity = getEntityFromWikidataId(wikidataId);
 
 		if (entity == null) {
@@ -1136,6 +1156,8 @@ public class DataCollector extends Extractor {
 	}
 
 	private Entity createBlacklistEvent(Language language, String wikipediaLabel, String comment) {
+
+		System.out.println("createBlacklistEvent: " + language + ", " + wikipediaLabel + " -> " + comment);
 
 		Entity entity = getEntity(language, wikipediaLabel);
 
@@ -1171,6 +1193,21 @@ public class DataCollector extends Extractor {
 		Entity entity = getEntityFromWikidataId(wikidataId);
 		String comment = dataSet.getId() + " (" + eventInstance + ")";
 
+		if (wikidataId.equals("Q15062956")) {
+			System.out.println("XTestcase: " + wikidataId);
+			System.out.println("Dataset: " + dataSet.getId());
+			System.out.println("B: " + blacklistEvents.contains(entity));
+			System.out.println("E: " + entity.getWikipediaLabels());
+			// Q473845
+			// Columbine_High_School_massacre
+			// Fusillade_de_Columbine
+			// Massacro_della_Columbine_High_School
+			// Massacre_de_Columbine
+			// Amoklauf_an_der_Columbine_High_School
+			// Массовое_убийство_в_школе_«Колумбайн»
+			// Massakren_på_Columbine_High_School
+		}
+
 		if (blacklistEvents.contains(entity))
 			return null;
 
@@ -1195,11 +1232,30 @@ public class DataCollector extends Extractor {
 	}
 
 	private Entity getEntity(Language language, String wikipediaLabel) {
-		return this.wikidataIdMappings.getEntityByWikipediaLabel(language, wikipediaLabel);
+
+		Entity ent = this.wikidataIdMappings.getEntityByWikipediaLabel(language, wikipediaLabel);
+
+		if ((ent != null && ent.getWikidataId() != null && ent.getWikidataId().equals("Q15062956"))) {
+			System.out.println(
+					"XTestcase, getEntity: " + language + " - " + wikipediaLabel + " - " + ent.getWikidataId());
+			if (ent != null)
+				System.out.println(" -> " + ent.getWikipediaLabels() + " - " + ent.getWikidataId());
+		}
+
+		return ent;
 	}
 
 	private Entity getEntityFromWikidataId(String wikidataId) {
-		return this.wikidataIdMappings.getEntityByWikidataId(wikidataId);
+
+		Entity ent = this.wikidataIdMappings.getEntityByWikidataId(wikidataId);
+
+		if (wikidataId.equals("Q15062956")) {
+			System.out.println("XTestcase, getEntityFromWikidataId: " + wikidataId);
+			if (ent != null)
+				System.out.println(" -> " + ", " + ent.getWikipediaLabels() + " - " + ent.getWikidataId());
+		}
+		return ent;
+
 	}
 
 	@SuppressWarnings("unused")

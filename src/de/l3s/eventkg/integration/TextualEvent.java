@@ -1,6 +1,8 @@
 package de.l3s.eventkg.integration;
 
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 import de.l3s.eventkg.integration.model.DateGranularity;
@@ -35,6 +37,10 @@ public class TextualEvent {
 	private DateGranularity granularity;
 
 	private String englishWCECategory;
+
+	private Map<Language, Set<String>> otherCategories = new HashMap<Language, Set<String>>();
+
+	private Set<String> sources = new HashSet<String>();
 
 	public TextualEvent(Language language, Source source, String id, String text, Set<Entity> relatedEntities,
 			String startDate, String endDate, String wikipediaPage, DateGranularity granularity) {
@@ -160,6 +166,22 @@ public class TextualEvent {
 
 	public void setEnglishWCECategory(String category) {
 		this.englishWCECategory = category;
+	}
+
+	public Map<Language, Set<String>> getOtherCategories() {
+		return otherCategories;
+	}
+
+	public void setOtherCategories(Map<Language, Set<String>> otherCategories) {
+		this.otherCategories = otherCategories;
+	}
+
+	public Set<String> getSources() {
+		return sources;
+	}
+
+	public void setSources(Set<String> sources) {
+		this.sources = sources;
 	}
 
 }

@@ -308,7 +308,7 @@ public class DataStoreWriter {
 			writer = FileLoader.getWriter(FileName.ALL_TTL_VOID);
 
 			for (String line : FileLoader.readLines(FileName.ALL_TTL_VOID_INPUT)) {
-				writer.write(line.replace("@creation_date@", currentDate) + Config.NL);
+				writer.write(line.replace("@modification_date@", currentDate) + Config.NL);
 			}
 
 		} catch (FileNotFoundException e) {
@@ -990,11 +990,20 @@ public class DataStoreWriter {
 						for (String category : event.getCategories().get(categoryDataSet).get(categoryLanguage)) {
 							lineNo += 1;
 							writeTriple(writer, writerPreview, lineNo, this.basePrefix, event.getId(),
-									prefixList.getPrefix(PrefixEnum.DBPEDIA_ONTOLOGY),
-									"previousEvent", this.basePrefix, createLiteral(category,
-											LiteralDataType.LANG_STRING, categoryLanguage.getLanguageLowerCase()),
+									prefixList.getPrefix(PrefixEnum.DBPEDIA_ONTOLOGY), "title", this.basePrefix,
+									createLiteral(category, LiteralDataType.LANG_STRING,
+											categoryLanguage.getLanguageLowerCase()),
 									false, categoryDataSet, fileType);
 						}
+					}
+				}
+
+				for (DataSet sourceDataSet : event.getSources().keySet()) {
+					for (String source : event.getSources().get(sourceDataSet)) {
+						lineNo += 1;
+						writeTriple(writer, writerPreview, lineNo, this.basePrefix, event.getId(),
+								prefixList.getPrefix(PrefixEnum.DBPEDIA_ONTOLOGY), "source", null, "<" + source + ">",
+								false, sourceDataSet, fileType);
 					}
 				}
 
