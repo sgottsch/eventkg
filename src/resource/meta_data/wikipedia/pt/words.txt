@@ -37,7 +37,7 @@ Discussão Portal:
 # seeAlsoLinkClasses
 dablink
 
-# titlesNotToTranslate
+# titlesOfParagraphsNotToRead
 Ver tamb\u00e9m
 Refer\u00eancias
 Liga\u00e7\u00f5es externas
@@ -99,5 +99,7 @@ quinta-feira;Quinta-feira
 sexta-feira;Sexta-feira
 sábado;Sábado
 domingo;Domingo
+
+# eventTitlesNotToUseAsCategory
 
 # eventCategoryRegexes

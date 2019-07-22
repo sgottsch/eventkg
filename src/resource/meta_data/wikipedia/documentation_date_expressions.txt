@@ -11,6 +11,10 @@ Regex for Wikipedia page titles that represent a specific day. For example "^@re
 	fr: 22 janvier
 	pt: 22 de janeiro
 	ru: 22 января
+	
+# monthTitle
+Regex for Wikipedia page titles that represent a specific month. For example "^@regexMonth1@ @regexYear@$" to find "Juli 2019" for the Wikipedia article https://de.wikipedia.org/wiki/Juli_2019. Not supported currently.
+	de: Juli 2019
 
 # yearTitlePatterns
 Regexes for Wikipedia page titles that represent a specific year. For example "^(?<y>[0-9]{@digitsInYear@}) in .*$" to find "2007 in philosophy" for the Wikipedia article https://en.wikipedia.org/wiki/2007_in_philosophy.

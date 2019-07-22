@@ -37,7 +37,7 @@ Contents
 # seeAlsoLinkClasses
 hatnote
 
-# titlesNotToTranslate
+# titlesOfParagraphsNotToRead
 See also
 References
 External links
@@ -94,6 +94,10 @@ Thursday
 Friday
 Saturday
 Sunday
+
+# eventTitlesNotToUseAsCategory
+Events by month
+By topic
 
 # eventCategoryRegexes
 .+events$

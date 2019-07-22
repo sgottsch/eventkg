@@ -54,7 +54,7 @@ Inhaltsverzeichnis
 sieheauch
 hauptartikel
 
-# titlesNotToTranslate
+# titlesOfParagraphsNotToRead
 Ver\u00f6ffentlichungen
 Veröffentlichungen
 Literatur
@@ -92,16 +92,16 @@ Kategorie:
 Vorlage:
 
 # eventsLabels
-Ereignisse
+Ereignisse;Bereits fest terminierte Ereignisse;Tagesgeschehen
 
 # monthNames
-Januar
-Februar
+Januar;Jänner
+Februar;Feber
 März
 April
 Mai
-Juni
-Juli
+Juni;Juno
+Juli;Julei
 August
 September
 Oktober
@@ -116,5 +116,8 @@ Donnerstag
 Freitag
 Samstag;Sonnabend
 Sonntag
+
+# eventTitlesNotToUseAsCategory
+Sonstige Ereignisse
 
 # eventCategoryRegexes

@@ -31,7 +31,7 @@ Sommaire
 # seeAlsoLinkClasses
 bandeau-niveau-detail
 
-# titlesNotToTranslate
+# titlesOfParagraphsNotToRead
 Voir aussi
 Annexes
 Notes et r\u00e9f\u00e9rences
@@ -88,5 +88,7 @@ jeudi;Jeudi
 vendredi;Vendredi
 samedi;Samedi
 dimanche;Dimanche
+
+# eventTitlesNotToUseAsCategory
 
 # eventCategoryRegexes

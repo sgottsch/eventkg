@@ -35,7 +35,7 @@ Indice
 # seeAlsoLinkClasses
 vedi-anche
 
-# titlesNotToTranslate
+# titlesOfParagraphsNotToRead
 Note
 Bibliografia
 Voci correlate
@@ -92,5 +92,7 @@ Giovedì;Giovedi
 Venerdì;Venerdi
 Sabato
 Domenica
+
+# eventTitlesNotToUseAsCategory
 
 # eventCategoryRegexes

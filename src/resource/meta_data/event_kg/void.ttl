@@ -13,20 +13,89 @@ eventKG-g:event_kg void:sparqlEndpoint <http://eventkginterface.l3s.uni-hannover
 eventKG-g:event_kg dcterms:title "EventKG"  .
 eventKG-g:event_kg dcterms:description "The EventKG is a multilingual resource incorporating event-centric and temporal information extracted from several large-scale knowledge graphs and semi-structured sources."  .
 eventKG-g:event_kg dcterms:publisher <https://www.l3s.de/home>  .
-eventKG-g:event_kg dcterms:creator <https://www.l3s.de/de/user/gottschalk> .
+eventKG-g:event_kg dcterms:creator <https://www.l3s.de/~gottschalk/> .
 eventKG-g:event_kg dcterms:creator <https://demidova.wordpress.com/> .
-eventKG-g:event_kg dcterms:created @creation_date@ .
+eventKG-g:event_kg dcterms:created "2018-03-21"^^xsd:date .
+eventKG-g:event_kg dcterms:modified @modification_date@ .
+
 eventKG-g:event_kg dcterms:source eventKG-g:wikipedia_ru .
+eventKG-g:wikipedia_ru rdf:type void:Dataset .
+eventKG-g:wikipedia_ru dcterms:language "ru" .
+eventKG-g:wikipedia_ru foaf:homepage <https://ru.wikipedia.org/>  .
+
 eventKG-g:event_kg dcterms:source eventKG-g:wikipedia_de .
+eventKG-g:wikipedia_de rdf:type void:Dataset .
+eventKG-g:wikipedia_de dcterms:language "de" .
+eventKG-g:wikipedia_de foaf:homepage <https://de.wikipedia.org/>  .
+
 eventKG-g:event_kg dcterms:source eventKG-g:wikipedia_en .
+eventKG-g:wikipedia_en rdf:type void:Dataset .
+eventKG-g:wikipedia_en dcterms:language "en" .
+eventKG-g:wikipedia_en foaf:homepage <https://en.wikipedia.org/>  .
+
 eventKG-g:event_kg dcterms:source eventKG-g:wikipedia_fr .
+eventKG-g:wikipedia_fr rdf:type void:Dataset .
+eventKG-g:wikipedia_fr dcterms:language "fr" .
+eventKG-g:wikipedia_fr foaf:homepage <https://fr.wikipedia.org/>  .
+
 eventKG-g:event_kg dcterms:source eventKG-g:wikipedia_pt .
+eventKG-g:wikipedia_pt rdf:type void:Dataset .
+eventKG-g:wikipedia_pt dcterms:language "pt" .
+eventKG-g:wikipedia_pt foaf:homepage <https://pt.wikipedia.org/>  .
+
+eventKG-g:event_kg dcterms:source eventKG-g:wikipedia_it .
+eventKG-g:wikipedia_it rdf:type void:Dataset .
+eventKG-g:wikipedia_it dcterms:language "it" .
+eventKG-g:wikipedia_it foaf:homepage <https://it.wikipedia.org/>  .
+
+eventKG-g:event_kg dcterms:source eventKG-g:wikipedia_da .
+eventKG-g:wikipedia_da rdf:type void:Dataset .
+eventKG-g:wikipedia_da dcterms:language "da" .
+eventKG-g:wikipedia_da foaf:homepage <https://da.wikipedia.org/>  .
+
 eventKG-g:event_kg dcterms:source eventKG-g:dbpedia_ru .
+eventKG-g:dbpedia_ru rdf:type void:Dataset .
+eventKG-g:dbpedia_ru dcterms:language "ru" .
+
 eventKG-g:event_kg dcterms:source eventKG-g:dbpedia_de .
+eventKG-g:dbpedia_de rdf:type void:Dataset .
+eventKG-g:dbpedia_de dcterms:language "de" .
+eventKG-g:dbpedia_de foaf:homepage <http://de.dbpedia.org/>  .
+
 eventKG-g:event_kg dcterms:source eventKG-g:dbpedia_en .
+eventKG-g:dbpedia_en rdf:type void:Dataset .
+eventKG-g:dbpedia_en dcterms:language "en" .
+eventKG-g:dbpedia_en foaf:homepage <http://dbpedia.org/>  .
+
 eventKG-g:event_kg dcterms:source eventKG-g:dbpedia_fr .
+eventKG-g:dbpedia_fr rdf:type void:Dataset .
+eventKG-g:dbpedia_fr dcterms:language "fr" .
+eventKG-g:dbpedia_fr foaf:homepage <http://fr.dbpedia.org/>  .
+
 eventKG-g:event_kg dcterms:source eventKG-g:dbpedia_pt .
+eventKG-g:dbpedia_pt rdf:type void:Dataset .
+eventKG-g:dbpedia_pt dcterms:language "pt" .
+eventKG-g:dbpedia_pt foaf:homepage <http://pt.dbpedia.org/>  .
+
+eventKG-g:event_kg dcterms:source eventKG-g:dbpedia_da .
+eventKG-g:dbpedia_da rdf:type void:Dataset .
+eventKG-g:dbpedia_da dcterms:language "da" .
+
+eventKG-g:event_kg dcterms:source eventKG-g:dbpedia_it .
+eventKG-g:dbpedia_it rdf:type void:Dataset .
+eventKG-g:dbpedia_it dcterms:language "it" .
+
 eventKG-g:event_kg dcterms:source eventKG-g:wce_en .
+eventKG-g:wce_en rdf:type void:Dataset .
+eventKG-g:wce_en dcterms:language "en" .
+eventKG-g:wce_en foaf:homepage <https://en.wikipedia.org/wiki/Portal:Current_events>  .
+
 eventKG-g:event_kg dcterms:source eventKG-g:yago .
+eventKG-g:yago rdf:type void:Dataset .
+eventKG-g:yago foaf:homepage <https://www.mpi-inf.mpg.de/departments/databases-and-information-systems/research/yago-naga/yago/>  .
+
 eventKG-g:event_kg dcterms:source eventKG-g:wikidata .
+eventKG-g:wikidata rdf:type void:Dataset .
+eventKG-g:wikidata foaf:homepage <https://www.wikidata.org/>  .
+
 eventKG-g:event_kg dcterms:license <https://creativecommons.org/licenses/by-sa/4.0/> .

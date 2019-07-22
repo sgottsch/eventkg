@@ -17,6 +17,9 @@
 # dayTitle
 ^@regexDay1@\. @regexMonth1@$
 
+# monthTitle
+^@regexMonth1@ @regexYear@$
+
 # yearTitlePatterns
 ^(?<y>[0-9]{@digitsInYear@})$
 ^.*jahr (?<y>[0-9]{@digitsInYear@})$
