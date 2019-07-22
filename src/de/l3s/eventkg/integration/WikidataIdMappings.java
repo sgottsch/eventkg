@@ -20,7 +20,6 @@ import de.l3s.eventkg.meta.Language;
 import de.l3s.eventkg.pipeline.Config;
 import de.l3s.eventkg.pipeline.Config.TimeSymbol;
 import de.l3s.eventkg.source.wikidata.WikidataResource;
-import de.l3s.eventkg.source.wikipedia.RedirectsTableCreator;
 import de.l3s.eventkg.source.wikipedia.WikiWords;
 import de.l3s.eventkg.util.FileLoader;
 import de.l3s.eventkg.util.FileName;
@@ -44,7 +43,8 @@ public class WikidataIdMappings {
 
 	private Map<String, TimeSymbol> temporalPropertyIds;
 
-	private Map<Language, Map<String, String>> redirects = new HashMap<Language, Map<String, String>>();
+	// private Map<Language, Map<String, String>> redirects = new
+	// HashMap<Language, Map<String, String>>();
 
 	private Set<String> wikipediaInternalClasses;
 
@@ -54,7 +54,7 @@ public class WikidataIdMappings {
 
 	public void load() {
 		loadWikipediaInternalClasses();
-		loadRedirects();
+		// loadRedirects();
 		loadWikidataIdMapping();
 		loadWikidataLabels();
 		loadWikidataPropertyIdMapping();
@@ -87,13 +87,14 @@ public class WikidataIdMappings {
 
 	}
 
-	private void loadRedirects() {
-		for (Language language : this.languages) {
-			System.out.println(language + ": Load redirects.");
-			Map<String, String> redirectsOfLanguage = RedirectsTableCreator.getRedirects(language);
-			this.redirects.put(language, redirectsOfLanguage);
-		}
-	}
+	// private void loadRedirects() {
+	// for (Language language : this.languages) {
+	// System.out.println(language + ": Load redirects.");
+	// Map<String, String> redirectsOfLanguage =
+	// RedirectsTableCreator.getRedirects(language);
+	// this.redirects.put(language, redirectsOfLanguage);
+	// }
+	// }
 
 	private void loadWikidataLabels() {
 
@@ -603,14 +604,14 @@ public class WikidataIdMappings {
 	}
 
 	public Entity getEntityByWikipediaLabel(Language language, String wikipediaLabel) {
-		if (!this.redirects.containsKey(language))
-			System.out.println("redirects is missing " + language);
+		// if (!this.redirects.containsKey(language))
+		// System.out.println("redirects is missing " + language);
 
 		if (!this.entitiesByWikipediaLabels.containsKey(language))
 			System.out.println("entitiesByWikipediaLabels is missing " + language);
 
-		if (this.redirects.get(language).containsKey(wikipediaLabel))
-			wikipediaLabel = this.redirects.get(language).get(wikipediaLabel);
+		// if (this.redirects.get(language).containsKey(wikipediaLabel))
+		// wikipediaLabel = this.redirects.get(language).get(wikipediaLabel);
 
 		return entitiesByWikipediaLabels.get(language).get(wikipediaLabel);
 	}
