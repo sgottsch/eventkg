@@ -236,7 +236,11 @@ public class LocationEvaluation {
 		} catch (IOException e) {
 			e.printStackTrace();
 		} finally {
-			LineIterator.closeQuietly(it);
+			try {
+				it.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 		}
 
 		loadLabels();
@@ -288,7 +292,11 @@ public class LocationEvaluation {
 		} catch (IOException e) {
 			e.printStackTrace();
 		} finally {
-			LineIterator.closeQuietly(it);
+			try {
+				it.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 		}
 
 	}
@@ -335,7 +343,11 @@ public class LocationEvaluation {
 		} catch (IOException e) {
 			e.printStackTrace();
 		} finally {
-			LineIterator.closeQuietly(it);
+			try {
+				it.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 		}
 
 	}

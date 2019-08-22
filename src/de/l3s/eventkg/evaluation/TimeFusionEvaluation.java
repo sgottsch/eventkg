@@ -243,7 +243,11 @@ public class TimeFusionEvaluation {
 		} catch (IOException e) {
 			e.printStackTrace();
 		} finally {
-			LineIterator.closeQuietly(it);
+			try {
+				it.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 		}
 
 		loadLabels();
@@ -294,7 +298,11 @@ public class TimeFusionEvaluation {
 		} catch (IOException e) {
 			e.printStackTrace();
 		} finally {
-			LineIterator.closeQuietly(it);
+			try {
+				it.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 		}
 
 	}

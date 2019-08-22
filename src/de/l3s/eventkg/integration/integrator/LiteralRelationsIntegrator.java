@@ -591,7 +591,7 @@ public class LiteralRelationsIntegrator extends Extractor {
 
 		System.out.println("Groups of literal relations that can be merged: " + relationGroups.size());
 
-		int numberOfExamples = 3;
+		int numberOfExamples = 0;
 
 		if (numberOfExamples > 0)
 			System.out.println("Literal Relation Group:");

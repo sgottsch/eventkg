@@ -436,7 +436,7 @@ public class TimesIntegrator extends Extractor {
 
 	private void initDataSetsByTrustWorthiness() {
 		dataSetsByTrustWorthiness.add(DataSets.getInstance().getDataSetWithoutLanguage(Source.YAGO));
-		dataSetsByTrustWorthiness.add(DataSets.getInstance().getDataSetWithoutLanguage(Source.WCE));
+		dataSetsByTrustWorthiness.add(DataSets.getInstance().getDataSet(Language.EN, Source.WCE));
 
 		// TODO: Not working? Check example
 		// "Withdrawal_of_U.S._troops_from_Iraq"@en:

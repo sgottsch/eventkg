@@ -37,6 +37,8 @@ import de.l3s.eventkg.source.currentevents.model.WCEEvent;
 import de.l3s.eventkg.source.wikipedia.model.LinksToCount;
 import de.l3s.eventkg.util.FileLoader;
 import de.l3s.eventkg.util.FileName;
+import gnu.trove.map.hash.THashMap;
+import gnu.trove.set.hash.THashSet;
 
 public class TextualEventsExtractor extends Extractor {
 
@@ -52,7 +54,7 @@ public class TextualEventsExtractor extends Extractor {
 	private SimpleDateFormat dateFormat = new SimpleDateFormat("G yyyy-MM-dd", Locale.ENGLISH);
 	private SimpleDateFormat dateFormatPageTitle = new SimpleDateFormat("MMMMM_yyyy", Locale.US);
 
-	private Map<String, Set<TextualEvent>> eventsByDates = new HashMap<String, Set<TextualEvent>>();
+	private Map<String, Set<TextualEvent>> eventsByDates = new THashMap<String, Set<TextualEvent>>();
 
 	private double JACCARD_THRESHOLD = 0.2;
 
@@ -64,7 +66,7 @@ public class TextualEventsExtractor extends Extractor {
 		Config.init("config_eventkb_local.txt");
 
 		AllEventPagesDataSet allEventPagesDataSet = new AllEventPagesDataSet(languages);
-		allEventPagesDataSet.init();
+		allEventPagesDataSet.init(true);
 
 		TextualEventsExtractor extr = new TextualEventsExtractor(languages, allEventPagesDataSet);
 		extr.run();
@@ -82,8 +84,8 @@ public class TextualEventsExtractor extends Extractor {
 
 	private void extractRelations() {
 
-		this.textualEvents = new HashSet<TextualEvent>();
-		this.eventsToTextualEvents = new HashMap<Event, Set<TextualEvent>>();
+		this.textualEvents = new THashSet<TextualEvent>();
+		this.eventsToTextualEvents = new THashMap<Event, Set<TextualEvent>>();
 
 		loadTextualEventsFromWikipedia();
 		loadTextualEventsFromWCE();
@@ -282,7 +284,7 @@ public class TextualEventsExtractor extends Extractor {
 				DataStore.getInstance().addDescription(description);
 				if (eventInCluster.getEnglishWCECategory() != null) {
 					// categories from WCE (English only)
-					event.addCategory(DataSets.getInstance().getDataSetWithoutLanguage(Source.WCE), Language.EN,
+					event.addCategory(DataSets.getInstance().getDataSet(Language.EN, Source.WCE), Language.EN,
 							eventInCluster.getEnglishWCECategory());
 				}
 				for (Language language : eventInCluster.getOtherCategories().keySet()) {
@@ -293,7 +295,7 @@ public class TextualEventsExtractor extends Extractor {
 					}
 				}
 				for (String source : eventInCluster.getSources())
-					event.addSource(DataSets.getInstance().getDataSetWithoutLanguage(Source.WCE), source);
+					event.addSource(DataSets.getInstance().getDataSet(Language.EN, Source.WCE), source);
 			}
 
 			// URLs
@@ -497,17 +499,17 @@ public class TextualEventsExtractor extends Extractor {
 				Map<Language, Set<String>> categories = new HashMap<Language, Set<String>>();
 				categories.put(language, new HashSet<String>());
 
-				if (parts.length > 9) {
+				if (parts.length > 10) {
 					List<String> linksAndLeadingLink = new ArrayList<String>();
 
 					for (String entityName : parts[10].split(" ")) {
 						linksAndLeadingLink.add(entityName);
 					}
-					if (parts.length > 10 && !parts[11].equals("null")) {
+					if (parts.length > 11 && !parts[11].equals("null")) {
 						linksAndLeadingLink.add(parts[11]);
 					}
 
-					if (parts.length > 11 && !parts[12].equals("null")) {
+					if (parts.length > 12 && !parts[12].equals("null")) {
 						for (String category : parts[12].split(";"))
 							categories.get(language).add(category);
 					}

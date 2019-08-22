@@ -56,4 +56,18 @@ public enum PrefixEnum {
 		return abbr;
 	}
 
+	public String getPrefixString(boolean allowDirectives) {
+		if (allowDirectives)
+			return this.getAbbr();
+		else
+			return this.getUrlPrefix();
+	}
+
+	public String getPrefixStringWithResource(boolean allowDirectives, String resourceId) {
+		if (allowDirectives)
+			return this.getAbbr();
+		else
+			return "<" + this.getUrlPrefix() + resourceId + ">";
+	}
+
 }

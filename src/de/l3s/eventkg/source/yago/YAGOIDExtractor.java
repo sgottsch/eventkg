@@ -43,6 +43,12 @@ public class YAGOIDExtractor extends Extractor {
 					continue;
 
 				String yagoId = parts[0].substring(1, parts[0].length() - 1);
+
+				if (yagoId.contains(" ")) {
+					System.out.println("Skip YAGO ID with space: " + yagoId);
+					continue;
+				}
+
 				String wikidataId = parts[2].substring(parts[2].lastIndexOf("/") + 1, parts[2].lastIndexOf(">"));
 
 				Entity entity = this.allEventPagesDataSet.getWikidataIdMappings().getEntityByWikidataId(wikidataId);

@@ -56,7 +56,11 @@ public class LocationFusionEvaluationResults {
 		} catch (IOException e) {
 			e.printStackTrace();
 		} finally {
-			LineIterator.closeQuietly(it);
+			try {
+				it.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 		}
 	}
 
@@ -128,7 +132,11 @@ public class LocationFusionEvaluationResults {
 			} catch (IOException e) {
 				e.printStackTrace();
 			} finally {
-				LineIterator.closeQuietly(it);
+				try {
+					it.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
 			}
 		}
 

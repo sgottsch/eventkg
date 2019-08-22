@@ -114,7 +114,8 @@ public class DBpediaTimesExtractor extends Extractor {
 		targetProperties.put("<http://dbpedia.org/ontology/deathDate>", TimeSymbol.END_TIME);
 		targetProperties.put("<http://dbpedia.org/ontology/endDate>", TimeSymbol.END_TIME);
 		targetProperties.put("<http://dbpedia.org/ontology/startDate>", TimeSymbol.START_TIME);
-		targetProperties.put("<http://dbpedia.org/ontology/time>", TimeSymbol.START_AND_END_TIME);
+		// targetProperties.put("<http://dbpedia.org/ontology/time>",
+		// TimeSymbol.START_AND_END_TIME);
 
 		return targetProperties;
 	}

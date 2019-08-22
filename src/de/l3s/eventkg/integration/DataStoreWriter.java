@@ -39,19 +39,20 @@ import de.l3s.eventkg.meta.Source;
 import de.l3s.eventkg.pipeline.Config;
 import de.l3s.eventkg.util.FileLoader;
 import de.l3s.eventkg.util.FileName;
+import de.l3s.eventkg.util.MemoryStatsUtil;
 
 public class DataStoreWriter {
 
 	// .nq (N-QUADS) and .nt do not allow the use of directives, so no prefix
 	// definitions may be used. It is, however, still possible to import them in
 	// OpenLink Virtuoso.
-	private static final boolean ALLOW_DIRECTIVES = false;
+	public static final boolean ALLOW_DIRECTIVES = false;
 
 	private static final int NUMBER_OF_LINES_IN_PREVIEW = 50;
 	private DataStore dataStore;
 	private DataSets dataSets;
 
-	private boolean generateIdsFromPreviousEventKG = false;
+	private boolean generateIdsFromPreviousEventKGFiles = false;
 
 	private static SimpleDateFormat standardFormat = new SimpleDateFormat(
 			"\"yyyy-MM-dd\"'^^<" + PrefixEnum.XSD.getUrlPrefix() + "date>'");
@@ -90,7 +91,7 @@ public class DataStoreWriter {
 		System.out.println("writeNamedEventRelations");
 		writeNamedEventRelations();
 		System.out.println("writeOtherRelations");
-		writeOtherRelations();
+		writeEntityRelations();
 		System.out.println("writePropertyLabels");
 		writePropertyLabels();
 		System.out.println("writeLiteralsRelations");
@@ -113,15 +114,20 @@ public class DataStoreWriter {
 
 	public void writeRelations() {
 
-		this.generateIdsFromPreviousEventKG = true;
+		MemoryStatsUtil.printMemoryStats();
+
+		this.generateIdsFromPreviousEventKGFiles = true;
 
 		init();
+		MemoryStatsUtil.printMemoryStats();
+
 		initIds();
+		MemoryStatsUtil.printMemoryStats();
 
 		System.out.println("writeNamedEventRelations");
 		writeNamedEventRelations();
 		System.out.println("writeOtherRelations");
-		writeOtherRelations();
+		writeEntityRelations();
 		System.out.println("writeLiteralsRelations");
 		writeLiteralsRelations();
 		System.out.println("writePropertyLabels");
@@ -130,7 +136,7 @@ public class DataStoreWriter {
 
 	public void writeLinkRelations() {
 
-		this.generateIdsFromPreviousEventKG = true;
+		this.generateIdsFromPreviousEventKGFiles = true;
 
 		System.out.println("Init mapping.");
 		init();
@@ -151,7 +157,7 @@ public class DataStoreWriter {
 
 		prefixList = PrefixList.getInstance();
 
-		if (generateIdsFromPreviousEventKG) {
+		if (generateIdsFromPreviousEventKGFiles) {
 			this.idGenerator = new EntityIdGenerator();
 			this.idGenerator.load();
 		}
@@ -401,7 +407,7 @@ public class DataStoreWriter {
 
 		int eventNo = 0;
 
-		if (generateIdsFromPreviousEventKG)
+		if (generateIdsFromPreviousEventKGFiles)
 			eventNo = this.idGenerator.getLastEventNo() + 1;
 
 		Map<Event, String> descriptionMap = createDescriptionMap();
@@ -557,7 +563,7 @@ public class DataStoreWriter {
 		// String entityId = "entity_";
 		int entityNo = 0;
 
-		if (generateIdsFromPreviousEventKG)
+		if (generateIdsFromPreviousEventKGFiles)
 			entityNo = this.idGenerator.getLastEntityNo() + 1;
 
 		PrintWriter writer = null;
@@ -714,7 +720,7 @@ public class DataStoreWriter {
 
 	private String generateEntityId(Entity entity) {
 
-		if (!generateIdsFromPreviousEventKG)
+		if (!generateIdsFromPreviousEventKGFiles)
 			return null;
 
 		Set<String> entityIds = new HashSet<String>();
@@ -775,13 +781,12 @@ public class DataStoreWriter {
 
 	private String generateEventId(Event event, String description) {
 
-		if (!generateIdsFromPreviousEventKG)
+		if (!generateIdsFromPreviousEventKGFiles)
 			return null;
 
 		Set<String> eventIds = new HashSet<String>();
 
 		if (event.getWikidataId() == null && event.getWikipediaLabels().isEmpty()) {
-
 			if (description == null) {
 				System.out.println("descriptionMap is null: " + event.getWikidataId() + ", "
 						+ event.getWikipediaLabelsString(this.languages));
@@ -792,9 +797,7 @@ public class DataStoreWriter {
 			if (this.idGenerator.getEventDescriptionsMap().containsKey(description)) {
 				eventIds.add(this.idGenerator.getEventDescriptionsMap().get(description));
 			}
-		} else
-
-		{
+		} else {
 			// Wikidata
 			if (event.getWikidataId() != null && this.idGenerator.getEventLabelsMap()
 					.containsKey(DataSets.getInstance().getDataSetWithoutLanguage(Source.WIKIDATA))) {
@@ -990,7 +993,7 @@ public class DataStoreWriter {
 						for (String category : event.getCategories().get(categoryDataSet).get(categoryLanguage)) {
 							lineNo += 1;
 							writeTriple(writer, writerPreview, lineNo, this.basePrefix, event.getId(),
-									prefixList.getPrefix(PrefixEnum.DBPEDIA_ONTOLOGY), "title", this.basePrefix,
+									prefixList.getPrefix(PrefixEnum.DBPEDIA_ONTOLOGY), "title", null,
 									createLiteral(category, LiteralDataType.LANG_STRING,
 											categoryLanguage.getLanguageLowerCase()),
 									false, categoryDataSet, fileType);
@@ -1116,7 +1119,7 @@ public class DataStoreWriter {
 				}
 				lineNo += 1;
 
-				String relationId = "<eventkg_link_relation_" + String.valueOf(lineNo) + ">";
+				String relationId = "eventkg_link_relation_" + String.valueOf(lineNo);
 
 				writeTriple(writer, writerPreview, lineNoWriter, this.basePrefix, relationId,
 						prefixList.getPrefix(PrefixEnum.RDF), "type", prefixList.getPrefix(PrefixEnum.EVENT_KG_SCHEMA),
@@ -1372,7 +1375,7 @@ public class DataStoreWriter {
 
 	}
 
-	private void writeOtherRelations() {
+	private void writeEntityRelations() {
 
 		FileType fileType = FileType.NQ;
 
@@ -1566,7 +1569,7 @@ public class DataStoreWriter {
 
 		if (!dataType.getDataTypeRdf().isEmpty()) {
 			if (!ALLOW_DIRECTIVES)
-				literal += "^^<" + dataType.getDataTypeRdf().replace("xsd:", PrefixEnum.XSD.getUrlPrefix() + ">");
+				literal += "^^<" + dataType.getDataTypeRdf().replace("xsd:", PrefixEnum.XSD.getUrlPrefix()) + ">";
 			else
 				literal += "^^" + dataType.getDataTypeRdf();
 
@@ -1582,32 +1585,65 @@ public class DataStoreWriter {
 		if (granularity == null)
 			return;
 
-		String property = "eventKG-s:";
-		if (start)
-			property += "start";
-		else
-			property += "end";
-		property += "UnitType";
+		String property = null;
+		String object = null;
 
-		String object = "";
-		switch (granularity) {
-		case DAY:
-			object = "time:unitDay";
-			break;
-		case MONTH:
-			object = "time:unitMonth";
-			break;
-		case YEAR:
-			object = "time:unitYear";
-			break;
-		case DECADE:
-			object = "eventKG-s:unitDecade";
-			break;
-		case CENTURY:
-			object = "eventKG-s:unitCentury";
-			break;
-		default:
-			break;
+		if (ALLOW_DIRECTIVES) {
+			property = "eventKG-s:";
+			if (start)
+				property += "start";
+			else
+				property += "end";
+			property += "UnitType";
+
+			object = "";
+			switch (granularity) {
+			case DAY:
+				object = "time:unitDay";
+				break;
+			case MONTH:
+				object = "time:unitMonth";
+				break;
+			case YEAR:
+				object = "time:unitYear";
+				break;
+			case DECADE:
+				object = "eventKG-s:unitDecade";
+				break;
+			case CENTURY:
+				object = "eventKG-s:unitCentury";
+				break;
+			default:
+				break;
+			}
+		} else {
+			property = "<" + prefixList.getPrefix(PrefixEnum.EVENT_KG_SCHEMA).getUrlPrefix();
+			if (start)
+				property += "start";
+			else
+				property += "end";
+			property += "UnitType>";
+
+			object = "";
+			switch (granularity) {
+			case DAY:
+				object = "<" + prefixList.getPrefix(PrefixEnum.TIME).getUrlPrefix() + "unitDay>";
+				break;
+			case MONTH:
+				object = "<" + prefixList.getPrefix(PrefixEnum.TIME).getUrlPrefix() + "unitMonth>";
+				break;
+			case YEAR:
+				object = "<" + prefixList.getPrefix(PrefixEnum.TIME).getUrlPrefix() + "unitYear>";
+				break;
+			case DECADE:
+				object = "<" + prefixList.getPrefix(PrefixEnum.EVENT_KG_SCHEMA).getUrlPrefix() + "unitDecade>";
+				break;
+			case CENTURY:
+				object = "<" + prefixList.getPrefix(PrefixEnum.EVENT_KG_SCHEMA).getUrlPrefix() + "unitCentury>";
+				break;
+			default:
+				break;
+			}
 		}
 
 		String line = null;
@@ -1615,9 +1651,12 @@ public class DataStoreWriter {
 
 		if (dataSet == null) {
 			line = subjectWithPrefix + Config.SEP + property + Config.SEP + object + Config.SEP + "." + Config.NL;
-		} else
-			line = subjectWithPrefix + Config.SEP + property + Config.SEP + object + Config.SEP
-					+ PrefixEnum.EVENT_KG_GRAPH.getAbbr() + dataSet.getId() + Config.SEP + "." + Config.NL;
+		} else {
+			String graph = createResourceWithPrefix(prefixList.getPrefix(PrefixEnum.EVENT_KG_GRAPH), dataSet.getId(),
+					fileType);
+			line = subjectWithPrefix + Config.SEP + property + Config.SEP + object + Config.SEP + graph + Config.SEP
+					+ "." + Config.NL;
+		}
 
 		writer.write(line);
 		if (writerPreview != null && lineNo <= NUMBER_OF_LINES_IN_PREVIEW)
@@ -1658,9 +1697,12 @@ public class DataStoreWriter {
 		if (dataSet == null) {
 			line = subjectWithPrefix + Config.SEP + propertyWithPrefix + Config.SEP + objectWithPrefix + Config.SEP
 					+ "." + Config.NL;
-		} else
+		} else {
+			String graph = createResourceWithPrefix(prefixList.getPrefix(PrefixEnum.EVENT_KG_GRAPH), dataSet.getId(),
+					fileType);
 			line = subjectWithPrefix + Config.SEP + propertyWithPrefix + Config.SEP + objectWithPrefix + Config.SEP
-					+ PrefixEnum.EVENT_KG_GRAPH.getAbbr() + dataSet.getId() + Config.SEP + "." + Config.NL;
+					+ graph + Config.SEP + "." + Config.NL;
+		}
 
 		writer.write(line);
 		if (writerPreview != null && lineNo <= NUMBER_OF_LINES_IN_PREVIEW)
@@ -1703,9 +1745,12 @@ public class DataStoreWriter {
 		if (dataSet == null) {
 			line = subjectWithPrefix + Config.SEP + propertyWithPrefix + Config.SEP + objectWithPrefix + Config.SEP
 					+ "." + Config.NL;
-		} else
+		} else {
+			String graph = createResourceWithPrefix(prefixList.getPrefix(PrefixEnum.EVENT_KG_GRAPH), dataSet.getId(),
+					fileType);
 			line = subjectWithPrefix + Config.SEP + propertyWithPrefix + Config.SEP + objectWithPrefix + Config.SEP
-					+ PrefixEnum.EVENT_KG_GRAPH.getAbbr() + dataSet.getId() + Config.SEP + "." + Config.NL;
+					+ graph + Config.SEP + "." + Config.NL;
+		}
 
 		writer.write(line);
 		if (writerPreview != null && lineNo <= NUMBER_OF_LINES_IN_PREVIEW)

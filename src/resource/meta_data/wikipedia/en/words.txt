@@ -98,6 +98,8 @@ Sunday
 # eventTitlesNotToUseAsCategory
 Events by month
 By topic
+Unknown date events
+Specific date unknown
 
 # eventCategoryRegexes
 .+events$

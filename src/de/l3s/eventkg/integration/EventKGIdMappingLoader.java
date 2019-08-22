@@ -3,7 +3,6 @@ package de.l3s.eventkg.integration;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -16,12 +15,14 @@ import de.l3s.eventkg.integration.model.relation.DataSet;
 import de.l3s.eventkg.integration.model.relation.prefix.PrefixEnum;
 import de.l3s.eventkg.util.FileLoader;
 import de.l3s.eventkg.util.FileName;
+import gnu.trove.map.hash.THashMap;
+import gnu.trove.set.hash.THashSet;
 
 public class EventKGIdMappingLoader {
 
-	private Map<DataSet, Map<String, String>> entityLabelsMap = new HashMap<DataSet, Map<String, String>>();
-	private Map<DataSet, Map<String, String>> eventLabelsMap = new HashMap<DataSet, Map<String, String>>();
-	private Map<String, String> eventDescriptionsMap = new HashMap<String, String>();
+	private Map<DataSet, Map<String, String>> entityLabelsMap = new THashMap<DataSet, Map<String, String>>();
+	private Map<DataSet, Map<String, String>> eventLabelsMap = new THashMap<DataSet, Map<String, String>>();
+	private Map<String, String> eventDescriptionsMap = new THashMap<String, String>();
 
 	private int lastEntityId;
 	private int lastEventId;
@@ -35,9 +36,10 @@ public class EventKGIdMappingLoader {
 	public void initEntityIdMapping() {
 
 		System.out.println("Init entity ID mapping.");
+		System.out.println(" loadFromPreviousVersion: " + this.loadFromPreviousVersion + ".");
 
 		for (DataSet dataSet : DataSets.getInstance().getAllDataSets())
-			entityLabelsMap.put(dataSet, new HashMap<String, String>());
+			entityLabelsMap.put(dataSet, new THashMap<String, String>());
 
 		FileName fileName = null;
 		if (loadFromPreviousVersion)
@@ -45,23 +47,31 @@ public class EventKGIdMappingLoader {
 		else
 			fileName = FileName.ALL_TTL_ENTITIES_WITH_TEXTS;
 
+		int lineNumber = 0;
 		LineIterator it = null;
 		try {
 			it = FileLoader.getLineIterator(fileName);
 			while (it.hasNext()) {
+
+				if (lineNumber % 500000 == 0)
+					System.out.println(" Line " + lineNumber);
+
 				String line = it.nextLine();
+				lineNumber += 1;
 
 				if (line.isEmpty() || line.startsWith("@"))
 					continue;
 
 				String[] parts = line.split(" ");
 
-				if (!parts[1].equals("owl:sameAs"))
+				if (!parts[1].equals("owl:sameAs") && !parts[1].equals("<http://www.w3.org/2002/07/owl#sameAs>"))
 					continue;
 
 				String entityId = parts[0];
-				int entityNo = Integer
-						.valueOf(entityId.substring(entityId.lastIndexOf("_") + 1, entityId.length() - 1));
+				entityId = entityId.replace("http://eventKG.l3s.uni-hannover.de/resource/", "");
+				entityId = entityId.substring(1, entityId.length() - 1);
+
+				int entityNo = Integer.valueOf(entityId.substring(entityId.lastIndexOf("_") + 1));
 				if (entityNo > this.lastEntityId)
 					this.lastEntityId = entityNo;
 
@@ -78,8 +88,15 @@ public class EventKGIdMappingLoader {
 
 				String dataSetGraph = parts[3];
 
-				DataSet dataSet = DataSets.getInstance()
-						.getDataSetById(dataSetGraph.replace(PrefixEnum.EVENT_KG_GRAPH.getAbbr(), ""));
+				DataSet dataSet = null;
+				if (DataStoreWriter.ALLOW_DIRECTIVES) {
+					dataSet = DataSets.getInstance()
+							.getDataSetById(dataSetGraph.replace(PrefixEnum.EVENT_KG_GRAPH.getAbbr(), ""));
+				} else {
+					String dataSetId = dataSetGraph.replace(PrefixEnum.EVENT_KG_GRAPH.getUrlPrefix(), "");
+					dataSetId = dataSetId.substring(1, dataSetId.length() - 1);
+					dataSet = DataSets.getInstance().getDataSetById(dataSetId);
+				}
 
 				entityLabelsMap.get(dataSet).put(entityLabel, entityId);
 
@@ -87,22 +104,26 @@ public class EventKGIdMappingLoader {
 		} catch (IOException e) {
 			e.printStackTrace();
 		} finally {
-			LineIterator.closeQuietly(it);
+			try {
+				it.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 		}
 
 		System.out.println(" Finished: Init entity ID mapping");
-
 	}
 
 	public void initEventIdMapping() {
 
 		System.out.println("Init event ID mapping.");
+		System.out.println(" loadFromPreviousVersion: " + this.loadFromPreviousVersion + ".");
 
 		for (DataSet dataSet : DataSets.getInstance().getAllDataSets()) {
-			eventLabelsMap.put(dataSet, new HashMap<String, String>());
+			eventLabelsMap.put(dataSet, new THashMap<String, String>());
 		}
 
-		Set<String> eventsWithoutLabels = new HashSet<String>();
+		Set<String> eventsWithoutLabels = new THashSet<String>();
 
 		FileName fileName = null;
 		if (loadFromPreviousVersion)
@@ -121,13 +142,16 @@ public class EventKGIdMappingLoader {
 
 				String[] parts = line.split(" ");
 				String entityId = parts[0];
-				int eventNo = Integer.valueOf(entityId.substring(entityId.lastIndexOf("_") + 1, entityId.length() - 1));
+				entityId = entityId.replace("http://eventKG.l3s.uni-hannover.de/resource/", "");
+				entityId = entityId.substring(1, entityId.length() - 1);
+
+				int eventNo = Integer.valueOf(entityId.substring(entityId.lastIndexOf("_") + 1));
 				if (eventNo > this.lastEventId)
 					this.lastEventId = eventNo;
 
 				eventsWithoutLabels.add(entityId);
 
-				if (!parts[1].equals("owl:sameAs"))
+				if (!parts[1].equals("owl:sameAs") && !parts[1].equals("<http://www.w3.org/2002/07/owl#sameAs>"))
 					continue;
 
 				eventsWithoutLabels.remove(entityId);
@@ -144,16 +168,31 @@ public class EventKGIdMappingLoader {
 
 				String dataSetGraph = parts[3];
 
-				DataSet dataSet = DataSets.getInstance()
-						.getDataSetById(dataSetGraph.replace(PrefixEnum.EVENT_KG_GRAPH.getAbbr(), ""));
+				DataSet dataSet = null;
+				if (DataStoreWriter.ALLOW_DIRECTIVES) {
+					dataSet = DataSets.getInstance()
+							.getDataSetById(dataSetGraph.replace(PrefixEnum.EVENT_KG_GRAPH.getAbbr(), ""));
+				} else {
+					String dataSetId = dataSetGraph.replace(PrefixEnum.EVENT_KG_GRAPH.getUrlPrefix(), "");
+					dataSetId = dataSetId.substring(1, dataSetId.length() - 1);
+					dataSet = DataSets.getInstance().getDataSetById(dataSetId);
+				}
+
+				if (!eventLabelsMap.containsKey(dataSet)) {
+					System.out.println("Missing data set: " + dataSetGraph);
+					continue;
+				}
 
 				eventLabelsMap.get(dataSet).put(entityLabel, entityId);
-
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
 		} finally {
-			LineIterator.closeQuietly(it);
+			try {
+				it.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 		}
 
 		// describe event by its description. But descriptions are not unique
@@ -165,8 +204,8 @@ public class EventKGIdMappingLoader {
 		// "ID" is: all "extractedFrom" aplphabetically, then all "description"
 		// alphabetically.
 
-		Map<String, Set<String>> descriptions = new HashMap<String, Set<String>>();
-		Map<String, Set<String>> otherURLs = new HashMap<String, Set<String>>();
+		Map<String, Set<String>> descriptions = new THashMap<String, Set<String>>();
+		Map<String, Set<String>> otherURLs = new THashMap<String, Set<String>>();
 
 		it = null;
 		try {
@@ -183,6 +222,8 @@ public class EventKGIdMappingLoader {
 				String splitLine = line;
 
 				String entityId = splitLine.substring(0, splitLine.indexOf(" "));
+				entityId = entityId.replace("http://eventKG.l3s.uni-hannover.de/resource/", "");
+				entityId = entityId.substring(1, entityId.length() - 1);
 
 				if (!eventsWithoutLabels.contains(entityId))
 					continue;
@@ -190,7 +231,10 @@ public class EventKGIdMappingLoader {
 				splitLine = splitLine.substring(splitLine.indexOf(" ") + 1);
 				String property = splitLine.substring(0, splitLine.indexOf(" "));
 
-				if (property.equals("dcterms:description") || property.equals("eventKG-s:extractedFrom")) {
+				if (property.equals(
+						PrefixEnum.DCTERMS.getPrefixStringWithResource(DataStoreWriter.ALLOW_DIRECTIVES, "description"))
+						|| property.equals(PrefixEnum.EVENT_KG_SCHEMA
+								.getPrefixStringWithResource(DataStoreWriter.ALLOW_DIRECTIVES, "extractedFrom"))) {
 
 					splitLine = StringUtils.stripEnd(splitLine.trim(), "\\.").trim();
 
@@ -198,10 +242,18 @@ public class EventKGIdMappingLoader {
 					String dataSetGraph = splitLine.substring(splitLine.lastIndexOf(" ") + 1);
 					splitLine = splitLine.substring(0, splitLine.lastIndexOf(" "));
 
-					DataSet dataSet = DataSets.getInstance()
-							.getDataSetById(dataSetGraph.replace(PrefixEnum.EVENT_KG_GRAPH.getAbbr(), ""));
+					DataSet dataSet = null;
+					if (DataStoreWriter.ALLOW_DIRECTIVES) {
+						dataSet = DataSets.getInstance()
+								.getDataSetById(dataSetGraph.replace(PrefixEnum.EVENT_KG_GRAPH.getAbbr(), ""));
+					} else {
+						String dataSetId = dataSetGraph.replace(PrefixEnum.EVENT_KG_GRAPH.getUrlPrefix(), "");
+						dataSetId = dataSetId.substring(1, dataSetId.length() - 1);
+						dataSet = DataSets.getInstance().getDataSetById(dataSetId);
+					}
 
-					if (property.equals("dcterms:description")) {
+					if (property.equals(PrefixEnum.DCTERMS.getPrefixStringWithResource(DataStoreWriter.ALLOW_DIRECTIVES,
+							"description"))) {
 						String description = splitLine;
 
 						description = description.substring(1, description.lastIndexOf("@") - 1).trim();
@@ -213,7 +265,8 @@ public class EventKGIdMappingLoader {
 							descriptions.put(entityId, new HashSet<String>());
 
 						descriptions.get(entityId).add(dataSet.getId() + ":" + description);
-					} else if (property.equals("eventKG-s:extractedFrom")) {
+					} else if (property.equals(PrefixEnum.EVENT_KG_SCHEMA
+							.getPrefixStringWithResource(DataStoreWriter.ALLOW_DIRECTIVES, "extractedFrom"))) {
 						String url = splitLine;
 
 						url = url.substring(1, url.lastIndexOf(">")).trim();
@@ -231,14 +284,23 @@ public class EventKGIdMappingLoader {
 		} catch (IOException e) {
 			e.printStackTrace();
 		} finally {
-			LineIterator.closeQuietly(it);
+			try {
+				it.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 		}
+
+		System.out.println("Descriptions: " + descriptions.size());
+		System.out.println("otherURLs: " + otherURLs.size());
 
 		Set<String> eventIds = new HashSet<String>();
 		eventIds.addAll(descriptions.keySet());
 		eventIds.retainAll(otherURLs.keySet());
 
-		int examples = 0;
+		System.out.println("Description Map? eventIds: " + eventIds.size());
+
+		int examples = 10;
 		for (String eventId : eventIds) {
 
 			List<String> otherUrlsOfEvent = new ArrayList<String>();
@@ -255,7 +317,7 @@ public class EventKGIdMappingLoader {
 			eventDescriptionsMap.put(description, eventId);
 
 			if (examples > 0) {
-				System.out.println("Map1: " + eventId + " -> " + description);
+				System.out.println("Description Map1: " + eventId + " -> " + description);
 			}
 
 			examples -= 1;

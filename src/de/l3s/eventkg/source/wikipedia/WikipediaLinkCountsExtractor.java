@@ -4,8 +4,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.ArrayList;
-import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
@@ -20,6 +19,7 @@ import de.l3s.eventkg.pipeline.Extractor;
 import de.l3s.eventkg.source.wikipedia.model.LinksToCount;
 import de.l3s.eventkg.util.FileLoader;
 import de.l3s.eventkg.util.FileName;
+import gnu.trove.set.hash.THashSet;
 
 public class WikipediaLinkCountsExtractor extends Extractor {
 
@@ -28,19 +28,6 @@ public class WikipediaLinkCountsExtractor extends Extractor {
 	private Set<LinksToCount> linksToCounts;
 
 	private static final boolean WRITE_TO_FILES = false;
-
-	public static void main(String[] args) {
-		List<Language> languages = new ArrayList<Language>();
-		languages.add(Language.DE);
-
-		Config.init("config_eventkb_local.txt");
-
-		AllEventPagesDataSet allEventPagesDataSet = new AllEventPagesDataSet(languages);
-		allEventPagesDataSet.init();
-
-		WikipediaLinkCountsExtractor extr = new WikipediaLinkCountsExtractor(languages, allEventPagesDataSet);
-		extr.run();
-	}
 
 	public WikipediaLinkCountsExtractor(List<Language> languages, AllEventPagesDataSet allEventPagesDataSet) {
 		super("WikipediaLinkCountsExtractor", de.l3s.eventkg.meta.Source.WIKIPEDIA,
@@ -55,7 +42,7 @@ public class WikipediaLinkCountsExtractor extends Extractor {
 
 	private void extractRelations() {
 
-		this.linksToCounts = new HashSet<LinksToCount>();
+		this.linksToCounts = new THashSet<LinksToCount>();
 
 		for (Language language : this.languages) {
 			for (File child : FileLoader.getFilesList(FileName.WIKIPEDIA_LINK_COUNTS, language)) {
@@ -74,15 +61,17 @@ public class WikipediaLinkCountsExtractor extends Extractor {
 			int size = this.linksToCounts.size();
 
 			System.out.println("Found " + size + " relations.");
-			for (LinksToCount linkCount : this.linksToCounts) {
+			for (Iterator<LinksToCount> it = this.linksToCounts.iterator(); it.hasNext();) {
+				LinksToCount linkCount = it.next();
 				if (i % 100000 == 0)
 					System.out.println("\t" + i + "/" + size + " (" + ((double) i / size) + ")");
 				i += 1;
 				DataStore.getInstance().addLinkRelation(linkCount.toGenericRelation());
+				it.remove();
 			}
 			System.out.println(" Finished loading link counts.");
 
-			this.linksToCounts.clear();
+			this.linksToCounts = null;
 
 		} else {
 
@@ -131,7 +120,11 @@ public class WikipediaLinkCountsExtractor extends Extractor {
 		} catch (IOException e) {
 			e.printStackTrace();
 		} finally {
-			LineIterator.closeQuietly(it);
+			try {
+				it.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 		}
 
 	}

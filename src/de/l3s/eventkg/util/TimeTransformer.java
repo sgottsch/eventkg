@@ -76,6 +76,13 @@ public class TimeTransformer {
 		DateGranularity dateGranularity = DateGranularity.DAY;
 
 		timeString = timeString.substring(1);
+
+		if (timeString.isEmpty())
+			throw new ParseException("Empty timestring.", 0);
+
+		if (!timeString.contains("\""))
+			throw new ParseException("Missing \".", 0);
+
 		timeString = timeString.substring(0, timeString.indexOf("\""));
 
 		boolean bc = false;

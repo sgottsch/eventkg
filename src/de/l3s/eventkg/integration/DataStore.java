@@ -1,7 +1,5 @@
 package de.l3s.eventkg.integration;
 
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
@@ -17,42 +15,44 @@ import de.l3s.eventkg.integration.model.relation.Location;
 import de.l3s.eventkg.integration.model.relation.PropertyLabel;
 import de.l3s.eventkg.integration.model.relation.StartTime;
 import de.l3s.eventkg.meta.Language;
+import gnu.trove.map.hash.THashMap;
+import gnu.trove.set.hash.THashSet;
 
 public class DataStore {
 
-	private Set<Event> events = new HashSet<Event>();
+	private Set<Event> events = new THashSet<Event>();
 
-	private Set<Entity> entities = new HashSet<Entity>();
+	private Set<Entity> entities = new THashSet<Entity>();
 
-	private Set<Alias> aliases = new HashSet<Alias>();
+	private Set<Alias> aliases = new THashSet<Alias>();
 
-	private Set<Description> descriptions = new HashSet<Description>();
+	private Set<Description> descriptions = new THashSet<Description>();
 
-	private Set<EndTime> endTimes = new HashSet<EndTime>();
+	private Set<EndTime> endTimes = new THashSet<EndTime>();
 
-	private Set<StartTime> startTimes = new HashSet<StartTime>();
+	private Set<StartTime> startTimes = new THashSet<StartTime>();
 
-	private Set<Location> locations = new HashSet<Location>();
+	private Set<Location> locations = new THashSet<Location>();
 
-	private Set<GenericRelation> genericRelations = new HashSet<GenericRelation>();
-	private Set<LiteralRelation> literalRelations = new HashSet<LiteralRelation>();
+	private Set<GenericRelation> genericRelations = new THashSet<GenericRelation>();
+	private Set<LiteralRelation> literalRelations = new THashSet<LiteralRelation>();
 
-	private Set<Label> wikipediaLabels = new HashSet<Label>();
-	private Set<Label> wikidataLabels = new HashSet<Label>();
+	private Set<Label> wikipediaLabels = new THashSet<Label>();
+	private Set<Label> wikidataLabels = new THashSet<Label>();
 
-	private Set<PropertyLabel> propertyLabels = new HashSet<PropertyLabel>();
+	private Set<PropertyLabel> propertyLabels = new THashSet<PropertyLabel>();
 
-	private Map<Entity, Set<Entity>> connectedEntities = new HashMap<Entity, Set<Entity>>();
+	private Map<Entity, Set<Entity>> connectedEntities = new THashMap<Entity, Set<Entity>>();
 
-	Map<Language, Map<Entity, Map<Entity, Integer>>> mentionCountsFromTextualEvents = new HashMap<Language, Map<Entity, Map<Entity, Integer>>>();
+	Map<Language, Map<Entity, Map<Entity, Integer>>> mentionCountsFromTextualEvents = new THashMap<Language, Map<Entity, Map<Entity, Integer>>>();
 
 	private static DataStore instance;
 
 	// private Map<Entity, Map<Entity, Set<GenericRelation>>>
-	// linkRelationsBySubjectAndObject = new HashMap<Entity, Map<Entity,
+	// linkRelationsBySubjectAndObject = new THashMap<Entity, Map<Entity,
 	// Set<GenericRelation>>>();
 
-	private Map<String, Set<GenericRelation>> linkRelationsBySubjectAndObjectGroup = new HashMap<String, Set<GenericRelation>>();
+	private Map<String, Set<GenericRelation>> linkRelationsBySubjectAndObjectGroup = new THashMap<String, Set<GenericRelation>>();
 
 	public static DataStore getInstance() {
 		if (instance == null) {
@@ -149,9 +149,9 @@ public class DataStore {
 
 		if (!relation.getSubject().isEvent() && !relation.getObject().isEvent()) {
 			if (!this.connectedEntities.containsKey(relation.getSubject()))
-				this.connectedEntities.put(relation.getSubject(), new HashSet<Entity>());
+				this.connectedEntities.put(relation.getSubject(), new THashSet<Entity>());
 			if (!this.connectedEntities.containsKey(relation.getObject()))
-				this.connectedEntities.put(relation.getObject(), new HashSet<Entity>());
+				this.connectedEntities.put(relation.getObject(), new THashSet<Entity>());
 			this.connectedEntities.get(relation.getSubject()).add(relation.getObject());
 			this.connectedEntities.get(relation.getObject()).add(relation.getSubject());
 		}
@@ -164,12 +164,12 @@ public class DataStore {
 	// if
 	// (!linkRelationsBySubjectAndObject.containsKey(genericRelation.getSubject()))
 	// linkRelationsBySubjectAndObject.put(genericRelation.getSubject(),
-	// new HashMap<Entity, Set<GenericRelation>>());
+	// new THashMap<Entity, Set<GenericRelation>>());
 	//
 	// if
 	// (!linkRelationsBySubjectAndObject.get(genericRelation.getSubject()).containsKey(genericRelation.getObject()))
 	// linkRelationsBySubjectAndObject.get(genericRelation.getSubject()).put(genericRelation.getObject(),
-	// new HashSet<GenericRelation>());
+	// new THashSet<GenericRelation>());
 	//
 	// linkRelationsBySubjectAndObject.get(genericRelation.getSubject()).get(genericRelation.getObject())
 	// .add(genericRelation);
@@ -187,7 +187,7 @@ public class DataStore {
 		String groupId = subjectId + "-" + objectId;
 
 		if (!linkRelationsBySubjectAndObjectGroup.containsKey(groupId))
-			linkRelationsBySubjectAndObjectGroup.put(groupId, new HashSet<GenericRelation>());
+			linkRelationsBySubjectAndObjectGroup.put(groupId, new THashSet<GenericRelation>());
 
 		linkRelationsBySubjectAndObjectGroup.get(groupId).add(genericRelation);
 

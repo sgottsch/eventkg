@@ -423,7 +423,8 @@ public class AllEventPagesDataSet {
 						}
 
 					} catch (ParseException e) {
-						e.printStackTrace();
+						System.out.println("Error: Cannot parse " + timeString + ". Ignore.");
+						// e.printStackTrace();
 					}
 
 				}
@@ -663,9 +664,9 @@ public class AllEventPagesDataSet {
 		return this.eventsByWikidataId.keySet();
 	}
 
-	public void init() {
+	public void init(boolean loadWikidataLabels) {
 		this.wikidataIdMappings = new WikidataIdMappings(languages);
-		this.wikidataIdMappings.load();
+		this.wikidataIdMappings.load(loadWikidataLabels);
 		load();
 		System.out.println(
 				"EntitiesByWikidataNumericIds: " + this.wikidataIdMappings.getEntitiesByWikidataNumericIds().size());

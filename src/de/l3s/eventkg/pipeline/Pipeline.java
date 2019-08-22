@@ -11,7 +11,6 @@ import java.util.Set;
 import de.l3s.eventkg.integration.AllEventPagesDataSet;
 import de.l3s.eventkg.integration.DataCollector;
 import de.l3s.eventkg.integration.DataSets;
-import de.l3s.eventkg.integration.DataStore;
 import de.l3s.eventkg.integration.DataStoreWriter;
 import de.l3s.eventkg.integration.TypesWriter;
 import de.l3s.eventkg.integration.collection.EventAndTemporalRelationsCollector;
@@ -22,9 +21,6 @@ import de.l3s.eventkg.integration.integrator.LocationsIntegrator;
 import de.l3s.eventkg.integration.integrator.PositionsIntegrator;
 import de.l3s.eventkg.integration.integrator.RelationsIntegrator;
 import de.l3s.eventkg.integration.integrator.TimesIntegrator;
-import de.l3s.eventkg.integration.model.Event;
-import de.l3s.eventkg.integration.model.relation.DataSet;
-import de.l3s.eventkg.integration.model.relation.Description;
 import de.l3s.eventkg.integration.model.relation.prefix.PrefixList;
 import de.l3s.eventkg.meta.Language;
 import de.l3s.eventkg.meta.Source;
@@ -53,6 +49,7 @@ import de.l3s.eventkg.source.yago.YAGOExistenceTimeExtractor;
 import de.l3s.eventkg.source.yago.YAGOIDExtractor;
 import de.l3s.eventkg.source.yago.YAGOPositionsExtractor;
 import de.l3s.eventkg.textual_events.TextualEventsExtractor;
+import de.l3s.eventkg.util.MemoryStatsUtil;
 
 public class Pipeline {
 
@@ -211,10 +208,10 @@ public class Pipeline {
 		List<Extractor> extractors = new ArrayList<Extractor>();
 
 		// Collect relations from/to events
-		extractors.add(new DBpediaEventRelationsExtractor(languages, getAllEventPagesDataSet(true)));
-		extractors.add(new CurrentEventsRelationsExtraction(languages, getAllEventPagesDataSet(true)));
-		extractors.add(new YAGOEventRelationsExtractor(languages, getAllEventPagesDataSet(true)));
-		extractors.add(new WikidataExtractionWithEventPages(languages, getAllEventPagesDataSet(true)));
+		extractors.add(new DBpediaEventRelationsExtractor(languages, getAllEventPagesDataSet(true, true)));
+		extractors.add(new CurrentEventsRelationsExtraction(languages, getAllEventPagesDataSet(true, true)));
+		extractors.add(new YAGOEventRelationsExtractor(languages, getAllEventPagesDataSet(true, true)));
+		extractors.add(new WikidataExtractionWithEventPages(languages, getAllEventPagesDataSet(true, true)));
 
 		for (Extractor extractor : extractors) {
 			extractor.printInformation();
@@ -264,42 +261,19 @@ public class Pipeline {
 	private void pipelineStep5() {
 
 		List<Extractor> extractors = new ArrayList<Extractor>();
-		getAllEventPagesDataSet(true);
-		extractors.add(new TextualEventsExtractor(languages, getAllEventPagesDataSet(true)));
-		extractors.add(new SubLocationsCollector(languages, getAllEventPagesDataSet(true))); //
+		getAllEventPagesDataSet(true, true);
+		extractors.add(new TextualEventsExtractor(languages, getAllEventPagesDataSet(true, true)));
+		extractors.add(new SubLocationsCollector(languages, getAllEventPagesDataSet(true, true))); //
 		extractors.add(new PositionsIntegrator(languages));
 		extractors.add(new LocationsIntegrator(languages));
 		extractors.add(new TimesIntegrator(languages));
-		extractors.add(new YAGOIDExtractor(languages, getAllEventPagesDataSet(true))); //
-		extractors.add(new LabelsAndDescriptionsExtractor(languages, getAllEventPagesDataSet(true))); //
+		extractors.add(new YAGOIDExtractor(languages, getAllEventPagesDataSet(true, true))); //
+		extractors.add(new LabelsAndDescriptionsExtractor(languages, getAllEventPagesDataSet(true, true))); //
 
 		for (Extractor extractor : extractors) {
 			extractor.printInformation();
 			extractor.run();
-		}
-
-		// for(Event event: DataStore.getInstance().getEvents()) {
-		// if(event.getD)
-		// }
-		//
-
-		for (Description description : DataStore.getInstance().getDescriptions()) {
-			if (description.getLabel().contains("English defeat Irish rebels and their")) {
-				System.out.println("TCY|" + description.getLabel() + ", " + description.getDataSet().getId());
-				Event e = (Event) description.getSubject();
-				System.out.println("e: " + e + " /" + description.getSubject());
-				for (DataSet ds : e.getOtherUrls().keySet()) {
-					System.out.println(ds.getId() + " -> " + e.getOtherUrls().get(ds));
-				}
-			}
-			if (description.getLabel().contains("des Espagnols et des rebelles irlandais")) {
-				System.out.println("TCW|" + description.getLabel() + ", " + description.getDataSet().getId());
-				Event e = (Event) description.getSubject();
-				System.out.println("e: " + e + " /" + description.getSubject());
-				for (DataSet ds : e.getOtherUrls().keySet()) {
-					System.out.println(ds.getId() + " -> " + e.getOtherUrls().get(ds));
-				}
-			}
+			MemoryStatsUtil.printMemoryStats();
 		}
 
 		DataStoreWriter outputWriter = new DataStoreWriter(languages);
@@ -310,22 +284,26 @@ public class Pipeline {
 
 	private void pipelineStep6() {
 
+		MemoryStatsUtil.printMemoryStats();
+
 		List<Extractor> extractors = new ArrayList<Extractor>();
-		getAllEventPagesDataSet(false);
+		getAllEventPagesDataSet(false, true);
+		MemoryStatsUtil.printMemoryStats();
 
 		// textual events needs to be loaded again, because they are only
 		// identified trough their descriptions
-		extractors.add(new TextualEventsExtractor(languages, getAllEventPagesDataSet(true)));
+		extractors.add(new TextualEventsExtractor(languages, getAllEventPagesDataSet(true, true)));
 
-		extractors.add(new LiteralRelationsCollector(languages, getAllEventPagesDataSet(false)));
+		extractors.add(new LiteralRelationsCollector(languages, getAllEventPagesDataSet(false, true)));
 		extractors.add(new LiteralRelationsIntegrator(languages));
 
-		extractors.add(new EventAndTemporalRelationsCollector(languages, getAllEventPagesDataSet(false)));
+		extractors.add(new EventAndTemporalRelationsCollector(languages, getAllEventPagesDataSet(false, true)));
 		extractors.add(new RelationsIntegrator(languages));
 
 		for (Extractor extractor : extractors) {
 			extractor.printInformation();
 			extractor.run();
+			MemoryStatsUtil.printMemoryStats();
 		}
 
 		DataStoreWriter outputWriter = new DataStoreWriter(languages);
@@ -337,20 +315,22 @@ public class Pipeline {
 	private void pipelineStep7() {
 
 		List<Extractor> extractors = new ArrayList<Extractor>();
-		getAllEventPagesDataSet(false);
+		getAllEventPagesDataSet(false, false);
+		MemoryStatsUtil.printMemoryStats();
 
-		extractors.add(new TextualEventsExtractor(languages, getAllEventPagesDataSet(true)));
+		extractors.add(new TextualEventsExtractor(languages, getAllEventPagesDataSet(true, false)));
 
 		// We need to find relation to find connected entities. Non-event
 		// entities only get link information if they are connected.
-		extractors.add(new EventAndTemporalRelationsCollector(languages, getAllEventPagesDataSet(false)));
+		extractors.add(new EventAndTemporalRelationsCollector(languages, getAllEventPagesDataSet(false, false)));
 
-		extractors.add(new WikipediaLinkCountsExtractor(languages, getAllEventPagesDataSet(false)));
-		extractors.add(new WikipediaLinkSetsExtractor(languages, getAllEventPagesDataSet(false)));
+		extractors.add(new WikipediaLinkCountsExtractor(languages, getAllEventPagesDataSet(false, false)));
+		extractors.add(new WikipediaLinkSetsExtractor(languages, getAllEventPagesDataSet(false, false)));
 
 		for (Extractor extractor : extractors) {
 			extractor.printInformation();
 			extractor.run();
+			MemoryStatsUtil.printMemoryStats();
 		}
 
 		DataStoreWriter outputWriter = new DataStoreWriter(languages);
@@ -365,11 +345,12 @@ public class Pipeline {
 		extractor.run();
 	}
 
-	private AllEventPagesDataSet getAllEventPagesDataSet(boolean loadEntityAndEventInfo) {
+	private AllEventPagesDataSet getAllEventPagesDataSet(boolean loadEntityAndEventInfo, boolean loadWikidataLabels) {
 		if (allEventPagesDataSet == null) {
+			System.out.println("Init AllEventPagesDataSet.");
 			this.allEventPagesDataSet = new AllEventPagesDataSet(languages);
 			this.allEventPagesDataSet.setLoadEntityAndEventInfo(loadEntityAndEventInfo);
-			this.allEventPagesDataSet.init();
+			this.allEventPagesDataSet.init(loadWikidataLabels);
 		}
 		return this.allEventPagesDataSet;
 	}

@@ -33,11 +33,12 @@ import de.l3s.eventkg.source.yago.util.YAGOLabelExtractor;
 import de.l3s.eventkg.util.FileLoader;
 import de.l3s.eventkg.util.FileName;
 import de.l3s.eventkg.util.TimeTransformer;
+import gnu.trove.set.hash.THashSet;
 
 public class EventAndTemporalRelationsCollector extends Extractor {
 
 	private AllEventPagesDataSet allEventPagesDataSet;
-	private Set<Relation> relations = new HashSet<Relation>();
+	private Set<Relation> relations = new THashSet<Relation>();
 
 	private Set<String> partOfProperties;
 
@@ -49,7 +50,7 @@ public class EventAndTemporalRelationsCollector extends Extractor {
 		Config.init("config_eventkb_local.txt");
 
 		AllEventPagesDataSet allEventPagesDataSet = new AllEventPagesDataSet(languages);
-		allEventPagesDataSet.init();
+		allEventPagesDataSet.init(true);
 
 		EventAndTemporalRelationsCollector extr = new EventAndTemporalRelationsCollector(languages,
 				allEventPagesDataSet);
@@ -175,7 +176,7 @@ public class EventAndTemporalRelationsCollector extends Extractor {
 			}
 		}
 
-		this.relations.clear();
+		this.relations = null;
 
 		System.out.println("Event/Temporal relations: " + DataStore.getInstance().getGenericRelations().size());
 	}

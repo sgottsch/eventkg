@@ -611,8 +611,11 @@ public class RelationsIntegrator extends Extractor {
 				System.out.println("");
 
 			numberOfExamples -= 1;
+
+			relationGroup = null;
 		}
 
+		relationGroups = null;
 	}
 
 }

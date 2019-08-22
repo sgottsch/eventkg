@@ -158,7 +158,11 @@ public class LiteralRelationsCollector extends Extractor {
 		} catch (IOException e1) {
 			e1.printStackTrace();
 		} finally {
-			it.close();
+			try {
+				it.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 		}
 
 	}
@@ -253,7 +257,11 @@ public class LiteralRelationsCollector extends Extractor {
 		} catch (IOException e1) {
 			e1.printStackTrace();
 		} finally {
-			it.close();
+			try {
+				it.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 		}
 
 		// if the same subject and property has multiple values: only keep the
@@ -335,7 +343,11 @@ public class LiteralRelationsCollector extends Extractor {
 			} catch (IOException e1) {
 				e1.printStackTrace();
 			} finally {
-				it.close();
+				try {
+					it.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
 			}
 		}
 

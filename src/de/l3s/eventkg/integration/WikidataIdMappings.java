@@ -23,7 +23,9 @@ import de.l3s.eventkg.source.wikidata.WikidataResource;
 import de.l3s.eventkg.source.wikipedia.WikiWords;
 import de.l3s.eventkg.util.FileLoader;
 import de.l3s.eventkg.util.FileName;
+import de.l3s.eventkg.util.MemoryStatsUtil;
 import gnu.trove.map.TIntObjectMap;
+import gnu.trove.map.hash.THashMap;
 import gnu.trove.map.hash.TIntObjectHashMap;
 
 public class WikidataIdMappings {
@@ -32,7 +34,7 @@ public class WikidataIdMappings {
 	// private Map<Language, Map<String, String>> wikidataIdsForWikipediaLabels;
 	private Map<Language, Map<String, String>> wikidataPropertysByIDs;
 
-	private TIntObjectMap<Entity> entitiesByWikidataNumericIds = new TIntObjectHashMap<Entity>(50000000);
+	private TIntObjectMap<Entity> entitiesByWikidataNumericIds = new TIntObjectHashMap<Entity>(20000000);
 
 	// private Map<String, Entity> entitiesByWikidataIds;
 	private Map<Language, Map<String, Entity>> entitiesByWikipediaLabels;
@@ -52,11 +54,12 @@ public class WikidataIdMappings {
 		this.languages = languages;
 	}
 
-	public void load() {
+	public void load(boolean loadWikidataLabels) {
 		loadWikipediaInternalClasses();
 		// loadRedirects();
 		loadWikidataIdMapping();
-		loadWikidataLabels();
+		if (loadWikidataLabels)
+			loadWikidataLabels();
 		loadWikidataPropertyIdMapping();
 		loadTemporalProperties();
 	}
@@ -104,8 +107,8 @@ public class WikidataIdMappings {
 
 		for (Language language : this.languages) {
 
-			System.out
-					.println("Load Wikidata mapping for the " + language.getLanguageAdjective() + " Wikidata labels.");
+			System.out.println(
+					"Load Wikidata label mapping for the " + language.getLanguageAdjective() + " Wikidata labels.");
 
 			int lineNo = 0;
 
@@ -164,11 +167,17 @@ public class WikidataIdMappings {
 			} catch (IOException e) {
 				e.printStackTrace();
 			} finally {
-				LineIterator.closeQuietly(it);
+				try {
+					it.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
 			}
 
 			System.out.println(language + ", ignoredEntities: " + ignoredEntities);
 			System.out.println(language + ", entities: " + this.entitiesByWikidataNumericIds.size());
+
+			MemoryStatsUtil.printMemoryStats();
 
 		}
 
@@ -329,8 +338,12 @@ public class WikidataIdMappings {
 
 		Set<Entity> entitiesToRemove = new HashSet<Entity>();
 
-		int blacklistClassEntities = 0;
-		int wikiInternalEntities = 0;
+		int entitiesToIgnore = 0;
+
+		// Ignore all entities that are in WikiNews ONLY. Some events (e.g.
+		// German federal election 2017 are events AND in WikiNews.
+		Set<String> entitiesWithValidClass = new HashSet<String>();
+		Set<String> entitiesInWikiNews = new HashSet<String>();
 
 		BufferedReader br6 = null;
 		try {
@@ -347,23 +360,20 @@ public class WikidataIdMappings {
 
 				String parentClass = parts[2];
 
-				// remove scientific article and Wikinews articles
-				// remove Wikipedia internal items (e.g. templates)
-				if (parentClass.equals(WikidataResource.SCIENTIFIC_ARTICLE.getId())
-						|| parentClass.equals(WikidataResource.WIKINEWS_ARTICLE.getId())) {
+				if (parentClass.equals(WikidataResource.WIKINEWS_ARTICLE.getId())) {
+					entitiesInWikiNews.add(parts[0]);
+				} else if (parentClass.equals(WikidataResource.SCIENTIFIC_ARTICLE.getId())
+						|| this.wikipediaInternalClasses.contains(parentClass)) {
+					// remove scientific article and Wikipedia internal items
+					// (e.g. templates)
 					wikidataIds.remove(Integer.valueOf(parts[0].substring(1)));
 					Entity entityToRemove = getEntityByWikidataId(parts[0]);
 					if (entityToRemove != null) {
-						blacklistClassEntities += 1;
+						entitiesToIgnore += 1;
 						entitiesToRemove.add(entityToRemove);
 					}
-				} else if (this.wikipediaInternalClasses.contains(parentClass)) {
-					wikidataIds.remove(Integer.valueOf(parts[0].substring(1)));
-					Entity entityToRemove = getEntityByWikidataId(parts[0]);
-					if (entityToRemove != null) {
-						wikiInternalEntities += 1;
-						entitiesToRemove.add(entityToRemove);
-					}
+				} else {
+					entitiesWithValidClass.add(parts[0]);
 				}
 
 			}
@@ -377,10 +387,22 @@ public class WikidataIdMappings {
 			}
 		}
 
-		System.out.println("Ignore " + blacklistClassEntities
-				+ " entities because of classes (scientific article, Wikinews article).");
-		System.out
-				.println("Ignore " + wikiInternalEntities + " entities because they are Wikipedia internal entities.");
+		System.out.println("Ignore " + entitiesToIgnore
+				+ " entities because they are Wikipedia internal entities or scientific article.");
+
+		System.out.println("WikiNews entities: " + entitiesInWikiNews.size());
+		entitiesInWikiNews.removeAll(entitiesWithValidClass);
+		System.out.println("Ignore " + entitiesInWikiNews.size() + " entities because they are in WikiNews only.");
+		entitiesWithValidClass.clear();
+
+		for (String entity : entitiesInWikiNews) {
+			wikidataIds.remove(Integer.valueOf(entity.substring(1)));
+			Entity entityToRemove = getEntityByWikidataId(entity);
+			if (entityToRemove != null) {
+				entitiesToIgnore += 1;
+				entitiesToRemove.add(entityToRemove);
+			}
+		}
 
 		for (Entity entity : entitiesToRemove) {
 			this.entitiesByWikidataNumericIds.remove(entity.getNumericWikidataId());
@@ -405,26 +427,24 @@ public class WikidataIdMappings {
 		// String>>();
 
 		// this.entitiesByWikidataIds = new HashMap<String, Entity>();
-		this.entitiesByWikipediaLabels = new HashMap<Language, Map<String, Entity>>();
+		this.entitiesByWikipediaLabels = new THashMap<Language, Map<String, Entity>>();
+
+		MemoryStatsUtil.printMemoryStats();
 
 		for (Language language : this.languages) {
 
-			System.out.println("Load Wikidata mapping for the " + language.getLanguageAdjective()
-					+ " Wikipedia labels in Wikidata.");
+			System.out.println(
+					"Load Wikidata mapping for the " + language.getLanguageAdjective() + " Wikipedia in Wikidata.");
 
-			this.entitiesByWikipediaLabels.put(language, new HashMap<String, Entity>());
+			this.entitiesByWikipediaLabels.put(language, new THashMap<String, Entity>());
 			int lines = 0;
 
-			BufferedReader br = null;
+			LineIterator it = null;
 			try {
-				try {
-					br = FileLoader.getReader(FileName.ID_TO_WIKIPEDIA_MAPPING_FILE_NAME, language);
-				} catch (FileNotFoundException e1) {
-					e1.printStackTrace();
-				}
+				it = FileLoader.getLineIterator(FileName.ID_TO_WIKIPEDIA_MAPPING_FILE_NAME, language);
+				while (it.hasNext()) {
 
-				String line;
-				while ((line = br.readLine()) != null) {
+					String line = it.nextLine();
 
 					String[] parts = line.split("\t");
 
@@ -445,13 +465,16 @@ public class WikidataIdMappings {
 				e.printStackTrace();
 			} finally {
 				try {
-					br.close();
+					it.close();
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
 			}
 
 			System.out.println(language + ": " + lines + " labels.");
+
+			MemoryStatsUtil.printMemoryStats();
+
 		}
 
 		Set<Entity> entitiesToRemove = new HashSet<Entity>();

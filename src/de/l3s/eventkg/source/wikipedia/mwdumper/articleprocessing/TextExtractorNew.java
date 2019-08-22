@@ -16,8 +16,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang3.StringEscapeUtils;
-
+import org.apache.commons.text.StringEscapeUtils;
 import de.l3s.eventkg.meta.Language;
 import de.l3s.eventkg.nlp.OpenNLPutils;
 import de.l3s.eventkg.pipeline.Config;

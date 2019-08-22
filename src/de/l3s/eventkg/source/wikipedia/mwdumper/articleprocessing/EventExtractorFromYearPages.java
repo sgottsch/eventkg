@@ -95,6 +95,7 @@ public class EventExtractorFromYearPages {
 		frMap.put(3506, "1957");
 		frMap.put(5335, "2014");
 		frMap.put(3627989, "2009 en Palestine");
+		frMap.put(4017659, "2009 dans la bande de Gaza");
 		exampleTexts.put(Language.FR, frMap);
 
 		Map<Integer, String> ptMap = new HashMap<Integer, String>();
@@ -121,35 +122,35 @@ public class EventExtractorFromYearPages {
 
 		// Language language = Language.PT;
 		// int id = 28422;
-		// Language language = Language.FR;
-		// int id = 3627989;
+		Language language = Language.FR;
+		int id = 4017659;
 
-		for (Language language : exampleTexts.keySet()) {
-			for (int id : exampleTexts.get(language).keySet()) {
+		// for (Language language : exampleTexts.keySet()) {
+		// for (int id : exampleTexts.get(language).keySet()) {
 
-				System.out.println(language + " | " + exampleTexts.get(language).get(id));
+		System.out.println(language + " | " + exampleTexts.get(language).get(id));
 
-				// TODO: Do this before
-				WikiWords.getInstance().init(language);
-				EventDateExpressionsAll.getInstance().init(language);
+		// TODO: Do this before
+		WikiWords.getInstance().init(language);
+		EventDateExpressionsAll.getInstance().init(language);
 
-				String text = IOUtils.toString(TextExtractorNew.class
-						.getResourceAsStream("/resource/wikipage/" + language.getLanguage() + "/" + id), "UTF-8");
+		String text = IOUtils.toString(
+				TextExtractorNew.class.getResourceAsStream("/resource/wikipage/" + language.getLanguage() + "/" + id),
+				"UTF-8");
 
-				EventExtractorFromYearPages extr = new EventExtractorFromYearPages(text, id,
-						exampleTexts.get(language).get(id), language,
-						RedirectsTableCreator.getRedirectsDummy(language));
-				try {
-					extr.extractEvents();
-				} catch (NullPointerException e) {
-					System.out.println("Error");
-					e.printStackTrace();
-				}
-
-				System.out.println("isYearOrDayPage: " + extr.isYearOrDayPage());
-				System.out.println(extr.getEventsOutput());
-			}
+		EventExtractorFromYearPages extr = new EventExtractorFromYearPages(text, id, exampleTexts.get(language).get(id),
+				language, RedirectsTableCreator.getRedirectsDummy(language));
+		try {
+			extr.extractEvents();
+		} catch (NullPointerException e) {
+			System.out.println("Error");
+			e.printStackTrace();
 		}
+
+		System.out.println("isYearOrDayPage: " + extr.isYearOrDayPage());
+		System.out.println(extr.getEventsOutput());
+		// }
+		// }
 
 	}
 
@@ -571,7 +572,7 @@ public class EventExtractorFromYearPages {
 				String title = node.getLine();
 				if (title.startsWith("[[") && title.endsWith("]]"))
 					title = title.substring(2, title.length() - 2);
-				if (!title.contains(String.valueOf(this.year)) && !months.containsKey(title)
+				if (!title.contains(String.valueOf(this.year)) && !containsAny(title, months.keySet())
 						&& !WikiWords.getInstance().getEventTitlesNotToUseAsCategory(language).contains(title))
 					titles.add(title.replace(";", ","));
 			}
@@ -794,5 +795,13 @@ public class EventExtractorFromYearPages {
 		public Matcher getMatcher() {
 			return this.matcher;
 		}
+	}
+
+	private boolean containsAny(String needle, Set<String> stack) {
+		for (String s : stack) {
+			if (needle.contains(s))
+				return true;
+		}
+		return false;
 	}
 }

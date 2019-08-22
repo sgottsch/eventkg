@@ -106,12 +106,13 @@ public class EntityIdGenerator {
 
 		System.out.println("ID Generator: initEventIdMapping");
 		mappingLoader.initEventIdMapping();
-		System.out.println(this.mappingLoader.getLastEventId() + " / " + this.mappingLoader.getEventLabelsMap().size());
+		System.out.println("Last event ID: " + this.mappingLoader.getLastEventId() + " / event labels: "
+				+ this.mappingLoader.getEventLabelsMap().size());
 
 		System.out.println("ID Generator: initEntityIdMapping");
 		mappingLoader.initEntityIdMapping();
-		System.out
-				.println(this.mappingLoader.getLastEntityId() + " / " + this.mappingLoader.getEntityLabelsMap().size());
+		System.out.println("Last entity ID: " + this.mappingLoader.getLastEntityId() + " / entity labels: "
+				+ this.mappingLoader.getEntityLabelsMap().size());
 
 		// System.out.println("ID Generator: initRelationMap");
 		// initRelationMap();

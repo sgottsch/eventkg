@@ -5,7 +5,6 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -27,6 +26,7 @@ import de.l3s.eventkg.pipeline.Config;
 import de.l3s.eventkg.pipeline.Extractor;
 import de.l3s.eventkg.util.FileLoader;
 import de.l3s.eventkg.util.FileName;
+import gnu.trove.map.hash.THashMap;
 
 public class LabelsAndDescriptionsExtractor extends Extractor {
 
@@ -34,12 +34,12 @@ public class LabelsAndDescriptionsExtractor extends Extractor {
 
 	private Map<Language, Map<Event, String>> sentences;
 
-	private HashMap<Language, Map<Entity, String>> wikipediaLabels;
-	private HashMap<Language, Map<Entity, Set<String>>> wikidataLabels;
+	private Map<Language, Map<Entity, String>> wikipediaLabels;
+	private Map<Language, Map<Entity, Set<String>>> wikidataLabels;
 
-	private HashMap<Language, Map<Entity, Set<String>>> aliases;
+	private Map<Language, Map<Entity, Set<String>>> aliases;
 
-	private HashMap<Language, Map<Event, String>> descriptions;
+	private Map<Language, Map<Event, String>> descriptions;
 
 	public static void main(String[] args) {
 		List<Language> languages = new ArrayList<Language>();
@@ -48,7 +48,7 @@ public class LabelsAndDescriptionsExtractor extends Extractor {
 		Config.init("config_eventkb_local.txt");
 
 		AllEventPagesDataSet allEventPagesDataSet = new AllEventPagesDataSet(languages);
-		allEventPagesDataSet.init();
+		allEventPagesDataSet.init(true);
 
 		LabelsAndDescriptionsExtractor extr = new LabelsAndDescriptionsExtractor(languages, allEventPagesDataSet);
 		extr.run();
@@ -66,35 +66,35 @@ public class LabelsAndDescriptionsExtractor extends Extractor {
 
 	private void extractRelations() {
 
-		this.sentences = new HashMap<Language, Map<Event, String>>();
+		this.sentences = new THashMap<Language, Map<Event, String>>();
 		for (Language language : this.languages) {
-			sentences.put(language, new HashMap<Event, String>());
+			sentences.put(language, new THashMap<Event, String>());
 			for (File child : FileLoader.getFilesList(FileName.WIKIPEDIA_FIRST_SENTENCES, language)) {
 				processFileIterator(child, language);
 			}
 		}
 
-		this.wikipediaLabels = new HashMap<Language, Map<Entity, String>>();
+		this.wikipediaLabels = new THashMap<Language, Map<Entity, String>>();
 		for (Language language : this.languages) {
-			this.wikipediaLabels.put(language, new HashMap<Entity, String>());
+			this.wikipediaLabels.put(language, new THashMap<Entity, String>());
 		}
 
-		this.wikidataLabels = new HashMap<Language, Map<Entity, Set<String>>>();
+		this.wikidataLabels = new THashMap<Language, Map<Entity, Set<String>>>();
 		for (Language language : this.languages) {
-			this.wikidataLabels.put(language, new HashMap<Entity, Set<String>>());
+			this.wikidataLabels.put(language, new THashMap<Entity, Set<String>>());
 		}
 
 		collectLabels();
 
-		this.aliases = new HashMap<Language, Map<Entity, Set<String>>>();
+		this.aliases = new THashMap<Language, Map<Entity, Set<String>>>();
 		for (Language language : this.languages) {
-			this.aliases.put(language, new HashMap<Entity, Set<String>>());
+			this.aliases.put(language, new THashMap<Entity, Set<String>>());
 			collectAliasesFromFile(FileLoader.getFile(FileName.WIKIDATA_ALIASES, language), language);
 		}
 
-		this.descriptions = new HashMap<Language, Map<Event, String>>();
+		this.descriptions = new THashMap<Language, Map<Event, String>>();
 		for (Language language : this.languages) {
-			this.descriptions.put(language, new HashMap<Event, String>());
+			this.descriptions.put(language, new THashMap<Event, String>());
 			collectDescriptionsFromFile(FileLoader.getFile(FileName.WIKIDATA_DESCRIPTIONS, language), language);
 		}
 
@@ -120,7 +120,11 @@ public class LabelsAndDescriptionsExtractor extends Extractor {
 		} catch (IOException e) {
 			e.printStackTrace();
 		} finally {
-			LineIterator.closeQuietly(it);
+			try {
+				it.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 		}
 
 		System.out.println("descriptions (" + language + "): " + this.descriptions.get(language).size());
@@ -169,7 +173,11 @@ public class LabelsAndDescriptionsExtractor extends Extractor {
 		} catch (IOException e) {
 			e.printStackTrace();
 		} finally {
-			LineIterator.closeQuietly(it);
+			try {
+				it.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 		}
 
 		System.out.println("aliases (" + language + "): " + this.aliases.get(language).size());
@@ -229,7 +237,7 @@ public class LabelsAndDescriptionsExtractor extends Extractor {
 			}
 
 			// free memory
-			this.sentences = new HashMap<Language, Map<Event, String>>();
+			this.sentences = new THashMap<Language, Map<Event, String>>();
 
 			for (Language language : this.languages) {
 				for (Event event : this.descriptions.get(language).keySet()) {
@@ -253,7 +261,7 @@ public class LabelsAndDescriptionsExtractor extends Extractor {
 			}
 
 			// free memory
-			this.descriptions = new HashMap<Language, Map<Event, String>>();
+			this.descriptions = new THashMap<Language, Map<Event, String>>();
 
 			for (Language language : this.languages) {
 				for (Entity entity : this.wikipediaLabels.get(language).keySet()) {
@@ -293,8 +301,8 @@ public class LabelsAndDescriptionsExtractor extends Extractor {
 			}
 
 			// free memory
-			this.wikipediaLabels = new HashMap<Language, Map<Entity, String>>();
-			this.wikidataLabels = new HashMap<Language, Map<Entity, Set<String>>>();
+			this.wikipediaLabels = new THashMap<Language, Map<Entity, String>>();
+			this.wikidataLabels = new THashMap<Language, Map<Entity, Set<String>>>();
 
 			for (Language language : this.languages) {
 				for (Entity event : this.aliases.get(language).keySet()) {
@@ -317,7 +325,7 @@ public class LabelsAndDescriptionsExtractor extends Extractor {
 				}
 			}
 
-			this.aliases = new HashMap<Language, Map<Entity, Set<String>>>();
+			this.aliases = new THashMap<Language, Map<Entity, Set<String>>>();
 
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
@@ -342,7 +350,11 @@ public class LabelsAndDescriptionsExtractor extends Extractor {
 		} catch (IOException e) {
 			e.printStackTrace();
 		} finally {
-			LineIterator.closeQuietly(it);
+			try {
+				it.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 		}
 
 	}
