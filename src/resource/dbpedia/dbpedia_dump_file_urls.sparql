@@ -1,0 +1,13 @@
+PREFIX dataid: <http://dataid.dbpedia.org/ns/core#>
+PREFIX dataid-cv:    <http://dataid.dbpedia.org/ns/cv#>
+PREFIX dcat:   <http://www.w3.org/ns/dcat#>
+PREFIX dct:    <http://purl.org/dc/terms/>
+
+SELECT DISTINCT ?url {
+ ?file rdf:type dataid:SingleFile .
+ ?file dataid-cv:lang "@language@"^^<http://www.w3.org/2001/XMLSchema#string> .
+ ?file dcat:downloadURL ?url .
+ ?file dct:hasVersion "@version@"^^<http://www.w3.org/2001/XMLSchema#string> .
+ ?file dataid:isDistributionOf ?distr .
+ ?distr dataid:artifact <@artifact@> .
+}

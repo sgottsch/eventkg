@@ -10,11 +10,13 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
+import de.l3s.eventkg.integration.AllEventPagesDataSet;
 import de.l3s.eventkg.integration.DataSets;
 import de.l3s.eventkg.integration.DataStore;
 import de.l3s.eventkg.integration.model.DateGranularity;
 import de.l3s.eventkg.integration.model.DateWithGranularity;
 import de.l3s.eventkg.integration.model.Entity;
+import de.l3s.eventkg.integration.model.Event;
 import de.l3s.eventkg.integration.model.relation.DataSet;
 import de.l3s.eventkg.integration.model.relation.EndTime;
 import de.l3s.eventkg.integration.model.relation.StartTime;
@@ -34,8 +36,11 @@ public class TimesIntegrator extends Extractor {
 
 	private List<DateGranularity> dateGranularitiesOrdered;
 
-	public TimesIntegrator(List<Language> languages) {
+	private AllEventPagesDataSet allEventPagesDataSet;
+
+	public TimesIntegrator(List<Language> languages, AllEventPagesDataSet allEventPagesDataSet) {
 		super("TimesIntegrator", Source.ALL, "Fuses start and end times into a common graph.", languages);
+		this.allEventPagesDataSet = allEventPagesDataSet;
 	}
 
 	private enum DateType {
@@ -73,7 +78,7 @@ public class TimesIntegrator extends Extractor {
 
 	}
 
-	private void addIntegratedTimesToDataStore() {
+	public void addIntegratedTimesToDataStore() {
 
 		for (Entity entity : this.newStartTimes.keySet()) {
 			for (StartTime newStartTime : this.newStartTimes.get(entity)) {
@@ -170,101 +175,114 @@ public class TimesIntegrator extends Extractor {
 
 		boolean print = false;
 
-		initDataSetsByTrustWorthiness();
-		initDateGranularities();
-
-		Set<Entity> entitiesAndEvents = new HashSet<Entity>();
-		entitiesAndEvents.addAll(DataStore.getInstance().getEntities());
-		entitiesAndEvents.addAll(DataStore.getInstance().getEvents());
+		init();
 
 		int i = 0;
-		for (Entity entity : entitiesAndEvents) {
-
+		for (Entity entity : this.allEventPagesDataSet.getWikidataIdMappings().getEntitiesByWikidataNumericIds()
+				.values()) {
+			integrateTimes(entity, print, i);
 			i += 1;
-
-			if ((entity.getStartTimesWithDataSets().isEmpty() || entity.getStartTimesWithDataSets() == null)
-					&& (entity.getEndTimesWithDataSets().isEmpty() || entity.getEndTimesWithDataSets() == null))
-				continue;
-
-			if (print) {
-				System.out.println("");
-				System.out.println(i + "/" + DataStore.getInstance().getEvents().size() + ": " + entity.getWikidataId()
-						+ " / " + entity.getWikipediaLabel(Language.EN));
-
-				List<String> beforeStartDates = new ArrayList<String>();
-				for (DateWithGranularity d : entity.getStartTimesWithDataSets().keySet()) {
-					List<String> dataSets = new ArrayList<String>();
-					for (DataSet ds : entity.getStartTimesWithDataSets().get(d))
-						dataSets.add(ds.getId());
-					beforeStartDates.add(sdf.format(d) + "/" + StringUtils.join(dataSets, " "));
-				}
-				System.out.println("Before, start: " + StringUtils.join(beforeStartDates, " "));
-			}
-
-			removeWrongTimesFromBlacklist(entity);
-
-			DateWithGranularity startTime = null;
-			if (entity.getStartTimesWithDataSets() != null && !entity.getStartTimesWithDataSets().isEmpty()) {
-				startTime = integrateTimesOfEvent(entity.getStartTimesWithDataSets(), DateType.START, null);
-				if (startTime != null)
-					addTemporaryStartTime(entity, DataSets.getInstance().getDataSetWithoutLanguage(Source.EVENT_KG),
-							startTime);
-			}
-
-			if (print && startTime != null)
-				System.out.println("After, start: " + sdf.format(startTime));
-
-			List<DataSet> dataSetsByTrustWorthinessCopy2 = new ArrayList<DataSet>();
-			dataSetsByTrustWorthinessCopy2.addAll(dataSetsByTrustWorthiness);
-
-			DateWithGranularity endTime = null;
-			Map<DateWithGranularity, Set<DataSet>> endTimesWithDataSetsDeepCopy = new HashMap<DateWithGranularity, Set<DataSet>>();
-			if (entity.getEndTimesWithDataSets() != null) {
-				for (DateWithGranularity date : entity.getEndTimesWithDataSets().keySet()) {
-					endTimesWithDataSetsDeepCopy.put(date, new HashSet<DataSet>());
-					for (DataSet dataSet : entity.getEndTimesWithDataSets().get(date)) {
-						endTimesWithDataSetsDeepCopy.get(date).add(dataSet);
-					}
-
-				}
-			}
-
-			if (print) {
-				List<String> beforeEndDates = new ArrayList<String>();
-				for (DateWithGranularity d : entity.getEndTimesWithDataSets().keySet()) {
-					List<String> dataSets = new ArrayList<String>();
-					for (DataSet ds : entity.getEndTimesWithDataSets().get(d))
-						dataSets.add(ds.getId());
-					beforeEndDates.add(sdf.format(d) + "/" + StringUtils.join(dataSets, " "));
-				}
-				System.out.println("Before, end: " + StringUtils.join(beforeEndDates, " "));
-			}
-
-			while (true) {
-				if (!endTimesWithDataSetsDeepCopy.isEmpty()) {
-
-					endTime = integrateTimesOfEvent(endTimesWithDataSetsDeepCopy, DateType.END, null);
-
-					if (startTime == null || endTime == null)
-						break;
-					else if (!endTime.before(startTime))
-						break;
-					else {
-						endTimesWithDataSetsDeepCopy.remove(endTime);
-						endTime = null;
-					}
-
-				} else
-					break;
-			}
-
-			if (print && endTime != null)
-				System.out.println("After, end: " + sdf.format(endTime));
-
-			if (endTime != null)
-				addTemporaryEndTime(entity, DataSets.getInstance().getDataSetWithoutLanguage(Source.EVENT_KG), endTime);
-
 		}
+		for (int wikidataId : this.allEventPagesDataSet.getWikidataIdsOfAllEvents()) {
+			Event event = this.allEventPagesDataSet.getEventByNumericWikidataId(wikidataId);
+			integrateTimes(event, print, i);
+			i += 1;
+		}
+		for (Event event : DataStore.getInstance().getEvents()) {
+			integrateTimes(event, print, i);
+			i += 1;
+		}
+	}
+
+	public void init() {
+		initDataSetsByTrustWorthiness();
+		initDateGranularities();
+	}
+
+	public void integrateTimes(Entity entity, boolean print, int i) {
+
+		if ((entity.getStartTimesWithDataSets().isEmpty() || entity.getStartTimesWithDataSets() == null)
+				&& (entity.getEndTimesWithDataSets().isEmpty() || entity.getEndTimesWithDataSets() == null))
+			return;
+
+		if (print) {
+			System.out.println("");
+			System.out.println(i + "/" + DataStore.getInstance().getEvents().size() + ": " + entity.getWikidataId()
+					+ " / " + entity.getWikipediaLabel(Language.EN));
+
+			List<String> beforeStartDates = new ArrayList<String>();
+			for (DateWithGranularity d : entity.getStartTimesWithDataSets().keySet()) {
+				List<String> dataSets = new ArrayList<String>();
+				for (DataSet ds : entity.getStartTimesWithDataSets().get(d))
+					dataSets.add(ds.getId());
+				beforeStartDates.add(sdf.format(d.getDate()) + "/" + StringUtils.join(dataSets, " "));
+			}
+			System.out.println("Before, start: " + StringUtils.join(beforeStartDates, " "));
+		}
+
+		removeWrongTimesFromBlacklist(entity);
+
+		DateWithGranularity startTime = null;
+		if (entity.getStartTimesWithDataSets() != null && !entity.getStartTimesWithDataSets().isEmpty()) {
+			startTime = integrateTimesOfEvent(entity.getStartTimesWithDataSets(), DateType.START, null);
+			if (startTime != null)
+				addTemporaryStartTime(entity, DataSets.getInstance().getDataSetWithoutLanguage(Source.EVENT_KG),
+						startTime);
+		}
+
+		if (print && startTime != null)
+			System.out.println("After, start: " + sdf.format(startTime.getDate()));
+
+		List<DataSet> dataSetsByTrustWorthinessCopy2 = new ArrayList<DataSet>();
+		dataSetsByTrustWorthinessCopy2.addAll(dataSetsByTrustWorthiness);
+
+		DateWithGranularity endTime = null;
+		Map<DateWithGranularity, Set<DataSet>> endTimesWithDataSetsDeepCopy = new HashMap<DateWithGranularity, Set<DataSet>>();
+		if (entity.getEndTimesWithDataSets() != null) {
+			for (DateWithGranularity date : entity.getEndTimesWithDataSets().keySet()) {
+				endTimesWithDataSetsDeepCopy.put(date, new HashSet<DataSet>());
+				for (DataSet dataSet : entity.getEndTimesWithDataSets().get(date)) {
+					endTimesWithDataSetsDeepCopy.get(date).add(dataSet);
+				}
+
+			}
+		}
+
+		if (print) {
+			List<String> beforeEndDates = new ArrayList<String>();
+			for (DateWithGranularity d : entity.getEndTimesWithDataSets().keySet()) {
+				List<String> dataSets = new ArrayList<String>();
+				for (DataSet ds : entity.getEndTimesWithDataSets().get(d))
+					dataSets.add(ds.getId());
+				beforeEndDates.add(sdf.format(d) + "/" + StringUtils.join(dataSets, " "));
+			}
+			System.out.println("Before, end: " + StringUtils.join(beforeEndDates, " "));
+		}
+
+		while (true) {
+			if (!endTimesWithDataSetsDeepCopy.isEmpty()) {
+
+				endTime = integrateTimesOfEvent(endTimesWithDataSetsDeepCopy, DateType.END, null);
+
+				if (startTime == null || endTime == null)
+					break;
+				else if (!endTime.before(startTime))
+					break;
+				else {
+					endTimesWithDataSetsDeepCopy.remove(endTime);
+					endTime = null;
+				}
+
+			} else
+				break;
+		}
+
+		if (print && endTime != null)
+			System.out.println("After, end: " + sdf.format(endTime));
+
+		if (endTime != null)
+			addTemporaryEndTime(entity, DataSets.getInstance().getDataSetWithoutLanguage(Source.EVENT_KG), endTime);
+
 	}
 
 	private DateWithGranularity integrateTimesOfEvent(Map<DateWithGranularity, Set<DataSet>> timesWithDataSets,
@@ -276,8 +294,8 @@ public class TimesIntegrator extends Extractor {
 			return dateCase1And2;
 
 		// case 3: try case 1 and 2 when ignoring inexact dates. First, discard
-		// all
-		// dates that are not days, then all that are not days or months, ...
+		// all dates that are not days, then all that are not days or months,
+		// ...
 
 		for (DateGranularity granularity : dateGranularitiesOrdered) {
 

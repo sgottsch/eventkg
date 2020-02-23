@@ -5,11 +5,8 @@ import java.util.Set;
 
 import de.l3s.eventkg.integration.model.Entity;
 import de.l3s.eventkg.integration.model.Event;
-import de.l3s.eventkg.integration.model.relation.Alias;
-import de.l3s.eventkg.integration.model.relation.Description;
 import de.l3s.eventkg.integration.model.relation.EndTime;
 import de.l3s.eventkg.integration.model.relation.GenericRelation;
-import de.l3s.eventkg.integration.model.relation.Label;
 import de.l3s.eventkg.integration.model.relation.LiteralRelation;
 import de.l3s.eventkg.integration.model.relation.Location;
 import de.l3s.eventkg.integration.model.relation.PropertyLabel;
@@ -22,11 +19,11 @@ public class DataStore {
 
 	private Set<Event> events = new THashSet<Event>();
 
-	private Set<Entity> entities = new THashSet<Entity>();
+	// private List<Entity> entities = new ArrayList<Entity>();
 
-	private Set<Alias> aliases = new THashSet<Alias>();
+	// private Set<Alias> aliases = new THashSet<Alias>();
 
-	private Set<Description> descriptions = new THashSet<Description>();
+	// private Set<Description> descriptions = new THashSet<Description>();
 
 	private Set<EndTime> endTimes = new THashSet<EndTime>();
 
@@ -37,8 +34,8 @@ public class DataStore {
 	private Set<GenericRelation> genericRelations = new THashSet<GenericRelation>();
 	private Set<LiteralRelation> literalRelations = new THashSet<LiteralRelation>();
 
-	private Set<Label> wikipediaLabels = new THashSet<Label>();
-	private Set<Label> wikidataLabels = new THashSet<Label>();
+	// private Set<Label> wikipediaLabels = new THashSet<Label>();
+	// private Set<Label> wikidataLabels = new THashSet<Label>();
 
 	private Set<PropertyLabel> propertyLabels = new THashSet<PropertyLabel>();
 
@@ -68,17 +65,21 @@ public class DataStore {
 		return events;
 	}
 
-	public Set<Entity> getEntities() {
-		return entities;
-	}
+	// public List<Entity> getEntities() {
+	// return entities;
+	// }
+	//
+	// public void resetEntities() {
+	// this.entities = null;
+	// }
 
-	public Set<Alias> getAliases() {
-		return aliases;
-	}
+	// public Set<Alias> getAliases() {
+	// return aliases;
+	// }
 
-	public Set<Description> getDescriptions() {
-		return descriptions;
-	}
+	// public Set<Description> getDescriptions() {
+	// return descriptions;
+	// }
 
 	public Set<EndTime> getEndTimes() {
 		return endTimes;
@@ -104,35 +105,35 @@ public class DataStore {
 		this.literalRelations = literalRelations;
 	}
 
-	public Set<Label> getWikipediaLabels() {
-		return wikipediaLabels;
-	}
+	// public Set<Label> getWikipediaLabels() {
+	// return wikipediaLabels;
+	// }
 
 	public void addEvent(Event event) {
 		this.events.add(event);
 	}
 
-	public void addWikipediaLabel(Label label) {
-		this.wikipediaLabels.add(label);
-	}
+	// public void addWikipediaLabel(Label label) {
+	// this.wikipediaLabels.add(label);
+	// }
+	//
+	// public Set<Label> getWikidataLabels() {
+	// return wikidataLabels;
+	// }
+	//
+	// public void addWikidataLabel(Label label) {
+	// this.wikidataLabels.add(label);
+	// }
 
-	public Set<Label> getWikidataLabels() {
-		return wikidataLabels;
-	}
+	// public void addAlias(Alias alias) {
+	// this.aliases.add(alias);
+	// }
 
-	public void addWikidataLabel(Label label) {
-		this.wikidataLabels.add(label);
-	}
-
-	public void addAlias(Alias alias) {
-		this.aliases.add(alias);
-	}
-
-	public void addDescription(Description description) {
-		if (description.getLabel().startsWith("[["))
-			return;
-		this.descriptions.add(description);
-	}
+	// public void addDescription(Description description) {
+	// if (description.getLabel().startsWith("[["))
+	// return;
+	// this.descriptions.add(description);
+	// }
 
 	public void addLiteralRelation(LiteralRelation relation) {
 		this.literalRelations.add(relation);
@@ -206,13 +207,13 @@ public class DataStore {
 		this.locations.add(location);
 	}
 
-	public void addEntity(Entity entity) {
-		this.entities.add(entity);
-	}
-
-	public void removeEntity(Entity entity) {
-		this.entities.remove(entity);
-	}
+	// public void addEntity(Entity entity) {
+	// this.entities.add(entity);
+	// }
+	//
+	// public void removeEntity(Entity entity) {
+	// this.entities.remove(entity);
+	// }
 
 	public void addPropertyLabel(PropertyLabel propertyLabel) {
 		this.propertyLabels.add(propertyLabel);

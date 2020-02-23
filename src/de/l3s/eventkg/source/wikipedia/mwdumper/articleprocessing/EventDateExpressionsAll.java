@@ -2,6 +2,7 @@ package de.l3s.eventkg.source.wikipedia.mwdumper.articleprocessing;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -45,6 +46,8 @@ public class EventDateExpressionsAll {
 
 	private Pattern placeholderPattern = Pattern.compile("@((?!@).)*@");
 
+	private String dateExpressionsString;
+
 	public static EventDateExpressionsAll getInstance() {
 		if (instance == null) {
 			instance = new EventDateExpressionsAll();
@@ -53,6 +56,13 @@ public class EventDateExpressionsAll {
 	}
 
 	private EventDateExpressionsAll() {
+	}
+
+	public void init(Language language, String dateExpressionsString) {
+		List<Language> languages = new ArrayList<Language>();
+		languages.add(language);
+		this.dateExpressionsString = dateExpressionsString;
+		init(language);
 	}
 
 	public void init(Language language) {
@@ -95,10 +105,15 @@ public class EventDateExpressionsAll {
 
 		String regexDay2 = "(?<d2>[1-3]?[0-9])";
 		this.placeHolders.put("regexDay2", regexDay2);
-		String regexYear = "([1-9][0-9]{2,3})";
-		this.placeHolders.put("regexYear", regexYear);
 
 		parseFile();
+
+		String regexYear = "([1-9][0-9]{2,3}";
+
+		if (this.entriesPerType.containsKey("regexYearSuffix"))
+			regexYear += this.entriesPerType.get("regexYearSuffix").get(0);
+		regexYear += ")";
+		this.placeHolders.put("regexYear", regexYear);
 
 		// en: January 22
 		// de: 22. Januar
@@ -117,7 +132,11 @@ public class EventDateExpressionsAll {
 
 		BufferedReader br = null;
 		try {
-			br = FileLoader.getReader(FileName.WIKIPEDIA_META_EVENT_DATE_EXPRESSIONS, language);
+
+			if (this.dateExpressionsString == null)
+				br = FileLoader.getReader(FileName.WIKIPEDIA_META_EVENT_DATE_EXPRESSIONS, language);
+			else
+				br = new BufferedReader(new StringReader(this.dateExpressionsString));
 
 			this.entriesPerType = new HashMap<String, List<String>>();
 
@@ -161,6 +180,10 @@ public class EventDateExpressionsAll {
 			String groupText = m.group();
 
 			String placeHolder = groupText.substring(1, groupText.length() - 1);
+
+			if (!this.placeHolders.containsKey(placeHolder))
+				System.err.println("Error: Missing placeholder: " + placeHolder);
+
 			m.appendReplacement(sb, this.placeHolders.get(placeHolder));
 		}
 		m.appendTail(sb);

@@ -48,53 +48,57 @@ public class DBpediaTimesExtractor extends Extractor {
 
 		BufferedReader br = null;
 		try {
-			try {
-				br = FileLoader.getReader(FileName.DBPEDIA_MAPPINGS_LITERALS, language);
-			} catch (FileNotFoundException e1) {
-				e1.printStackTrace();
-			}
 
 			resultsWriter.write("subject" + Config.TAB + "time" + Config.TAB + "start/end/both/no" + Config.NL);
+			if (FileLoader.fileExists(FileName.DBPEDIA_MAPPINGS_LITERALS, language)) {
 
-			String line;
-			while ((line = br.readLine()) != null) {
-				if (line.startsWith("#"))
-					continue;
-
-				String[] parts = line.split(" ");
-				String property = parts[1];
-
-				// if (!targetEvents.contains(object) ||
-				// !targetEvents.contains(subject))
-				// continue;
-
-				if (targetProperties.containsKey(property)) {
-
-					String timeString = parts[2];
-					String subject = parts[0];
-					if (!subject.contains("resource"))
-						continue;
-
-					// Date date =
-					// TimeTransformer.generateEarliestTimeFromXsd(timeString);
-
-					subject = subject.substring(subject.lastIndexOf("resource/") + 9, subject.lastIndexOf(">"));
-
-					String fileLine = subject + Config.TAB + property + Config.TAB + timeString + Config.TAB
-							+ targetProperties.get(property).getTimeSymbol();
-
-					if (foundEvents.contains(fileLine))
-						continue;
-					resultsWriter.write(fileLine + "\n");
-					foundEvents.add(fileLine);
+				try {
+					br = FileLoader.getReader(FileName.DBPEDIA_MAPPINGS_LITERALS, language);
+				} catch (FileNotFoundException e1) {
+					e1.printStackTrace();
 				}
 
+				String line;
+				while ((line = br.readLine()) != null) {
+					if (line.startsWith("#"))
+						continue;
+
+					String[] parts = line.split(" ");
+					String property = parts[1];
+
+					// if (!targetEvents.contains(object) ||
+					// !targetEvents.contains(subject))
+					// continue;
+
+					if (targetProperties.containsKey(property)) {
+
+						String timeString = parts[2];
+						String subject = parts[0];
+						if (!subject.contains("resource"))
+							continue;
+
+						// Date date =
+						// TimeTransformer.generateEarliestTimeFromXsd(timeString);
+
+						subject = subject.substring(subject.lastIndexOf("resource/") + 9, subject.lastIndexOf(">"));
+
+						String fileLine = subject + Config.TAB + property + Config.TAB + timeString + Config.TAB
+								+ targetProperties.get(property).getTimeSymbol();
+
+						if (foundEvents.contains(fileLine))
+							continue;
+						resultsWriter.write(fileLine + "\n");
+						foundEvents.add(fileLine);
+					}
+
+				}
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
 		} finally {
 			try {
-				br.close();
+				if (br != null)
+					br.close();
 				resultsWriter.close();
 			} catch (IOException e) {
 				e.printStackTrace();

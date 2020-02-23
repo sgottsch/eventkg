@@ -13,7 +13,7 @@ public class MemoryStatsUtil {
 		long allocatedMemory = runtime.totalMemory();
 		long freeMemory = runtime.freeMemory();
 
-		System.out.println("	---");
+		System.out.println("	--- " + TimeTransformer.getTime());
 		System.out.println("	free memory: " + format.format(freeMemory / 1024));
 		System.out.println("	allocated memory: " + format.format(allocatedMemory / 1024));
 		System.out.println("	max memory: " + format.format(maxMemory / 1024));

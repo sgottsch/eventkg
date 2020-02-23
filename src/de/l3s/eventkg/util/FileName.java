@@ -1,5 +1,6 @@
 package de.l3s.eventkg.util;
 
+import de.l3s.eventkg.meta.Language;
 import de.l3s.eventkg.meta.Source;
 
 public enum FileName {
@@ -67,15 +68,16 @@ public enum FileName {
 	WIKIDATA_ALIASES_PROPERTIES("property_aliases.tsv", Source.WIKIDATA, FileType.RESULTS, false, false, false),
 	WIKIDATA_TEMPORAL_PROPERTIES("temporal_properties.tsv", Source.WIKIDATA, FileType.RESULTS, false, false, false),
 	WIKIDATA_PART_OF("partof-data.tsv", Source.WIKIDATA, FileType.RESULTS, false, false, false),
+	WIKIDATA_PART_OF_SERIES("part_of_series.tsv", Source.WIKIDATA, FileType.RESULTS, false, false, false),
 	WIKIDATA_FOLLOWS("follows-data.tsv", Source.WIKIDATA, FileType.RESULTS, false, false, false),
 	WIKIDATA_FOLLOWED_BY("followedby-data.tsv", Source.WIKIDATA, FileType.RESULTS, false, false, false),
 	WIKIDATA_SUBCLASS_OF("subclass-data.tsv", Source.WIKIDATA, FileType.RESULTS, false, false, false),
 	WIKIDATA_INSTANCE_OF("instanceof-data.tsv", Source.WIKIDATA, FileType.RESULTS, false, false, false),
 	WIKIDATA_PROPERTY_NAMES("property_names.tsv", Source.WIKIDATA, FileType.RESULTS, false, false, false),
 	WIKIDATA_EVENTS("event_instances.tsv", Source.WIKIDATA, FileType.RESULTS, false, false, false),
-	WIKIDATA_RECURRING_EVENTS("recurring_event_instances.tsv", Source.WIKIDATA, FileType.RESULTS, false, false, false),
+	WIKIDATA_EVENT_SERIES("event_series_instances.tsv", Source.WIKIDATA, FileType.RESULTS, false, false, false),
 	WIKIDATA_RECURRENT_EVENT_EDITIONS(
-			"recurring_event_editions.tsv",
+			"event_series_editions.tsv",
 			Source.WIKIDATA,
 			FileType.RESULTS,
 			false,
@@ -108,6 +110,13 @@ public enum FileName {
 			false),
 	WIKIDATA_EVENT_BLACKLIST_CLASSES(
 			"event_blacklist_classes.tsv",
+			Source.WIKIDATA,
+			FileType.META,
+			false,
+			false,
+			false),
+	WIKIDATA_IGNORED_EVENT_CLASSES(
+			"event_ignored_event_classes.tsv",
 			Source.WIKIDATA,
 			FileType.META,
 			false,
@@ -148,10 +157,12 @@ public enum FileName {
 	WIKIDATA_PROPERTY_EQUALITIES(
 			"wikidata_property_equalities.json",
 			Source.WIKIDATA,
-			FileType.RAW_DATA,
+			FileType.RESULTS,
 			false,
 			false,
 			false),
+
+	WIKIDATA_VALID_IDS("wikidata_valid_ids.tsv", Source.WIKIDATA, FileType.RESULTS, false, false, false),
 
 	// Wikipedia Current Events
 	WCE_EVENTS("wce_events.tsv", Source.WCE, FileType.RESULTS, false, false, false),
@@ -168,6 +179,7 @@ public enum FileName {
 	DBPEDIA_DBO_PREVIOUS_EVENTS("dbpedia_previous_events.tsv", Source.DBPEDIA, FileType.RESULTS, false, false, false),
 	DBPEDIA_DBO_NEXT_EVENTS("dbpedia_next_events.tsv", Source.DBPEDIA, FileType.RESULTS, false, false, false),
 	DBPEDIA_ALL_LOCATIONS("dbpedia_all_locations.tsv", Source.DBPEDIA, FileType.RESULTS, false, false, false),
+	DBPEDIA_NO_LOCATIONS("dbpedia_no_locations.tsv", Source.DBPEDIA, FileType.RESULTS, false, false, false),
 
 	/**
 	 * Entities with locations, using "dbo:place".
@@ -252,7 +264,12 @@ public enum FileName {
 			false,
 			false,
 			false),
-	ALL_TTL_EVENTS_OTHER_RELATIONS_PREVIEW("relations_events_other_preview.nq", FileType.OUTPUT_PREVIEW, false, false, false),
+	ALL_TTL_EVENTS_OTHER_RELATIONS_PREVIEW(
+			"relations_events_other_preview.nq",
+			FileType.OUTPUT_PREVIEW,
+			false,
+			false,
+			false),
 	ALL_TTL_ENTITIES_TEMPORAL_RELATIONS_PREVIEW(
 			"relations_entities_temporal_preview.nq",
 			FileType.OUTPUT_PREVIEW,
@@ -337,13 +354,13 @@ public enum FileName {
 
 	DBPEDIA_ONTOLOGY("dbpedia_ontology.nt", Source.DBPEDIA, FileType.RAW_DATA, false, false, false),
 	DBPEDIA_TYPES("instance_types_$lang$.ttl", Source.DBPEDIA, FileType.RAW_DATA, false, false, false),
-	DBPEDIA_TYPES_TRANSITIVE(
-			"instance_types_transitive_$lang$.ttl",
-			Source.DBPEDIA,
-			FileType.RAW_DATA,
-			false,
-			false,
-			false),
+	// DBPEDIA_TYPES_TRANSITIVE(
+	// "instance_types_transitive_$lang$.ttl",
+	// Source.DBPEDIA,
+	// FileType.RAW_DATA,
+	// false,
+	// false,
+	// false),
 	DBPEDIA_MAPPINGS("mappingbased_objects_$lang$.ttl", Source.DBPEDIA, FileType.RAW_DATA, false, false, false),
 	DBPEDIA_MAPPINGS_LITERALS(
 			"mappingbased_literals_$lang$.ttl",
@@ -352,7 +369,8 @@ public enum FileName {
 			false,
 			false,
 			false),
-	DBPEDIA_GEONAMES_LINKS("geonames_links_$lang$.ttl", Source.DBPEDIA, FileType.RAW_DATA, false, false, false),
+	// DBPEDIA_GEONAMES_LINKS("geonames_links_$lang$.ttl", Source.DBPEDIA,
+	// FileType.RAW_DATA, false, false, false),
 	DBPEDIA_GEO_COORDINATES("geo_coordinates_$lang$.ttl", Source.DBPEDIA, FileType.RAW_DATA, false, false, false),
 
 	DBPEDIA_PART_OF_PROPERTIES("part_of_properties.tsv", Source.DBPEDIA, FileType.META, false, false, false),
@@ -460,6 +478,10 @@ public enum FileName {
 
 	public String getFileName() {
 		return fileName;
+	}
+
+	public String getFileName(Language language) {
+		return fileName.replace("$lang$", language.getLanguageLowerCase());
 	}
 
 	public boolean isRawData() {

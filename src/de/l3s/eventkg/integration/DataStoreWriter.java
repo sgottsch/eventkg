@@ -4,15 +4,9 @@ import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
-
-import org.apache.commons.lang3.StringUtils;
 
 import de.l3s.eventkg.integration.model.DateGranularity;
 import de.l3s.eventkg.integration.model.Entity;
@@ -24,7 +18,6 @@ import de.l3s.eventkg.integration.model.relation.DataSet;
 import de.l3s.eventkg.integration.model.relation.Description;
 import de.l3s.eventkg.integration.model.relation.EndTime;
 import de.l3s.eventkg.integration.model.relation.GenericRelation;
-import de.l3s.eventkg.integration.model.relation.Label;
 import de.l3s.eventkg.integration.model.relation.LiteralDataType;
 import de.l3s.eventkg.integration.model.relation.LiteralRelation;
 import de.l3s.eventkg.integration.model.relation.Location;
@@ -52,7 +45,7 @@ public class DataStoreWriter {
 	private DataStore dataStore;
 	private DataSets dataSets;
 
-	private boolean generateIdsFromPreviousEventKGFiles = false;
+	private DataStoreWriterMode dataStoreWriterMode;
 
 	private static SimpleDateFormat standardFormat = new SimpleDateFormat(
 			"\"yyyy-MM-dd\"'^^<" + PrefixEnum.XSD.getUrlPrefix() + "date>'");
@@ -61,43 +54,31 @@ public class DataStoreWriter {
 
 	private List<Language> languages;
 
-	private Set<String> propertiesUsedInNamedEventRelations = new HashSet<String>();
+	// private Set<String> propertiesUsedInNamedEventRelations = new
+	// HashSet<String>();
 	private int relationNo;
 	private EntityIdGenerator idGenerator;
 
 	private Prefix basePrefix;
+
+	private AllEventPagesDataSet allEventPagesDataSet;
 
 	public static void main(String[] args) {
 
 		System.out.println(standardFormat.format(new Date()));
 	}
 
-	public DataStoreWriter(List<Language> languages) {
+	public DataStoreWriter(List<Language> languages, DataStoreWriterMode dataStoreWriterMode) {
+		this(languages, null, dataStoreWriterMode);
+	}
+
+	public DataStoreWriter(List<Language> languages, AllEventPagesDataSet allEventPagesDataSet,
+			DataStoreWriterMode dataStoreWriterMode) {
 		this.dataStore = DataStore.getInstance();
 		this.dataSets = DataSets.getInstance();
 		this.languages = languages;
-	}
-
-	public void write() {
-		init();
-		System.out.println("Write meta files.");
-		writeMetaFiles();
-		System.out.println("writeEvents");
-		writeEvents();
-		System.out.println("writeEntities");
-		writeEntities();
-		System.out.println("writeBaseRelations");
-		writeBaseRelations();
-		System.out.println("writeNamedEventRelations");
-		writeNamedEventRelations();
-		System.out.println("writeOtherRelations");
-		writeEntityRelations();
-		System.out.println("writePropertyLabels");
-		writePropertyLabels();
-		System.out.println("writeLiteralsRelations");
-		writeLiteralsRelations();
-		System.out.println("writeLinkRelations");
-		writeLinkRelationsToFile();
+		this.allEventPagesDataSet = allEventPagesDataSet;
+		this.dataStoreWriterMode = dataStoreWriterMode;
 	}
 
 	public void writeNoRelations() {
@@ -116,13 +97,7 @@ public class DataStoreWriter {
 
 		MemoryStatsUtil.printMemoryStats();
 
-		this.generateIdsFromPreviousEventKGFiles = true;
-
 		init();
-		MemoryStatsUtil.printMemoryStats();
-
-		initIds();
-		MemoryStatsUtil.printMemoryStats();
 
 		System.out.println("writeNamedEventRelations");
 		writeNamedEventRelations();
@@ -135,13 +110,10 @@ public class DataStoreWriter {
 	}
 
 	public void writeLinkRelations() {
-
-		this.generateIdsFromPreviousEventKGFiles = true;
-
 		System.out.println("Init mapping.");
 		init();
-		System.out.println("Init IDs.");
-		initIds();
+		// System.out.println("Init IDs.");
+		// initIds();
 
 		System.out.println("Write link relations");
 		writeLinkRelationsToFile();
@@ -153,14 +125,14 @@ public class DataStoreWriter {
 		createVoIDFile();
 	}
 
-	private void init() {
+	public void init() {
 
 		prefixList = PrefixList.getInstance();
 
-		if (generateIdsFromPreviousEventKGFiles) {
-			this.idGenerator = new EntityIdGenerator();
-			this.idGenerator.load();
-		}
+		if (dataStoreWriterMode == DataStoreWriterMode.RE_USE_IDS_OF_PREVIOUS_EVENTKG_VERSION)
+			this.idGenerator = new EntityIdGenerator(true);
+		else if (dataStoreWriterMode == DataStoreWriterMode.USE_IDS_OF_CURRENT_EVENTKG_VERSION)
+			this.idGenerator = new EntityIdGenerator(false);
 
 		this.basePrefix = prefixList.getPrefix(PrefixEnum.EVENT_KG_RESOURCE);
 	}
@@ -168,47 +140,6 @@ public class DataStoreWriter {
 	public void initPrefixes() {
 		prefixList = PrefixList.getInstance();
 		this.basePrefix = prefixList.getPrefix(PrefixEnum.EVENT_KG_RESOURCE);
-	}
-
-	private void initIds() {
-		Set<Entity> allEntities = new HashSet<Entity>();
-		allEntities.addAll(DataStore.getInstance().getEntities());
-		allEntities.addAll(DataStore.getInstance().getEvents());
-
-		for (Entity entity : DataStore.getInstance().getEntities()) {
-			String entityId = generateEntityId(entity);
-			if (entityId == null) {
-				System.out.println("error: missing entity ID for " + entity.getWikidataId() + ", "
-						+ entity.getWikipediaLabelsString(this.languages));
-				if (entity.getWikidataId().equals("Q5193991"))
-					System.out.println("Test case: error: missing ID for " + entity.getWikidataId() + ", "
-							+ entity.getWikipediaLabelsString(this.languages));
-				// entityId = "<entity_" + String.valueOf(entityNo) + ">";
-				// entityNo += 1;
-			}
-			entity.setId(entityId);
-		}
-
-		Map<Event, String> descriptionMap = createDescriptionMap();
-
-		for (Event event : DataStore.getInstance().getEvents()) {
-			String eventId = generateEventId(event, descriptionMap.get(event));
-			if (eventId == null) {
-				System.out.println("error: missing event ID for " + event.getWikidataId() + ", "
-						+ event.getWikipediaLabelsString(this.languages));
-				if (descriptionMap.get(event) != null) {
-					System.out.println("\tdescriptionMap:");
-					System.out.println("\t\t" + descriptionMap.get(event));
-				}
-				// entityId = "<entity_" + String.valueOf(entityNo) + ">";
-				// entityNo += 1;
-			} else if (event.getWikidataId() == null) {
-				// System.out.println("success: Found " + eventId + " -> " +
-				// descriptionMap.get(event));
-			}
-			event.setId(eventId);
-		}
-
 	}
 
 	private void writePropertyLabels() {
@@ -235,11 +166,14 @@ public class DataStoreWriter {
 				writeTriple(writer, writerPreview, lineNo, propertyLabel.getPrefix(), propertyLabel.getProperty(),
 						prefixList.getPrefix(PrefixEnum.RDFS), "label", null, propertyLabel.getLabel(), true,
 						propertyLabel.getDataSet(), propertyLabel.getLanguage(), FileType.NQ);
-				if (propertiesUsedInNamedEventRelations.contains(propertyLabel.getProperty()))
-					writeTriple(writer, writerPreview, lineNo, propertyLabel.getPrefix(), propertyLabel.getProperty(),
-							prefixList.getPrefix(PrefixEnum.RDF), "type", prefixList.getPrefix(PrefixEnum.SEM),
-							"RoleType", true, propertyLabel.getDataSet(), propertyLabel.getLanguage(), fileType);
-
+				// if
+				// (propertiesUsedInNamedEventRelations.contains(propertyLabel.getProperty()))
+				// writeTriple(writer, writerPreview, lineNo,
+				// propertyLabel.getPrefix(), propertyLabel.getProperty(),
+				// prefixList.getPrefix(PrefixEnum.RDF), "type",
+				// prefixList.getPrefix(PrefixEnum.SEM),
+				// "RoleType", true, propertyLabel.getDataSet(),
+				// propertyLabel.getLanguage(), fileType);
 			}
 
 		} catch (FileNotFoundException e) {
@@ -325,92 +259,16 @@ public class DataStoreWriter {
 
 	}
 
-	private Map<Event, String> createDescriptionMap() {
-		Map<Event, String> descriptionMap = new HashMap<Event, String>();
-
-		Map<Event, Set<String>> descriptions = new HashMap<Event, Set<String>>();
-		Map<Event, Set<String>> otherURLs = new HashMap<Event, Set<String>>();
-
-		// must be 100% aligned to initEventIdMapping() in
-		// EventKGIdMappingLoader!!!
-
-		for (Description description : dataStore.getDescriptions()) {
-			if (description.getSubject() == null)
-				continue;
-			if (description.getSubject().isEvent()) {
-				Event event = (Event) description.getSubject();
-				if (event == null)
-					event = (Event) description.getSubject();
-
-				if (!descriptions.containsKey(event)) {
-					descriptions.put(event, new HashSet<String>());
-					otherURLs.put(event, new HashSet<String>());
-				}
-
-				descriptions.get(event).add(description.getDataSet().getId() + ":" + description.getLabel());
-
-				if (event.getOtherUrls() != null) {
-					for (DataSet dataSet : event.getOtherUrls().keySet()) {
-						for (String otherUrl : event.getOtherUrls().get(dataSet)) {
-							otherURLs.get(event).add(dataSet.getId() + ":" + otherUrl);
-						}
-					}
-				}
-
-				// if (!descriptionMap.containsKey(event))
-				// descriptionMap.put(event, new HashMap<DataSet,
-				// Set<String>>());
-				// if
-				// (!descriptionMap.get(event).containsKey(description.getDataSet()))
-				// descriptionMap.get(event).put(description.getDataSet(), new
-				// HashSet<String>());
-				//
-				// descriptionMap.get(event).get(description.getDataSet()).add(description.getLabel());
-			}
-		}
-
-		int examples = 10;
-		for (Event event : descriptions.keySet()) {
-			List<String> otherUrlsOfEvent = new ArrayList<String>();
-			otherUrlsOfEvent.addAll(otherURLs.get(event));
-			Collections.sort(otherUrlsOfEvent);
-
-			List<String> descriptionsOfEvent = new ArrayList<String>();
-			descriptionsOfEvent.addAll(descriptions.get(event));
-			Collections.sort(descriptionsOfEvent);
-
-			String description = StringUtils.join(otherUrlsOfEvent, ";") + "-"
-					+ StringUtils.join(descriptionsOfEvent, ";");
-
-			descriptionMap.put(event, description);
-
-			if (examples > 0) {
-				System.out.println("Map2: " + description);
-			}
-
-			if (description.contains("The Independent International Commission on Decommissioning"))
-				System.out.println("Map1TC_a: " + event.getId() + " -> " + description);
-			if (description.contains("Bei den russischen Präsidentschaftswahlen wird der kommissarische"))
-				System.out.println("Map1TC_b: " + event.getId() + " -> " + description);
-			if (description.contains("runway at Davao International Airport in Davao, the"))
-				System.out.println("Map1TC_c: " + event.getId() + " -> " + description);
-
-			examples -= 1;
-		}
-
-		return descriptionMap;
-	}
-
 	private void writeEvents() {
 
 		FileType fileType = FileType.NQ;
 
 		int eventNo = 0;
 
-		if (generateIdsFromPreviousEventKGFiles)
+		if (dataStoreWriterMode == DataStoreWriterMode.RE_USE_IDS_OF_PREVIOUS_EVENTKG_VERSION)
 			eventNo = this.idGenerator.getLastEventNo() + 1;
 
-		Map<Event, String> descriptionMap = createDescriptionMap();
+		// Map<Event, String> descriptionMap = createDescriptionMap();
 
 		PrintWriter writer = null;
 		PrintWriter writerPreview = null;
@@ -438,122 +296,126 @@ public class DataStoreWriter {
 			}
 
 			int lineNo = 0;
+
+			// "same as" events / Wikidata events
+			for (int wikidataId : this.allEventPagesDataSet.getWikidataIdsOfAllEvents()) {
+				Event event = this.allEventPagesDataSet.getEventByNumericWikidataId(wikidataId);
+				int[] res = writeEvent(event, eventNo, lineNo, writer, writerPreview, fileType);
+				eventNo = res[0];
+				lineNo = res[1];
+			}
+
+			lineNo = 0;
+
+			// textual events
 			for (Event event : dataStore.getEvents()) {
-
-				// event.setId("<" + eventId + String.valueOf(eventNo) + ">");
-
-				// if (event.getEventEntity() != null)
-				// event.getEventEntity().setId("<" + eventId +
-				// String.valueOf(eventNo) + ">");
-
-				// eventNo += 1;
-
-				String eventId = generateEventId(event, descriptionMap.get(event));
-				if (eventId == null) {
-					eventId = "event_" + String.valueOf(eventNo);
-					eventNo += 1;
-				}
-				event.setId(eventId);
-
-				lineNo += 1;
-				writeTriple(writer, writerPreview, lineNo, this.basePrefix, event.getId(),
-						prefixList.getPrefix(PrefixEnum.RDF), "type", prefixList.getPrefix(PrefixEnum.SEM), "Event",
-						false, DataSets.getInstance().getDataSetWithoutLanguage(Source.EVENT_KG), fileType);
-
-				if (event.isRecurring()) {
-					writeTriple(writer, writerPreview, lineNo, this.basePrefix, event.getId(),
-							prefixList.getPrefix(PrefixEnum.RDF), "type",
-							prefixList.getPrefix(PrefixEnum.EVENT_KG_SCHEMA), "EventSeries", false,
-							DataSets.getInstance().getDataSetWithoutLanguage(Source.EVENT_KG), fileType);
-				}
-
-				if (event.getWikidataId() != null)
-					writeTriple(writer, writerPreview, lineNo, this.basePrefix, event.getId(),
-							prefixList.getPrefix(PrefixEnum.OWL), "sameAs",
-							prefixList.getPrefix(PrefixEnum.WIKIDATA_ENTITY), event.getWikidataId(), false,
-							dataSets.getDataSetWithoutLanguage(Source.WIKIDATA), fileType);
-
-				if (event.getYagoId() != null)
-					writeTriple(writer, writerPreview, lineNo, this.basePrefix, event.getId(),
-							prefixList.getPrefix(PrefixEnum.OWL), "sameAs", prefixList.getPrefix(PrefixEnum.YAGO),
-							event.getYagoId(), false, dataSets.getDataSetWithoutLanguage(Source.YAGO), fileType);
-
-				if (event.getOtherUrls() != null) {
-					for (DataSet dataSet : event.getOtherUrls().keySet()) {
-						for (String otherUrl : event.getOtherUrls().get(dataSet)) {
-							writeTriple(writer, writerPreview, lineNo, this.basePrefix, event.getId(),
-									prefixList.getPrefix(PrefixEnum.EVENT_KG_SCHEMA), "extractedFrom", null,
-									"<" + otherUrl + ">", false, dataSet, fileType);
-						}
-					}
-				}
-
-				for (Language language : event.getWikipediaLabels().keySet()) {
-					Prefix prefix = prefixList.getPrefix(PrefixEnum.DBPEDIA_RESOURCE, language);
-					writeTriple(writer, writerPreview, lineNo, this.basePrefix, event.getId(),
-							prefixList.getPrefix(PrefixEnum.OWL), "sameAs", prefix,
-							event.getWikipediaLabels().get(language), false,
-							dataSets.getDataSet(language, Source.DBPEDIA), fileType);
-				}
-
+				int[] res = writeEvent(event, eventNo, lineNo, writer, writerPreview, fileType);
+				eventNo = res[0];
+				lineNo = res[1];
 			}
 
-			System.out.println("#Wikipedia labels: " + dataStore.getWikipediaLabels().size() + ".");
-			lineNo = 0;
-			for (Label label : dataStore.getWikipediaLabels()) {
-				if (label.getSubject().isEvent()) {
-					lineNo += 1;
-					writeTriple(writer, writerPreview, lineNo, this.basePrefix, label.getSubject().getId(),
-							prefixList.getPrefix(PrefixEnum.RDFS), "label", null, label.getLabel().replaceAll("_", " "),
-							true, label.getDataSet(), label.getLanguage(), fileType);
-				}
-			}
+		} catch (
 
-			System.out.println("#Wikidata labels: " + dataStore.getWikidataLabels().size() + ".");
-			lineNo = 0;
-			for (Label label : dataStore.getWikidataLabels()) {
-				if (label.getSubject().isEvent()) {
-					Event event = (Event) label.getSubject();
-					lineNo += 1;
-					writeTriple(writer, writerPreview, lineNo, this.basePrefix, event.getId(),
-							prefixList.getPrefix(PrefixEnum.RDFS), "label", null, label.getLabel(), true,
-							label.getDataSet(), label.getLanguage(), fileType);
-				}
-			}
-
-			System.out.println("#aliases: " + dataStore.getAliases().size() + ".");
-			lineNo = 0;
-			for (Alias alias : dataStore.getAliases()) {
-				if (alias.getSubject().isEvent()) {
-					Event event = (Event) alias.getSubject();
-					lineNo += 1;
-					writeTriple(writer, writerPreview, lineNo, this.basePrefix, event.getId(),
-							prefixList.getPrefix(PrefixEnum.DCTERMS), "alternative", null, alias.getLabel(), true,
-							alias.getDataSet(), alias.getLanguage(), fileType);
-				}
-			}
-
-			System.out.println("#descriptions: " + dataStore.getDescriptions().size() + ".");
-			lineNo = 0;
-			for (Description description : dataStore.getDescriptions()) {
-				if (description.getSubject() == null)
-					continue;
-				if (description.getSubject().isEvent()) {
-					Event event = (Event) description.getSubject();
-					lineNo += 1;
-					writeTriple(writer, writerPreview, lineNo, this.basePrefix, event.getId(),
-							prefixList.getPrefix(PrefixEnum.DCTERMS), "description", null, description.getLabel(), true,
-							description.getDataSet(), description.getLanguage(), fileType);
-				}
-			}
-
-		} catch (FileNotFoundException e) {
+		FileNotFoundException e) {
 			e.printStackTrace();
 		} finally {
 			writer.close();
 			writerPreview.close();
 		}
 
+	}
+
+	private int[] writeEvent(Event event, int eventNo, int lineNo, PrintWriter writer, PrintWriter writerPreview,
+			FileType fileType) {
+
+		String eventId = this.idGenerator.getEventID(event);
+		if (eventId == null) {
+			eventId = "event_" + String.valueOf(eventNo);
+			eventNo += 1;
+		}
+		event.setId(eventId);
+
+		lineNo += 1;
+		writeTriple(writer, writerPreview, lineNo, this.basePrefix, event.getId(), prefixList.getPrefix(PrefixEnum.RDF),
+				"type", prefixList.getPrefix(PrefixEnum.SEM), "Event", false,
+				DataSets.getInstance().getDataSetWithoutLanguage(Source.EVENT_KG), fileType);
+
+		if (event.isRecurring()) {
+			writeTriple(writer, writerPreview, lineNo, this.basePrefix, event.getId(),
+					prefixList.getPrefix(PrefixEnum.RDF), "type", prefixList.getPrefix(PrefixEnum.EVENT_KG_SCHEMA),
+					"EventSeries", false, DataSets.getInstance().getDataSetWithoutLanguage(Source.EVENT_KG), fileType);
+		}
+
+		if (event.isRecurrentEventEdition()) {
+			writeTriple(writer, writerPreview, lineNo, this.basePrefix, event.getId(),
+					prefixList.getPrefix(PrefixEnum.RDF), "type", prefixList.getPrefix(PrefixEnum.EVENT_KG_SCHEMA),
+					"EventSeriesEdition", false, DataSets.getInstance().getDataSetWithoutLanguage(Source.EVENT_KG),
+					fileType);
+		}
+
+		if (event.getWikidataId() != null)
+			writeTriple(writer, writerPreview, lineNo, this.basePrefix, event.getId(),
+					prefixList.getPrefix(PrefixEnum.OWL), "sameAs", prefixList.getPrefix(PrefixEnum.WIKIDATA_ENTITY),
+					event.getWikidataId(), false, dataSets.getDataSetWithoutLanguage(Source.WIKIDATA), fileType);
+
+		if (event.getYagoId() != null)
+			writeTriple(writer, writerPreview, lineNo, this.basePrefix, event.getId(),
+					prefixList.getPrefix(PrefixEnum.OWL), "sameAs", prefixList.getPrefix(PrefixEnum.YAGO),
+					event.getYagoId(), false, dataSets.getDataSetWithoutLanguage(Source.YAGO), fileType);
+
+		if (event.getOtherUrls() != null) {
+			for (DataSet dataSet : event.getOtherUrls().keySet()) {
+				for (String otherUrl : event.getOtherUrls().get(dataSet)) {
+					writeTriple(writer, writerPreview, lineNo, this.basePrefix, event.getId(),
+							prefixList.getPrefix(PrefixEnum.EVENT_KG_SCHEMA), "extractedFrom", null,
+							"<" + otherUrl + ">", false, dataSet, fileType);
+				}
+			}
+		}
+
+		// for (Language language : event.getWikipediaLabels().keySet()) {
+
+		if (event.getNumericWikidataId() != null) {
+			for (Language language : this.languages) {
+
+				// DBpedia ID = Wikipedia label (with space instead of
+				// underscore)
+				String wikipediaLabel = this.idGenerator.getWikipediaId(event, language);
+
+				if (wikipediaLabel != null) {
+					Prefix prefix = prefixList.getPrefix(PrefixEnum.DBPEDIA_RESOURCE, language);
+					writeTriple(writer, writerPreview, lineNo, this.basePrefix, event.getId(),
+							prefixList.getPrefix(PrefixEnum.OWL), "sameAs", prefix, wikipediaLabel, false,
+							dataSets.getDataSet(language, Source.DBPEDIA), fileType);
+
+					writeTriple(writer, writerPreview, lineNo, this.basePrefix, event.getId(),
+							prefixList.getPrefix(PrefixEnum.RDFS), "label", null, wikipediaLabel.replace("_", " "),
+							true, dataSets.getDataSet(language, Source.WIKIPEDIA), language, fileType);
+				}
+
+				// Wikidata labels
+				String wikidataLabel = this.idGenerator.getWikidataLabel(event, language);
+				if (wikidataLabel != null) {
+					writeTriple(writer, writerPreview, lineNo, this.basePrefix, event.getId(),
+							prefixList.getPrefix(PrefixEnum.RDFS), "label", null, wikidataLabel, true,
+							dataSets.getDataSetWithoutLanguage(Source.WIKIDATA), language, fileType);
+				}
+			}
+		}
+
+		for (Alias alias : event.getAliases()) {
+			writeTriple(writer, writerPreview, lineNo, this.basePrefix, event.getId(),
+					prefixList.getPrefix(PrefixEnum.DCTERMS), "alternative", null, alias.getLabel(), true,
+					alias.getDataSet(), alias.getLanguage(), fileType);
+		}
+
+		for (Description description : event.getDescriptions()) {
+			writeTriple(writer, writerPreview, lineNo, this.basePrefix, event.getId(),
+					prefixList.getPrefix(PrefixEnum.DCTERMS), "description", null, description.getLabel(), true,
+					description.getDataSet(), description.getLanguage(), fileType);
+		}
+
+		return new int[] { eventNo, lineNo };
 	}
 
 	private void writeEntities() {
@@ -563,7 +425,7 @@ public class DataStoreWriter {
 		// String entityId = "entity_";
 		int entityNo = 0;
 
-		if (generateIdsFromPreviousEventKGFiles)
+		if (dataStoreWriterMode == DataStoreWriterMode.RE_USE_IDS_OF_PREVIOUS_EVENTKG_VERSION)
 			entityNo = this.idGenerator.getLastEntityNo() + 1;
 
 		PrintWriter writer = null;
@@ -591,18 +453,15 @@ public class DataStoreWriter {
 
 			int lineNo = 0;
 
-			System.out.println("#entities: " + dataStore.getEntities().size());
-
-			for (Entity entity : dataStore.getEntities()) {
-				lineNo += 1;
+			for (Entity entity : this.allEventPagesDataSet.getWikidataIdMappings().getEntitiesByWikidataNumericIds()
+					.values()) {
 
 				if (entity.isEvent())
 					continue;
 
-				// entity.setId("<" + entityId + String.valueOf(entityNo) +
-				// ">");
+				lineNo += 1;
 
-				String entityId = generateEntityId(entity);
+				String entityId = this.idGenerator.getEntityID(entity);
 				if (entityId == null) {
 					entityId = "entity_" + String.valueOf(entityNo);
 					entityNo += 1;
@@ -624,90 +483,42 @@ public class DataStoreWriter {
 							prefixList.getPrefix(PrefixEnum.RDF), "type", prefixList.getPrefix(PrefixEnum.SEM), "Core",
 							false, null, fileType);
 
-				if (entity.getWikidataId() != null)
-					writeTriple(writer, writerPreview, lineNo, this.basePrefix, entity.getId(),
-							prefixList.getPrefix(PrefixEnum.OWL), "sameAs",
-							prefixList.getPrefix(PrefixEnum.WIKIDATA_ENTITY), entity.getWikidataId(), false,
-							dataSets.getDataSetWithoutLanguage(Source.WIKIDATA), fileType);
+				writeTriple(writer, writerPreview, lineNo, this.basePrefix, entity.getId(),
+						prefixList.getPrefix(PrefixEnum.OWL), "sameAs",
+						prefixList.getPrefix(PrefixEnum.WIKIDATA_ENTITY), entity.getWikidataId(), false,
+						dataSets.getDataSetWithoutLanguage(Source.WIKIDATA), fileType);
 
 				if (entity.getYagoId() != null)
 					writeTriple(writer, writerPreview, lineNo, this.basePrefix, entity.getId(),
 							prefixList.getPrefix(PrefixEnum.OWL), "sameAs", prefixList.getPrefix(PrefixEnum.YAGO),
 							entity.getYagoId(), false, dataSets.getDataSetWithoutLanguage(Source.YAGO), fileType);
 
-				for (Language language : entity.getWikipediaLabels().keySet()) {
-					Prefix prefix = prefixList.getPrefix(PrefixEnum.DBPEDIA_RESOURCE, language);
-					writeTriple(writer, writerPreview, lineNo, this.basePrefix, entity.getId(),
-							prefixList.getPrefix(PrefixEnum.OWL), "sameAs", prefix,
-							entity.getWikipediaLabels().get(language), false,
-							dataSets.getDataSet(language, Source.DBPEDIA), fileType);
+				for (Language language : this.languages) {
+
+					// DBpedia ID = Wikipedia label (with space instead of
+					// underscore)
+					String wikipediaLabel = this.idGenerator.getWikipediaId(entity, language);
+					if (wikipediaLabel != null) {
+						Prefix prefix = prefixList.getPrefix(PrefixEnum.DBPEDIA_RESOURCE, language);
+						writeTriple(writer, writerPreview, lineNo, this.basePrefix, entity.getId(),
+								prefixList.getPrefix(PrefixEnum.OWL), "sameAs", prefix, wikipediaLabel, false,
+								dataSets.getDataSet(language, Source.DBPEDIA), fileType);
+
+						writeTriple(writer, writerPreview, lineNo, this.basePrefix, entity.getId(),
+								prefixList.getPrefix(PrefixEnum.RDFS), "label", null, wikipediaLabel.replace("_", " "),
+								true, dataSets.getDataSet(language, Source.WIKIPEDIA), language, fileType);
+					}
+
+					// Wikidata labels
+					String wikidataLabel = this.idGenerator.getWikidataLabel(entity, language);
+					if (wikidataLabel != null) {
+						writeTriple(writer, writerPreview, lineNo, this.basePrefix, entity.getId(),
+								prefixList.getPrefix(PrefixEnum.RDFS), "label", null, wikidataLabel, true,
+								dataSets.getDataSetWithoutLanguage(Source.WIKIDATA), language, fileType);
+					}
 				}
 
-				// if (!entity.getPositions().isEmpty()) {
-				// for (Position position : entity.getPositions()) {
-				// DataSet dataSet =
-				// entity.getPositionsWithDataSets().get(position);
-				// writeTriple(writer, writerPreview, lineNo, entity.getId(),
-				// PrefixEnum.SCHEMA_ORG.getAbbr() + "latitude",
-				// createLiteral(String.valueOf(position.getLatitude()),
-				// LiteralDataType.DOUBLE), false,
-				// dataSet);
-				// writeTriple(writer, writerPreview, lineNo, entity.getId(),
-				// PrefixEnum.SCHEMA_ORG.getAbbr() + "longitude",
-				// createLiteral(String.valueOf(position.getLongitude()),
-				// LiteralDataType.DOUBLE), false,
-				// dataSet);
-				// }
-				// }
-
 			}
-
-			lineNo = 0;
-			for (Label label : dataStore.getWikipediaLabels()) {
-				if (!label.getSubject().isEvent()) {
-					lineNo += 1;
-					writeTriple(writer, writerPreview, lineNo, this.basePrefix, label.getSubject().getId(),
-							prefixList.getPrefix(PrefixEnum.RDFS), "label", null, label.getLabel().replaceAll("_", " "),
-							true, label.getDataSet(), label.getLanguage(), fileType);
-				}
-			}
-
-			lineNo = 0;
-			for (Label label : dataStore.getWikidataLabels()) {
-				if (!label.getSubject().isEvent()) {
-					lineNo += 1;
-					writeTriple(writer, writerPreview, lineNo, this.basePrefix, label.getSubject().getId(),
-							prefixList.getPrefix(PrefixEnum.RDFS), "label", null, label.getLabel(), true,
-							label.getDataSet(), label.getLanguage(), fileType);
-				}
-			}
-
-			// lineNo = 0;
-			// for (Alias alias : dataStore.getAliases()) {
-			// if (!alias.getSubject().isEvent() &&
-			// alias.getSubject().getEventEntity() == null) {
-			// lineNo += 1;
-			// writeTriple(writer, writerPreview, lineNo,
-			// alias.getSubject().getId(),
-			// prefixList.getPrefix(PrefixEnum.DCTERMS).getAbbr() +
-			// "alternative", alias.getLabel(), true,
-			// alias.getDataSet(), alias.getLanguage());
-			// }
-			// }
-			//
-			// lineNo = 0;
-			// for (Description description : dataStore.getDescriptions()) {
-			// if (description.getSubject() != null &&
-			// !description.getSubject().isEvent()
-			// && description.getSubject().getEventEntity() == null) {
-			// lineNo += 1;
-			// writeTriple(writer, writerPreview, lineNo,
-			// description.getSubject().getId(),
-			// prefixList.getPrefix(PrefixEnum.DCTERMS).getAbbr() +
-			// "description", description.getLabel(),
-			// true, description.getDataSet(), description.getLanguage());
-			// }
-			// }
 
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
@@ -716,126 +527,6 @@ public class DataStoreWriter {
 			writerPreview.close();
 		}
 
-	}
-
-	private String generateEntityId(Entity entity) {
-
-		if (!generateIdsFromPreviousEventKGFiles)
-			return null;
-
-		Set<String> entityIds = new HashSet<String>();
-
-		if (entity.getWikidataId().equals("Q5193991")) {
-			System.out.println("Test case 1: " + entity.getWikidataId());
-			System.out.println("Test case 2: " + this.idGenerator.getEntityLabelsMap()
-					.get(DataSets.getInstance().getDataSetWithoutLanguage(Source.WIKIDATA)).size());
-			System.out.println("Test case 3: " + this.idGenerator.getEntityLabelsMap()
-					.get(DataSets.getInstance().getDataSetWithoutLanguage(Source.WIKIDATA))
-					.get(entity.getWikidataId()));
-		}
-
-		if (entity.getWikidataId() != null && this.idGenerator.getEntityLabelsMap()
-				.containsKey(DataSets.getInstance().getDataSetWithoutLanguage(Source.WIKIDATA))) {
-			entityIds.add(this.idGenerator.getEntityLabelsMap()
-					.get(DataSets.getInstance().getDataSetWithoutLanguage(Source.WIKIDATA))
-					.get(entity.getWikidataId()));
-			if (entity.getWikidataId().equals("Q5193991")) {
-				System.out.println("Test case 4: " + this.idGenerator.getEntityLabelsMap()
-						.get(DataSets.getInstance().getDataSetWithoutLanguage(Source.WIKIDATA))
-						.get(entity.getWikidataId()));
-			}
-		}
-
-		for (Language language : entity.getWikipediaLabels().keySet()) {
-			if (entity.getWikidataId() != null && this.idGenerator.getEntityLabelsMap()
-					.containsKey(DataSets.getInstance().getDataSet(language, Source.DBPEDIA))) {
-				if (entity.getWikidataId().equals("Q5193991")) {
-					System.out.println(
-							"Test case 5: " + language + ", " + entity.getWikipediaLabels().get(language) + " -> "
-									+ this.idGenerator.getEntityLabelsMap()
-											.get(DataSets.getInstance().getDataSet(language, Source.DBPEDIA))
-											.get(entity.getWikipediaLabels().get(language)));
-				}
-				entityIds.add(this.idGenerator.getEntityLabelsMap()
-						.get(DataSets.getInstance().getDataSet(language, Source.DBPEDIA))
-						.get(entity.getWikipediaLabels().get(language)));
-			}
-
-		}
-
-		if (entity.getWikidataId().equals("Q5193991")) {
-			for (String entityId : entityIds) {
-				System.out.println("Test case 6: " + entityId);
-			}
-		}
-
-		entityIds.remove(null);
-		if (entityIds.size() == 1) {
-			for (String entityId : entityIds) {
-				return entityId;
-			}
-		}
-
-		return null;
-	}
-
-	private String generateEventId(Event event, String description) {
-
-		if (!generateIdsFromPreviousEventKGFiles)
-			return null;
-
-		Set<String> eventIds = new HashSet<String>();
-
-		if (event.getWikidataId() == null && event.getWikipediaLabels().isEmpty()) {
-			if (description == null) {
-				System.out.println("descriptionMap is null: " + event.getWikidataId() + ", "
-						+ event.getWikipediaLabelsString(this.languages));
-				return null;
-			}
-
-			// Textual events
-			if (this.idGenerator.getEventDescriptionsMap().containsKey(description)) {
-				eventIds.add(this.idGenerator.getEventDescriptionsMap().get(description));
-			}
-		} else {
-			// Wikidata
-			if (event.getWikidataId() != null && this.idGenerator.getEventLabelsMap()
-					.containsKey(DataSets.getInstance().getDataSetWithoutLanguage(Source.WIKIDATA))) {
-
-				String eventId = this.idGenerator.getEventLabelsMap()
-						.get(DataSets.getInstance().getDataSetWithoutLanguage(Source.WIKIDATA))
-						.get(event.getWikidataId());
-
-				if (eventId != null)
-					eventIds.add(eventId);
-
-			}
-
-			for (Language language : event.getWikipediaLabels().keySet()) {
-				// DBpedia
-				if (event.getWikidataId() != null && this.idGenerator.getEventLabelsMap()
-						.containsKey(DataSets.getInstance().getDataSet(language, Source.DBPEDIA))) {
-
-					String eventId = this.idGenerator.getEventLabelsMap()
-							.get(DataSets.getInstance().getDataSet(language, Source.DBPEDIA))
-							.get(event.getWikipediaLabels().get(language));
-
-					if (eventId != null)
-						eventIds.add(eventId);
-
-				}
-
-			}
-		}
-
-		eventIds.remove(null);
-		if (eventIds.size() == 1) {
-			for (String eventId : eventIds) {
-				return eventId;
-			}
-		}
-
-		return null;
 	}
 
 	private void writeBaseRelations() {
@@ -861,11 +552,24 @@ public class DataStoreWriter {
 			}
 
 			int lineNo = 0;
+			System.out.println("Locations: " + dataStore.getLocations().size());
 			for (Location location : dataStore.getLocations()) {
+
 				lineNo += 1;
-				writeTriple(writer, writerPreview, lineNo, this.basePrefix, location.getSubject().getId(),
-						prefixList.getPrefix(PrefixEnum.SEM), "hasPlace", this.basePrefix,
-						location.getLocation().getId(), false, location.getDataSet(), null);
+
+				if (location.getSubject().getNumericWikidataId() == 171416) {
+					System.out.println("Write?");
+					System.out.println("1. " + this.idGenerator.getID(location.getSubject()));
+					System.out.println("2. " + this.idGenerator.getID(location.getLocation()));
+					System.out.println("3. " + location.getLocation().getWikidataId());
+					System.out.println("4. " + location.getDataSet().getId());
+					System.out.println("");
+				}
+
+				writeTriple(writer, writerPreview, lineNo, this.basePrefix,
+						this.idGenerator.getID(location.getSubject()), prefixList.getPrefix(PrefixEnum.SEM), "hasPlace",
+						this.basePrefix, this.idGenerator.getID(location.getLocation()), false, location.getDataSet(),
+						null);
 			}
 
 			lineNo = 0;
@@ -876,7 +580,7 @@ public class DataStoreWriter {
 					System.out.println("Start time is null: " + startTime.getSubject().getId() + ", "
 							+ startTime.getSubject().getWikidataId() + ", " + startTime.getDataSet());
 					if (startTime.getDataSet() != null)
-						System.out.println("   " + startTime.getDataSet().getId());
+						System.out.println(" " + startTime.getDataSet().getId());
 					continue;
 				}
 
@@ -897,7 +601,7 @@ public class DataStoreWriter {
 					System.out.println("End time is null: " + endTime.getSubject().getId() + ", "
 							+ endTime.getSubject().getWikidataId() + ", " + endTime.getDataSet());
 					if (endTime.getDataSet() != null)
-						System.out.println("   " + endTime.getDataSet().getId());
+						System.out.println(" " + endTime.getDataSet().getId());
 					continue;
 				}
 
@@ -910,7 +614,8 @@ public class DataStoreWriter {
 			}
 
 			lineNo = 0;
-			for (Entity entity : dataStore.getEntities()) {
+			for (Entity entity : this.allEventPagesDataSet.getWikidataIdMappings().getEntitiesByWikidataNumericIds()
+					.values()) {
 
 				if (entity.isLocation()) {
 
@@ -963,69 +668,14 @@ public class DataStoreWriter {
 			}
 
 			lineNo = 0;
+
+			for (int wikidataId : this.allEventPagesDataSet.getWikidataIdsOfAllEvents()) {
+				Event event = this.allEventPagesDataSet.getEventByNumericWikidataId(wikidataId);
+				lineNo = writeEventBaseRelations(event, lineNo, writer, writerPreview, fileType);
+			}
+
 			for (Event event : dataStore.getEvents()) {
-
-				int lineNoPlusOne = lineNo + 1;
-
-				for (Event parentEvent : event.getParents()) {
-					lineNo += 1;
-					writeTriple(writer, writerPreview, lineNo, this.basePrefix, parentEvent.getId(),
-							prefixList.getPrefix(PrefixEnum.SEM), "hasSubEvent", this.basePrefix, event.getId(), false,
-							null, fileType);
-				}
-
-				for (Event nextEvent : event.getNextEvents()) {
-					lineNo += 1;
-					writeTriple(writer, writerPreview, lineNo, this.basePrefix, event.getId(),
-							prefixList.getPrefix(PrefixEnum.DBPEDIA_ONTOLOGY), "nextEvent", this.basePrefix,
-							nextEvent.getId(), false, null, fileType);
-				}
-
-				for (Event previousEvent : event.getPreviousEvents()) {
-					lineNo += 1;
-					writeTriple(writer, writerPreview, lineNo, this.basePrefix, event.getId(),
-							prefixList.getPrefix(PrefixEnum.DBPEDIA_ONTOLOGY), "previousEvent", this.basePrefix,
-							previousEvent.getId(), false, null, fileType);
-				}
-
-				for (DataSet categoryDataSet : event.getCategories().keySet()) {
-					for (Language categoryLanguage : event.getCategories().get(categoryDataSet).keySet()) {
-						for (String category : event.getCategories().get(categoryDataSet).get(categoryLanguage)) {
-							lineNo += 1;
-							writeTriple(writer, writerPreview, lineNo, this.basePrefix, event.getId(),
-									prefixList.getPrefix(PrefixEnum.DBPEDIA_ONTOLOGY), "title", null,
-									createLiteral(category, LiteralDataType.LANG_STRING,
-											categoryLanguage.getLanguageLowerCase()),
-									false, categoryDataSet, fileType);
-						}
-					}
-				}
-
-				for (DataSet sourceDataSet : event.getSources().keySet()) {
-					for (String source : event.getSources().get(sourceDataSet)) {
-						lineNo += 1;
-						writeTriple(writer, writerPreview, lineNo, this.basePrefix, event.getId(),
-								prefixList.getPrefix(PrefixEnum.DBPEDIA_ONTOLOGY), "source", null, "<" + source + ">",
-								false, sourceDataSet, fileType);
-					}
-				}
-
-				if (!event.getPositions().isEmpty()) {
-					lineNo += 1;
-					for (Position position : event.getPositions()) {
-						DataSet dataSet = event.getPositionsWithDataSets().get(position);
-						writeTriple(writer, writerPreview, lineNo, this.basePrefix, event.getId(),
-								prefixList.getPrefix(PrefixEnum.SCHEMA_ORG), "latitude", null,
-								createLiteral(String.valueOf(position.getLatitude()), LiteralDataType.DOUBLE), false,
-								dataSet, fileType);
-						writeTriple(writer, writerPreview, lineNo, this.basePrefix, event.getId(),
-								prefixList.getPrefix(PrefixEnum.SCHEMA_ORG), "longitude", null,
-								createLiteral(String.valueOf(position.getLongitude()), LiteralDataType.DOUBLE), false,
-								dataSet, fileType);
-					}
-				}
-
-				lineNo = Math.min(lineNo, lineNoPlusOne);
+				lineNo = writeEventBaseRelations(event, lineNo, writer, writerPreview, fileType);
 			}
 
 		} catch (FileNotFoundException e) {
@@ -1035,6 +685,70 @@ public class DataStoreWriter {
 			writerPreview.close();
 		}
 
+	}
+
+	private int writeEventBaseRelations(Event event, int lineNo, PrintWriter writer, PrintWriter writerPreview,
+			FileType fileType) {
+		int lineNoPlusOne = lineNo + 1;
+
+		for (Event parentEvent : event.getParents()) {
+			lineNo += 1;
+			writeTriple(writer, writerPreview, lineNo, this.basePrefix, parentEvent.getId(),
+					prefixList.getPrefix(PrefixEnum.SEM), "hasSubEvent", this.basePrefix, event.getId(), false, null,
+					fileType);
+		}
+
+		for (Event nextEvent : event.getNextEvents()) {
+			lineNo += 1;
+			writeTriple(writer, writerPreview, lineNo, this.basePrefix, event.getId(),
+					prefixList.getPrefix(PrefixEnum.DBPEDIA_ONTOLOGY), "nextEvent", this.basePrefix, nextEvent.getId(),
+					false, null, fileType);
+		}
+
+		for (Event previousEvent : event.getPreviousEvents()) {
+			lineNo += 1;
+			writeTriple(writer, writerPreview, lineNo, this.basePrefix, event.getId(),
+					prefixList.getPrefix(PrefixEnum.DBPEDIA_ONTOLOGY), "previousEvent", this.basePrefix,
+					previousEvent.getId(), false, null, fileType);
+		}
+
+		for (DataSet categoryDataSet : event.getCategories().keySet()) {
+			for (Language categoryLanguage : event.getCategories().get(categoryDataSet).keySet()) {
+				for (String category : event.getCategories().get(categoryDataSet).get(categoryLanguage)) {
+					lineNo += 1;
+					writeTriple(writer, writerPreview, lineNo, this.basePrefix, event.getId(),
+							prefixList.getPrefix(PrefixEnum.DBPEDIA_ONTOLOGY), "title", null, createLiteral(category,
+									LiteralDataType.LANG_STRING, categoryLanguage.getLanguageLowerCase()),
+							false, categoryDataSet, fileType);
+				}
+			}
+		}
+
+		for (DataSet sourceDataSet : event.getSources().keySet()) {
+			for (String source : event.getSources().get(sourceDataSet)) {
+				lineNo += 1;
+				writeTriple(writer, writerPreview, lineNo, this.basePrefix, event.getId(),
+						prefixList.getPrefix(PrefixEnum.DBPEDIA_ONTOLOGY), "source", null, "<" + source + ">", false,
+						sourceDataSet, fileType);
+			}
+		}
+
+		if (!event.getPositions().isEmpty()) {
+			lineNo += 1;
+			for (Position position : event.getPositions()) {
+				DataSet dataSet = event.getPositionsWithDataSets().get(position);
+				writeTriple(writer, writerPreview, lineNo, this.basePrefix, event.getId(),
+						prefixList.getPrefix(PrefixEnum.SCHEMA_ORG), "latitude", null,
+						createLiteral(String.valueOf(position.getLatitude()), LiteralDataType.DOUBLE), false, dataSet,
+						fileType);
+				writeTriple(writer, writerPreview, lineNo, this.basePrefix, event.getId(),
+						prefixList.getPrefix(PrefixEnum.SCHEMA_ORG), "longitude", null,
+						createLiteral(String.valueOf(position.getLongitude()), LiteralDataType.DOUBLE), false, dataSet,
+						fileType);
+			}
+		}
+
+		return Math.min(lineNo, lineNoPlusOne);
 	}
 
 	private void writeLinkRelationsToFile() {
@@ -1084,12 +798,10 @@ public class DataStoreWriter {
 				boolean isEntityRelation = true;
 
 				Entity subject = exampleRelation.getSubject();
-				String subjectId = subject.getId();
 				if (subject.isEvent())
 					isEntityRelation = false;
 
 				Entity object = exampleRelation.getObject();
-				String objectId = object.getId();
 				if (object.isEvent())
 					isEntityRelation = false;
 
@@ -1119,16 +831,29 @@ public class DataStoreWriter {
 				}
 				lineNo += 1;
 
+				if (subject.getId() == null) {
+					String id = this.idGenerator.getID(subject);
+					if (id == null)
+						continue;
+					subject.setId(id);
+				}
+				if (object.getId() == null) {
+					String id = this.idGenerator.getID(object);
+					if (id == null)
+						continue;
+					object.setId(id);
+				}
+
 				String relationId = "eventkg_link_relation_" + String.valueOf(lineNo);
 
 				writeTriple(writer, writerPreview, lineNoWriter, this.basePrefix, relationId,
 						prefixList.getPrefix(PrefixEnum.RDF), "type", prefixList.getPrefix(PrefixEnum.EVENT_KG_SCHEMA),
 						"Relation", false, null, fileType);
 				writeTriple(writer, writerPreview, lineNoWriter, this.basePrefix, relationId,
-						prefixList.getPrefix(PrefixEnum.RDF), "subject", this.basePrefix, subjectId, false, null,
+						prefixList.getPrefix(PrefixEnum.RDF), "subject", this.basePrefix, subject.getId(), false, null,
 						fileType);
 				writeTriple(writer, writerPreview, lineNoWriter, this.basePrefix, relationId,
-						prefixList.getPrefix(PrefixEnum.RDF), "object", this.basePrefix, objectId, false, null,
+						prefixList.getPrefix(PrefixEnum.RDF), "object", this.basePrefix, object.getId(), false, null,
 						fileType);
 
 				for (GenericRelation relation : relations) {
@@ -1188,6 +913,19 @@ public class DataStoreWriter {
 				if (!relation.getSubject().isEvent() && !relation.getObject().isEvent())
 					continue;
 
+				if (relation.getSubject().getId() == null) {
+					String id = this.idGenerator.getID(relation.getSubject());
+					if (id == null)
+						continue;
+					relation.getSubject().setId(id);
+				}
+				if (relation.getObject().getId() == null) {
+					String id = this.idGenerator.getID(relation.getObject());
+					if (id == null)
+						continue;
+					relation.getObject().setId(id);
+				}
+
 				String relationId = "eventkg_relation_" + String.valueOf(this.relationNo);
 				this.relationNo += 1;
 
@@ -1202,24 +940,6 @@ public class DataStoreWriter {
 				writeTriple(writer, writerPreview, this.relationNo, this.basePrefix, relationId,
 						prefixList.getPrefix(PrefixEnum.RDF), "object", this.basePrefix, relation.getObject().getId(),
 						false, relation.getDataSet(), fileType);
-
-				// writeTriple(writer, writerPreview, lineNo, relationId,
-				// prefixList.getPrefix(PrefixEnum.RDF).getAbbr() + "value",
-				// object.getId(), false,
-				// relation.getDataSet());
-
-				// if (object.isEvent())
-				// writeTriple(writer, writerPreview, lineNo,
-				// relation.getSubject().getId(),
-				// prefixList.getPrefix(PrefixEnum.SEM).getAbbr() + "hasEvent",
-				// relationId, false,
-				// relation.getDataSet());
-				// else
-				// writeTriple(writer, writerPreview, lineNo,
-				// relation.getSubject().getId(),
-				// prefixList.getPrefix(PrefixEnum.SEM).getAbbr() + "hasActor",
-				// relationId, false,
-				// relation.getDataSet());
 
 				if (relation.getProperties() == null) {
 					writeTriple(writer, writerPreview, this.relationNo, this.basePrefix, relationId,
@@ -1311,6 +1031,13 @@ public class DataStoreWriter {
 					System.out.println("Missing data type. Ignore relation: " + relation.getSubject().getId() + "\t"
 							+ relation.getProperty() + "\t" + relation.getObject());
 					continue;
+				}
+
+				if (relation.getSubject().getId() == null) {
+					String id = this.idGenerator.getEventID((Event) relation.getSubject());
+					if (id == null)
+						continue;
+					relation.getSubject().setId(id);
 				}
 
 				String object = relation.getObject();
@@ -1416,6 +1143,19 @@ public class DataStoreWriter {
 					continue;
 
 				Entity object = relation.getObject();
+
+				if (relation.getSubject().getId() == null) {
+					String id = this.idGenerator.getEntityID(relation.getSubject());
+					if (id == null)
+						continue;
+					relation.getSubject().setId(id);
+				}
+				if (relation.getObject().getId() == null) {
+					String id = this.idGenerator.getEntityID(relation.getObject());
+					if (id == null)
+						continue;
+					relation.getObject().setId(id);
+				}
 
 				PrintWriter writer;
 				PrintWriter writerPreview;
@@ -1779,6 +1519,19 @@ public class DataStoreWriter {
 
 	public Prefix getBasePrefix() {
 		return basePrefix;
+	}
+
+	public void writeFirstSentence(Event event, Language language, String firstSentence, int lineNo, DataSet dataSet,
+			PrintWriter writer, PrintWriter writerPreview) {
+
+		String eventId = this.idGenerator.getEventID(event);
+		if (eventId == null) {
+			System.out.println("Missing event ID for " + event.getWikidataId() + ".");
+			return;
+		}
+
+		writeTriple(writer, writerPreview, lineNo, this.basePrefix, eventId, prefixList.getPrefix(PrefixEnum.DCTERMS),
+				"description", null, firstSentence, true, dataSet, language, FileType.NQ);
 	}
 
 }

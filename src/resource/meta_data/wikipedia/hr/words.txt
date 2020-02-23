@@ -1,0 +1,105 @@
+# forbiddenLinks
+Wikipedia:Citation_needed
+
+# forbiddenNameSpaces
+Gadget definition talk
+Gadget definition
+Gadget talk
+Gadget
+Predložak
+Razgovor o predlošku
+Pomoć
+Razgovor o pomoći
+Kategorija
+Posebno
+Razgovor o kategoriji
+Mediji
+Razgovor
+Portal
+Suradnik
+Razgovor o portalu
+Razgovor sa suradnikom
+Dodatak
+Wikipedija
+Razgovor o dodatku
+Razgovor Wikipedija
+Datoteka
+Razgovor o datoteci
+MediaWiki
+MediaWiki razgovor
+Modul
+Razgovor o modulu
+
+# talkSuffix
+talk
+
+# talkPrefix
+
+# forbiddenInternalLinks
+WT:
+H:
+CAT:
+
+# tableOfContents
+Sadržaj
+
+# seeAlsoLinkClasses
+hatnote
+
+# titlesOfParagraphsNotToRead
+Izvori
+Vanjske poveznice
+
+# fileLabels
+File
+
+# categoryLabel
+Category
+
+# templateLabel
+Predlošci
+
+# imageLabels
+Image
+File
+
+# listPrefixes
+Dodatak:Popis_
+Popis_
+
+# categoryPrefixes
+Kategorija:
+
+# templatePrefixes
+Template:
+
+# eventsLabels
+Događaji
+
+# monthNames
+siječnja;Siječnja
+veljače;Veljače
+ožujka;Ožujka
+travnja;Travnja
+svibnja;Svibnja
+lipnja;Lipnja
+srpnja;Srpnja
+kolovoza;Kolovoza
+rujna;Rujna
+listopada;Listopada
+studenoga;Studenoga;studenog;Studenog
+prosinca;Prosinca
+
+# weekdayNames
+nedjelja;Nedjelja
+ponedjeljak;Ponedjeljak
+utorak;Utorak
+srijeda;Srijeda
+četvrtak;Četvrtak
+petak;Petak
+subota;Subota
+
+# eventTitlesNotToUseAsCategory
+
+
+# eventCategoryRegexes

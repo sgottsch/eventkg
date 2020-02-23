@@ -1,5 +1,6 @@
 package de.l3s.eventkg.integration;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -10,9 +11,17 @@ import java.util.Set;
 
 import org.apache.commons.io.LineIterator;
 import org.apache.commons.lang3.StringUtils;
+import org.ehcache.Cache;
+import org.ehcache.CacheManager;
+import org.ehcache.config.builders.CacheConfigurationBuilder;
+import org.ehcache.config.builders.CacheManagerBuilder;
+import org.ehcache.config.builders.ResourcePoolsBuilder;
+import org.ehcache.config.units.EntryUnit;
+import org.ehcache.config.units.MemoryUnit;
 
 import de.l3s.eventkg.integration.model.relation.DataSet;
 import de.l3s.eventkg.integration.model.relation.prefix.PrefixEnum;
+import de.l3s.eventkg.pipeline.Config;
 import de.l3s.eventkg.util.FileLoader;
 import de.l3s.eventkg.util.FileName;
 import gnu.trove.map.hash.THashMap;
@@ -20,9 +29,11 @@ import gnu.trove.set.hash.THashSet;
 
 public class EventKGIdMappingLoader {
 
-	private Map<DataSet, Map<String, String>> entityLabelsMap = new THashMap<DataSet, Map<String, String>>();
-	private Map<DataSet, Map<String, String>> eventLabelsMap = new THashMap<DataSet, Map<String, String>>();
-	private Map<String, String> eventDescriptionsMap = new THashMap<String, String>();
+	private CacheManager cacheManager = CacheManagerBuilder.newCacheManagerBuilder().build(true);
+
+	private Map<DataSet, Cache<String, String>> entityLabelsMap;
+	private Map<DataSet, Cache<String, String>> eventLabelsMap;
+	private Cache<String, String> eventDescriptionsMap;
 
 	private int lastEntityId;
 	private int lastEventId;
@@ -31,6 +42,9 @@ public class EventKGIdMappingLoader {
 
 	public EventKGIdMappingLoader(boolean loadFromPreviousVersion) {
 		this.loadFromPreviousVersion = loadFromPreviousVersion;
+
+		this.cacheManager = CacheManagerBuilder.newCacheManagerBuilder()
+				.with(CacheManagerBuilder.persistence(new File(Config.getValue("cache_folder")))).build(true);
 	}
 
 	public void initEntityIdMapping() {
@@ -38,8 +52,13 @@ public class EventKGIdMappingLoader {
 		System.out.println("Init entity ID mapping.");
 		System.out.println(" loadFromPreviousVersion: " + this.loadFromPreviousVersion + ".");
 
-		for (DataSet dataSet : DataSets.getInstance().getAllDataSets())
-			entityLabelsMap.put(dataSet, new THashMap<String, String>());
+		for (DataSet dataSet : DataSets.getInstance().getAllDataSets()) {
+			Cache<String, String> cache = this.cacheManager.createCache("entityLabelsMap" + dataSet.getId(),
+					CacheConfigurationBuilder.newCacheConfigurationBuilder(String.class, String.class,
+							ResourcePoolsBuilder.newResourcePoolsBuilder().heap(50000, EntryUnit.ENTRIES)
+									.offheap(2, MemoryUnit.GB).disk(20, MemoryUnit.GB, false)));
+			entityLabelsMap.put(dataSet, cache);
+		}
 
 		FileName fileName = null;
 		if (loadFromPreviousVersion)
@@ -119,8 +138,18 @@ public class EventKGIdMappingLoader {
 		System.out.println("Init event ID mapping.");
 		System.out.println(" loadFromPreviousVersion: " + this.loadFromPreviousVersion + ".");
 
+		this.eventDescriptionsMap = this.cacheManager.createCache("eventDescriptionsMap",
+				CacheConfigurationBuilder.newCacheConfigurationBuilder(String.class, String.class,
+						ResourcePoolsBuilder.newResourcePoolsBuilder().heap(100000, EntryUnit.ENTRIES)
+								.offheap(2, MemoryUnit.GB).disk(25, MemoryUnit.GB, false)));
+
 		for (DataSet dataSet : DataSets.getInstance().getAllDataSets()) {
-			eventLabelsMap.put(dataSet, new THashMap<String, String>());
+
+			Cache<String, String> cache = this.cacheManager.createCache("eventLabelsMap" + dataSet.getId(),
+					CacheConfigurationBuilder.newCacheConfigurationBuilder(String.class, String.class,
+							ResourcePoolsBuilder.newResourcePoolsBuilder().heap(50000, EntryUnit.ENTRIES)
+									.offheap(1, MemoryUnit.GB).disk(20, MemoryUnit.GB, false)));
+			eventLabelsMap.put(dataSet, cache);
 		}
 
 		Set<String> eventsWithoutLabels = new THashSet<String>();
@@ -325,15 +354,15 @@ public class EventKGIdMappingLoader {
 
 	}
 
-	public Map<DataSet, Map<String, String>> getEntityLabelsMap() {
+	public Map<DataSet, Cache<String, String>> getEntityLabelsMap() {
 		return entityLabelsMap;
 	}
 
-	public Map<DataSet, Map<String, String>> getEventLabelsMap() {
+	public Map<DataSet, Cache<String, String>> getEventLabelsMap() {
 		return eventLabelsMap;
 	}
 
-	public Map<String, String> getEventDescriptionsMap() {
+	public Cache<String, String> getEventDescriptionsMap() {
 		return eventDescriptionsMap;
 	}
 
@@ -358,6 +387,10 @@ public class EventKGIdMappingLoader {
 			return null;
 
 		return entityLabelsMap.get(dataSet).get(identifier);
+	}
+
+	public void close() {
+		this.cacheManager.close();
 	}
 
 }

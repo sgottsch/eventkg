@@ -63,19 +63,19 @@ public class RelationsIntegrator extends Extractor {
 		Entity e1 = new Entity();
 		e1.setId("e1");
 		e1.setWikidataId("e1");
-		DataStore.getInstance().getEntities().add(e1);
+	//	DataStore.getInstance().getEntities().add(e1);
 		Entity e2 = new Entity();
 		e2.setId("e2");
 		e2.setWikidataId("e2");
-		DataStore.getInstance().getEntities().add(e2);
+	//	DataStore.getInstance().getEntities().add(e2);
 		Entity e3 = new Entity();
 		e3.setId("e3");
 		e3.setWikidataId("e3");
-		DataStore.getInstance().getEntities().add(e3);
+	//	DataStore.getInstance().getEntities().add(e3);
 		Entity e4 = new Entity();
 		e4.setId("e4");
 		e4.setWikidataId("e4");
-		DataStore.getInstance().getEntities().add(e4);
+	//	DataStore.getInstance().getEntities().add(e4);
 
 		// e1 marriedTo e2
 		GenericRelation r1 = new GenericRelation();

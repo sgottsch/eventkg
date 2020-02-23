@@ -14,6 +14,7 @@
 @regexDayMonth2@	@regexDay2@ @regexMonth2@
 @regexMonthDay1@	@regexMonth1@ @regexDay1@
 @regexMonthDay2@	@regexMonth2@ @regexDay2@
+@hyphensOrWithSlashAnd@	(-|–|—|-|—|/|(and))
 
 # dayTitle
 ^@regexMonth1@ @regexDay1@$
@@ -38,6 +39,7 @@
 ^@regexDayMonth1@	1	0	1	0	datePatternDayMonth
 ^@regexMonthDay1@	1	0	1	0	datePatternMonthDay
 ^@regexMonth1@	0	0	1	0
+^@regexDay1@ ?@hyphensOrWithSlashAnd@ ?@regexDay2@	1	1	0	0
 ^@regexDay1@	1	0	0	0
 
 # dateLinkResolvers	(include "<r>"!)

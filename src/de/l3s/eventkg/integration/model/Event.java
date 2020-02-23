@@ -6,9 +6,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import de.l3s.eventkg.integration.DataStore;
 import de.l3s.eventkg.integration.WikidataIdMappings;
 import de.l3s.eventkg.integration.model.relation.DataSet;
+import de.l3s.eventkg.integration.model.relation.Description;
 import de.l3s.eventkg.meta.Language;
 import de.l3s.eventkg.util.FileLoader;
 
@@ -47,6 +47,9 @@ public class Event extends Entity {
 
 	private Map<DataSet, Set<String>> sources = new HashMap<DataSet, Set<String>>();
 
+	private Map<Language, Set<String>> sentences = new HashMap<Language, Set<String>>();
+	private Set<Description> descriptions = new HashSet<Description>();
+
 	public Event() {
 		super(null);
 		setEvent(true);
@@ -68,20 +71,22 @@ public class Event extends Entity {
 	}
 
 	public Event(Entity entity, WikidataIdMappings wikidataIdMappings) {
-		super(entity.getWikidataId());
-		setYagoId(entity.getYagoId());
+		super(entity.getNumericWikidataId());
+		// setYagoId(entity.getYagoId());
 
-		for (Language language : entity.getWikipediaLabels().keySet()) {
-			this.wikipediaLabels.put(language, entity.getWikipediaLabels().get(language));
-		}
-
-		for (Language language : entity.getWikidataLabels().keySet()) {
-			this.wikidataLabels.put(language, entity.getWikidataLabels().get(language));
-		}
+		// for (Language language : entity.getWikipediaLabels().keySet()) {
+		// this.wikipediaLabels.put(language,
+		// entity.getWikipediaLabels().get(language));
+		// }
+		//
+		// for (Language language : entity.getWikidataLabels().keySet()) {
+		// this.wikidataLabels.put(language,
+		// entity.getWikidataLabels().get(language));
+		// }
 
 		setEvent(true);
-		wikidataIdMappings.updateEntityToEvent(entity, this);
-		DataStore.getInstance().removeEntity(entity);
+		wikidataIdMappings.updateEntityToEvent(this);
+		// DataStore.getInstance().removeEntity(entity);
 	}
 
 	public Set<Event> getChildren() {
@@ -282,6 +287,24 @@ public class Event extends Entity {
 
 	public Map<DataSet, Set<String>> getSources() {
 		return sources;
+	}
+
+	public Map<Language, Set<String>> getSentences() {
+		return sentences;
+	}
+
+	public void addSentence(Language language, String sentence) {
+		if (!this.sentences.containsKey(language))
+			this.sentences.put(language, new HashSet<String>());
+		this.sentences.get(language).add(sentence);
+	}
+
+	public Set<Description> getDescriptions() {
+		return descriptions;
+	}
+
+	public void addDescription(DataSet dataSet, Language language, String description) {
+		this.descriptions.add(new Description(dataSet, description, language));
 	}
 
 }

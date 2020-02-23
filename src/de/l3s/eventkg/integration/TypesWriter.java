@@ -27,7 +27,7 @@ import de.l3s.eventkg.util.MapUtil;
 
 public class TypesWriter extends Extractor {
 
-	private EventKGIdMappingLoader eventKGIdMapping;
+	private EntityIdGenerator eventKGIdMapping;
 
 	public TypesWriter(List<Language> languages) {
 		super("TypesWriter", Source.EVENT_KG, "Integrates types from DBpedia and Wikidata into DBpedia ontology.",
@@ -51,9 +51,7 @@ public class TypesWriter extends Extractor {
 		Pipeline.initDataSets(this.languages);
 
 		System.out.println("Load EventKG ID mapping.");
-		this.eventKGIdMapping = new EventKGIdMappingLoader(false);
-		this.eventKGIdMapping.initEventIdMapping();
-		this.eventKGIdMapping.initEntityIdMapping();
+		this.eventKGIdMapping = new EntityIdGenerator(false);
 		System.out.println("\tDone.");
 
 		// load Wikidata classes
@@ -83,8 +81,9 @@ public class TypesWriter extends Extractor {
 		DataSet dataSet = DataSets.getInstance().getDataSetWithoutLanguage(Source.EVENT_KG);
 
 		FileType fileType = FileType.NQ;
-		
-		DataStoreWriter dataStoreWriter= new DataStoreWriter(languages);
+
+		DataStoreWriter dataStoreWriter = new DataStoreWriter(languages,
+				DataStoreWriterMode.USE_IDS_OF_CURRENT_EVENTKG_VERSION);
 		dataStoreWriter.initPrefixes();
 
 		try {
@@ -125,18 +124,6 @@ public class TypesWriter extends Extractor {
 					}
 				}
 
-				if (eventKGId.equals("event_437985"))
-					System.out.println("event_437985: " + types);
-
-				if (eventKGId.equals("<event_437985>"))
-					System.out.println("<event_437985>: " + types);
-
-				if (eventKGId.equals("entity_4956997"))
-					System.out.println("entity_4956997: " + types);
-
-				if (eventKGId.equals("<entity_4956997>"))
-					System.out.println("<entity_4956997>: " + types);
-
 				// integrate
 
 				types = dbpediaTypesExtractor.resolveTransitively(types);
@@ -149,8 +136,8 @@ public class TypesWriter extends Extractor {
 							eventClasses.put(type, eventClasses.get(type) + 1);
 					}
 
-					dataStoreWriter.writeTriple(writer, writerPreview, lineNo, dataStoreWriter.getBasePrefix(),eventKGId,
-							prefixList.getPrefix(PrefixEnum.RDF), "type",
+					dataStoreWriter.writeTriple(writer, writerPreview, lineNo, dataStoreWriter.getBasePrefix(),
+							eventKGId, prefixList.getPrefix(PrefixEnum.RDF), "type",
 							prefixList.getPrefix(PrefixEnum.DBPEDIA_ONTOLOGY), type, false, dataSet, fileType);
 				}
 				lineNo += 1;

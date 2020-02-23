@@ -1,11 +1,14 @@
 package de.l3s.eventkg.integration.model.relation;
 
+import java.io.Serializable;
 import java.util.Date;
 
 import de.l3s.eventkg.meta.Language;
 import de.l3s.eventkg.meta.Source;
 
-public class DataSet {
+public class DataSet implements Serializable {
+
+	private static final long serialVersionUID = -5392042231971525996L;
 
 	private Source source;
 

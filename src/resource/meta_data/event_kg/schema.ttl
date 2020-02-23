@@ -22,3 +22,4 @@ eventKG-s:endUnitType rdf:type owl:ObjectProperty .
 eventKG-s:endUnitType rdfs:range time:TemporalUnit .
 
 eventKG-s:EventSeries rdfs:subClassOf sem:Event .
+eventKG-s:EventSeriesEdition rdfs:subClassOf sem:Event .

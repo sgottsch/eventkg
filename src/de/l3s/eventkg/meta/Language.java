@@ -1,26 +1,58 @@
 package de.l3s.eventkg.meta;
 
+import java.util.Locale;
+
 public enum Language {
-	EN("en"),
-	DE("de"),
-	RU("ru"),
-	IT("it"),
-	FR("fr"),
-	PT("pt"),
-	ES("es"),
-	CS("cs"),
-	PL("pl"),
-	NL("nl"),
-	SE("se"),
-	DA("da"),
-	HU("hu"),
-	TR("tr");
+
+	ALL("all", "All"),
+	EN("en", "English"),
+	DE("de", "German"),
+	RU("ru", "Russian"),
+	IT("it", "Italian"),
+	FR("fr", "French"),
+	PT("pt", "Portuguese"),
+	NL("nl", "Dutch"),
+
+	BG("bg", "Bulgarian"),
+	CS("cs", "Czech"),
+	HU("hu", "Hungarian"),
+	PL("pl", "Polish"),
+	RO("ro", "Romanian"),
+	SK("sk", "Slovak"),
+	SL("sl", "Slovene"),
+	ES("es", "Spanish"),
+	SE("se", "Swedish"),
+	FI("fi", "Finnish"),
+	DA("da", "Danish"),
+	AR("ar", "Arabian"),
+	HR("hr", "Croatian"),
+	NB("nb", "Norwegian (Bokmål)"),
+	NN("nn", "Norwegian (Nynorsk)"),
+	SR("sr", "Serbian"),
+	BS("bs", "Bosnian"),
+	AF("af", "Afrikaans"),
+	FO("fo", "Faroese"),
+	FA("fa", "Persian"),
+	HI("hi", "Hindi"),
+	ZH("zh", "Mandarin Chinese"),
+	TR("tr", "Turkish");
 
 	private String lang;
+	private String adjective;
+	private Locale locale;
 
 	// Constructor
-	Language(String l) {
-		lang = l;
+	Language(String l, String adjective) {
+		this.lang = l;
+		this.adjective = adjective;
+		this.locale = Locale.forLanguageTag(lang);
+	}
+
+	// Constructor
+	Language(String l, String adjective, Locale locale) {
+		this.lang = l;
+		this.adjective = adjective;
+		this.locale = locale;
 	}
 
 	// Overloaded constructor
@@ -41,7 +73,7 @@ public enum Language {
 	}
 
 	public String getLanguageAdjective() {
-		return Language.getLanguageAdjective(this);
+		return this.adjective;
 	}
 
 	public static Language getLanguageByAdjective(String adjective) {
@@ -56,51 +88,7 @@ public enum Language {
 	}
 
 	public static String getLanguageAdjective(Language language) {
-		switch (language) {
-		case EN: {
-			return "English";
-		}
-		case DE: {
-			return "German";
-		}
-		case ES: {
-			return "Spanish";
-		}
-		case RU: {
-			return "Russian";
-		}
-		case CS: {
-			return "Czech";
-		}
-		case FR: {
-			return "French";
-		}
-		case IT: {
-			return "Italian";
-		}
-		case PL: {
-			return "Polish";
-		}
-		case PT: {
-			return "Portuguese";
-		}
-		case NL: {
-			return "Dutch";
-		}
-		case SE: {
-			return "Swedish";
-		}
-		case DA: {
-			return "Danish";
-		}
-		case HU: {
-			return "Hungarian";
-		}
-		case TR: {
-			return "Turkish";
-		}
-		}
-		return "";
+		return language.getLanguageAdjective();
 	}
 
 	public String getWiki() {
@@ -109,6 +97,14 @@ public enum Language {
 
 	public String getLanguageLowerCase() {
 		return this.getLanguage().toLowerCase();
+	}
+
+	public Locale getLocale() {
+		return locale;
+	}
+
+	public void setLocale(Locale locale) {
+		this.locale = locale;
 	}
 
 }

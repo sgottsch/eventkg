@@ -50,7 +50,7 @@ public class EventAndTemporalRelationsCollector extends Extractor {
 		Config.init("config_eventkb_local.txt");
 
 		AllEventPagesDataSet allEventPagesDataSet = new AllEventPagesDataSet(languages);
-		allEventPagesDataSet.init(true);
+		allEventPagesDataSet.init();
 
 		EventAndTemporalRelationsCollector extr = new EventAndTemporalRelationsCollector(languages,
 				allEventPagesDataSet);

@@ -4,10 +4,8 @@ import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.text.ParseException;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import de.l3s.eventkg.integration.model.DateWithGranularity;
@@ -20,6 +18,7 @@ import de.l3s.eventkg.integration.model.relation.Location;
 import de.l3s.eventkg.integration.model.relation.StartTime;
 import de.l3s.eventkg.meta.Language;
 import de.l3s.eventkg.meta.Source;
+import de.l3s.eventkg.pipeline.Config;
 import de.l3s.eventkg.pipeline.Config.TimeSymbol;
 import de.l3s.eventkg.source.yago.util.YAGOLabelExtractor;
 import de.l3s.eventkg.util.FileLoader;
@@ -28,13 +27,14 @@ import de.l3s.eventkg.util.TimeTransformer;
 
 public class AllEventPagesDataSet {
 
-	private Map<Language, Map<String, Event>> eventsByWikipediaLabel;
-	private Map<String, Event> eventsByWikidataId;
+	// private Map<Language, Map<String, Event>> eventsByWikipediaLabel;
+	private Set<Integer> eventsWikidataIds;
 
-	private Map<String, Entity> entitiesWithExistenceTimeByWikidataId;
-	private Map<Language, Map<String, Entity>> entitiesWithExistenceTimeByWikipediaLabel;
+	private Set<Integer> entitiesWithExistenceTimeByWikidataId;
+	// private Map<Language, Map<String, Entity>>
+	// entitiesWithExistenceTimeByWikipediaLabel;
 
-	private Set<Event> events;
+	// private Set<Event> events;
 
 	private WikidataIdMappings wikidataIdMappings;
 
@@ -50,13 +50,15 @@ public class AllEventPagesDataSet {
 
 	public void load() {
 
-		this.eventsByWikipediaLabel = new HashMap<Language, Map<String, Event>>();
-		this.eventsByWikidataId = new HashMap<String, Event>();
-		this.events = new HashSet<Event>();
+		// this.eventsByWikipediaLabel = new HashMap<Language, Map<String,
+		// Event>>();
+		this.eventsWikidataIds = new HashSet<Integer>();
+		// this.events = new HashSet<Event>();
 
-		for (Language language : this.languages) {
-			this.eventsByWikipediaLabel.put(language, new HashMap<String, Event>());
-		}
+		// for (Language language : this.languages) {
+		// this.eventsByWikipediaLabel.put(language, new HashMap<String,
+		// Event>());
+		// }
 
 		BufferedReader br = null;
 		try {
@@ -87,8 +89,8 @@ public class AllEventPagesDataSet {
 
 				Event event = new Event(entity, this.wikidataIdMappings);
 
-				events.add(event);
-				DataStore.getInstance().addEvent(event);
+				// events.add(event);
+				// DataStore.getInstance().addEvent(event);
 
 				// parse sources
 				// e.g. DBpedia_en (DUL.owl#Event) Wikidata (Q3001412)
@@ -106,11 +108,13 @@ public class AllEventPagesDataSet {
 					}
 				}
 
-				for (Language language : entity.getWikipediaLabels().keySet()) {
-					if (entity.getWikipediaLabel(language) != null)
-						eventsByWikipediaLabel.get(language).put(entity.getWikipediaLabel(language), event);
-				}
-				eventsByWikidataId.put(wikidataId, event);
+				// for (Language language :
+				// entity.getWikipediaLabels().keySet()) {
+				// if (entity.getWikipediaLabel(language) != null)
+				// eventsByWikipediaLabel.get(language).put(entity.getWikipediaLabel(language),
+				// event);
+				// }
+				eventsWikidataIds.add(event.getNumericWikidataId());
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -123,6 +127,8 @@ public class AllEventPagesDataSet {
 		}
 
 		if (loadEntityAndEventInfo) {
+			System.out.println("loadEventSeries");
+			loadEventSeries();
 			System.out.println("loadEventTimes");
 			loadEventTimes();
 			System.out.println("Load entities with existence times.");
@@ -140,24 +146,102 @@ public class AllEventPagesDataSet {
 		}
 	}
 
-	private void loadEntitiesWithExistenceTimes() {
-		this.entitiesWithExistenceTimeByWikidataId = new HashMap<String, Entity>();
+	private void loadEventSeries() {
+		loadWikidataRecurringEvents();
+	}
 
-		this.entitiesWithExistenceTimeByWikipediaLabel = new HashMap<Language, Map<String, Entity>>();
-		for (Language language : this.languages) {
-			this.entitiesWithExistenceTimeByWikipediaLabel.put(language, new HashMap<String, Entity>());
+	private void loadWikidataRecurringEvents() {
+
+		int numberOfWikidataEvents = 0;
+
+		BufferedReader br = null;
+		try {
+			try {
+				br = FileLoader.getReader(FileName.WIKIDATA_EVENT_SERIES);
+			} catch (FileNotFoundException e1) {
+				e1.printStackTrace();
+			}
+
+			String line;
+			while ((line = br.readLine()) != null) {
+
+				String[] parts = line.split(Config.TAB);
+				String wikiLabel = parts[2].replaceAll(" ", "_");
+
+				// TODO: Is this correct?
+				wikiLabel = wikiLabel.replaceAll(" ", "_");
+				if (wikiLabel.startsWith("List_of_") || wikiLabel.startsWith("Lists_of_"))
+					continue;
+
+				Entity entityTmp = getWikidataIdMappings().getEntityByWikidataId(parts[0]);
+				if (entityTmp != null && entityTmp.isEvent()) {
+					((Event) entityTmp).setRecurring(true);
+					numberOfWikidataEvents += 1;
+				}
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				br.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 		}
+
+		BufferedReader br2 = null;
+		try {
+			try {
+				br2 = FileLoader.getReader(FileName.WIKIDATA_RECURRENT_EVENT_EDITIONS);
+			} catch (FileNotFoundException e1) {
+				e1.printStackTrace();
+			}
+
+			String line;
+			while ((line = br2.readLine()) != null) {
+
+				String[] parts = line.split(Config.TAB);
+
+				Event event = getWikidataIdMappings().getEventByWikidataId(parts[0]);
+				if (event != null) {
+					event.setRecurring(false);
+					event.setRecurrentEventEdition(true);
+					numberOfWikidataEvents += 1;
+				}
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				br2.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+
+		System.out.println("Number of recurring events extracted from Wikidata: " + numberOfWikidataEvents);
+	}
+
+	private void loadEntitiesWithExistenceTimes() {
+		this.entitiesWithExistenceTimeByWikidataId = new HashSet<Integer>();
+
+		// this.entitiesWithExistenceTimeByWikipediaLabel = new
+		// HashMap<Language, Map<String, Entity>>();
+		// for (Language language : this.languages) {
+		// this.entitiesWithExistenceTimeByWikipediaLabel.put(language, new
+		// HashMap<String, Entity>());
+		// }
 
 		System.out.println("Start times: " + DataStore.getInstance().getStartTimes().size());
 		for (StartTime startTime : DataStore.getInstance().getStartTimes()) {
 			Entity entity = startTime.getSubject();
 
-			this.entitiesWithExistenceTimeByWikidataId.put(entity.getWikidataId(), entity);
-			for (Language language : entity.getWikipediaLabels().keySet()) {
-				if (entity.getWikipediaLabel(language) != null)
-					entitiesWithExistenceTimeByWikipediaLabel.get(language).put(entity.getWikipediaLabel(language),
-							entity);
-			}
+			this.entitiesWithExistenceTimeByWikidataId.add(entity.getNumericWikidataId());
+			// for (Language language : entity.getWikipediaLabels().keySet()) {
+			// if (entity.getWikipediaLabel(language) != null)
+			// entitiesWithExistenceTimeByWikipediaLabel.get(language).put(entity.getWikipediaLabel(language),
+			// entity);
+			// }
 		}
 
 		System.out.println("End times: " + DataStore.getInstance().getEndTimes().size());
@@ -169,12 +253,12 @@ public class AllEventPagesDataSet {
 				System.out.println("End time: " + entity.getWikidataId());
 			}
 
-			this.entitiesWithExistenceTimeByWikidataId.put(entity.getWikidataId(), entity);
-			for (Language language : entity.getWikipediaLabels().keySet()) {
-				if (entity.getWikipediaLabel(language) != null)
-					entitiesWithExistenceTimeByWikipediaLabel.get(language).put(entity.getWikipediaLabel(language),
-							entity);
-			}
+			this.entitiesWithExistenceTimeByWikidataId.add(entity.getNumericWikidataId());
+			// for (Language language : entity.getWikipediaLabels().keySet()) {
+			// if (entity.getWikipediaLabel(language) != null)
+			// entitiesWithExistenceTimeByWikipediaLabel.get(language).put(entity.getWikipediaLabel(language),
+			// entity);
+			// }
 		}
 
 		System.out.println("Entities with existence time: " + entitiesWithExistenceTimeByWikidataId.size());
@@ -500,13 +584,6 @@ public class AllEventPagesDataSet {
 				DataSet dataSet = DataSets.getInstance().getDataSetById(dataSetId);
 
 				event.addParent(parentEvent, dataSet);
-
-				// GenericRelation relation = new GenericRelation(event2,
-				// dataSet,
-				// PrefixList.getInstance().getPrefix(PrefixEnum.SEM),
-				// "hasSubEvent", event1, null, false);
-				// DataStore.getInstance().addGenericRelation(relation);
-
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -653,44 +730,71 @@ public class AllEventPagesDataSet {
 	}
 
 	public Event getEventByWikipediaLabel(Language language, String wikipediaLabel) {
-		return eventsByWikipediaLabel.get(language).get(wikipediaLabel);
+		Entity entity = this.wikidataIdMappings.getEntityByWikipediaLabel(language, wikipediaLabel);
+		if (entity != null && entity.isEvent())
+			return (Event) entity;
+		else
+			return null;
+		// return eventsByWikipediaLabel.get(language).get(wikipediaLabel);
 	}
 
 	public Event getEventByWikidataId(String wikidataId) {
-		return eventsByWikidataId.get(wikidataId);
+		Entity entity = this.wikidataIdMappings.getEntityByWikidataId(wikidataId);
+		if (entity != null && entity.isEvent())
+			return (Event) entity;
+		else
+			return null;
+
+		// return eventsByWikidataId.get(wikidataId);
 	}
 
-	public Set<String> getWikidataIdsOfAllEvents() {
-		return this.eventsByWikidataId.keySet();
+	public Event getEventByNumericWikidataId(int wikidataId) {
+		Entity entity = this.wikidataIdMappings.getEntityByWikidataId(wikidataId);
+		if (entity != null && entity.isEvent())
+			return (Event) entity;
+		else
+			return null;
 	}
 
-	public void init(boolean loadWikidataLabels) {
+	public Set<Integer> getWikidataIdsOfAllEvents() {
+		return this.eventsWikidataIds;
+	}
+
+	public void init() {
 		this.wikidataIdMappings = new WikidataIdMappings(languages);
-		this.wikidataIdMappings.load(loadWikidataLabels);
+		this.wikidataIdMappings.load();
 		load();
-		System.out.println(
-				"EntitiesByWikidataNumericIds: " + this.wikidataIdMappings.getEntitiesByWikidataNumericIds().size());
+		// System.out.println(
+		// "EntitiesByWikidataNumericIds: " +
+		// this.wikidataIdMappings.getEntitiesByWikidataNumericIds().size());
 	}
 
 	public WikidataIdMappings getWikidataIdMappings() {
 		return wikidataIdMappings;
 	}
 
-	public Set<Event> getEvents() {
-		return events;
-	}
+	// public Set<Event> getEvents() {
+	// return events;
+	// }
+	//
+	// public void setEvents(Set<Event> events) {
+	// this.events = events;
+	// }
 
-	public void setEvents(Set<Event> events) {
-		this.events = events;
-	}
-
-	public Set<String> getWikidataIdsOfEntitiesWithExistenceTime() {
-		return this.entitiesWithExistenceTimeByWikidataId.keySet();
+	public Set<Integer> getWikidataIdsOfEntitiesWithExistenceTime() {
+		return this.entitiesWithExistenceTimeByWikidataId;
 	}
 
 	public Entity getEntityWithExistenceTimeByWikipediaLabel(Language language, String wikipediaLabel) {
-		return entitiesWithExistenceTimeByWikipediaLabel.get(language).get(wikipediaLabel);
+		Entity entity = this.wikidataIdMappings.getEntityByWikipediaLabel(language, wikipediaLabel);
+		if (entity != null && this.entitiesWithExistenceTimeByWikidataId.contains(entity.getNumericWikidataId()))
+			return entity;
+		return null;
 	}
+	//
+	// return
+	// entitiesWithExistenceTimeByWikipediaLabel.get(language).get(wikipediaLabel);
+	// }
 
 	public void setLoadEntityAndEventInfo(boolean loadEntityAndEventInfo) {
 		this.loadEntityAndEventInfo = loadEntityAndEventInfo;

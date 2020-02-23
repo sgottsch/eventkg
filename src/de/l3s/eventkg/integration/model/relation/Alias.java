@@ -1,6 +1,5 @@
 package de.l3s.eventkg.integration.model.relation;
 
-import de.l3s.eventkg.integration.model.Entity;
 import de.l3s.eventkg.meta.Language;
 import de.l3s.eventkg.meta.Source;
 
@@ -12,8 +11,8 @@ public class Alias extends RelationWithSource {
 
 	private Source source;
 
-	public Alias(Entity subject, DataSet dataSet, String label, Language language) {
-		super(subject, dataSet);
+	public Alias(DataSet dataSet, String label, Language language) {
+		super(null, dataSet);
 		this.label = label;
 		this.language = language;
 	}

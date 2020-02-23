@@ -48,7 +48,7 @@ Indholdsfortegnelse
 # seeAlsoLinkClasses
 detail
 
-# titlesNotToTranslate
+# titlesOfParagraphsNotToRead
 Referencer
 Eksterne henvisninger
 Noter

@@ -49,8 +49,8 @@ public class RelationsToEventPagesProcessor implements EntityDocumentDumpProcess
 	private PrintStream outEventLiteralRelations;
 	private PrintStream outEntityRelations;
 
-	private Set<String> targetEventIds;
-	private Set<String> entitiesWithExistenceTimes;
+	private Set<Integer> targetEventIds;
+	private Set<Integer> entitiesWithExistenceTimes;
 
 	private Set<String> forbiddenPropertyIds;
 	private Set<String> temporalPropertyIds;
@@ -150,8 +150,9 @@ public class RelationsToEventPagesProcessor implements EntityDocumentDumpProcess
 			System.out.println("Test case: " + itemDocument.getItemId().getId());
 		}
 
-		boolean subjectIsEvent = this.targetEventIds.contains(itemDocument.getItemId().getId());
-		boolean subjectHasExistenceTime = this.entitiesWithExistenceTimes.contains(itemDocument.getItemId().getId());
+		boolean subjectIsEvent = this.targetEventIds.contains(getNumericId(itemDocument.getItemId().getId()));
+		boolean subjectHasExistenceTime = this.entitiesWithExistenceTimes
+				.contains(getNumericId(itemDocument.getItemId().getId()));
 
 		if (tc) {
 			System.out.println("subjectIsEvent: " + subjectIsEvent);
@@ -176,7 +177,7 @@ public class RelationsToEventPagesProcessor implements EntityDocumentDumpProcess
 						try {
 							id = ((ItemIdValue) statement.getClaim().getMainSnak().getValue()).getId();
 
-							boolean objectIsEvent = this.targetEventIds.contains(id);
+							boolean objectIsEvent = this.targetEventIds.contains(getNumericId(id));
 							boolean objectHasExistenceTime = this.entitiesWithExistenceTimes.contains(id);
 
 							if (tc) {
@@ -323,6 +324,10 @@ public class RelationsToEventPagesProcessor implements EntityDocumentDumpProcess
 		if (this.itemCount % 100000 == 0) {
 			printStatus();
 		}
+	}
+
+	private static int getNumericId(String id) {
+		return Integer.valueOf(id.substring(1));
 	}
 
 	@Override

@@ -13,7 +13,8 @@ import java.util.Set;
 
 import de.l3s.eventkg.integration.DataSets;
 import de.l3s.eventkg.integration.DataStoreWriter;
-import de.l3s.eventkg.integration.EventKGIdMappingLoader;
+import de.l3s.eventkg.integration.DataStoreWriterMode;
+import de.l3s.eventkg.integration.EntityIdGenerator;
 import de.l3s.eventkg.integration.model.FileType;
 import de.l3s.eventkg.integration.model.relation.DataSet;
 import de.l3s.eventkg.integration.model.relation.prefix.Prefix;
@@ -28,12 +29,12 @@ import de.l3s.eventkg.util.FileName;
 
 public class WikidataTypesExtractor extends Extractor {
 
-	private EventKGIdMappingLoader eventKGIdMapping;
+	private EntityIdGenerator eventKGIdMapping;
 
 	private Map<String, Set<String>> typesPerEntity = new HashMap<String, Set<String>>();
 	private Map<String, Set<String>> parentClasses = new HashMap<String, Set<String>>();
 
-	public WikidataTypesExtractor(List<Language> languages, EventKGIdMappingLoader eventKGIdMapping) {
+	public WikidataTypesExtractor(List<Language> languages, EntityIdGenerator eventKGIdMapping) {
 		super("DBpediaTypesExtractor", Source.WIKIDATA, "Loads all Wikidata types.", languages);
 		this.eventKGIdMapping = eventKGIdMapping;
 	}
@@ -48,7 +49,8 @@ public class WikidataTypesExtractor extends Extractor {
 		PrintWriter writer = null;
 		PrintWriter writerPreview = null;
 
-		DataStoreWriter dataStoreWriter = new DataStoreWriter(languages);
+		DataStoreWriter dataStoreWriter = new DataStoreWriter(languages,
+				DataStoreWriterMode.USE_IDS_OF_CURRENT_EVENTKG_VERSION);
 		dataStoreWriter.initPrefixes();
 
 		try {
@@ -83,7 +85,7 @@ public class WikidataTypesExtractor extends Extractor {
 					String instanceId = parts[0];
 					String type = parts[2];
 
-					String eventKGId = eventKGIdMapping.getEventKGId(dataSet, instanceId);
+					String eventKGId = eventKGIdMapping.getEventIDByWikidataId(instanceId);
 					if (eventKGId == null) {
 						continue;
 					}

@@ -26,11 +26,9 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Enumeration;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipException;
 import java.util.zip.ZipFile;
@@ -44,6 +42,7 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import de.l3s.eventkg.meta.Language;
+import de.l3s.eventkg.source.dbpedia.download.DBPediaDumpFilesFinder;
 import de.l3s.eventkg.util.FileLoader;
 import de.l3s.eventkg.util.FileName;
 import net.sf.sevenzipjbinding.ExtractOperationResult;
@@ -91,6 +90,10 @@ public class RawDataDownLoader {
 					RawDataDownLoader.class.getResource(
 							"/resource/meta_data/wikidata/" + FileName.WIKIDATA_EVENT_BLACKLIST_CLASSES.getFileName()),
 					new File(metaDataPath + "wikidata/" + FileName.WIKIDATA_EVENT_BLACKLIST_CLASSES.getFileName()));
+			FileUtils.copyURLToFile(
+					RawDataDownLoader.class.getResource(
+							"/resource/meta_data/wikidata/" + FileName.WIKIDATA_IGNORED_EVENT_CLASSES.getFileName()),
+					new File(metaDataPath + "wikidata/" + FileName.WIKIDATA_IGNORED_EVENT_CLASSES.getFileName()));
 
 			// YAGO
 			FileUtils.copyURLToFile(
@@ -142,6 +145,7 @@ public class RawDataDownLoader {
 
 		// String dataPath = FileLoader.LOCAL_RAW_DATA_FOLDER;
 		this.dataPath = Config.getValue("data_folder");
+		String dbPath = Config.getValue("db_folder");
 
 		(new File(dataPath + "raw_data/wce/")).mkdirs();
 		(new File(dataPath + "raw_data/yago/")).mkdirs();
@@ -175,7 +179,9 @@ public class RawDataDownLoader {
 			(new File(dataPath + "meta/wikipedia/" + language.getLanguage())).mkdirs();
 			(new File(dataPath + "results/wikidata/" + language.getLanguage())).mkdirs();
 			(new File(dataPath + "meta/wikipedia/" + language.getLanguage())).mkdirs();
+			(new File(dbPath + "/" + language.getLanguageLowerCase())).mkdirs();
 		}
+		(new File(dbPath + "/all")).mkdirs();
 
 		this.metaDataPath = this.dataPath + FileLoader.ONLINE_META_FOLDER_SUFFIX;
 		this.dataPath = this.dataPath + FileLoader.ONLINE_RAW_DATA_FOLDER_SUFFIX;
@@ -204,9 +210,6 @@ public class RawDataDownLoader {
 	private void downloadWikipediaFiles() {
 
 		for (Language language : this.languages) {
-
-			if (language != Language.DA)
-				continue;
 
 			String wikiName = language.getWiki();
 			String dumpDate = Config.getValue(wikiName);
@@ -334,7 +337,7 @@ public class RawDataDownLoader {
 				+ Config.getValue("wikidata") + "-all.json.gz", this.dataPath + "wikidata/dump.json.gz");
 	}
 
-	private void downloadWikidataQueryFiles() {
+	public static void downloadWikidataQueryFiles() {
 
 		Map<FileName, String> queryFiles = new LinkedHashMap<FileName, String>();
 		queryFiles.put(FileName.WIKIDATA_PROPERTY_EQUALITIES, "equivalence_properties_query.sparql");
@@ -345,6 +348,8 @@ public class RawDataDownLoader {
 			String query;
 			PrintWriter writer = null;
 			try {
+				System.out.println("Run query " + queryFiles.get(fileName) + ".");
+
 				query = IOUtils.toString(
 						RawDataDownLoader.class.getResource("/resource/meta_data/wikidata/" + queryFiles.get(fileName)),
 						"UTF-8");
@@ -368,6 +373,8 @@ public class RawDataDownLoader {
 				}
 				String res = sb.toString();
 
+				System.out.println("Store in " + fileName + ".");
+
 				writer = FileLoader.getWriter(fileName);
 				writer.write(res);
 
@@ -382,25 +389,24 @@ public class RawDataDownLoader {
 
 	public void downloadDBPediaFiles() {
 
-		String dbPediaUrl = "http://downloads.dbpedia.org/" + Config.getValue("dbpedia") + "/core-i18n/$lang$/";
-		Set<String> urls = new HashSet<String>();
-		urls.add("instance_types_transitive_$lang$.ttl.bz2");
-		urls.add("instance_types_$lang$.ttl.bz2");
-		urls.add("mappingbased_objects_$lang$.ttl.bz2");
-		urls.add("mappingbased_literals_$lang$.ttl.bz2");
-		urls.add("geonames_links_$lang$.ttl.bz2");
-		urls.add("geo_coordinates_$lang$.ttl.bz2");
+		DBPediaDumpFilesFinder ddff = new DBPediaDumpFilesFinder();
+		ddff.init();
 
 		for (Language language : this.languages) {
-			for (String urlString : urls) {
+			Map<FileName, String> urls = ddff.getDBpediaURLsWithFileTypes(language, Config.getValue("dbpedia"));
+			for (FileName fileType : urls.keySet()) {
+				String url = urls.get(fileType);
 
-				urlString = urlString.replaceAll("\\$lang\\$", language.getLanguage());
-				String fileNameBZ = this.dataPath + "dbpedia/" + language.getLanguage() + "/" + urlString;
-				String fileName = (this.dataPath + "dbpedia/" + language.getLanguage() + "/" + urlString)
-						.replaceAll("\\.bz2$", "");
+				if (url == null) {
+					System.out.println(
+							"DBpedia: Skip " + fileType.getFileName() + " in " + language.getLanguageAdjective() + ".");
+					continue;
+				}
 
-				File downloadedFile = downloadFile(
-						dbPediaUrl.replaceAll("\\$lang\\$", language.getLanguage()) + urlString, fileNameBZ);
+				String fileName = FileLoader.getPath(fileType, language);
+				String fileNameBZ = fileName + ".bz2";
+
+				File downloadedFile = downloadFile(url, fileNameBZ);
 
 				FileInputStream fin = null;
 				FileOutputStream out = null;
@@ -433,13 +439,11 @@ public class RawDataDownLoader {
 				}
 
 			}
-
 		}
 
 		// download ontology
-		downloadFile("http://downloads.dbpedia.org/" + Config.getValue("dbpedia") + "/dbpedia_"
-				+ Config.getValue("dbpedia") + ".nt", FileLoader.getFileNameWithPath(FileName.DBPEDIA_ONTOLOGY));
-
+		downloadFile(DBPediaDumpFilesFinder.getOntologyURL(),
+				FileLoader.getFileNameWithPath(FileName.DBPEDIA_ONTOLOGY));
 	}
 
 	public void downloadYAGOFiles() {

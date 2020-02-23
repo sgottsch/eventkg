@@ -7,9 +7,12 @@ import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
+import org.apache.commons.io.LineIterator;
 
 import com.google.common.collect.Sets;
 
@@ -24,14 +27,12 @@ import edu.stanford.nlp.util.StringUtils;
 
 /**
  * Given the "subclass of" and "instance of" relations extracted from the
- * Wikidata dump, creates a file listing all recurring event edition items in
- * Wikidata.
+ * Wikidata dump, creates a file listing all recurring event items in Wikidata
+ * (e.g. Wimbledon Championships).
  */
-public class WikidataRecurringEventEditionsFromFileFinder extends Extractor {
+public class WikidataEventSeriesFromFileFinder extends Extractor {
 
-	private PrintWriter resultsWriter;
-
-	private boolean printTree = false;
+	private boolean printTree = true;
 	private Map<String, Set<String>> allTransitiveParentClasses = new HashMap<String, Set<String>>();
 
 	private Map<String, String> labels = new HashMap<String, String>();
@@ -40,19 +41,19 @@ public class WikidataRecurringEventEditionsFromFileFinder extends Extractor {
 		Config.init(args[0]);
 		List<Language> ls = new ArrayList<Language>();
 		ls.add(Language.EN);
-		WikidataRecurringEventEditionsFromFileFinder ff = new WikidataRecurringEventEditionsFromFileFinder(ls);
+		WikidataEventSeriesFromFileFinder ff = new WikidataEventSeriesFromFileFinder(ls);
 		ff.run();
 	}
 
-	public WikidataRecurringEventEditionsFromFileFinder(List<Language> languages) {
-		super("WikidataRecurringEventEditionsFromFileFinder", Source.WIKIDATA,
-				"Given the \"subclass of\" and \"instance of\" relations extracted from the Wikidata dump, creates a file listing all recurring event edition items in Wikidata",
+	public WikidataEventSeriesFromFileFinder(List<Language> languages) {
+		super("WikidataEventSeriesFromFileFinder", Source.WIKIDATA,
+				"Given the \"subclass of\" and \"instance of\" relations extracted from the Wikidata dump, creates a file listing all recurring event items in Wikidata (e.g. Wimbledon Championships)",
 				languages);
 	}
 
 	public void run() {
 		Set<String> eventClasses = extractSubClasses();
-		extractEventInstances(eventClasses);
+		extractEventSeriesInstances(eventClasses);
 	}
 
 	private Set<String> extractSubClasses() {
@@ -105,11 +106,13 @@ public class WikidataRecurringEventEditionsFromFileFinder extends Extractor {
 		// subClasses.get("Q350604").add("Q198");
 
 		Set<String> targetClasses = new HashSet<String>();
-		targetClasses.add(WikidataResource.RECURRENT_EVENT_EDITION.getId());
+		targetClasses.add(WikidataResource.RECURRING_EVENT.getId());
 
 		for (String line : FileLoader.readLines(FileName.WIKIDATA_EVENT_BLACKLIST_CLASSES)) {
 			forbiddenClasses.add(line.split("\t")[0]);
 		}
+		forbiddenClasses.add(WikidataResource.RECURRENT_EVENT_EDITION.getId());
+		forbiddenClasses.add(WikidataResource.SPORTS_SEASON.getId());
 
 		Set<String> allClasses = new HashSet<String>();
 
@@ -150,6 +153,11 @@ public class WikidataRecurringEventEditionsFromFileFinder extends Extractor {
 			// System.out.println(targetClasses);
 			// System.out.println("\t" + newTargetClasses);
 			newTargetClasses.removeAll(forbiddenClasses);
+			for (Iterator<String> it = newTargetClasses.iterator(); it.hasNext();) {
+				String newTargetClass = it.next();
+				if (newTargetClass.contains("edition"))
+					it.remove();
+			}
 			targetClasses = newTargetClasses;
 
 			if (printTree) {
@@ -198,60 +206,82 @@ public class WikidataRecurringEventEditionsFromFileFinder extends Extractor {
 		return allClasses;
 	}
 
-	private void extractEventInstances(Set<String> eventClasses) {
+	private void extractEventSeriesInstances(Set<String> eventClasses) {
 
 		Map<String, Integer> instancesCount = new HashMap<String, Integer>();
 
-		try {
-			resultsWriter = FileLoader.getWriter(FileName.WIKIDATA_RECURRENT_EVENT_EDITIONS);
-		} catch (FileNotFoundException e2) {
-			e2.printStackTrace();
-		}
+		PrintWriter resultsWriter = null;
 
-		BufferedReader br = null;
 		try {
+			resultsWriter = FileLoader.getWriter(FileName.WIKIDATA_EVENT_SERIES);
+
+			BufferedReader br = null;
 			try {
 				br = FileLoader.getReader(FileName.WIKIDATA_INSTANCE_OF);
-			} catch (FileNotFoundException e1) {
-				e1.printStackTrace();
-			}
 
-			String line;
-			while ((line = br.readLine()) != null) {
+				String line;
+				while ((line = br.readLine()) != null) {
 
-				String[] parts = line.split(Config.TAB);
+					String[] parts = line.split(Config.TAB);
 
-				String parentClass = parts[2];
+					String parentClass = parts[2];
 
-				if (eventClasses.contains(parentClass)) {
+					if (eventClasses.contains(parentClass)) {
 
-					if (printTree) {
-						for (String classId : this.allTransitiveParentClasses.get(parentClass)) {
-							if (!instancesCount.containsKey(classId))
-								instancesCount.put(classId, 1);
-							else
-								instancesCount.put(classId, instancesCount.get(classId) + 1);
+						if (printTree) {
+							for (String classId : this.allTransitiveParentClasses.get(parentClass)) {
+								if (!instancesCount.containsKey(classId))
+									instancesCount.put(classId, 1);
+								else
+									instancesCount.put(classId, instancesCount.get(classId) + 1);
+							}
 						}
+
+						String id = parts[0];
+						String labelEn = parts[1];
+						String wikiLabelEn = parts[3];
+
+						resultsWriter.write(id + Config.TAB + labelEn + Config.TAB + wikiLabelEn + Config.TAB
+								+ parentClass + Config.NL);
 					}
 
-					String id = parts[0];
-					String labelEn = parts[1];
-					String wikiLabelEn = parts[3];
-
-					resultsWriter.write(id + Config.TAB + labelEn + Config.TAB + wikiLabelEn + Config.TAB + parentClass
-							+ Config.NL);
 				}
-
-			}
-		} catch (IOException e) {
-			e.printStackTrace();
-		} finally {
-			try {
-				br.close();
-				resultsWriter.close();
 			} catch (IOException e) {
 				e.printStackTrace();
+			} finally {
+				try {
+					br.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
 			}
+
+			LineIterator it3 = null;
+			try {
+				it3 = FileLoader.getLineIterator(FileName.WIKIDATA_PART_OF_SERIES);
+				while (it3.hasNext()) {
+					String line = it3.nextLine();
+
+					String[] parts = line.split(Config.TAB);
+
+					String wikidataId = parts[2];
+					resultsWriter.write(wikidataId + Config.TAB + "part_of" + Config.TAB + parts[1] + Config.TAB
+							+ parts[0] + Config.NL);
+				}
+			} catch (IOException e) {
+				e.printStackTrace();
+			} finally {
+				try {
+					it3.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} finally {
+			resultsWriter.close();
 		}
 
 		if (printTree) {

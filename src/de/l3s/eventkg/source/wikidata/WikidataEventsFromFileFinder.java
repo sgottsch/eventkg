@@ -31,7 +31,7 @@ public class WikidataEventsFromFileFinder extends Extractor {
 	private PrintWriter resultsWriter;
 	private PrintWriter blacklistResultsWriter;
 
-	private boolean printTree = false;
+	private boolean printTree = true;
 	private Map<String, Set<String>> allTransitiveParentClasses = new HashMap<String, Set<String>>();
 
 	private Map<String, String> labels = new HashMap<String, String>();
@@ -59,7 +59,7 @@ public class WikidataEventsFromFileFinder extends Extractor {
 
 		Map<String, Set<String>> subClasses = new HashMap<String, Set<String>>();
 
-		Set<String> forbiddenClasses = new HashSet<String>();
+		Set<String> ignoredClasses = new HashSet<String>();
 
 		BufferedReader br = null;
 		try {
@@ -80,7 +80,7 @@ public class WikidataEventsFromFileFinder extends Extractor {
 
 				// ignore "Wikimedia internal stuff" children
 				if (parentClass.equals(WikidataResource.WIKIMEDIA_INTERNAL_STUFF.getId())) {
-					forbiddenClasses.add(id);
+					ignoredClasses.add(id);
 					continue;
 				}
 
@@ -108,8 +108,11 @@ public class WikidataEventsFromFileFinder extends Extractor {
 		targetClasses.add(WikidataResource.OCCURRENCE.getId());
 		targetClasses.add(WikidataResource.EVENT.getId());
 
+		for (String line : FileLoader.readLines(FileName.WIKIDATA_IGNORED_EVENT_CLASSES)) {
+			ignoredClasses.add(line.split("\t")[0]);
+		}
 		for (String line : FileLoader.readLines(FileName.WIKIDATA_EVENT_BLACKLIST_CLASSES)) {
-			forbiddenClasses.add(line.split("\t")[0]);
+			ignoredClasses.add(line.split("\t")[0]);
 		}
 
 		Set<String> allClasses = new HashSet<String>();
@@ -151,7 +154,7 @@ public class WikidataEventsFromFileFinder extends Extractor {
 			}
 			// System.out.println(targetClasses);
 			// System.out.println("\t" + newTargetClasses);
-			newTargetClasses.removeAll(forbiddenClasses);
+			newTargetClasses.removeAll(ignoredClasses);
 			targetClasses = newTargetClasses;
 
 			if (printTree) {
@@ -203,9 +206,9 @@ public class WikidataEventsFromFileFinder extends Extractor {
 	private void extractEventInstances(Set<String> eventClasses) {
 
 		Set<String> blacklistClasses = new HashSet<String>();
-		blacklistClasses.add(WikidataResource.DETERMINATOR_FOR_DATE_OF_PERIODIC_OCCURRENCE.getId());
-		blacklistClasses.add(WikidataResource.HUMAN.getId());
-		blacklistClasses.add(WikidataResource.FICTIONAL_HUMAN.getId());
+		for (String line : FileLoader.readLines(FileName.WIKIDATA_EVENT_BLACKLIST_CLASSES)) {
+			blacklistClasses.add(line.split("\t")[0]);
+		}
 
 		Map<String, Integer> instancesCount = new HashMap<String, Integer>();
 
@@ -285,7 +288,7 @@ public class WikidataEventsFromFileFinder extends Extractor {
 				for (String parent : MapUtil.sortByValueDescending(parents).keySet()) {
 					topParents.add(labels.get(parent) + ": " + parents.get(parent));
 					i += 1;
-					if (i >= 5)
+					if (i >= 50)
 						break;
 				}
 				String parentCounts = StringUtils.join(topParents, "; ");

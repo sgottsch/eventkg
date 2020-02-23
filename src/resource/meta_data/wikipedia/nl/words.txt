@@ -1,0 +1,103 @@
+# forbiddenLinks
+Wikipedia:Citation_needed
+
+# forbiddenNameSpaces
+Overleg uitbreidingsdefinitie
+Uitbreidingsdefinitie
+Overleg uitbreiding
+Uitbreiding
+Sjabloon
+Overleg sjabloon
+Help
+Overleg help
+Categorie
+Speciaal
+Overleg categorie
+Media
+Overleg
+Portaal
+Gebruiker
+Overleg portaal
+Overleg gebruiker
+Wikipedia
+Overleg Wikipedia
+Bestand
+Overleg bestand
+MediaWiki
+Overleg MediaWiki
+Module
+Overleg module
+
+# talkSuffix
+
+# talkPrefix
+Overleg
+
+# forbiddenInternalLinks
+WT:
+H:
+CAT:
+
+# tableOfContents
+Inhoud
+
+# seeAlsoLinkClasses
+hatnote
+
+# titlesOfParagraphsNotToRead
+Zie ook
+Externe links
+Literatuur
+Externe link
+
+# fileLabels
+File
+
+# categoryLabel
+Categorie
+
+# templateLabel
+Sjabloon
+
+# imageLabels
+Image
+File
+
+# listPrefixes
+Lijst_van_
+
+# categoryPrefixes
+Categorie
+
+# templatePrefixes
+Template
+
+# eventsLabels
+Gebeurtenissen
+
+# monthNames
+januari;Januari
+februari;Februari
+maart;Maart
+april;April
+mei;Mei
+juni;Juni
+juli;Juli
+augustus;Augustus
+september;September
+oktober;Oktober
+november;November
+december;December
+
+# weekdayNames
+zondag;Zondag
+maandag;Maandag
+dinsdag;Dinsdag
+woensdag;Woensdag
+donderdag;Donderdag
+vrijdag;Vrijdag
+zaterdag;Zaterdag
+
+# eventTitlesNotToUseAsCategory
+
+# eventCategoryRegexes

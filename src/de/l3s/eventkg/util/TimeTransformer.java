@@ -3,6 +3,7 @@ package de.l3s.eventkg.util;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.Locale;
 
@@ -17,6 +18,8 @@ public class TimeTransformer {
 	private static SimpleDateFormat wikidataDateFormat = new SimpleDateFormat("G yyyyyyyyyyy-MM-dd", Locale.ENGLISH);
 
 	private static SimpleDateFormat dbPediaDateFormat = new SimpleDateFormat("G yyyy-MM-dd", Locale.ENGLISH);
+
+	public static final SimpleDateFormat LOG_TIME_FORMAT = new SimpleDateFormat("HH:mm:ss");
 
 	public static void main(String[] args) throws ParseException {
 
@@ -490,6 +493,10 @@ public class TimeTransformer {
 			timeString = timeString.substring(0, timeString.indexOf("\""));
 		}
 		return timeString;
+	}
+
+	public static String getTime() {
+		return LOG_TIME_FORMAT.format(new Date());
 	}
 
 }

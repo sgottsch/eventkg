@@ -1,423 +1,118 @@
 package de.l3s.eventkg.integration;
 
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.HashSet;
+import java.util.Set;
 
-import org.apache.commons.lang3.StringUtils;
+import com.sleepycat.je.Database;
 
+import de.l3s.eventkg.integration.db.DatabaseCreator;
+import de.l3s.eventkg.integration.db.DatabaseName;
 import de.l3s.eventkg.integration.model.Entity;
-import de.l3s.eventkg.integration.model.relation.DataSet;
-import de.l3s.eventkg.integration.model.relation.GenericRelation;
+import de.l3s.eventkg.integration.model.Event;
+import de.l3s.eventkg.integration.model.relation.Description;
+import de.l3s.eventkg.meta.Language;
 
 public class EntityIdGenerator {
 
-	private static SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-	// private Map<String, String> relationsMap = new HashMap<String, String>();
-	// private Map<String, String> linkRelationsMap = new HashMap<String,
-	// String>();
+	private DatabaseName wikidataIdToEventKGEventID;
+	private DatabaseName wikidataIdToEventKGEntityID;
+	private DatabaseName eventKGDescriptionToWikidataId;
 
-	// private int lastRelationId;
-	// private int lastLinkRelationId;
-	private EventKGIdMappingLoader mappingLoader;
+	private DatabaseCreator dbCreator = new DatabaseCreator();
 
-	// public void load() {
-	//
-	// System.out.println("ID Generator: initEventIdMapping");
-	// initEventIdMapping();
-	// System.out.println(lastEventId);
-	//
-	// Event event1 = new Event();
-	// event1.setWikidataId("Q362");
-	// System.out.println(generateEventId(event1, null));
-	//
-	// System.out.println("");
-	// Event event2 = new Event();
-	// event2.setWikidataId("Q362");
-	// event2.addWikipediaLabel(Language.EN, "World_War_II");
-	// event2.addWikipediaLabel(Language.DE, "Zweiter_Weltkrieg");
-	// System.out.println(generateEventId(event2, null));
-	//
-	// System.out.println("");
-	// Event event3 = new Event();
-	// event3.setWikidataId("Q362");
-	// event3.addWikipediaLabel(Language.EN, "World_War_II");
-	// event3.addWikipediaLabel(Language.DE, "Erster_Weltkrieg");
-	// System.out.println(generateEventId(event3, null));
-	//
-	// System.out.println("");
-	// Event event3b = new Event();
-	// event3b.setWikidataId("Q362");
-	// event3b.addWikipediaLabel(Language.EN, "World_War_II");
-	// event3b.addWikipediaLabel(Language.DE, "Pseudo_Label");
-	// System.out.println(generateEventId(event3b, null));
-	//
-	// System.out.println("");
-	// Event event4 = new Event();
-	// Map<DataSet, Set<String>> descriptionMap4 = new HashMap<DataSet,
-	// Set<String>>();
-	// descriptionMap4.put(DataSets.getInstance().getDataSet(Language.EN,
-	// Source.WCE), new HashSet<String>());
-	// descriptionMap4.get(DataSets.getInstance().getDataSet(Language.EN,
-	// Source.WCE)).add(
-	// "British Prime Minister Gordon Brown apologises for the post-war
-	// treatment of celebrated WWII code-breaker Alan Turing, who was chemically
-	// castrated for having homosexual relations.");
-	// System.out.println(generateEventId(event4, descriptionMap4));
-	//
-	// System.out.println("");
-	// Event event5 = new Event();
-	// Map<DataSet, Set<String>> descriptionMap5 = new HashMap<DataSet,
-	// Set<String>>();
-	// descriptionMap5.put(DataSets.getInstance().getDataSet(Language.DE,
-	// Source.WIKIPEDIA), new HashSet<String>());
-	// descriptionMap5.get(DataSets.getInstance().getDataSet(Language.DE,
-	// Source.WIKIPEDIA)).add(
-	// "Der Alliierte Kontrollrat der Siegermächte des Zweiten Weltkriegs löst
-	// durch Gesetz Nr. 46 endgültig den Staat Preußen auf.");
-	// System.out.println(generateEventId(event5, descriptionMap5));
-	// System.out.println("");
-	// descriptionMap5.put(DataSets.getInstance().getDataSet(Language.EN,
-	// Source.WIKIPEDIA), new HashSet<String>());
-	// descriptionMap5.get(DataSets.getInstance().getDataSet(Language.EN,
-	// Source.WIKIPEDIA))
-	// .add("The German state of Prussia is officially abolished by the Allied
-	// Control Council.");
-	// System.out.println(generateEventId(event5, descriptionMap5));
-	//
-	// System.out.println("ID Generator: initEntityIdMapping");
-	// initEntityIdMapping();
-	// System.out.println(lastEntityId);
-	//
-	// System.out.println("ID Generator: initRelationMap");
-	// initRelationMap();
-	// System.out.println(lastRelationId);
-	//
-	// System.out.println("ID Generator: initLinkRelationMap");
-	// initLinkRelationMap();
-	// System.out.println(lastLinkRelationId);
-	//
-	// }
-
-	public void load() {
-
-		this.mappingLoader = new EventKGIdMappingLoader(false);
-
-		System.out.println("ID Generator: initEventIdMapping");
-		mappingLoader.initEventIdMapping();
-		System.out.println("Last event ID: " + this.mappingLoader.getLastEventId() + " / event labels: "
-				+ this.mappingLoader.getEventLabelsMap().size());
-
-		System.out.println("ID Generator: initEntityIdMapping");
-		mappingLoader.initEntityIdMapping();
-		System.out.println("Last entity ID: " + this.mappingLoader.getLastEntityId() + " / entity labels: "
-				+ this.mappingLoader.getEntityLabelsMap().size());
-
-		// System.out.println("ID Generator: initRelationMap");
-		// initRelationMap();
-		// System.out.println(lastRelationId + " / " +
-		// this.relationsMap.size());
-		//
-		// System.out.println("ID Generator: initLinkRelationMap");
-		// initLinkRelationMap();
-		// System.out.println(lastLinkRelationId + " / " +
-		// this.linkRelationsMap.size());
-
-	}
-
-	// private void initRelationMap() {
-	// initRelations(FileName.ALL_TTL_EVENTS_OTHER_RELATIONS_PREVIOUS_VERSION);
-	// initRelations(FileName.ALL_TTL_ENTITIES_OTHER_RELATIONS_PREVIOUS_VERSION);
-	// initRelations(FileName.ALL_TTL_ENTITIES_TEMPORAL_RELATIONS_PREVIOUS_VERSION);
-	// }
-	//
-	// private void initLinkRelationMap() {
-	// BufferedReader br = null;
-	// try {
-	// try {
-	// br =
-	// FileLoader.getReader(FileName.ALL_TTL_EVENTS_LINK_RELATIOINS_PREVIOUS_VERSION);
-	// } catch (FileNotFoundException e1) {
-	// e1.printStackTrace();
-	// }
-	//
-	// String line;
-	// String previousRelationId = null;
-	//
-	// GenericRelation relation = new GenericRelation();
-	// while ((line = br.readLine()) != null) {
-	//
-	// if (line.isEmpty() || line.startsWith("@"))
-	// continue;
-	//
-	// if (!line.startsWith("<eventkg_link_relation_"))
-	// continue;
-	//
-	// String[] parts = line.split(" ");
-	//
-	// String relationId = parts[0];
-	//
-	// int relationNo = Integer
-	// .valueOf(relationId.substring(relationId.lastIndexOf("_") + 1,
-	// relationId.length() - 1));
-	// if (relationNo > this.lastLinkRelationId)
-	// this.lastLinkRelationId = relationNo;
-	//
-	// if (previousRelationId != null && !relationId.equals(previousRelationId))
-	// {
-	// this.linkRelationsMap.put(generateLinkRelationId(relation), relationId);
-	// relation = new GenericRelation();
-	// }
-	//
-	// previousRelationId = relationId;
-	//
-	// if (parts[1].equals("rdf:subject")) {
-	// Entity dummySubject = new Entity(null);
-	// dummySubject.setId(parts[2]);
-	// relation.setSubject(dummySubject);
-	// } else if (parts[1].equals("rdf:object")) {
-	// Entity dummyObject = new Entity(null);
-	// dummyObject.setId(parts[2]);
-	// relation.setSubject(dummyObject);
-	// }
-	//
-	// }
-	// } catch (IOException e) {
-	// e.printStackTrace();
-	// } finally {
-	// try {
-	// br.close();
-	// } catch (IOException e) {
-	// e.printStackTrace();
-	// }
-	// }
-	//
-	// }
-	//
-	// private void initRelations(FileName fileName) {
-	//
-	// BufferedReader br = null;
-	// try {
-	// try {
-	// br = FileLoader.getReader(fileName);
-	// } catch (FileNotFoundException e1) {
-	// e1.printStackTrace();
-	// }
-	//
-	// String line;
-	// String previousRelationId = null;
-	//
-	// GenericRelation relation = new GenericRelation();
-	// while ((line = br.readLine()) != null) {
-	//
-	// if (line.isEmpty() || line.startsWith("@"))
-	// continue;
-	//
-	// if (!line.startsWith("<eventkg_relation_"))
-	// continue;
-	//
-	// String[] parts = line.split(" ");
-	//
-	// String relationId = parts[0];
-	//
-	// int relationNo = Integer
-	// .valueOf(relationId.substring(relationId.lastIndexOf("_") + 1,
-	// relationId.length() - 1));
-	// if (relationNo > this.lastRelationId)
-	// this.lastRelationId = relationNo;
-	//
-	// if (previousRelationId != null && !relationId.equals(previousRelationId))
-	// {
-	// this.relationsMap.put(generateRelationId(relation), relationId);
-	// relation = new GenericRelation();
-	// }
-	//
-	// previousRelationId = relationId;
-	//
-	// if (parts[1].equals("rdf:subject")) {
-	// Entity dummySubject = new Entity(null);
-	// dummySubject.setId(parts[2]);
-	// relation.setSubject(dummySubject);
-	// } else if (parts[1].equals("rdf:object")) {
-	// Entity dummyObject = new Entity(null);
-	// dummyObject.setId(parts[2]);
-	// relation.setSubject(dummyObject);
-	// } else if (parts[1].equals("sem:roleType")) {
-	// relation.setProperty(parts[2]);
-	// } else if (parts[1].equals("rdf:type")) {
-	// relation.setDataSet(
-	// DataSets.getInstance().getDataSetById(parts[3].substring(parts[3].lastIndexOf(":")
-	// + 1)));
-	// } else if (parts[1].equals("sem:hasBeginTimeStamp")) {
-	// String beginTimeStamp = parts[2].substring(1);
-	// beginTimeStamp = beginTimeStamp.substring(0,
-	// beginTimeStamp.indexOf("\""));
-	// try {
-	// relation.setStartTime(dateFormat.parse(beginTimeStamp));
-	// } catch (ParseException e) {
-	// e.printStackTrace();
-	// }
-	// } else if (parts[1].equals("sem:hasEndTimeStamp")) {
-	// String beginTimeStamp = parts[2].substring(1);
-	// beginTimeStamp = beginTimeStamp.substring(0,
-	// beginTimeStamp.indexOf("\""));
-	// try {
-	// relation.setStartTime(dateFormat.parse(beginTimeStamp));
-	// } catch (ParseException e) {
-	// e.printStackTrace();
-	// }
-	// }
-	//
-	// }
-	// } catch (IOException e) {
-	// e.printStackTrace();
-	// } finally {
-	// try {
-	// br.close();
-	// } catch (IOException e) {
-	// e.printStackTrace();
-	// }
-	// }
-	// }
-
-	public Map<DataSet, Map<String, String>> getEntityLabelsMap() {
-		return this.mappingLoader.getEntityLabelsMap();
-	}
-
-	public Map<DataSet, Map<String, String>> getEventLabelsMap() {
-		return this.mappingLoader.getEventLabelsMap();
-	}
-
-	public Map<String, String> getEventDescriptionsMap() {
-		return this.mappingLoader.getEventDescriptionsMap();
-	}
-
-	// public Map<String, String> getRelationsMap() {
-	// return relationsMap;
-	// }
-	//
-	// public Map<String, String> getLinkRelationsMap() {
-	// return linkRelationsMap;
-	// }
-
-	public int getLastEntityNo() {
-		return this.mappingLoader.getLastEntityId();
+	public EntityIdGenerator(boolean fromPreviousVersion) {
+		if (fromPreviousVersion) {
+			wikidataIdToEventKGEventID = DatabaseName.WIKIDATA_ID_TO_OLD_EVENTKG_EVENT_ID;
+			wikidataIdToEventKGEntityID = DatabaseName.WIKIDATA_ID_TO_OLD_EVENTKG_ENTITY_ID;
+			eventKGDescriptionToWikidataId = DatabaseName.OLD_EVENTKG_EVENT_DESCRIPTION_TO_EVENTKG_ID;
+		} else {
+			wikidataIdToEventKGEventID = DatabaseName.WIKIDATA_ID_TO_EVENTKG_EVENT_ID;
+			wikidataIdToEventKGEntityID = DatabaseName.WIKIDATA_ID_TO_EVENTKG_ENTITY_ID;
+			eventKGDescriptionToWikidataId = DatabaseName.EVENTKG_EVENT_DESCRIPTION_TO_EVENTKG_ID;
+		}
 	}
 
 	public int getLastEventNo() {
-		return this.mappingLoader.getLastEventId();
+		return Integer
+				.parseInt(dbCreator.getEntry(dbCreator.getDB(wikidataIdToEventKGEventID), EventKGDBCreator.LAST_ID));
 	}
 
-	// public int getLastRelationNo() {
-	// return lastRelationId;
-	// }
-	//
-	// public int getLastLinkRelationNo() {
-	// return lastLinkRelationId;
-	// }
+	public int getLastEntityNo() {
+		return Integer
+				.parseInt(dbCreator.getEntry(dbCreator.getDB(wikidataIdToEventKGEntityID), EventKGDBCreator.LAST_ID));
+	}
 
-	public static String generateRelationId(GenericRelation relation) {
+	public String getID(Entity entity) {
+		if (entity.isEvent())
+			return getEventID((Event) entity);
+		else
+			return getEntityID(entity);
 
-		List<String> parts = new ArrayList<String>();
+	}
 
-		String subjectId = relation.getSubject().getId();
-		parts.add(subjectId);
+	public String getEventID(Event event) {
 
-		Entity object = relation.getObject();
-		String objectId = "-";
-		if (object != null) {
-			objectId = relation.getObject().getId();
+		if (event.getId() != null)
+			return event.getId();
+
+		if (event.getWikidataId() == null && !event.getWikipediaLabels().isEmpty()) {
+			System.out.println("ERROR: " + event.getWikidataLabels());
 		}
-		parts.add(objectId);
 
-		if (relation.getStartTime() == null)
-			parts.add("-");
-		else
-			parts.add(dateFormat.format(relation.getStartTime()));
-
-		if (relation.getEndTime() == null)
-			parts.add("-");
-		else
-			parts.add(dateFormat.format(relation.getEndTime()));
-
-		parts.add(relation.getDataSet().getId());
-		parts.add(relation.getProperty());
-
-		return StringUtils.join(parts, ";@;");
+		if (event.getWikidataId() != null) {
+			return dbCreator.getEntry(dbCreator.getDB(wikidataIdToEventKGEventID),
+					String.valueOf(event.getNumericWikidataId()));
+		} else {
+			Set<Integer> eventIds = new HashSet<Integer>();
+			for (Description description : event.getDescriptions()) {
+				Database db = this.dbCreator.getDB(description.getLanguage(), eventKGDescriptionToWikidataId);
+				String id = this.dbCreator.getEntry(db, description.getLabel());
+				if (id != null)
+					eventIds.add(Integer.parseInt(id));
+			}
+			eventIds.remove(null);
+			if (eventIds.size() == 1) {
+				for (int eventId : eventIds) {
+					return "event_" + eventId;
+				}
+			}
+			return null;
+		}
 	}
 
-	public static String generateLinkRelationId(GenericRelation relation) {
+	public String getEntityID(Entity entity) {
+		if (entity.getId() != null)
+			return entity.getId();
 
-		List<String> parts = new ArrayList<String>();
-
-		String subjectId = relation.getSubject().getId();
-		parts.add(subjectId);
-
-		Entity object = relation.getObject();
-		String objectId = "-";
-		if (object != null)
-			objectId = relation.getObject().getId();
-		parts.add(objectId);
-
-		return StringUtils.join(parts, ";@;");
+		return dbCreator.getEntry(dbCreator.getDB(wikidataIdToEventKGEntityID),
+				String.valueOf(entity.getNumericWikidataId()));
 	}
 
-	public static String generateLinkRelationId(String subjectId, String objectId) {
-
-		List<String> parts = new ArrayList<String>();
-
-		parts.add(subjectId);
-		parts.add(objectId);
-
-		return StringUtils.join(parts, ";@;");
+	public String getWikipediaId(Entity entity, Language language) {
+		String res = dbCreator.getEntry(dbCreator.getDB(language, DatabaseName.WIKIDATA_ID_TO_WIKIPEDIA_ID),
+				String.valueOf(entity.getNumericWikidataId()));
+		return res;
 	}
 
-	// private String generateEventId(Event event, Map<DataSet, Set<String>>
-	// descriptionMap) {
-	//
-	// Set<String> eventIds = new HashSet<String>();
-	//
-	// if (event.getWikidataId() == null &&
-	// event.getWikipediaLabels().isEmpty()) {
-	// for (DataSet dataSet : descriptionMap.keySet()) {
-	// if (getEventDescriptionsMap().containsKey(dataSet)) {
-	// for (String description : descriptionMap.get(dataSet)) {
-	// if (getEventDescriptionsMap().get(dataSet).containsKey(description)) {
-	// eventIds.add(getEventDescriptionsMap().get(dataSet).get(description));
-	// }
-	// }
-	// }
-	// }
-	// } else {
-	// if (event.getWikidataId() != null && getEventLabelsMap()
-	// .containsKey(DataSets.getInstance().getDataSetWithoutLanguage(Source.WIKIDATA)))
-	// {
-	// eventIds.add(getEventLabelsMap().get(DataSets.getInstance().getDataSetWithoutLanguage(Source.WIKIDATA))
-	// .get(event.getWikidataId()));
-	// }
-	//
-	// for (Language language : event.getWikipediaLabels().keySet()) {
-	// if (event.getWikidataId() != null && getEventLabelsMap()
-	// .containsKey(DataSets.getInstance().getDataSet(language,
-	// Source.DBPEDIA))) {
-	// eventIds.add(getEventLabelsMap().get(DataSets.getInstance().getDataSet(language,
-	// Source.DBPEDIA))
-	// .get(event.getWikipediaLabels().get(language)));
-	// }
-	//
-	// }
-	// }
-	//
-	// eventIds.remove(null);
-	//
-	// if (eventIds.size() == 1) {
-	// for (String eventId : eventIds) {
-	// return eventId;
-	// }
-	// }
-	//
-	// return null;
-	// }
+	public String getWikidataLabel(Entity entity, Language language) {
+		return dbCreator.getEntry(dbCreator.getDB(language, DatabaseName.WIKIDATA_ID_TO_WIKIDATA_LABEL),
+				String.valueOf(entity.getNumericWikidataId()));
+	}
 
+	public String getEventIDByWikidataId(String wikidataId) {
+		return dbCreator.getEntry(dbCreator.getDB(wikidataIdToEventKGEventID),
+				String.valueOf(Integer.valueOf(wikidataId.substring(1))));
+	}
+
+	public String getEventIDByNumericWikidataId(int wikidataId) {
+		return dbCreator.getEntry(dbCreator.getDB(wikidataIdToEventKGEventID), String.valueOf(wikidataId));
+	}
+
+	public String getEventIdByWikipediaId(Language language, String wikipediaId) {
+		String wikidataId = dbCreator.getEntry(dbCreator.getDB(language, DatabaseName.WIKIPEDIA_ID_TO_WIKIDATA_ID),
+				wikipediaId);
+		if (wikidataId == null)
+			return null;
+		return getEventIDByNumericWikidataId(Integer.valueOf(wikidataId));
+	}
 }

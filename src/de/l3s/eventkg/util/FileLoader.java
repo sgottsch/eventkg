@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintStream;
@@ -164,6 +165,10 @@ public class FileLoader {
 
 	public static PrintWriter getWriter(FileName fileName) throws FileNotFoundException {
 		return new PrintWriter(getPath(fileName));
+	}
+
+	public static PrintWriter getWriterWithAppend(FileName fileName) throws IOException {
+		return new PrintWriter(new FileWriter(getPath(fileName), true));
 	}
 
 	public static PrintStream getPrintStream(FileName fileName) throws IOException {

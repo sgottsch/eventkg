@@ -17,8 +17,10 @@ import java.util.regex.Pattern;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.text.StringEscapeUtils;
+
 import de.l3s.eventkg.meta.Language;
-import de.l3s.eventkg.nlp.OpenNLPutils;
+import de.l3s.eventkg.nlp.NLPUtils;
+import de.l3s.eventkg.nlp.OpenNLPOrBreakIteratorNLPUtils;
 import de.l3s.eventkg.pipeline.Config;
 import de.l3s.eventkg.source.wikipedia.RedirectsTableCreator;
 import de.l3s.eventkg.source.wikipedia.WikiWords;
@@ -43,7 +45,7 @@ public class TextExtractorNew {
 	private int textParagraphStartPosition = 0;
 	private Paragraph topParagraph;
 	private boolean splitTextIntoSections = true;
-	private OpenNLPutils nlpUtils;
+	private NLPUtils nlpUtils;
 
 	private List<Sentence> sentences = new ArrayList<Sentence>();
 
@@ -123,9 +125,13 @@ public class TextExtractorNew {
 		itMap.put(4714697, "Barack Obama");
 		itMap.put(3862, "Seconda guerra mondiale");
 		exampleTexts.put(Language.IT, itMap);
+		
+		Map<Integer, String> daMap = new HashMap<Integer, String>();
+		daMap.put(71, "GNU Free Documentation License");
+		exampleTexts.put(Language.DA, daMap);
 
-		Language language = Language.IT;
-		int id = 3862;
+		Language language = Language.DA;
+		int id = 71;
 
 		languages.clear();
 		languages.add(language);
@@ -175,7 +181,7 @@ public class TextExtractorNew {
 		text = StringEscapeUtils.unescapeHtml4(text);
 
 		try {
-			this.nlpUtils = new OpenNLPutils(language);
+			this.nlpUtils = new OpenNLPOrBreakIteratorNLPUtils(language);
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		}
@@ -329,8 +335,8 @@ public class TextExtractorNew {
 					try {
 						paragraph.setTopParagraph(currentParagraph.getTopParagraphAtLevel(level));
 					} catch (NullPointerException e) {
-						System.err.println("Error with page " + this.pageId + ": " + title);
-						e.printStackTrace();
+						System.err.println("Error (b) with page " + this.pageId + ": " + title);
+						System.err.println(e.getMessage() + "\n" + e.getStackTrace());
 					}
 					paragraph.getTopParagraph().addSubParagraph(paragraph);
 					currentParagraph = paragraph;
@@ -502,6 +508,8 @@ public class TextExtractorNew {
 				}
 
 				Set<Link> enrichedLinks = findEnrichedLinks(text, linksInSentence);
+
+				sentence.getLinks().addAll(enrichedLinks);
 
 				if (linksInSentence.size() > 1)
 					output.addLinksInSentenceSet(linksInSentence);
@@ -878,7 +886,7 @@ public class TextExtractorNew {
 		}
 
 		if (paragraph.getText() != null && !paragraph.getText().isEmpty() && !paragraph.getTitle().equals("T")
-				&& paragraph.getText().length() > 3) {
+				&& !paragraph.getText().trim().equals("*") && paragraph.getText().length() > 3) {
 			paragraph.setText(paragraph.getText().replaceAll("\t", " "));
 		}
 
@@ -914,6 +922,10 @@ public class TextExtractorNew {
 
 	public Output getOutput() {
 		return output;
+	}
+
+	public void addSentencesToOutput() {
+		this.output.setSentences(this.sentences);
 	}
 
 }

@@ -1,0 +1,19 @@
+PREFIX dataid: <http://dataid.dbpedia.org/ns/core#>
+PREFIX dct: <http://purl.org/dc/terms/>
+PREFIX dcat:  <http://www.w3.org/ns/dcat#>
+
+SELECT distinct ?file ?latestVersion  WHERE {
+ 	?dataset dataid:artifact <https://databus.dbpedia.org/denis/ontology/dbo-snapshots> .
+	?dataset dcat:distribution ?distribution .
+    ?distribution dcat:downloadURL ?file ;
+    			  dct:hasVersion ?latestVersion ;
+    			  # see all available mediatypes with 
+    			  # dcat:mediaType ?mediaType .
+                  dcat:mediaType <http://dataid.dbpedia.org/ns/mt#ApplicationNTriples> . 
+    {
+            SELECT (?version as ?latestVersion) WHERE { 
+                ?dataset dataid:artifact <https://databus.dbpedia.org/denis/ontology/dbo-snapshots> . 
+                ?dataset dct:hasVersion ?version . 
+            } ORDER BY DESC (?version) LIMIT 1 
+	} 
+}

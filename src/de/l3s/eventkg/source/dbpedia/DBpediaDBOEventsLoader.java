@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import de.l3s.eventkg.meta.Language;
@@ -14,6 +15,7 @@ import de.l3s.eventkg.pipeline.Config;
 import de.l3s.eventkg.pipeline.Extractor;
 import de.l3s.eventkg.util.FileLoader;
 import de.l3s.eventkg.util.FileName;
+import edu.stanford.nlp.util.Sets;
 
 public class DBpediaDBOEventsLoader extends Extractor {
 
@@ -34,6 +36,8 @@ public class DBpediaDBOEventsLoader extends Extractor {
 
 	public void run(Language language) {
 
+		Map<String, Set<String>> parentClasses = DBpediaTypesExtractor.parseOntology();
+
 		Set<String> foundEvents = new HashSet<String>();
 		Set<String> uniqueFoundEvents = new HashSet<String>();
 		Set<String> targetObjects = loadEventObjects();
@@ -48,11 +52,11 @@ public class DBpediaDBOEventsLoader extends Extractor {
 
 		BufferedReader br = null;
 
-		if (FileLoader.fileExists(FileName.DBPEDIA_TYPES_TRANSITIVE, language)) {
+		if (FileLoader.fileExists(FileName.DBPEDIA_TYPES, language)) {
 
 			try {
 				try {
-					br = FileLoader.getReader(FileName.DBPEDIA_TYPES_TRANSITIVE, language);
+					br = FileLoader.getReader(FileName.DBPEDIA_TYPES, language);
 				} catch (FileNotFoundException e1) {
 					e1.printStackTrace();
 				}
@@ -64,10 +68,15 @@ public class DBpediaDBOEventsLoader extends Extractor {
 
 					String[] parts = line.split(" ");
 					String object = parts[2];
+					object = object.substring(object.lastIndexOf("/") + 1, object.lastIndexOf(">"));
 
 					boolean onBlackList = blacklistObjects.contains(object);
+					if (!onBlackList && parentClasses.containsKey(object)) {
+						onBlackList = Sets.intersects(parentClasses.get(object), blacklistObjects);
+					}
 
-					if (targetObjects.contains(object) || onBlackList) {
+					if (targetObjects.contains(object) || onBlackList || (parentClasses.containsKey(object)
+							&& Sets.intersects(parentClasses.get(object), targetObjects))) {
 
 						String subject = parts[0];
 						String property = parts[1];
@@ -76,7 +85,6 @@ public class DBpediaDBOEventsLoader extends Extractor {
 							continue;
 
 						subject = subject.substring(subject.lastIndexOf("resource/") + 9, subject.lastIndexOf(">"));
-						object = object.substring(object.lastIndexOf("/") + 1, object.lastIndexOf(">"));
 
 						String fileLine = subject + Config.TAB + property + Config.TAB + object;
 						if (foundEvents.contains(fileLine))
@@ -117,10 +125,8 @@ public class DBpediaDBOEventsLoader extends Extractor {
 
 		Set<String> targetProperties = new HashSet<String>();
 
-		targetProperties.add("<http://dbpedia.org/ontology/Event>");
-		targetProperties.add("<http://schema.org/Event>");
-		targetProperties.add("<http://dbpedia.org/ontology/SocietalEvent>");
-		targetProperties.add("<http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#Event>");
+		targetProperties.add("Event");
+		targetProperties.add("SocietalEvent");
 
 		return targetProperties;
 	}
@@ -133,13 +139,12 @@ public class DBpediaDBOEventsLoader extends Extractor {
 
 		Set<String> blacklistObjects = new HashSet<String>();
 
-		blacklistObjects.add("<http://dbpedia.org/ontology/Organisation>");
-		blacklistObjects.add("<http://schema.org/Organization>");
+		blacklistObjects.add("Organisation");
 
 		// there is a bug in the Italian DBpedia which makes a lot of events
 		// so:Person
 		if (language != Language.IT)
-			blacklistObjects.add("<http://schema.org/Person>");
+			blacklistObjects.add("Person");
 
 		return blacklistObjects;
 	}

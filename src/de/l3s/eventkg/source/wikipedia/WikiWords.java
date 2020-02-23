@@ -2,6 +2,7 @@ package de.l3s.eventkg.source.wikipedia;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -47,6 +48,8 @@ public class WikiWords {
 	private Map<Language, List<Set<String>>> monthNames = new HashMap<Language, List<Set<String>>>();
 	private Map<Language, List<Set<String>>> weekdayNames = new HashMap<Language, List<Set<String>>>();
 
+	private String words;
+
 	public static WikiWords getInstance() {
 		if (instance == null) {
 			instance = new WikiWords();
@@ -63,6 +66,13 @@ public class WikiWords {
 		init(languages);
 	}
 
+	public void init(Language language, String words) {
+		List<Language> languages = new ArrayList<Language>();
+		languages.add(language);
+		this.words = words;
+		init(languages);
+	}
+
 	public void init(List<Language> languages) {
 
 		for (Language language : languages) {
@@ -71,7 +81,11 @@ public class WikiWords {
 
 			BufferedReader br = null;
 			try {
-				br = FileLoader.getReader(FileName.WIKIPEDIA_META_WORDS, language);
+
+				if (this.words == null)
+					br = FileLoader.getReader(FileName.WIKIPEDIA_META_WORDS, language);
+				else
+					br = new BufferedReader(new StringReader(this.words));
 
 				Map<String, List<Set<String>>> entriesPerType = new HashMap<String, List<Set<String>>>();
 				Map<String, String> singleEntriesPerType = new HashMap<String, String>();

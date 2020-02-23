@@ -6,6 +6,7 @@ import java.util.Set;
 
 import com.google.common.collect.Sets;
 
+import de.l3s.eventkg.integration.AllEventPagesDataSet;
 import de.l3s.eventkg.integration.DataSets;
 import de.l3s.eventkg.integration.DataStore;
 import de.l3s.eventkg.integration.model.Entity;
@@ -17,10 +18,13 @@ import de.l3s.eventkg.pipeline.Extractor;
 
 public class LocationsIntegrator extends Extractor {
 
-	public LocationsIntegrator(List<Language> languages) {
+	private AllEventPagesDataSet allEventPagesDataSet;
+
+	public LocationsIntegrator(List<Language> languages, AllEventPagesDataSet allEventPagesDataSet) {
 		super("LocationsIntegrator", Source.ALL,
 				"Fuses locations of events into a common graph: For each event, takes the union of locations from all sources and then limits this set of locations to the sub locations (e.g., {Paris, Francy, Lyon} becomes {Paris, Lyon}.",
 				languages);
+		this.allEventPagesDataSet = allEventPagesDataSet;
 	}
 
 	public void run() {
@@ -47,53 +51,78 @@ public class LocationsIntegrator extends Extractor {
 
 		// simply take the union of all locations per entity
 		for (Event event : DataStore.getInstance().getEvents()) {
-
+			integrateLocationsOfEvent(event, i);
 			i += 1;
+		}
 
-			if (i % 10000 == 0)
-				System.out.println(i + "/" + DataStore.getInstance().getEvents().size());
+		for (int wikidataId : this.allEventPagesDataSet.getWikidataIdsOfAllEvents()) {
+			Event event = this.allEventPagesDataSet.getEventByNumericWikidataId(wikidataId);
+			integrateLocationsOfEvent(event, i);
+			i += 1;
+		}
+	}
 
-			Set<Entity> locations = new HashSet<Entity>();
-			locations.addAll(event.getLocations());
+	private void integrateLocationsOfEvent(Event event, int i) {
 
-			if (locations.isEmpty())
-				continue;
+		boolean tc = false;
+		if (event.getNumericWikidataId() != null && event.getNumericWikidataId() == 171416) {
+			System.out.println("TEST CASE: " + event.getWikidataId());
+			tc = true;
+		}
 
-			// List<String> beforeLocations = new ArrayList<String>();
-			// for (Entity location : locations)
-			// beforeLocations.add(location.getWikipediaLabel(Language.EN));
-			// System.out.println("Before: " + StringUtils.join(beforeLocations,
-			// " "));
+		Set<Entity> locations = new HashSet<Entity>();
+		locations.addAll(event.getLocations());
 
-			boolean changed = true;
-
-			while (changed) {
-				changed = false;
-				Set<Entity> parentLocationsToRemove = new HashSet<Entity>();
-				for (Entity location : locations) {
-					Set<Entity> parentLocations = location.getAllParentLocations();
-					parentLocationsToRemove = Sets.intersection(parentLocations, locations);
-					if (!parentLocationsToRemove.isEmpty())
-						break;
-				}
-				if (!parentLocationsToRemove.isEmpty()) {
-					changed = true;
-					locations.removeAll(parentLocationsToRemove);
-				}
+		if (tc) {
+			for (Entity loc : locations) {
+				System.out.println(" Loc: " + loc.getWikidataId());
 			}
+		}
 
-			// List<String> afterLocations = new ArrayList<String>();
-			// for (Entity location : locations)
-			// afterLocations.add(location.getWikipediaLabel(Language.EN));
-			// System.out.println("After: " + StringUtils.join(afterLocations, "
-			// "));
-			// if (beforeLocations.size() != afterLocations.size())
-			// System.out.println("\t => changed");
+		if (i % 10000 == 0)
+			System.out.println(i + "\t" + event.getWikidataId() + "\t" + event.getLocations().size() + " / "
+					+ DataStore.getInstance().getLocations().size());
 
+		if (locations.isEmpty())
+			return;
+
+		// List<String> beforeLocations = new ArrayList<String>();
+		// for (Entity location : locations)
+		// beforeLocations.add(location.getWikipediaLabel(Language.EN));
+		// System.out.println("Before: " + StringUtils.join(beforeLocations,
+		// " "));
+
+		boolean changed = true;
+
+		while (changed) {
+			changed = false;
+			Set<Entity> parentLocationsToRemove = new HashSet<Entity>();
 			for (Entity location : locations) {
-				DataStore.getInstance().addLocation(new Location(event,
-						DataSets.getInstance().getDataSetWithoutLanguage(Source.EVENT_KG), location, null));
+				Set<Entity> parentLocations = location.getAllParentLocations();
+				parentLocationsToRemove = Sets.intersection(parentLocations, locations);
+				if (!parentLocationsToRemove.isEmpty())
+					break;
 			}
+			if (!parentLocationsToRemove.isEmpty()) {
+				changed = true;
+				locations.removeAll(parentLocationsToRemove);
+			}
+		}
+
+		// List<String> afterLocations = new ArrayList<String>();
+		// for (Entity location : locations)
+		// afterLocations.add(location.getWikipediaLabel(Language.EN));
+		// System.out.println("After: " + StringUtils.join(afterLocations, "
+		// "));
+		// if (beforeLocations.size() != afterLocations.size())
+		// System.out.println("\t => changed");
+
+		if (i % 10000 == 0)
+			System.out.println(" -> " + locations.size());
+
+		for (Entity location : locations) {
+			DataStore.getInstance().addLocation(new Location(event,
+					DataSets.getInstance().getDataSetWithoutLanguage(Source.EVENT_KG), location, null));
 		}
 	}
 

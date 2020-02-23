@@ -64,19 +64,19 @@ public class LiteralRelationsIntegrator extends Extractor {
 		Entity e1 = new Entity();
 		e1.setId("e1");
 		e1.setWikidataId("e1");
-		DataStore.getInstance().getEntities().add(e1);
+		// DataStore.getInstance().getEntities().add(e1);
 		Entity e2 = new Entity();
 		e2.setId("e2");
 		e2.setWikidataId("e2");
-		DataStore.getInstance().getEntities().add(e2);
+		// DataStore.getInstance().getEntities().add(e2);
 		Entity e3 = new Entity();
 		e3.setId("e3");
 		e3.setWikidataId("e3");
-		DataStore.getInstance().getEntities().add(e3);
+		// DataStore.getInstance().getEntities().add(e3);
 		Entity e4 = new Entity();
 		e4.setId("e4");
 		e4.setWikidataId("e4");
-		DataStore.getInstance().getEntities().add(e4);
+		// DataStore.getInstance().getEntities().add(e4);
 
 		String l1 = "l1";
 		String l2 = "l2";
@@ -591,7 +591,7 @@ public class LiteralRelationsIntegrator extends Extractor {
 
 		System.out.println("Groups of literal relations that can be merged: " + relationGroups.size());
 
-		int numberOfExamples = 0;
+		int numberOfExamples = 3;
 
 		if (numberOfExamples > 0)
 			System.out.println("Literal Relation Group:");

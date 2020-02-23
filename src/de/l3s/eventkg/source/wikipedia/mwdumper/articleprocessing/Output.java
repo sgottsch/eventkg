@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.Set;
 
 import de.l3s.eventkg.source.wikipedia.mwdumper.model.Link;
+import de.l3s.eventkg.source.wikipedia.mwdumper.model.Sentence;
 import edu.stanford.nlp.util.StringUtils;
 
 public class Output {
@@ -21,6 +22,8 @@ public class Output {
 	private List<Set<Link>> linksInCommonSentences = new ArrayList<Set<Link>>();
 
 	private List<Set<Link>> linksInCommonSentencesEnriched = new ArrayList<Set<Link>>();
+
+	private List<Sentence> sentences;
 
 	public String getFirstSentence() {
 		return firstSentence;
@@ -114,6 +117,14 @@ public class Output {
 
 	private String removeSpacesAndTabs(String term) {
 		return term.replaceAll("\t", "").replaceAll(" ", "_");
+	}
+
+	public List<Sentence> getSentences() {
+		return sentences;
+	}
+
+	public void setSentences(List<Sentence> sentences) {
+		this.sentences = sentences;
 	}
 
 }

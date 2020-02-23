@@ -22,6 +22,8 @@ public class EventDateExpressions {
 
 	private Integer year;
 
+	private String regexYearSuffix;
+
 	public EventDateExpressions(Integer year, Integer month) {
 		this.year = year;
 		this.month = month;
@@ -295,6 +297,10 @@ public class EventDateExpressions {
 
 	public List<String> getHyphens() {
 		return hyphens;
+	}
+
+	public String getRegexYearSuffix() {
+		return regexYearSuffix;
 	}
 
 }

@@ -24,7 +24,6 @@ import de.l3s.eventkg.integration.model.DateWithGranularity;
 import de.l3s.eventkg.integration.model.Entity;
 import de.l3s.eventkg.integration.model.Event;
 import de.l3s.eventkg.integration.model.relation.DataSet;
-import de.l3s.eventkg.integration.model.relation.Description;
 import de.l3s.eventkg.integration.model.relation.EndTime;
 import de.l3s.eventkg.integration.model.relation.StartTime;
 import de.l3s.eventkg.meta.Language;
@@ -58,20 +57,6 @@ public class TextualEventsExtractor extends Extractor {
 
 	private double JACCARD_THRESHOLD = 0.2;
 
-	public static void main(String[] args) {
-		List<Language> languages = new ArrayList<Language>();
-		languages.add(Language.DE);
-		languages.add(Language.PT);
-
-		Config.init("config_eventkb_local.txt");
-
-		AllEventPagesDataSet allEventPagesDataSet = new AllEventPagesDataSet(languages);
-		allEventPagesDataSet.init(true);
-
-		TextualEventsExtractor extr = new TextualEventsExtractor(languages, allEventPagesDataSet);
-		extr.run();
-	}
-
 	public TextualEventsExtractor(List<Language> languages, AllEventPagesDataSet allEventPagesDataSet) {
 		super("TextualEventsExtractor", de.l3s.eventkg.meta.Source.WIKIPEDIA,
 				"Collect and integrate textual events and their relations.", languages);
@@ -92,11 +77,6 @@ public class TextualEventsExtractor extends Extractor {
 		System.out.println("Total number of textual events: " + this.textualEvents.size() + ".");
 
 		mergeEvents();
-
-		for (Description description : DataStore.getInstance().getDescriptions()) {
-			if (description.getSubject() == null)
-				continue;
-		}
 	}
 
 	private void loadTextualEventsFromWCE() {
@@ -278,10 +258,12 @@ public class TextualEventsExtractor extends Extractor {
 
 			// descriptions and categories
 			for (TextualEvent eventInCluster : eventGroup) {
-				Description description = new Description(event,
+
+				event.addDescription(
 						DataSets.getInstance().getDataSet(eventInCluster.getLanguage(), eventInCluster.getSource()),
-						eventInCluster.getText(), eventInCluster.getLanguage());
-				DataStore.getInstance().addDescription(description);
+						eventInCluster.getLanguage(), eventInCluster.getText());
+
+				// DataStore.getInstance().addDescription(description);
 				if (eventInCluster.getEnglishWCECategory() != null) {
 					// categories from WCE (English only)
 					event.addCategory(DataSets.getInstance().getDataSet(Language.EN, Source.WCE), Language.EN,

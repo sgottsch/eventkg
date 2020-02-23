@@ -35,8 +35,8 @@ public class SubLocationsCollector extends Extractor {
 
 	private void loadSubLocations() {
 
-		System.out.println("EntitiesByWikidataNumericIds 2: "
-				+ this.allEventPagesDataSet.getWikidataIdMappings().getEntitiesByWikidataNumericIds().size());
+//		System.out.println("EntitiesByWikidataNumericIds 2: "
+//				+ this.allEventPagesDataSet.getWikidataIdMappings().getEntitiesByWikidataNumericIds().size());
 
 		BufferedReader br = null;
 		try {

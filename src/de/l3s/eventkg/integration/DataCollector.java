@@ -56,42 +56,9 @@ public class DataCollector extends Extractor {
 				languages);
 	}
 
-	// private void collectEntitiesWithExistenceTimes() {
-	//
-	// for (StartTime startTime : DataStore.getInstance().getStartTimes()) {
-	// this.entitiesWithExistenceTime.add(startTime.getSubject());
-	// }
-	// for (EndTime endTime : DataStore.getInstance().getEndTimes()) {
-	// this.entitiesWithExistenceTime.add(endTime.getSubject());
-	// }
-	//
-	// PrintWriter writer = null;
-	// try {
-	// writer =
-	// FileLoader.getWriter(FileName.ALL_ENTITIES_WITH_EXISTENCE_TIMES);
-	//
-	// for (Entity entity : entitiesWithExistenceTime) {
-	//
-	// if (entity.getWikidataId() == null)
-	// continue;
-	//
-	// writer.write(entity.getWikidataId());
-	// writer.write(Config.TAB);
-	// writer.write(entity.getWikipediaLabelsString(this.languages));
-	// writer.write(Config.TAB);
-	// writer.write(Config.NL);
-	// }
-	// } catch (FileNotFoundException e) {
-	// e.printStackTrace();
-	// } finally {
-	// writer.close();
-	// }
-	//
-	// }
-
 	private void init() {
 		this.wikidataIdMappings = new WikidataIdMappings(this.languages);
-		wikidataIdMappings.load(true);
+		wikidataIdMappings.load();
 		wikidataIdMappings.loadTemporalProperties();
 	}
 
@@ -519,8 +486,6 @@ public class DataCollector extends Extractor {
 
 		System.out.println("loadWikidataEvents.");
 		loadWikidataEvents();
-		System.out.println("loadWikidataRecurringEvents.");
-		loadWikidataRecurringEvents();
 		System.out.println("loadDBpediaEvents.");
 		loadDBpediaEvents();
 		System.out.println("loadWikipediaEvents.");
@@ -539,7 +504,7 @@ public class DataCollector extends Extractor {
 
 				writer.write(event.getWikidataId());
 				writer.write(Config.TAB);
-				writer.write(event.getWikipediaLabelsString(this.languages));
+				writer.write(wikidataIdMappings.getLabelsString(event.getNumericWikidataId()));
 				writer.write(Config.TAB);
 				writer.write(StringUtils.join(event.getEventInstanceComments(), " "));
 				writer.write(Config.TAB);
@@ -635,11 +600,11 @@ public class DataCollector extends Extractor {
 					for (DataSet dataSet : event.getChildrenWithDataSets().get(child)) {
 						writer.write(event.getWikidataId());
 						writer.write(Config.TAB);
-						writer.write(event.getWikipediaLabelsString(this.languages));
+						writer.write(wikidataIdMappings.getLabelsString(event.getNumericWikidataId()));
 						writer.write(Config.TAB);
 						writer.write(child.getWikidataId());
 						writer.write(Config.TAB);
-						writer.write(child.getWikipediaLabelsString(this.languages));
+						writer.write(wikidataIdMappings.getLabelsString(child.getNumericWikidataId()));
 						writer.write(Config.TAB);
 						writer.write(dataSet.getId());
 						writer.write(Config.NL);
@@ -856,6 +821,42 @@ public class DataCollector extends Extractor {
 			}
 		}
 
+		BufferedReader br2 = null;
+		try {
+			try {
+				br2 = FileLoader.getReader(FileName.WIKIDATA_PART_OF_SERIES);
+			} catch (FileNotFoundException e1) {
+				e1.printStackTrace();
+			}
+
+			String line;
+			while ((line = br2.readLine()) != null) {
+
+				String[] parts = line.split("\t");
+
+				String wikidataId1 = parts[0];
+				String wikidataId2 = parts[2];
+
+				Event event1 = findEventFromWikidataId(wikidataId1);
+				Event event2 = findEventFromWikidataId(wikidataId2);
+
+				if (event1 == null || event2 == null)
+					continue;
+
+				event1.addParent(event2, DataSets.getInstance().getDataSetWithoutLanguage(Source.WIKIDATA));
+				event2.addChild(event1, DataSets.getInstance().getDataSetWithoutLanguage(Source.WIKIDATA));
+
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				br2.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+
 	}
 
 	private void collectNextEventsWikidata() {
@@ -1023,6 +1024,7 @@ public class DataCollector extends Extractor {
 						continue;
 
 					Entity noEvent = createBlacklistEvent(language, wikiLabel, "loadDBpediaBlacklistEvents");
+
 					if (noEvent != null) {
 						numberOfDBpediaEvents += 1;
 					}
@@ -1046,36 +1048,10 @@ public class DataCollector extends Extractor {
 
 		// Locations may never be events.
 
-		Set<String> dbPediaLocationsBlackListEvents = new HashSet<String>();
-
-		for (Language language : this.languages) {
-			BufferedReader br = null;
-			try {
-				try {
-					br = FileLoader.getReader(FileName.DBPEDIA_ALL_LOCATIONS, language);
-				} catch (FileNotFoundException e1) {
-					e1.printStackTrace();
-				}
-
-				String line;
-				while ((line = br.readLine()) != null) {
-					createBlacklistEvent(language, line, "loadDBpediaLocationsBlacklistEvents");
-
-					dbPediaLocationsBlackListEvents.add(line);
-				}
-			} catch (IOException e) {
-				e.printStackTrace();
-			} finally {
-				try {
-					br.close();
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-			}
+		for (Entity entity : DBpediaAllLocationsLoader.loadLocationEntities(this.languages, wikidataIdMappings)) {
+			createBlacklistEventByWikidataID(entity.getWikidataId(), "loadDBpediaLocationsBlacklistEvents");
 		}
 
-		System.out.println("Number of blacklist events extracted from DBpedia locations : "
-				+ dbPediaLocationsBlackListEvents.size());
 	}
 
 	private void loadWikidataBlacklistEvents() {
@@ -1332,6 +1308,10 @@ public class DataCollector extends Extractor {
 				if (wikiLabel.startsWith("List_of_") || wikiLabel.startsWith("Lists_of_"))
 					continue;
 
+				// manual correction
+				if (parts[0].equals("Q3136955"))
+					continue;
+
 				Event event = createEventByWikidataId(parts[0],
 						DataSets.getInstance().getDataSetWithoutLanguage(Source.WIKIDATA), line.split(Config.TAB)[3]);
 
@@ -1351,90 +1331,13 @@ public class DataCollector extends Extractor {
 		System.out.println("Number of events extracted from Wikidata: " + numberOfWikidataEvents);
 	}
 
-	private void loadWikidataRecurringEvents() {
-
-		int numberOfWikidataEvents = 0;
-
-		BufferedReader br = null;
-		try {
-			try {
-				br = FileLoader.getReader(FileName.WIKIDATA_RECURRING_EVENTS);
-			} catch (FileNotFoundException e1) {
-				e1.printStackTrace();
-			}
-
-			String line;
-			while ((line = br.readLine()) != null) {
-
-				String[] parts = line.split(Config.TAB);
-				String wikiLabel = parts[2].replaceAll(" ", "_");
-
-				// TODO: Is this correct?
-				wikiLabel = wikiLabel.replaceAll(" ", "_");
-				if (wikiLabel.startsWith("List_of_") || wikiLabel.startsWith("Lists_of_"))
-					continue;
-
-				Entity entityTmp = getEntityFromWikidataId(parts[0]);
-				if (entityTmp != null && entityTmp.isEvent()) {
-					((Event) entityTmp).setRecurring(true);
-					numberOfWikidataEvents += 1;
-				}
-			}
-		} catch (IOException e) {
-			e.printStackTrace();
-		} finally {
-			try {
-				br.close();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		}
-
-		BufferedReader br2 = null;
-		try {
-			try {
-				br2 = FileLoader.getReader(FileName.WIKIDATA_RECURRENT_EVENT_EDITIONS);
-			} catch (FileNotFoundException e1) {
-				e1.printStackTrace();
-			}
-
-			String line;
-			while ((line = br2.readLine()) != null) {
-
-				String[] parts = line.split(Config.TAB);
-				String wikiLabel = parts[2].replaceAll(" ", "_");
-
-				// TODO: Is this correct?
-				wikiLabel = wikiLabel.replaceAll(" ", "_");
-				if (wikiLabel.startsWith("List_of_") || wikiLabel.startsWith("Lists_of_"))
-					continue;
-
-				Entity entityTmp = getEntityFromWikidataId(parts[0]);
-				if (entityTmp != null && entityTmp.isEvent()) {
-					((Event) entityTmp).setRecurring(false);
-					((Event) entityTmp).setRecurrentEventEdition(true);
-					numberOfWikidataEvents += 1;
-				}
-			}
-		} catch (IOException e) {
-			e.printStackTrace();
-		} finally {
-			try {
-				br2.close();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		}
-
-		System.out.println("Number of recurring events extracted from Wikidata: " + numberOfWikidataEvents);
-	}
-
 	private void collectSubLocationsWikidata() {
 
 		System.out.println("collectSubLocationsWikidata");
 
 		this.locations = DBpediaAllLocationsLoader.loadLocationEntities(this.languages, this.wikidataIdMappings);
 
+		int found = 0;
 		BufferedReader br = null;
 		try {
 			try {
@@ -1468,6 +1371,7 @@ public class DataCollector extends Extractor {
 					continue;
 
 				if (location1.isLocation() && location2.isLocation()) {
+					found += 1;
 					if (type.equals(Config.SUB_LOCATION_SYMBOL)) {
 						location1.addParentLocation(location2);
 						location2.addSubLocation(location1);
@@ -1487,6 +1391,8 @@ public class DataCollector extends Extractor {
 				e.printStackTrace();
 			}
 		}
+
+		System.out.println("SubLocs: " + found);
 	}
 
 	private void minimizeSubLocations() {

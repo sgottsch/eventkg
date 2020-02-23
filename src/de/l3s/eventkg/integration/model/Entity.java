@@ -9,6 +9,7 @@ import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
 
+import de.l3s.eventkg.integration.model.relation.Alias;
 import de.l3s.eventkg.integration.model.relation.DataSet;
 import de.l3s.eventkg.meta.Language;
 
@@ -19,7 +20,7 @@ public class Entity {
 
 	private String wikidataId;
 	private String yagoId;
-	private int numericWikidataId;
+	private Integer numericWikidataId;
 	private String temporaryId;
 
 	private String eventKGId;
@@ -43,12 +44,21 @@ public class Entity {
 	private Map<Position, DataSet> positionsWithDataSets = new HashMap<Position, DataSet>();
 	private Map<DataSet, Set<Position>> dataSetsWithPositions = new HashMap<DataSet, Set<Position>>();
 
+	private Set<Alias> aliases = new HashSet<Alias>();
+
 	private boolean isLocation = false;
+	private int isLocationCount = 0;
+	private int isNoLocationCount = 0;
 
 	private boolean isActor = false;
 
 	public Entity() {
 
+	}
+
+	public Entity(int wikidataId) {
+		this.numericWikidataId = wikidataId;
+		this.wikidataId = "Q" + this.numericWikidataId;
 	}
 
 	public Entity(String wikidataId) {
@@ -201,7 +211,7 @@ public class Entity {
 		return endTimesWithDataSets;
 	}
 
-	public int getNumericWikidataId() {
+	public Integer getNumericWikidataId() {
 		return numericWikidataId;
 	}
 
@@ -262,6 +272,30 @@ public class Entity {
 
 	public void setTemporaryId(String temporaryId) {
 		this.temporaryId = temporaryId;
+	}
+
+	public int getLocationCount() {
+		return isLocationCount;
+	}
+
+	public void increaseIsLocationCount() {
+		this.isLocationCount += 1;
+	}
+
+	public int getNoLocationCount() {
+		return isNoLocationCount;
+	}
+
+	public void increaseIsNoLocationCount() {
+		this.isNoLocationCount += 1;
+	}
+
+	public Set<Alias> getAliases() {
+		return aliases;
+	}
+
+	public void addAlias(DataSet dataSet, Language language, String description) {
+		this.aliases.add(new Alias(dataSet, description, language));
 	}
 
 }

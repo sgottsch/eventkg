@@ -117,13 +117,23 @@ public class EventExtractorFromYearPages {
 		daMap.put(11529, "30. januar");
 		exampleTexts.put(Language.DA, daMap);
 
+		Map<Integer, String> nlMap = new HashMap<Integer, String>();
+		nlMap.put(2255, "2018");
+		nlMap.put(2693, "4 maart");
+		exampleTexts.put(Language.NL, nlMap);
+
+		Map<Integer, String> hrMap = new HashMap<Integer, String>();
+		hrMap.put(3152, "2018.");
+		hrMap.put(628, "4. ožujka");
+		exampleTexts.put(Language.HR, hrMap);
+
 		// Language language = Language.DA;
 		// int id = 13060;
 
 		// Language language = Language.PT;
 		// int id = 28422;
-		Language language = Language.FR;
-		int id = 4017659;
+		Language language = Language.NL;
+		int id = 2693;
 
 		// for (Language language : exampleTexts.keySet()) {
 		// for (int id : exampleTexts.get(language).keySet()) {
@@ -345,7 +355,7 @@ public class EventExtractorFromYearPages {
 												currentNode.getParentAtLevel(level - 1).addChild(node);
 											} catch (NullPointerException e) {
 												System.err.println(
-														"Error with page " + this.pageId + ": " + this.pageTitle);
+														"Error (c) with page " + this.pageId + ": " + this.pageTitle);
 												System.err.println(e.getMessage() + "\n" + e.getStackTrace());
 											}
 										}
@@ -641,6 +651,7 @@ public class EventExtractorFromYearPages {
 		for (DatePattern datePattern : this.eventDateExpressions.getDatePatterns()) {
 			MatcherResult mRes = match(datePattern.getPattern(), line);
 			if (mRes.getDatePart() != null) {
+
 				if (this.year != null && (datePattern.hasM1() || !datePattern.hasM2()))
 					date.resetMonths();
 
@@ -660,7 +671,12 @@ public class EventExtractorFromYearPages {
 							EventDateExpressionsAll.getInstance().getMonth(mRes.getMatcher().group("m2")).intValue());
 
 				if (datePattern.hasY1()) {
-					date.setYear(Integer.valueOf(mRes.getMatcher().group("y1")));
+					try {
+						date.setYear(Integer.valueOf(mRes.getMatcher().group("y1").replace(".", "").trim()));
+					} catch (NumberFormatException e) {
+						System.err.println("Error x with page " + this.pageId + ": " + this.pageTitle);
+						System.err.println(e.getMessage() + "\n" + e.getStackTrace());
+					}
 				}
 
 				foundNewDateInformation = true;

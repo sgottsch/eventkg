@@ -42,6 +42,8 @@ public class DBpediaEventRelationsExtractor extends Extractor {
 
 	public void loadEventRelations(Language language) {
 
+		System.out.println("Load event relations from the " + language.getLanguageAdjective() + " DBpedia.");
+
 		Set<String> forbiddenProperties = DBpediaEventLocationsExtractor.loadLocationProperties();
 		forbiddenProperties.addAll(DBpediaPartOfLoader.loadPartOfProperties());
 		forbiddenProperties.addAll(DBpediaPartOfLoader.loadNextEventProperties());
@@ -101,7 +103,9 @@ public class DBpediaEventRelationsExtractor extends Extractor {
 					}
 
 				}
-			}
+			} else
+				System.out.println("Missing file in " + language.getLanguageAdjective() + " DBpedia: "
+						+ FileName.DBPEDIA_MAPPINGS.getFileName(language));
 		} catch (IOException e) {
 			e.printStackTrace();
 		} finally {
@@ -119,6 +123,8 @@ public class DBpediaEventRelationsExtractor extends Extractor {
 
 	public void loadEventLiteralRelations(Language language) {
 
+		System.out.println("Load event literal relations from the " + language.getLanguageAdjective() + " DBpedia.");
+
 		Set<String> forbiddenProperties = DBpediaEventLocationsExtractor.loadLocationProperties();
 		forbiddenProperties.addAll(DBpediaTimesExtractor.loadTimeProperties().keySet());
 		forbiddenProperties.addAll(loadLabelsAndDescriptionProperties());
@@ -128,43 +134,50 @@ public class DBpediaEventRelationsExtractor extends Extractor {
 
 		try {
 			eventLiteralResultsWriter = FileLoader.getWriter(FileName.DBPEDIA_EVENT_LITERAL_RELATIONS, language);
-			br = FileLoader.getReader(FileName.DBPEDIA_MAPPINGS_LITERALS, language);
 
-			String line;
-			while ((line = br.readLine()) != null) {
-				if (line.startsWith("#"))
-					continue;
+			if (FileLoader.fileExists(FileName.DBPEDIA_MAPPINGS_LITERALS, language)) {
 
-				String[] parts = line.split(" ");
+				br = FileLoader.getReader(FileName.DBPEDIA_MAPPINGS_LITERALS, language);
 
-				String object = "";
-				for (int i = 2; i < parts.length; i++)
-					object += parts[i] + " ";
-				object = object.trim();
+				String line;
+				while ((line = br.readLine()) != null) {
+					if (line.startsWith("#"))
+						continue;
 
-				String subject = parts[0];
-				String property = parts[1];
+					String[] parts = line.split(" ");
 
-				if (forbiddenProperties.contains(property)) {
-					continue;
-				}
+					String object = "";
+					for (int i = 2; i < parts.length; i++)
+						object += parts[i] + " ";
+					object = object.trim();
 
-				if (!subject.contains("resource"))
-					continue;
+					String subject = parts[0];
+					String property = parts[1];
 
-				try {
-					subject = subject.substring(subject.lastIndexOf("resource/") + 9, subject.lastIndexOf(">"));
-					// object = object.substring(object.lastIndexOf("/") + 1,
-					// object.lastIndexOf(">"));
-				} catch (StringIndexOutOfBoundsException e) {
-					// skip objects like
-					// "http://fr.dbpedia.org/resource/Sultanat_d'Égypte__1"@fr
-					// .
-					continue;
-				}
+					if (forbiddenProperties.contains(property)) {
+						continue;
+					}
 
-				if (this.allEventPagesDataSet.getEventByWikipediaLabel(language, subject) != null) {
-					eventLiteralResultsWriter.write(subject + Config.TAB + property + Config.TAB + object + Config.NL);
+					if (!subject.contains("resource"))
+						continue;
+
+					try {
+						subject = subject.substring(subject.lastIndexOf("resource/") + 9, subject.lastIndexOf(">"));
+						// object = object.substring(object.lastIndexOf("/") +
+						// 1,
+						// object.lastIndexOf(">"));
+					} catch (StringIndexOutOfBoundsException e) {
+						// skip objects like
+						// "http://fr.dbpedia.org/resource/Sultanat_d'Égypte__1"@fr
+						// .
+						continue;
+					}
+
+					if (this.allEventPagesDataSet.getEventByWikipediaLabel(language, subject) != null) {
+						eventLiteralResultsWriter
+								.write(subject + Config.TAB + property + Config.TAB + object + Config.NL);
+					}
+
 				}
 
 			}
@@ -172,7 +185,8 @@ public class DBpediaEventRelationsExtractor extends Extractor {
 			e.printStackTrace();
 		} finally {
 			try {
-				br.close();
+				if (br != null)
+					br.close();
 				eventLiteralResultsWriter.close();
 			} catch (IOException e) {
 				e.printStackTrace();
@@ -201,6 +215,8 @@ public class DBpediaEventRelationsExtractor extends Extractor {
 		blacklistRelations.add("individualisedGnd");
 		blacklistRelations.add("lccn");
 		blacklistRelations.add("ndlId");
+		blacklistRelations.add("isbn");
+		blacklistRelations.add("viafId");
 		blacklistRelations.add("endDate");
 		blacklistRelations.add("startDate");
 

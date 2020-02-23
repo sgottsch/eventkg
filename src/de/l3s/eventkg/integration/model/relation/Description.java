@@ -1,6 +1,5 @@
 package de.l3s.eventkg.integration.model.relation;
 
-import de.l3s.eventkg.integration.model.Entity;
 import de.l3s.eventkg.meta.Language;
 import de.l3s.eventkg.meta.Source;
 
@@ -12,12 +11,12 @@ public class Description extends RelationWithSource {
 
 	private Source source;
 
-	public Description(Entity subject, DataSet dataSet, String label, Language language) {
-		super(subject, dataSet);
+	public Description(DataSet dataSet, String label, Language language) {
+		super(null, dataSet);
 		this.label = label;
 		this.language = language;
 	}
-	
+
 	public String getLabel() {
 		return label;
 	}

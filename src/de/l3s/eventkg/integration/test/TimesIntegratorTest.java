@@ -47,32 +47,31 @@ public class TimesIntegratorTest {
 		languages.add(Language.EN);
 		languages.add(Language.DE);
 
-		TimesIntegrator timesIntegrator = new TimesIntegrator(languages);
-		timesIntegrator.run();
+		TimesIntegrator timesIntegrator = new TimesIntegrator(languages, null);
+		timesIntegrator.init();
 
 		Entity entity1 = new Entity("Q4118977");
 		entity1.addWikipediaLabel(Language.EN, "Withdrawal_of_U.S._troops_from_Iraq");
 
-		DataStore.getInstance().addEntity(entity1);
-
 		// ~~~
 
 		StartTime time1 = new StartTime(entity1, DataSets.getInstance().getDataSetWithoutLanguage(Source.YAGO),
-				new DateWithGranularity(dateFormat.parse("1896-12-17"),DateGranularity.DAY));
-		StartTime time4 = new StartTime(entity1, DataSets.getInstance().getDataSet(Language.DE, Source.DBPEDIA),
-				new DateWithGranularity(dateFormat.parse("1895-12-17"),DateGranularity.DAY));
+				new DateWithGranularity(dateFormat.parse("1896-12-17"), DateGranularity.DAY));
 		StartTime time2 = new StartTime(entity1, DataSets.getInstance().getDataSetWithoutLanguage(Source.YAGO),
-				new DateWithGranularity(dateFormat.parse("2009-06-30"),DateGranularity.DAY));
+				new DateWithGranularity(dateFormat.parse("2009-06-30"), DateGranularity.DAY));
 		StartTime time3 = new StartTime(entity1, DataSets.getInstance().getDataSet(Language.EN, Source.DBPEDIA),
-				new DateWithGranularity(dateFormat.parse("2011-12-18"),DateGranularity.DAY));
+				new DateWithGranularity(dateFormat.parse("2011-12-18"), DateGranularity.DAY));
+		StartTime time4 = new StartTime(entity1, DataSets.getInstance().getDataSet(Language.DE, Source.DBPEDIA),
+				new DateWithGranularity(dateFormat.parse("1895-12-17"), DateGranularity.DAY));
 
 		DataStore.getInstance().addStartTime(time1);
 		DataStore.getInstance().addStartTime(time2);
 		DataStore.getInstance().addStartTime(time3);
 		DataStore.getInstance().addStartTime(time4);
 
-		timesIntegrator.run();
-
+		timesIntegrator.integrateTimes(entity1, true, 0);
+		timesIntegrator.addIntegratedTimesToDataStore();
+		
 		System.out.println("");
 
 		for (StartTime st : DataStore.getInstance().getStartTimes()) {

@@ -47,57 +47,62 @@ public class DBpediaPositionsExtractor extends Extractor {
 
 		BufferedReader br = null;
 		try {
-			try {
-				br = FileLoader.getReader(FileName.DBPEDIA_GEO_COORDINATES, language);
-			} catch (FileNotFoundException e1) {
-				e1.printStackTrace();
-			}
 
 			resultsWriter.write("subject" + Config.TAB + "latitude" + Config.TAB + "longitude" + Config.NL);
 
-			String line;
-			while ((line = br.readLine()) != null) {
-				if (line.startsWith("#"))
-					continue;
+			if (FileLoader.fileExists(FileName.DBPEDIA_MAPPINGS_LITERALS, language)) {
 
-				String[] parts = line.split(" ");
-				String property = parts[1];
-
-				// if (!targetEvents.contains(object) ||
-				// !targetEvents.contains(subject))
-				// continue;
-
-				if (targetProperties.contains(property)) {
-
-					String subject = parts[0];
-					if (!subject.contains("resource"))
-						continue;
-
-					String longitude = parts[2];
-					longitude = StringUtils.strip(longitude, "\"");
-
-					String latitude = parts[3];
-					latitude = StringUtils.strip(latitude, "\"");
-
-					// Date date =
-					// TimeTransformer.generateEarliestTimeFromXsd(timeString);
-
-					subject = subject.substring(subject.lastIndexOf("resource/") + 9, subject.lastIndexOf(">"));
-
-					String fileLine = subject + Config.TAB + longitude + Config.TAB + latitude;
-
-					if (foundEvents.contains(fileLine))
-						continue;
-					resultsWriter.write(fileLine + "\n");
-					foundEvents.add(fileLine);
+				try {
+					br = FileLoader.getReader(FileName.DBPEDIA_GEO_COORDINATES, language);
+				} catch (FileNotFoundException e1) {
+					e1.printStackTrace();
 				}
 
+				String line;
+				while ((line = br.readLine()) != null) {
+					if (line.startsWith("#"))
+						continue;
+
+					String[] parts = line.split(" ");
+					String property = parts[1];
+
+					// if (!targetEvents.contains(object) ||
+					// !targetEvents.contains(subject))
+					// continue;
+
+					if (targetProperties.contains(property)) {
+
+						String subject = parts[0];
+						if (!subject.contains("resource"))
+							continue;
+
+						String longitude = parts[2];
+						longitude = StringUtils.strip(longitude, "\"");
+
+						String latitude = parts[3];
+						latitude = StringUtils.strip(latitude, "\"");
+
+						// Date date =
+						// TimeTransformer.generateEarliestTimeFromXsd(timeString);
+
+						subject = subject.substring(subject.lastIndexOf("resource/") + 9, subject.lastIndexOf(">"));
+
+						String fileLine = subject + Config.TAB + longitude + Config.TAB + latitude;
+
+						if (foundEvents.contains(fileLine))
+							continue;
+						resultsWriter.write(fileLine + "\n");
+						foundEvents.add(fileLine);
+					}
+
+				}
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
 		} finally {
 			try {
-				br.close();
+				if (br != null)
+					br.close();
 				resultsWriter.close();
 			} catch (IOException e) {
 				e.printStackTrace();

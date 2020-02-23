@@ -1,0 +1,87 @@
+[[File:GFDL Logo.svg|thumb|GFDL Logo]]
+'''GNU Free Documentation License''' ('''GFDL''' eller '''GNU FDL''') er en [[copyleft]]-licens til [[åbent indhold]], designet af [[Free Software Foundation]] (FSF) til [[GNU]] projektet. Den er pendanten til [[GNU General Public License]] for åbent indhold. Den seneste version er 1.3. For at et dokument kan være dækket af GFDL skal man specifikt inkludere en note om ophavsret under GFDL.
+
+Licensen er designet til softwaredokumentation, lærebøger, og andet reference- og instruktionsmateriale, men kan anvendes til ethvert tekstbaseret værk, uanset indholdet. Licensen indebærer, at enhver kopi af materialet, selv hvis det er modificeret, har samme licens som det oprindelige materiale. Disse kopier må sælges, men hvis de massefremstilles, skal de være til stede i et format som gør det muligt at foretage yderligere ændringer.
+
+[[Wikipedia]] er det største referenceprojekt som bruger licensen på nuværende tidspunkt. Alle Wikipedia-artikler er indtil 2009 udgivet til offentligheden under GNU Free Documentation License. Fra 2009 bruger wikipedia dog tillige [[Creative Commons]]-licensen. Se Wikipedias tekst om [[Wikipedia:Ophavsret|ophavsret]] for flere oplysninger. Wikipedia har også en kopi af [[Wikipedia:Teksten til GNU Free Documentation License|teksten til GNU Free Documentation License]], sådan som det er krævet af GFDL.
+
+== Om GDFL ==
+=== Sekundære afsnit ===
+
+Licensen adskiller eksplicit "dokumentet" fra "sekundære afsnit", som ikke må integreres i dokumentet, men som er på forsiden, indledende afsnit eller som [[appendiks]]. Sekundære afsnit kan indeholde information om forfatterens eller udgiverens stilling i forhold til indholdet, men intet omkring indholdet selv. Mens dokumentet kan redigeres som man har lyst, og essentielt er dækket af en licens der ligner (men ikke er kompatibel med) [[GNU General Public License]], så har nogle af de sekundære afsnit forskellige restriktioner, primært designet til at kunne kreditere de tidligere forfattere.
+
+Mere specifikt skal forfatterne af tidligere versioner krediteres, og visse "invariante afsnit" specificeret af den oprindelige forfatter, og som omhandler dennes relation til indholdet, må ikke ændres. Hvis indholdet ændres, skal titlen ændres (med mindre de oprindelige forfattere giver tilladelse til at bevare titlen). Licensen har også bestemmelser for håndtering af tekst på forsider og bagsider af bøger, såvel som historik ("History"), takke-afsnit ("Acknowledgements"), dedikationer ("Dedications") og påtegninger ("Endorsements").
+
+=== Anvendelse af GFDL ===
+
+{{Tomt afsnit}}
+=== Materiale for hvilket kommerciel redistribution er forbudt ===
+
+Materiale for hvilket kommerciel redistribution er forbudt kan generelt ikke anvendes i et dokument under GFDL-licens, f.eks. en [[Wikipedia]] artikel, fordi licensen ikke udelukker kommerciel genanvendelse. Dog er der visse specifikke tilfælde, hvor kommerciel anvendelse falder ind under det amerikanske begreb [[:en:Fair Use|Fair Use]] eller tilsvarende regler i andre lande, f.eks. danske regler for citering. Et godt eksempel på en sådan fri og kommerciel anvendelse er [[parodi]]ering.
+
+== Kritik af GFDL ==
+
+Mange mennesker og grupper, bl.a. [[Debian]] projektet (som er baseret på deres [[Debian Free Software Guidelines]]), anser GFDL for en ikke-fri licens. Begrundelsen er at GFDL tillader "invariant" tekst som ikke må ændres eller fjernes, og at forbuddet mod [[Digital Rights Management|systemer til administration af digitale rettigheder]] også påvirker legitime anvendelser.
+
+Der er blevet gjort en række indvendinger mod GNU FDL, og visse kritikere har anbefalet at anvende alternative licenser (såsom [[Creative Commons]] licensen) eller endda GNU GPL. Debian projektet har en [http://people.debian.org/~srivasta/Position_Statement.xhtml detaljeret oversigt over indvendinger],
+og Nathanael Nerode har også [http://home.twcny.rr.com/nerode/neroden/fdl.html opsummeret sine indvendinger]. Blandt de ofte fremførte argumenter mod GFDL er:
+
+=== For bred [[Digital Rights Management|DRM]]-klausul ===
+GNU FDL indeholder den følgende bestemmelse:
+
+:''You may not use technical measures to obstruct or control the reading or further copying of the copies you make or distribute.'' (Du må ikke benytte tekniske midler til at forhindre eller kontrollere aflæsningen eller fremstillingen af yderligere kopier af de eksemplarer du fremstiller eller distribuerer).
+
+En kritik af denne formulering er at den er for bred, fordi den også gælder for private kopier der ikke distribueres. Det betyder at du ikke må gemme kopier af dokumenter i et proprietært filformat eller bruge kryptering.
+
+[[Richard Stallman]] [http://lists.debian.org/debian-legal/2003/09/msg00212.html sagde] om den ovenstående formulering [http://lists.debian.org/debian-legal debian-legal] mailinglisten:
+
+"Det betyder at du ikke kan publicere dem ved hjælp af DRM systemer for at begrænse indehaverne af eksemplarerne. Det er ikke meningen at den skal referere til anvendelsen af kryptering eller adgangskontrol til filer. Jeg vil tale med vores advokat og se om den sætning skal præciseres."
+
+=== Invariante afsnit ===
+Et værk under GNU FDL kan hurtigt blive besværliggjort fordi titlen skal ændres, og en liste over tidligere titler skal bevares. Dette kan føre til en situation hvor der er en hel serie af titelblade og dedikationer, i hver og en kopi af en bog hvis den har en lang forhistorie. Disse sider kan ''aldrig'' fjernes, i hvert fald ikke før værket bliver [[Public domain|offentligt eje]] når [[ophavsret]]ten udløber.
+
+=== Inkompatibel med GPL begge veje ===
+GNU FDL er inkompatibel begge veje med GPL: dvs. materiale under GNU FDL kan ikke blive en del af et program under GPL, og teksten fra et GPL program kan ikke komme under GFDL. Af denne grund er stumper af kode ofte under [[dobbelt licens]] så de kan optræde i dokumentationen.
+
+=== Byrder ved trykning ===
+GNU FDL kræver at man ved trykning af et dokument dækket af licensen skal inkludere: "''this License, the copyright notices, and the license notice saying this License applies to the Document are reproduced in all copies''" (denne licens, angivelser af ophavsret, og licensens bemærkning om at dokumentet er omfattet af licensen er gengivet i alle eksemplarer). Det vil sige at hvis du printer en kopi af en artikel hvor teksten er dækket af GNU FDL, skal du også inkludere en angivelse af ophavsret og en fysisk udprintning af GNU FDL som i sig selv er et dokument af en betydelig størrelse.
+
+== Historik ==
+
+GFDL blev frigivet som udkast i sidste del af [[1999]]. Efter nogle revisioner blev version 1.1 frigivet i [[2000#marts|marts 2000]], og version 1.2 i [[2002#november|november 2002]].
+
+== Andre licenser for åbent indhold ==
+
+Visse af disse blev udviklet uafhængigt af GNU FDL, mens andre udvikledes som svar på det man anså som fejl i GNU FDL.
+
+* [[Creative Commons]] "CC-by-sa" og "CC-nc-sa" licenserne
+* [[Design Science License]]
+* [[Open Content License]]
+* [[Open Publication License]]
+
+== Se også ==
+
+* [[Battleon.com]]
+* [[Ophavsret]]
+* [[Copyleft]]
+* [[Fri software]]
+* [[GNU]]
+* [[Åbent indhold]]
+* [[Open hardware]]
+* [[Free machine]]
+* [[Share-alike]]
+* [[Software licenser]] <!-- should the above "alternatives" list be moved to [[software licensing]] ? -->
+
+== Eksterne henvisninger ==
+<!--*{{listen|filename=GFDL (English).ogg|title=Listen to the GFDL|description=Audio recording of the full text of the GNU Free Documentation License.|format=[[Ogg]]}}-->
+
+* [http://www.gnu.org/copyleft/fdl.html Den officielle licens, version 1.3]
+
+Ressourcer der diskuterer GFDL:
+* [http://www.fsf.org/licenses/fdl.html GNU Free Documentation License]
+* [http://people.debian.org/~srivasta/Position_Statement.xhtml Udkast til Debians holdningstilkendegivelse om GFDL]
+* [http://home.twcny.rr.com/nerode/neroden/fdl.html Why You Shouldn't Use the GNU FDL] – hvorfor du ikke skal bruge GNU FDL.
+* [http://www.gnu.org/encyclopedia/ The Free Universal Encyclopedia And Learning Resources]
+
+[[Kategori:Immaterialret]]
+[[Kategori:Fri software-licenser]]

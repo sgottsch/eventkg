@@ -90,8 +90,8 @@ public class EventKGExtractor implements DumpWriter {
 			try {
 				extractor.extractLinks();
 			} catch (Exception e) {
-				System.err.println("Error with " + this._pageId + ": " + this.pageTitle);
-				e.printStackTrace();
+				System.err.println("Error (a) with " + this._pageId + ": " + this.pageTitle);
+				System.err.println(e.getMessage() + "\n" + e.getStackTrace());
 			}
 
 			String prefix = this._pageId + "\t" + this.pageTitle + "\t";
