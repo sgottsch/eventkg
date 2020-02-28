@@ -304,6 +304,8 @@ public class LiteralRelationsCollector extends Extractor {
 						property = property.substring(1, property.length() - 1);
 
 					property = property.replace("http://dbpedia.org/ontology/", "");
+					// remove enclosing "<" and ">"
+					property = property.substring(1, property.length() - 1);
 
 					Entity entity = buildEntity(language, subject);
 

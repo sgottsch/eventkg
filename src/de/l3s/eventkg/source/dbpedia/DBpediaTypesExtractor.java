@@ -109,8 +109,7 @@ public class DBpediaTypesExtractor extends Extractor {
 							type = type.substring(type.lastIndexOf("/") + 1, type.length() - 1);
 
 							// manually solve bug in Russian DBpedia (many
-							// "book"
-							// types)
+							// "book" types)
 							if (language == Language.RU && type.equals("Book"))
 								continue;
 							// manually solve bug in Germany DBpedia (many
@@ -128,7 +127,7 @@ public class DBpediaTypesExtractor extends Extractor {
 							if (resource.contains("__"))
 								resource = resource.substring(0, resource.lastIndexOf("__"));
 
-							String eventKGId = eventKGIdMapping.getEventIdByWikipediaId(dataSet.getLanguage(),
+							String eventKGId = eventKGIdMapping.getEventKGIdByWikipediaId(dataSet.getLanguage(),
 									resource);
 							if (eventKGId == null)
 								continue;

@@ -104,8 +104,22 @@ public class EntityIdGenerator {
 				String.valueOf(Integer.valueOf(wikidataId.substring(1))));
 	}
 
+	public String getEventKGIDByWikidataId(String wikidataId) {
+		String id = dbCreator.getEntry(dbCreator.getDB(wikidataIdToEventKGEventID),
+				String.valueOf(Integer.valueOf(wikidataId.substring(1))));
+		if (id == null) {
+			id = dbCreator.getEntry(dbCreator.getDB(wikidataIdToEventKGEntityID),
+					String.valueOf(Integer.valueOf(wikidataId.substring(1))));
+		}
+		return id;
+	}
+
 	public String getEventIDByNumericWikidataId(int wikidataId) {
 		return dbCreator.getEntry(dbCreator.getDB(wikidataIdToEventKGEventID), String.valueOf(wikidataId));
+	}
+
+	public String getEntityIDByNumericWikidataId(int wikidataId) {
+		return dbCreator.getEntry(dbCreator.getDB(wikidataIdToEventKGEntityID), String.valueOf(wikidataId));
 	}
 
 	public String getEventIdByWikipediaId(Language language, String wikipediaId) {
@@ -114,5 +128,20 @@ public class EntityIdGenerator {
 		if (wikidataId == null)
 			return null;
 		return getEventIDByNumericWikidataId(Integer.valueOf(wikidataId));
+	}
+
+	public String getEventKGIdByWikipediaId(Language language, String wikipediaId) {
+		String wikidataId = dbCreator.getEntry(dbCreator.getDB(language, DatabaseName.WIKIPEDIA_ID_TO_WIKIDATA_ID),
+				wikipediaId);
+
+		if (wikidataId == null)
+			return null;
+
+		String id = getEventIDByNumericWikidataId(Integer.valueOf(wikidataId));
+
+		if (id == null)
+			id = getEntityIDByNumericWikidataId(Integer.valueOf(wikidataId));
+
+		return id;
 	}
 }

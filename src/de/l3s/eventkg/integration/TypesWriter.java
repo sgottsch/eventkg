@@ -19,7 +19,9 @@ import de.l3s.eventkg.meta.Source;
 import de.l3s.eventkg.pipeline.Config;
 import de.l3s.eventkg.pipeline.Extractor;
 import de.l3s.eventkg.pipeline.Pipeline;
+import de.l3s.eventkg.source.dbpedia.DBpediaTypeLabelsExtractor;
 import de.l3s.eventkg.source.dbpedia.DBpediaTypesExtractor;
+import de.l3s.eventkg.source.wikidata.WikidataTypeLabelsExtractor;
 import de.l3s.eventkg.source.wikidata.WikidataTypesExtractor;
 import de.l3s.eventkg.util.FileLoader;
 import de.l3s.eventkg.util.FileName;
@@ -34,17 +36,6 @@ public class TypesWriter extends Extractor {
 				languages);
 	}
 
-	public static void main(String[] args) {
-		Config.init(args[0]);
-		List<Language> languages = new ArrayList<Language>();
-		for (String language : Config.getValue("languages").split(",")) {
-			languages.add(Language.getLanguage(language));
-		}
-
-		TypesWriter extractor = new TypesWriter(languages);
-		extractor.run();
-	}
-
 	@Override
 	public void run() {
 
@@ -53,6 +44,16 @@ public class TypesWriter extends Extractor {
 		System.out.println("Load EventKG ID mapping.");
 		this.eventKGIdMapping = new EntityIdGenerator(false);
 		System.out.println("\tDone.");
+
+		// load DBpedia class labels
+		DBpediaTypeLabelsExtractor dbpediaTypeLabelsExtractor = new DBpediaTypeLabelsExtractor(this.languages);
+		dbpediaTypeLabelsExtractor.printInformation();
+		dbpediaTypeLabelsExtractor.run();
+
+		// load Wikidata class labels
+		WikidataTypeLabelsExtractor wikidataTypeLabelsExtractor = new WikidataTypeLabelsExtractor(this.languages);
+		wikidataTypeLabelsExtractor.printInformation();
+		wikidataTypeLabelsExtractor.run();
 
 		// load Wikidata classes
 		System.out.println("Run WikidataTypesExtractor.");
@@ -115,7 +116,8 @@ public class TypesWriter extends Extractor {
 					// wikidataTypes.add(wikidataType);
 					// if
 					// (wikidataTypesExtractor.getParentClasses().containsKey(eventKGId))
-					// wikidataTypes.addAll(wikidataTypesExtractor.getParentClasses().get(eventKGId));
+					//
+					wikidataTypes.addAll(wikidataTypesExtractor.getParentClasses().get(eventKGId));
 					// }
 					for (String wikidataType : wikidataTypes) {
 						if (dbpediaTypesExtractor.getWikidataToDBO().containsKey(wikidataType)) {
@@ -156,6 +158,10 @@ public class TypesWriter extends Extractor {
 		}
 
 		System.out.println("Done.");
+	}
+
+	public void writeTypeLabels() {
+
 	}
 
 }

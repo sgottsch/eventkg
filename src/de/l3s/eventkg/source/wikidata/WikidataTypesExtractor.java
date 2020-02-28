@@ -85,7 +85,7 @@ public class WikidataTypesExtractor extends Extractor {
 					String instanceId = parts[0];
 					String type = parts[2];
 
-					String eventKGId = eventKGIdMapping.getEventIDByWikidataId(instanceId);
+					String eventKGId = eventKGIdMapping.getEventKGIDByWikidataId(instanceId);
 					if (eventKGId == null) {
 						continue;
 					}

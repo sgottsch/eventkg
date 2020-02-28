@@ -239,7 +239,9 @@ public enum FileName {
 	ALL_TTL_VOID("void.ttl", FileType.OUTPUT, false, false, false),
 	ALL_NQ_TYPES("types.nq", FileType.OUTPUT, false, false, false),
 	ALL_TTL_TYPES_DBPEDIA("types_dbpedia.nq", FileType.OUTPUT, false, false, false),
+	ALL_TTL_TYPE_LABELS_DBPEDIA("type_labels_dbpedia.nq", FileType.OUTPUT, false, false, false),
 	ALL_TTL_TYPES_WIKIDATA("types_wikidata.nq", FileType.OUTPUT, false, false, false),
+	ALL_TTL_TYPE_LABELS_WIKIDATA("type_labels_wikidata.nq", FileType.OUTPUT, false, false, false),
 	ALL_TTL_DBPEDIA_ONTOLOGY("types_ontology_dbpedia.nq", FileType.OUTPUT, false, false, false),
 
 	ALL_TTL_EVENTS_WITH_TEXTS_PREVIEW("events_preview.nq", FileType.OUTPUT_PREVIEW, false, false, false),
@@ -285,7 +287,14 @@ public enum FileName {
 	ALL_TTL_DBPEDIA_ONTOLOGY_PREVIEW("types_ontology_dbpedia_preview.nq", FileType.OUTPUT_PREVIEW, false, false, false),
 	ALL_NQ_TYPES_PREVIEW("types_preview.nq", FileType.OUTPUT_PREVIEW, false, false, false),
 	ALL_TTL_TYPES_DBPEDIA_PREVIEW("types_dbpedia_preview.nq", FileType.OUTPUT_PREVIEW, false, false, false),
+	ALL_TTL_TYPE_LABELS_DBPEDIA_PREVIEW("type_labels_dbpedia_preview.nq", FileType.OUTPUT_PREVIEW, false, false, false),
 	ALL_TTL_TYPES_WIKIDATA_PREVIEW("types_wikidata_preview.nq", FileType.OUTPUT_PREVIEW, false, false, false),
+	ALL_TTL_TYPE_LABELS_WIKIDATA_PREVIEW(
+			"type_labels_wikidata_preview.nq",
+			FileType.OUTPUT_PREVIEW,
+			false,
+			false,
+			false),
 
 	ALL_TTL_ENTITIES_WITH_TEXTS_PREVIOUS_VERSION("entities.nq", FileType.PREVIOUS_VERSION, false, false, false),
 	ALL_TTL_EVENTS_WITH_TEXTS_PREVIOUS_VERSION("events.nq", FileType.PREVIOUS_VERSION, false, false, false),

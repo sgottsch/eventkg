@@ -791,7 +791,7 @@ public class AllEventPagesDataSet {
 			return entity;
 		return null;
 	}
-	//
+
 	// return
 	// entitiesWithExistenceTimeByWikipediaLabel.get(language).get(wikipediaLabel);
 	// }

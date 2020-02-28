@@ -21,12 +21,12 @@ public enum Language {
 	SK("sk", "Slovak"),
 	SL("sl", "Slovene"),
 	ES("es", "Spanish"),
-	SE("se", "Swedish"),
+	SE("sv", "Swedish"),
 	FI("fi", "Finnish"),
 	DA("da", "Danish"),
 	AR("ar", "Arabian"),
 	HR("hr", "Croatian"),
-	NB("nb", "Norwegian (Bokmål)"),
+	NB("no", "Norwegian (Bokmål)"),
 	NN("nn", "Norwegian (Nynorsk)"),
 	SR("sr", "Serbian"),
 	BS("bs", "Bosnian"),
@@ -35,7 +35,11 @@ public enum Language {
 	FA("fa", "Persian"),
 	HI("hi", "Hindi"),
 	ZH("zh", "Mandarin Chinese"),
-	TR("tr", "Turkish");
+	TR("tr", "Turkish"),
+	EL("el", "Greek"),
+	UR("ur", "Urdu"),
+	JA("ja", "Japanese"),
+	TK("tk", "Turkmen");
 
 	private String lang;
 	private String adjective;
@@ -70,6 +74,14 @@ public enum Language {
 
 	public static Language getLanguage(String langStr) {
 		return Language.valueOf(langStr.toUpperCase());
+	}
+
+	public static Language getLanguageOrNull(String langStr) {
+		try {
+			return Language.valueOf(langStr.toUpperCase());
+		} catch (IllegalArgumentException e) {
+			return null;
+		}
 	}
 
 	public String getLanguageAdjective() {

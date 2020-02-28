@@ -1,13 +1,16 @@
 package de.l3s.eventkg.extension;
 
-import java.io.File;
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -26,12 +29,14 @@ import de.l3s.eventkg.source.wikipedia.mwdumper.articleprocessing.Output;
 import de.l3s.eventkg.source.wikipedia.mwdumper.articleprocessing.TextExtractorNew;
 import de.l3s.eventkg.source.wikipedia.mwdumper.model.Link;
 import de.l3s.eventkg.source.wikipedia.mwdumper.model.Sentence;
-import de.l3s.eventkg.util.FileLoader;
 import edu.stanford.nlp.util.StringUtils;
 
 public class LanguageAdderMetaFiles {
 
 	public static void main(String[] args) throws IOException {
+
+		System.out.println(getTerms(Language.PL));
+		System.exit(0);
 
 		// System.out.println(getLanguagePage(Language.EN, Language.DE,
 		// "Elephant"));
@@ -59,78 +64,123 @@ public class LanguageAdderMetaFiles {
 	}
 
 	public static String getDateExpressions(Language language) throws IOException {
-
-		// TODO: If file not exists -> english
-
 		// If file not exists -> English
-		File file = null;
+		InputStream url = null;
+		BufferedReader reader = null;
 		try {
-			file = new File(LanguageAdderMetaFiles.class
-					.getResource(
-							"/resource/meta_data/wikipedia/" + language.getLanguage() + "/event_date_expressions.txt")
-					.getFile());
+
+			url = Thread.currentThread().getContextClassLoader().getResourceAsStream(
+					"resource/meta_data/wikipedia/" + language.getLanguage() + "/event_date_expressions.txt");
+			reader = new BufferedReader(new InputStreamReader(url));
+
 		} catch (NullPointerException e) {
-			file = new File(LanguageAdderMetaFiles.class.getResource(
-					"/resource/meta_data/wikipedia/" + Language.EN.getLanguage() + "/event_date_expressions.txt")
-					.getFile());
+			url = Thread.currentThread().getContextClassLoader().getResourceAsStream(
+					"resource/meta_data/wikipedia/" + Language.EN.getLanguage() + "/event_date_expressions.txt");
+			reader = new BufferedReader(new InputStreamReader(url));
+
 		}
 
-		return FileLoader.readFile(file);
-
+		StringBuffer sb = new StringBuffer();
+		String str;
+		while ((str = reader.readLine()) != null) {
+			sb.append(str + "\n");
+		}
+		return sb.toString();
 	}
 
 	public static String getTerms(Language language) throws IOException {
 
 		// If file not exists -> English
-		File file = null;
+		BufferedReader reader = null;
+		InputStream url = null;
 		try {
-			file = new File(LanguageAdderMetaFiles.class
-					.getResource("/resource/meta_data/wikipedia/" + language.getLanguage() + "/words.txt").getFile());
-			return FileLoader.readFile(file);
+
+			url = Thread.currentThread().getContextClassLoader()
+					.getResourceAsStream("resource/meta_data/wikipedia/" + language.getLanguage() + "/words.txt");
+			reader = new BufferedReader(new InputStreamReader(url));
+
 		} catch (NullPointerException e) {
-			file = new File(LanguageAdderMetaFiles.class
-					.getResource("/resource/meta_data/wikipedia/" + Language.EN.getLanguage() + "/words.txt")
-					.getFile());
-
-			String fileContent = FileLoader.readFile(file);
-			String newFileContent = "";
-			String section = null;
-			boolean addedNamespaces = false;
-			boolean addedMonthNames = false;
-			boolean addedWeekdayNames = false;
-			for (String line : fileContent.split("\n")) {
-				if (line.startsWith("#")) {
-					section = line;
-					newFileContent += line + "\n";
-				} else if (section.equals("# forbiddenNameSpaces")) {
-					if (!addedNamespaces) {
-						addedNamespaces = true;
-						for (String namespace : NamespaceNamesLoader.getNamespaces(language))
-							if (!namespace.isEmpty())
-								newFileContent += namespace + "\n";
-						newFileContent += "\n";
-					}
-				} else if (section.equals("# monthNames")) {
-					if (!addedMonthNames) {
-						addedMonthNames = true;
-						for (String namespace : NamespaceNamesLoader.getMonthNames(language))
-							newFileContent += namespace + "\n";
-						newFileContent += "\n";
-					}
-				} else if (section.equals("# weekdayNames")) {
-					if (!addedWeekdayNames) {
-						addedWeekdayNames = true;
-						for (String namespace : NamespaceNamesLoader.getWeekdayNames(language))
-							newFileContent += namespace + "\n";
-						newFileContent += "\n";
-
-					}
-				} else
-					newFileContent += line + "\n";
-			}
-			return newFileContent;
+			url = Thread.currentThread().getContextClassLoader()
+					.getResourceAsStream("resource/meta_data/wikipedia/" + Language.EN.getLanguage() + "/words.txt");
+			reader = new BufferedReader(new InputStreamReader(url));
 		}
 
+		StringBuffer sb = new StringBuffer();
+		String str;
+		while ((str = reader.readLine()) != null) {
+			sb.append(str + "\n");
+		}
+		String fileContent = sb.toString();
+
+		String newFileContent = "";
+		String section = null;
+		boolean addedNamespaces = false;
+		boolean addedMonthNames = false;
+		boolean addedWeekdayNames = false;
+
+		Map<String, String> sections = new HashMap<String, String>();
+
+		for (String line : fileContent.split("\n")) {
+			if (line.startsWith("#")) {
+
+				sections.put(section, newFileContent);
+				newFileContent = "";
+
+				section = line;
+				newFileContent += line + "\n";
+			} else if (section.equals("# forbiddenNameSpaces")) {
+				if (!addedNamespaces) {
+					addedNamespaces = true;
+					for (String namespace : NamespaceNamesLoader.getNamespaces(language))
+						if (!namespace.isEmpty())
+							newFileContent += namespace + "\n";
+					newFileContent += "\n";
+				}
+			} else if (section.equals("# monthNames")) {
+				if (!addedMonthNames) {
+					addedMonthNames = true;
+					for (String namespace : NamespaceNamesLoader.getMonthNames(language))
+						newFileContent += namespace + "\n";
+					newFileContent += "\n";
+				}
+			} else if (section.equals("# weekdayNames")) {
+				if (!addedWeekdayNames) {
+					addedWeekdayNames = true;
+					for (String namespace : NamespaceNamesLoader.getWeekdayNames(language))
+						newFileContent += namespace + "\n";
+					newFileContent += "\n";
+
+				}
+			} else
+				newFileContent += line + "\n";
+		}
+
+		List<String> sectionsRanked = new ArrayList<String>();
+		sectionsRanked.add("# eventsLabels");
+		sectionsRanked.add("# titlesOfParagraphsNotToRead");
+		sectionsRanked.add("# tableOfContents");
+		sectionsRanked.add("# categoryLabel");
+		sectionsRanked.add("# imageLabels");
+		sectionsRanked.add("# listPrefixes");
+		sectionsRanked.add("# talkSuffix");
+		sectionsRanked.add("# talkPrefix");
+		sectionsRanked.add("# categoryPrefixes");
+		sectionsRanked.add("# templateLabel");
+		sectionsRanked.add("# templatePrefixes");
+		sectionsRanked.add("# eventTitlesNotToUseAsCategory");
+
+		List<String> allSections = new ArrayList<String>();
+		for (String section2 : sectionsRanked) {
+			if (sections.containsKey(section2)) {
+				allSections.add(sections.get(section2));
+				sections.remove(section2);
+			}
+		}
+
+		for (String otherSection : sections.values())
+			allSections.add(otherSection);
+
+		return StringUtils.join(allSections, "");
 	}
 
 	public static String getPageList(Language language) {
@@ -276,7 +326,6 @@ public class LanguageAdderMetaFiles {
 			String query = "https://" + sourceLanguage.getLanguage() + ".wikipedia.org/w/api.php?action=query&titles="
 					+ URLEncoder.encode(pageTitle, "UTF-8") + "&prop=langlinks&lllang=" + targetLanguage.getLanguage()
 					+ "&format=json";
-			System.out.println(query);
 			JSONObject json = new JSONObject(IOUtils.toString(new URL(query), Charset.forName("UTF-8")));
 
 			json = json.getJSONObject("query").getJSONObject("pages");

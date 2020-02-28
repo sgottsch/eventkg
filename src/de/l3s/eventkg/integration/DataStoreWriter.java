@@ -717,7 +717,7 @@ public class DataStoreWriter {
 				for (String category : event.getCategories().get(categoryDataSet).get(categoryLanguage)) {
 					lineNo += 1;
 					writeTriple(writer, writerPreview, lineNo, this.basePrefix, event.getId(),
-							prefixList.getPrefix(PrefixEnum.DBPEDIA_ONTOLOGY), "title", null, createLiteral(category,
+							prefixList.getPrefix(PrefixEnum.DCTERMS), "title", null, createLiteral(category,
 									LiteralDataType.LANG_STRING, categoryLanguage.getLanguageLowerCase()),
 							false, categoryDataSet, fileType);
 				}
@@ -1449,7 +1449,7 @@ public class DataStoreWriter {
 			writerPreview.write(line);
 	}
 
-	private void writeTriple(PrintWriter writer, PrintWriter writerPreview, Integer lineNo, Prefix subjectPrefix,
+	public void writeTriple(PrintWriter writer, PrintWriter writerPreview, Integer lineNo, Prefix subjectPrefix,
 			String subject, Prefix propertyPrefix, String property, Prefix objectPrefix, String object,
 			boolean quoteObject, DataSet dataSet, Language language, FileType fileType) {
 

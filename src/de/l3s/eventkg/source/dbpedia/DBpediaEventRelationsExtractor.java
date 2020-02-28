@@ -7,6 +7,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.commons.text.StringEscapeUtils;
+
 import de.l3s.eventkg.integration.AllEventPagesDataSet;
 import de.l3s.eventkg.meta.Language;
 import de.l3s.eventkg.meta.Source;
@@ -143,6 +145,8 @@ public class DBpediaEventRelationsExtractor extends Extractor {
 				while ((line = br.readLine()) != null) {
 					if (line.startsWith("#"))
 						continue;
+
+					line = StringEscapeUtils.unescapeJava(line);
 
 					String[] parts = line.split(" ");
 
