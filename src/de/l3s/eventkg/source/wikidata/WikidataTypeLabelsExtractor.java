@@ -19,12 +19,14 @@ import de.l3s.eventkg.meta.Source;
 import de.l3s.eventkg.pipeline.Extractor;
 import de.l3s.eventkg.util.FileLoader;
 import de.l3s.eventkg.util.FileName;
-import gnu.trove.set.hash.THashSet;
 
 public class WikidataTypeLabelsExtractor extends Extractor {
 
-	public WikidataTypeLabelsExtractor(List<Language> languages) {
+	private Set<Integer> wikidataTypes;
+
+	public WikidataTypeLabelsExtractor(List<Language> languages, Set<Integer> wikidataTypes) {
 		super("WikidataTypeLabelsExtractor", Source.WIKIDATA, "Loads all Wikidata type labels.", languages);
+		this.wikidataTypes = wikidataTypes;
 	}
 
 	@Override
@@ -40,55 +42,55 @@ public class WikidataTypeLabelsExtractor extends Extractor {
 		DataStoreWriter dataStoreWriter = new DataStoreWriter(languages,
 				DataStoreWriterMode.USE_IDS_OF_CURRENT_EVENTKG_VERSION);
 		dataStoreWriter.initPrefixes();
-
-		Set<Integer> nonWikidataTypeIds = new THashSet<Integer>();
-		Set<Integer> wikidataTypeIds = new THashSet<Integer>();
 		DataSet dataSet = DataSets.getInstance().getDataSetWithoutLanguage(Source.WIKIDATA);
 
-		System.out.println("Load classes from \"instance of\" file.");
-		LineIterator it = null;
-		try {
-			it = FileLoader.getLineIterator(FileName.WIKIDATA_INSTANCE_OF);
-			while (it.hasNext()) {
-				String line = it.nextLine();
-				String wikidataId = line.split("\t")[0];
-				nonWikidataTypeIds.add(Integer.valueOf(wikidataId.substring(1)));
-			}
-		} catch (IOException e) {
-			e.printStackTrace();
-		} finally {
-			try {
-				it.close();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		}
-
-		System.out.println("Load classes from \"sub class of\" file.");
-		LineIterator it2 = null;
-		try {
-			it2 = FileLoader.getLineIterator(FileName.WIKIDATA_SUBCLASS_OF);
-			while (it2.hasNext()) {
-				String line = it2.nextLine();
-				String wikidataId1 = line.split("\t")[2];
-				int numWikidataId1 = Integer.valueOf(wikidataId1.substring(1));
-				if (!nonWikidataTypeIds.contains(numWikidataId1))
-					wikidataTypeIds.add(Integer.valueOf(numWikidataId1));
-
-				String wikidataId2 = line.split("\t")[0];
-				int numWikidataId2 = Integer.valueOf(wikidataId2.substring(1));
-				if (!nonWikidataTypeIds.contains(numWikidataId2))
-					wikidataTypeIds.add(Integer.valueOf(numWikidataId2));
-			}
-		} catch (IOException e) {
-			e.printStackTrace();
-		} finally {
-			try {
-				it2.close();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		}
+		// Set<Integer> nonWikidataTypeIds = new THashSet<Integer>();
+		// Set<Integer> wikidataTypeIds = new THashSet<Integer>();
+		//
+		// System.out.println("Load classes from \"instance of\" file.");
+		// LineIterator it = null;
+		// try {
+		// it = FileLoader.getLineIterator(FileName.WIKIDATA_INSTANCE_OF);
+		// while (it.hasNext()) {
+		// String line = it.nextLine();
+		// String wikidataId = line.split("\t")[0];
+		// nonWikidataTypeIds.add(Integer.valueOf(wikidataId.substring(1)));
+		// }
+		// } catch (IOException e) {
+		// e.printStackTrace();
+		// } finally {
+		// try {
+		// it.close();
+		// } catch (IOException e) {
+		// e.printStackTrace();
+		// }
+		// }
+		//
+		// System.out.println("Load classes from \"sub class of\" file.");
+		// LineIterator it2 = null;
+		// try {
+		// it2 = FileLoader.getLineIterator(FileName.WIKIDATA_SUBCLASS_OF);
+		// while (it2.hasNext()) {
+		// String line = it2.nextLine();
+		// String wikidataId1 = line.split("\t")[2];
+		// int numWikidataId1 = Integer.valueOf(wikidataId1.substring(1));
+		// if (!nonWikidataTypeIds.contains(numWikidataId1))
+		// wikidataTypeIds.add(Integer.valueOf(numWikidataId1));
+		//
+		// String wikidataId2 = line.split("\t")[0];
+		// int numWikidataId2 = Integer.valueOf(wikidataId2.substring(1));
+		// if (!nonWikidataTypeIds.contains(numWikidataId2))
+		// wikidataTypeIds.add(Integer.valueOf(numWikidataId2));
+		// }
+		// } catch (IOException e) {
+		// e.printStackTrace();
+		// } finally {
+		// try {
+		// it2.close();
+		// } catch (IOException e) {
+		// e.printStackTrace();
+		// }
+		// }
 
 		System.out.println("Write class labels.");
 		try {
@@ -106,7 +108,7 @@ public class WikidataTypeLabelsExtractor extends Extractor {
 						String wikidataId = line.split("\t")[0];
 						int numericWikidataId = Integer.valueOf(wikidataId.substring(1));
 
-						if (wikidataTypeIds.contains(numericWikidataId)) {
+						if (wikidataTypes.contains(numericWikidataId)) {
 							dataStoreWriter.writeTriple(writer, writerPreview, lineNo,
 									prefixList.getPrefix(PrefixEnum.WIKIDATA_ENTITY), wikidataId,
 									prefixList.getPrefix(PrefixEnum.RDFS), "label", null, line.split("\t")[1], true,

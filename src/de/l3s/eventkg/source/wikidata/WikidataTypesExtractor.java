@@ -26,6 +26,7 @@ import de.l3s.eventkg.pipeline.Config;
 import de.l3s.eventkg.pipeline.Extractor;
 import de.l3s.eventkg.util.FileLoader;
 import de.l3s.eventkg.util.FileName;
+import gnu.trove.set.hash.THashSet;
 
 public class WikidataTypesExtractor extends Extractor {
 
@@ -33,6 +34,8 @@ public class WikidataTypesExtractor extends Extractor {
 
 	private Map<String, Set<String>> typesPerEntity = new HashMap<String, Set<String>>();
 	private Map<String, Set<String>> parentClasses = new HashMap<String, Set<String>>();
+
+	private Set<Integer> usedTypes = new THashSet<Integer>();
 
 	public WikidataTypesExtractor(List<Language> languages, EntityIdGenerator eventKGIdMapping) {
 		super("DBpediaTypesExtractor", Source.WIKIDATA, "Loads all Wikidata types.", languages);
@@ -100,6 +103,7 @@ public class WikidataTypesExtractor extends Extractor {
 					if (!typesPerEntity.containsKey(eventKGId))
 						typesPerEntity.put(eventKGId, new HashSet<String>());
 
+					usedTypes.add(Integer.valueOf(type.substring(1)));
 					typesPerEntity.get(eventKGId).add(type);
 
 					dataStoreWriter.writeTriple(writer, writerPreview, lineNo, dataStoreWriter.getBasePrefix(),
@@ -218,6 +222,10 @@ public class WikidataTypesExtractor extends Extractor {
 
 	public Map<String, Set<String>> getParentClasses() {
 		return parentClasses;
+	}
+
+	public Set<Integer> getUsedTypes() {
+		return usedTypes;
 	}
 
 }

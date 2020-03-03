@@ -50,16 +50,17 @@ public class TypesWriter extends Extractor {
 		dbpediaTypeLabelsExtractor.printInformation();
 		dbpediaTypeLabelsExtractor.run();
 
-		// load Wikidata class labels
-		WikidataTypeLabelsExtractor wikidataTypeLabelsExtractor = new WikidataTypeLabelsExtractor(this.languages);
-		wikidataTypeLabelsExtractor.printInformation();
-		wikidataTypeLabelsExtractor.run();
-
 		// load Wikidata classes
 		System.out.println("Run WikidataTypesExtractor.");
 		WikidataTypesExtractor wikidataTypesExtractor = new WikidataTypesExtractor(this.languages,
 				this.eventKGIdMapping);
 		wikidataTypesExtractor.run();
+
+		// load Wikidata class labels
+		WikidataTypeLabelsExtractor wikidataTypeLabelsExtractor = new WikidataTypeLabelsExtractor(this.languages,
+				wikidataTypesExtractor.getUsedTypes());
+		wikidataTypeLabelsExtractor.printInformation();
+		wikidataTypeLabelsExtractor.run();
 
 		System.out.println("Run DBpediaTypesExtractor.");
 		DBpediaTypesExtractor dbpediaTypesExtractor = new DBpediaTypesExtractor(this.languages, this.eventKGIdMapping);
@@ -117,7 +118,8 @@ public class TypesWriter extends Extractor {
 					// if
 					// (wikidataTypesExtractor.getParentClasses().containsKey(eventKGId))
 					//
-					wikidataTypes.addAll(wikidataTypesExtractor.getParentClasses().get(eventKGId));
+
+					// wikidataTypes.addAll(wikidataTypesExtractor.getParentClasses().get(eventKGId));
 					// }
 					for (String wikidataType : wikidataTypes) {
 						if (dbpediaTypesExtractor.getWikidataToDBO().containsKey(wikidataType)) {
