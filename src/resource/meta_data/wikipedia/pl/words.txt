@@ -1,0 +1,103 @@
+# eventsLabels
+Wydarzenia w Polsce
+Wydarzenia na świecie
+Wydarzenia sportowe
+Zdarzenia astronomiczne
+
+# titlesOfParagraphsNotToRead
+Publikacje
+Przypisy
+Linki zewnętrzne
+
+# tableOfContents
+Spis treści
+
+# categoryLabel
+Kategoria
+
+# imageLabels
+Plik
+
+# listPrefixes
+Lista_
+
+# talkSuffix
+
+# talkPrefix
+Dyskusja:
+
+# categoryPrefixes
+Kategoria:
+
+# templateLabel
+Szablon
+
+# templatePrefixes
+Szablon:
+
+# fileLabels
+Plik
+
+# weekdayNames
+niedziela;Niedziela
+poniedziałek;Poniedziałek
+wtorek;Wtorek
+środa;Środa
+czwartek;Czwartek
+piątek;Piątek
+sobota;Sobota
+
+# forbiddenInternalLinks
+WT:
+H:
+CAT:
+
+# forbiddenLinks
+Wikipedia:Citation_needed
+
+# monthNames
+stycznia;Stycznia
+lutego;Lutego
+marca;Marca
+kwietnia;Kwietnia
+maja;Maja
+czerwca;Czerwca
+lipca;Lipca
+sierpnia;Sierpnia
+września;Września
+października;Października
+listopada;Listopada
+grudnia;Grudnia
+
+# forbiddenNameSpaces
+Dyskusja definicji gadżetu
+Wątek
+Definicja gadżetu
+Dyskusja gadżetu
+Gadżet
+Szablon
+Dyskusja szablonu
+Pomoc
+Dyskusja pomocy
+Kategoria
+Specjalna
+Dyskusja kategorii
+Media
+Dyskusja
+Portal
+Wikipedysta
+Dyskusja portalu
+Dyskusja wikipedysty
+Wikiprojekt
+Wikipedia
+Dyskusja wikiprojektu
+Dyskusja Wikipedii
+Plik
+Dyskusja pliku
+MediaWiki
+Dyskusja MediaWiki
+Moduł
+Dyskusja modułu
+
+# seeAlsoLinkClasses
+hatnote

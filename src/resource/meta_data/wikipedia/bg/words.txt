@@ -1,0 +1,104 @@
+# eventsLabels
+Събития
+
+# titlesOfParagraphsNotToRead
+Вижте също
+Изследвания
+Външни препратки
+Източници
+Бележки
+Библиография
+
+# tableOfContents
+Съдържание
+
+# categoryLabel
+Категории
+
+# imageLabels
+Файл
+
+# listPrefixes
+Списък_на_
+
+# talkSuffix
+
+# talkPrefix
+Беседа:
+
+# categoryPrefixes
+Категории:
+
+# templateLabel
+Шаблони
+
+# templatePrefixes
+Шаблони:
+
+# eventTitlesNotToUseAsCategory
+Родени
+Починали
+
+# fileLabels
+Файл
+
+# weekdayNames
+Неделя
+Понеделник
+Вторник
+Сряда
+Четвъртък
+Петък
+Събота
+
+# forbiddenInternalLinks
+WT:
+H:
+CAT:
+
+# forbiddenLinks
+Wikipedia:Citation_needed
+
+# monthNames
+Януари;януари
+Февруари;февруари
+Март;март
+Април;април
+Май;май
+Юни;юни
+Юли;юли
+Август;август
+Септември;септември
+Октомври;октомври
+Ноември;ноември
+Декември;декември
+
+# forbiddenNameSpaces
+Gadget definition talk
+Gadget definition
+Gadget talk
+Gadget
+Шаблон
+Шаблон беседа
+Помощ
+Помощ беседа
+Категория
+Специални
+Категория беседа
+Медия
+Беседа
+Портал
+Потребител
+Портал беседа
+Потребител беседа
+Уикипедия
+Уикипедия беседа
+Файл
+Файл беседа
+МедияУики
+МедияУики беседа
+Модул
+Модул беседа
+
+# seeAlsoLinkClasses
+hatnote

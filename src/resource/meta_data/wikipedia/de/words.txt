@@ -92,7 +92,7 @@ Kategorie:
 Vorlage:
 
 # eventsLabels
-Ereignisse;Bereits fest terminierte Ereignisse;Tagesgeschehen
+Ereignisse;Bereits fest terminierte Ereignisse;Tagesgeschehen;[[:Kategorie:1980|Ereignisse]]
 
 # monthNames
 Januar;Jänner

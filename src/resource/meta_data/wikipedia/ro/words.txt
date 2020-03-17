@@ -1,0 +1,109 @@
+# eventsLabels
+Evenimente
+
+# titlesOfParagraphsNotToRead
+Note
+Legături externe
+Vezi și
+Bibliografie
+
+# tableOfContents
+Cuprins
+
+# categoryLabel
+Categorie
+
+# imageLabels
+File
+
+# listPrefixes
+Listă_de_
+
+# talkSuffix
+
+# talkPrefix
+Discuție:
+
+# categoryPrefixes
+Categorie:
+
+# templateLabel
+Format
+
+# templatePrefixes
+Format:
+
+# eventTitlesNotToUseAsCategory
+
+# fileLabels
+File
+
+# weekdayNames
+duminică;Duminică
+luni;Luni
+marţi;Marţi
+miercuri;Miercuri
+joi;Joi
+vineri;Vineri
+sâmbătă;Sâmbătă
+
+# forbiddenInternalLinks
+WT:
+H:
+CAT:
+
+# forbiddenLinks
+Wikipedia:Citation_needed
+
+# monthNames
+ianuarie;Ianuarie
+februarie;Februarie
+martie;Martie
+aprilie;Aprilie
+mai;Mai
+iunie;Iunie
+iulie;Iulie
+august;August
+septembrie;Septembrie
+octombrie;Octombrie
+noiembrie;Noiembrie
+decembrie;Decembrie
+
+# forbiddenNameSpaces
+Carte
+Discuție Carte
+Gadget definition talk
+Gadget definition
+Gadget talk
+Gadget
+Format
+Discuție Format
+Ajutor
+Discuție Ajutor
+Categorie
+Special
+Discuție Categorie
+Media
+Campaign
+Campaign talk
+Discuție
+Portal
+Utilizator
+Discuție Portal
+Discuție Utilizator
+Proiect
+Wikipedia
+Discuție Proiect
+Discuție Wikipedia
+Fișier
+Discuție Fișier
+MediaWiki
+Discuție MediaWiki
+Cod
+Discuție Cod
+Modul
+Discuție Modul
+
+# seeAlsoLinkClasses
+hatnote
+

@@ -1,0 +1,109 @@
+# eventsLabels
+Dogodki
+
+# titlesOfParagraphsNotToRead
+Glej tudi
+Reference
+Zunanje povezave
+Opombe in sklici; Sklici in opombe
+Sklici
+Viri
+
+# tableOfContents
+Vsebina
+
+# categoryLabel
+katerorija; kategoriji; kategorije
+
+# imageLabels
+Galerija
+Slika
+Datoteka
+
+# listPrefixes
+Seznam
+Seznami
+Abecedni seznam
+Kronološki seznam; Časovnica
+
+# talkSuffix
+govor
+
+# talkPrefix
+
+# categoryPrefixes
+Kategorija:
+
+# templateLabel
+Predloga
+
+# templatePrefixes
+Predloga:
+
+# eventTitlesNotToUseAsCategory
+Dogodki po vsebini
+po vsebini
+
+# fileLabels
+Datoteka
+
+# weekdayNames
+Nedelja
+Ponedeljek
+Torek
+Sreda
+Četrtek
+Petek
+Sobota
+
+# forbiddenInternalLinks
+WT:
+H:
+CAT:
+
+# forbiddenLinks
+Wikipedia:Citation_needed
+
+# monthNames
+januar;Januar
+februar;Februar
+marec;Marec
+april;April
+maj;Maj
+junij;Junij
+julij;Julij
+avgust;Avgust
+september;September
+oktober;Oktober
+november;November
+december;December
+
+# forbiddenNameSpaces
+Gadget definition talk
+Gadget definition
+Gadget talk
+Gadget
+Predloga
+Pogovor o predlogi
+Pomoč
+Pogovor o pomoči
+Kategorija
+Posebno
+Pogovor o kategoriji
+Datoteka
+Pogovor
+Portal
+Uporabnik
+Pogovor o portalu
+Uporabniški pogovor
+Wikipedija
+Pogovor o Wikipediji
+Slika
+Pogovor o sliki
+MediaWiki
+Pogovor o MediaWiki
+Modul
+Pogovor o modulu
+
+# seeAlsoLinkClasses
+hatnote

@@ -1,0 +1,108 @@
+# eventsLabels
+Historie
+Hendelser
+Norsk historie
+Begivenheter
+Idrett
+Musikk
+Litteratur
+
+# titlesOfParagraphsNotToRead
+Se ogs
+Referanser
+Eksterne lenker
+Litteratur
+Bakgrunnsstoff
+
+# tableOfContents
+Innholdsfortegnelse
+
+# categoryLabel
+Kategori
+
+# imageLabels
+Fil
+
+# listPrefixes
+Liste_over_
+
+# talkSuffix
+
+# talkPrefix
+Diskusjon:
+
+# categoryPrefixes
+Kategori:
+
+# templateLabel
+Mal
+
+# templatePrefixes
+Mal:
+
+# eventTitlesNotToUseAsCategory
+
+# fileLabels
+Fil
+
+# weekdayNames
+søndag;Søndag
+mandag;Mandag
+tirsdag;Tirsdag
+onsdag;Onsdag
+torsdag;Torsdag
+fredag;Fredag
+lørdag;Lørdag
+
+# forbiddenInternalLinks
+WT:
+H:
+CAT:
+
+# forbiddenLinks
+Wikipedia:Citation_needed
+
+# monthNames
+januar;Januar
+februar;Februar
+mars;Mars
+april;April
+mai;Mai
+juni;Juni
+juli;Juli
+august;August
+september;September
+oktober;Oktober
+november;November
+desember;Desember
+
+# forbiddenNameSpaces
+Gadget definition talk
+Sak
+Gadget definition
+Gadget talk
+Gadget
+Mal
+Maldiskusjon
+Hjelp
+Hjelpdiskusjon
+Kategori
+Spesial
+Kategoridiskusjon
+Medium
+Diskusjon
+Portal
+Bruker
+Portaldiskusjon
+Brukerdiskusjon
+Wikipedia
+Wikipedia-diskusjon
+Fil
+Fildiskusjon
+MediaWiki
+MediaWiki-diskusjon
+Modul
+Moduldiskusjon
+
+# seeAlsoLinkClasses
+hatnote

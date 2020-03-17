@@ -1,0 +1,49 @@
+# predefined regexes
+@hyphensOrWithSlash@
+@hyphensOr@
+@digitsInYear@
+@regexDay1@
+@regexDay2@
+@regexMonth1@
+@regexMonth2@
+@regexYear@
+@thisYear@
+
+# new regexes
+@regexDayMonth1@	@regexDay1@ @regexMonth1@
+@regexDayMonth2@	@regexDay2@ @regexMonth2@
+@regexMonthDay1@	@regexMonth1@ @regexDay1@
+@regexMonthDay2@	@regexMonth2@ @regexDay2@
+
+# dayTitle
+^@regexDay1@ @regexMonth1@$
+
+# yearTitlePatterns
+^(?<y>[0-9]{@digitsInYear@})$
+^(?<y>[0-9]{@digitsInYear@}) in .*$
+
+# yearTitlePatternsBC
+^(?<y>[0-9]{@digitsInYear@}) BC$
+^(?<y>[0-9]{@digitsInYear@}) BC in .*$
+
+# datePatterns	hasStartDay	hasEndDay	hasStartMonth	hasEndMonth	hasYear
+^@regexMonth1@ ?@hyphensOrWithSlash@ ?@regexMonth2@\D	0	0	1	1	datePatternMonthHyphenMonth
+^@regexMonthDay1@@hyphensOr@@regexMonthDay2@\D	1	1	1	1	datePatternMonthDayHyphenMonthDay
+^@regexMonthDay1@/@regexMonthDay2@\D	1	1	1	1
+^@regexDayMonth1@@hyphensOr@@regexDayMonth2@\D	1	1	1	1	datePatternDayMonthHyphenDayMonth
+^@regexDayMonth1@ ?@hyphensOr@ ?@regexDay2@\D	1	1	1	0	datePatternDayMonthHyphenDay
+^@regexMonthDay1@ ?@hyphensOr@ ?@regexDay2@\D	1	1	1	0	datePatternMonthDayHyphenDay
+^@regexMonthDay1@, ?@regexYear@	1	0	1	0	datePatternMonthDayCommaYear
+^@regexDayMonth1@, ?@regexYear@	1	0	1	0	datePatternMonthDayCommaYear
+^@regexDayMonth1@	1	0	1	0	datePatternDayMonth
+^@regexMonthDay1@	1	0	1	0	datePatternMonthDay
+^@regexMonth1@	0	0	1	0
+^@regexDay1@ ?@hyphensOrWithSlash@ ?@regexDay2@	1	1	0	0
+^@regexDay1@	1	0	0	0
+
+# dateLinkResolvers	(include "<r>"!)
+\[\[@regexMonth1@ @regexDay1@\|(?<r>[^\]]*)\]\]
+\[\[@regexDay1@ @regexMonth1@\|(?<r>[^\]]*)\]\]
+\[\[(?<r>@regexMonth1@ @regexDay1@)\]\]
+\[\[(?<r>@regexDay1@ @regexMonth1@)\]\]
+\[\[(?<r>@regexYear@)\]\]

@@ -1,0 +1,111 @@
+# eventsLabels
+Acontecimientos
+
+# titlesOfParagraphsNotToRead
+Obra literaria
+Véase también
+Referencias
+Bibliografía
+Enlaces externos
+
+# tableOfContents
+Índice
+
+# categoryLabel
+Categoría
+
+# imageLabels
+Archivo
+
+# listPrefixes
+Anexo:
+
+# talkSuffix
+
+
+# talkPrefix
+Discusión
+
+# categoryPrefixes
+Categoría:
+
+# templateLabel
+Plantilla
+
+# templatePrefixes
+Plantilla:
+
+# eventTitlesNotToUseAsCategory
+
+# fileLabels
+Archivo
+
+# weekdayNames
+domingo;Domingo
+lunes;Lunes
+martes;Martes
+miércoles;Miércoles
+jueves;Jueves
+viernes;Viernes
+sábado;Sábado
+
+# forbiddenInternalLinks
+WT:
+H:
+CAT:
+
+# forbiddenLinks
+Wikipedia:Citation_needed
+
+# monthNames
+de enero;Enero
+de febrero;Febrero
+de marzo;Marzo
+de abril;Abril
+de mayo;Mayo
+de junio;Junio
+de julio;Julio
+de agosto;Agosto
+de septiembre;Septiembre
+de octubre;Octubre
+de noviembre;Noviembre
+de diciembre;Diciembre
+
+# forbiddenNameSpaces
+Accesorio definición discusión
+Accesorio definición
+Accesorio discusión
+Accesorio
+Plantilla
+Plantilla discusión
+Ayuda
+Ayuda discusión
+Categoría
+Especial
+Categoría discusión
+Medio
+Discusión
+Portal
+Usuario
+Portal Discusión
+Usuario discusión
+Wikiproyecto
+Wikipedia
+Wikiproyecto Discusión
+Wikipedia discusión
+Anexo
+Archivo
+Anexo Discusión
+Education Program
+Archivo discusión
+Education Program talk
+MediaWiki
+MediaWiki discusión
+Módulo
+Módulo discusión
+
+# seeAlsoLinkClasses
+hatnote
+
+
+
