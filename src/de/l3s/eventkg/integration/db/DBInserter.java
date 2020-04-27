@@ -93,10 +93,6 @@ public class DBInserter extends Extractor {
 				it = FileLoader.getLineIterator(FileName.ID_TO_WIKIPEDIA_MAPPING_FILE_NAME, language);
 				while (it.hasNext()) {
 
-					// TODO: Remove
-					if (lines == 1000)
-						break;
-
 					if (lines % 1000000 == 0) {
 						long newMS = System.currentTimeMillis();
 
@@ -112,15 +108,22 @@ public class DBInserter extends Extractor {
 					String wikidataId = parts[0];
 					String wikipediaId = parts[1].replaceAll(" ", "_");
 
+					if (wikidataId.startsWith("Q6534"))
+						System.out.println("1. Step: " + wikidataId + ".");
+
 					if (!labelIsValid(wikipediaId, forbiddenPrefixes)) {
 						continue;
 					}
+					if (wikidataId.startsWith("Q6534"))
+						System.out.println("2. Step: " + wikidataId + ".");
 
 					int numericWikidataId = Integer.parseInt(wikidataId.substring(1));
 
 					if (!this.validWikidataIds.contains(numericWikidataId)) {
 						continue;
 					}
+					if (wikidataId.startsWith("Q6534"))
+						System.out.println("3. Step: " + wikidataId + ".");
 
 					dbCreator.createEntry(db, String.valueOf(numericWikidataId), wikipediaId);
 					dbCreator.createEntry(db2, wikipediaId, String.valueOf(numericWikidataId));
@@ -236,8 +239,10 @@ public class DBInserter extends Extractor {
 		for (Database wikipediaIdToWikipediaIdDB : wikipediaIdToWikipediaIdDBs)
 			dbCreator.closeDB(wikipediaIdToWikipediaIdDB);
 
-		for (Language language : languages)
+		for (Language language : languages) {
 			dbCreator.closeEnvironment(language, DatabaseName.WIKIDATA_ID_TO_WIKIPEDIA_ID);
+			dbCreator.closeEnvironment(language, DatabaseName.WIKIPEDIA_ID_TO_WIKIDATA_ID);
+		}
 
 		System.out.println("ignoredEntities: " + ignoredEntities);
 		// System.out.println(this.entitiesByWikidataNumericIds. + "
@@ -393,6 +398,8 @@ public class DBInserter extends Extractor {
 				e.printStackTrace();
 			}
 		}
+		System.out.println("6534. is valid 1? " + wikidataIds.contains(6534));
+		System.out.println("653487. is valid 1? " + wikidataIds.contains(653487));
 
 		System.out.println("\t" + wikidataIds.size() + " (with scientific articles)");
 
@@ -427,6 +434,9 @@ public class DBInserter extends Extractor {
 						|| wikipediaInternalClasses.contains(parentClass)) {
 					// remove scientific article and Wikipedia internal items
 					// (e.g. templates)
+					if (parts[0].startsWith("Q6534"))
+						System.out.println("Not allowed: " + parts[0] + ". -> " + line);
+
 					wikidataIds.remove(Integer.valueOf(parts[0].substring(1)));
 				} else {
 					entitiesWithValidClass.add(parts[0]);
@@ -454,6 +464,9 @@ public class DBInserter extends Extractor {
 		for (String entity : entitiesInWikiNews) {
 			wikidataIds.remove(Integer.valueOf(entity.substring(1)));
 		}
+
+		System.out.println("6534. is valid 2? " + wikidataIds.contains(6534));
+		System.out.println("653487. is valid 2? " + wikidataIds.contains(653487));
 
 		System.out.println("Valid Wikidata IDs: " + wikidataIds.size());
 

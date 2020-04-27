@@ -99,7 +99,7 @@ public class EntityIdGenerator {
 				String.valueOf(entity.getNumericWikidataId()));
 	}
 
-	public String getEventIDByWikidataId(String wikidataId) {
+	public String getEventKGEventIDByWikidataId(String wikidataId) {
 		return dbCreator.getEntry(dbCreator.getDB(wikidataIdToEventKGEventID),
 				String.valueOf(Integer.valueOf(wikidataId.substring(1))));
 	}

@@ -50,7 +50,7 @@ public class DBpediaPositionsExtractor extends Extractor {
 
 			resultsWriter.write("subject" + Config.TAB + "latitude" + Config.TAB + "longitude" + Config.NL);
 
-			if (FileLoader.fileExists(FileName.DBPEDIA_MAPPINGS_LITERALS, language)) {
+			if (FileLoader.fileExists(FileName.DBPEDIA_GEO_COORDINATES, language)) {
 
 				try {
 					br = FileLoader.getReader(FileName.DBPEDIA_GEO_COORDINATES, language);

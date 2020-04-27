@@ -2,6 +2,8 @@ package de.l3s.eventkg.source.wikidata.processors;
 
 import java.io.IOException;
 import java.io.PrintStream;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.wikidata.wdtk.datamodel.interfaces.EntityDocumentDumpProcessor;
 import org.wikidata.wdtk.datamodel.interfaces.ItemDocument;
@@ -32,9 +34,12 @@ public class EventSubClassProcessor implements EntityDocumentDumpProcessor {
 
 	int itemCount = 0;
 
+	Set<WikidataProperty> partOfSeriesProperties = new HashSet<WikidataProperty>();
+
 	PrintStream outInstanceOf;
 	PrintStream outSubClass;
 	PrintStream outPartOf;
+	PrintStream outPartOfSeries;
 	PrintStream outFollows;
 	PrintStream outFollowedBy;
 
@@ -43,8 +48,13 @@ public class EventSubClassProcessor implements EntityDocumentDumpProcessor {
 		outInstanceOf = FileLoader.getPrintStream(FileName.WIKIDATA_INSTANCE_OF);
 		outSubClass = FileLoader.getPrintStream(FileName.WIKIDATA_SUBCLASS_OF);
 		outPartOf = FileLoader.getPrintStream(FileName.WIKIDATA_PART_OF);
+		outPartOfSeries = FileLoader.getPrintStream(FileName.WIKIDATA_PART_OF_SERIES);
 		outFollows = FileLoader.getPrintStream(FileName.WIKIDATA_FOLLOWS);
 		outFollowedBy = FileLoader.getPrintStream(FileName.WIKIDATA_FOLLOWED_BY);
+
+		partOfSeriesProperties.add(WikidataProperty.SPORTS_SEASON_OF_LEAGUE_OR_COMPETITION);
+		partOfSeriesProperties.add(WikidataProperty.SEASON_OF_CLUB_OR_TEAM);
+		partOfSeriesProperties.add(WikidataProperty.PART_OF_THE_SERIES);
 	}
 
 	@Override
@@ -153,6 +163,43 @@ public class EventSubClassProcessor implements EntityDocumentDumpProcessor {
 								outPartOf.print("\\N");
 							}
 							outPartOf.println();
+						}
+					}
+				}
+			}
+		}
+
+		for (WikidataProperty property : partOfSeriesProperties) {
+			if (itemDocument.hasStatement(property.getId())) {
+
+				StatementGroup statements = itemDocument.findStatementGroup(property.getId());
+
+				if (statements != null) {
+					for (Statement statement : statements) {
+
+						if (statement.getClaim() != null && statement.getClaim().getMainSnak() != null
+								&& statement.getClaim().getMainSnak().getValue() != null) {
+
+							String id = ((ItemIdValue) statement.getClaim().getMainSnak().getValue()).getId();
+
+							if (id != null) {
+								this.itemsWithPartOfCount++;
+								outPartOfSeries.print(itemDocument.getItemId().getId());
+								outPartOfSeries.print(Config.TAB);
+								outPartOfSeries.print(csvEscape(itemDocument.findLabel("en")));
+								outPartOfSeries.print(Config.TAB);
+								outPartOfSeries.print(csvEscape(id));
+								outPartOfSeries.print(Config.TAB);
+								SiteLink enwiki = itemDocument.getSiteLinks().get("enwiki");
+								if (enwiki != null) {
+									outPartOfSeries.print(csvEscape(enwiki.getPageTitle()));
+								} else {
+									outPartOfSeries.print("\\N");
+								}
+								outPartOfSeries.print(Config.TAB);
+								outPartOfSeries.print(property.getId());
+								outPartOfSeries.println();
+							}
 						}
 					}
 				}
@@ -277,6 +324,7 @@ public class EventSubClassProcessor implements EntityDocumentDumpProcessor {
 		this.outInstanceOf.close();
 		this.outSubClass.close();
 		this.outPartOf.close();
+		this.outPartOfSeries.close();
 		this.outFollows.close();
 		this.outFollowedBy.close();
 	}

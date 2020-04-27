@@ -49,18 +49,22 @@ public class PrefixList {
 		// prefixDbpediaEn);
 		// allPrefixes.add(prefixDbpediaEn);
 
-		for (Language language : languages) {
+		if (languages != null) {
+			for (Language language : languages) {
 
-			Prefix prefixDbpediaLang = null;
-			if (language != Language.EN)
-				prefixDbpediaLang = new Prefix("http://" + language.getLanguageLowerCase() + ".dbpedia.org/resource/",
-						"dbpedia-" + language.getLanguage().toLowerCase() + ":", PrefixEnum.DBPEDIA_RESOURCE);
-			else
-				prefixDbpediaLang = new Prefix("http://dbpedia.org/resource/", "dbr:", PrefixEnum.DBPEDIA_RESOURCE);
+				Prefix prefixDbpediaLang = null;
+				if (language != Language.EN)
+					prefixDbpediaLang = new Prefix(
+							"http://" + language.getLanguageLowerCase() + ".dbpedia.org/resource/",
+							"dbpedia-" + language.getLanguage().toLowerCase() + ":", PrefixEnum.DBPEDIA_RESOURCE);
+				else
+					prefixDbpediaLang = new Prefix("http://dbpedia.org/resource/", "dbr:", PrefixEnum.DBPEDIA_RESOURCE);
 
-			this.prefixesByLanguage.get(PrefixEnum.DBPEDIA_RESOURCE).put(language, prefixDbpediaLang);
-			allPrefixes.add(prefixDbpediaLang);
+				this.prefixesByLanguage.get(PrefixEnum.DBPEDIA_RESOURCE).put(language, prefixDbpediaLang);
+				allPrefixes.add(prefixDbpediaLang);
+			}
 		}
+
 	}
 
 	public Prefix getPrefix(PrefixEnum prefix) {

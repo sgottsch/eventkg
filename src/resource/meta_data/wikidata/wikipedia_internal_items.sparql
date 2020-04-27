@@ -2,6 +2,10 @@ SELECT ?item  ?itemLabel
 WHERE 
 {
   ?item wdt:P279* wd:Q17442446.
+  # ignore error that regime change (e.g. revolutions) are sub class of Wikidata reason for deprecation
+  FILTER NOT EXISTS { ?item wdt:P279* wd:Q1673271 } .
+  # ignore error that errors (e.g. racism) are sub class of Wikidata reason for deprecation
+  FILTER NOT EXISTS { ?item wdt:P279* wd:Q29485 } .
   SERVICE wikibase:label {
     bd:serviceParam wikibase:language "en" .
   }

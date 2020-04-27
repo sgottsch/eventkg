@@ -262,7 +262,7 @@ public class WikidataEventSeriesEditionsFromFileFinder extends Extractor {
 
 					String[] parts = line.split(Config.TAB);
 
-					if (parts[1].equals(WikidataResource.PROPERTY_EDITION_NUMBER.getId())) {
+					if (parts[1].equals(WikidataProperty.EDITION_NUMBER.getId())) {
 						String wikidataId = parts[0];
 						resultsWriter.write(wikidataId + Config.TAB + "property" + Config.TAB + parts[1] + Config.NL);
 					}

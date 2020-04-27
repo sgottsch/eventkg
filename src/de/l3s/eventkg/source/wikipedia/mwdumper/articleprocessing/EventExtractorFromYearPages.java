@@ -1,6 +1,10 @@
 package de.l3s.eventkg.source.wikipedia.mwdumper.articleprocessing;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.URL;
+import java.net.URLConnection;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -13,7 +17,6 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import de.l3s.eventkg.integration.model.DateGranularity;
@@ -132,24 +135,37 @@ public class EventExtractorFromYearPages {
 
 		// Language language = Language.PT;
 		// int id = 28422;
-		Language language = Language.NL;
-		int id = 2693;
+		// Language language = Language.NL;
+		// int id = 2693;
 
 		// for (Language language : exampleTexts.keySet()) {
 		// for (int id : exampleTexts.get(language).keySet()) {
 
-		System.out.println(language + " | " + exampleTexts.get(language).get(id));
+		// WikiWords.getInstance().init(language);
+		// EventDateExpressionsAll.getInstance().init(language);
+		// System.out.println(language + " | " +
+		// exampleTexts.get(language).get(id));
+		// String text = IOUtils.toString(
+		// TextExtractorNew.class.getResourceAsStream("/resource/wikipage/" +
+		// language.getLanguage() + "/" + id),
+		// "UTF-8");
+		// EventExtractorFromYearPages extr = new
+		// EventExtractorFromYearPages(text, id,
+		// exampleTexts.get(language).get(id),
+		// language, RedirectsTableCreator.getRedirectsDummy(language));
 
-		// TODO: Do this before
+		Language language = Language.PL;
+		String title = "2008";
+		int id = 0;
+		String text = getWikipediaArticleText(title, language);
+		System.out.println(text);
+
 		WikiWords.getInstance().init(language);
 		EventDateExpressionsAll.getInstance().init(language);
 
-		String text = IOUtils.toString(
-				TextExtractorNew.class.getResourceAsStream("/resource/wikipage/" + language.getLanguage() + "/" + id),
-				"UTF-8");
+		EventExtractorFromYearPages extr = new EventExtractorFromYearPages(text, id, title, language,
+				RedirectsTableCreator.getRedirectsDummy(language));
 
-		EventExtractorFromYearPages extr = new EventExtractorFromYearPages(text, id, exampleTexts.get(language).get(id),
-				language, RedirectsTableCreator.getRedirectsDummy(language));
 		try {
 			extr.extractEvents();
 		} catch (NullPointerException e) {
@@ -158,6 +174,7 @@ public class EventExtractorFromYearPages {
 		}
 
 		System.out.println("isYearOrDayPage: " + extr.isYearOrDayPage());
+		System.out.println("Events:");
 		System.out.println(extr.getEventsOutput());
 		// }
 		// }
@@ -244,6 +261,7 @@ public class EventExtractorFromYearPages {
 
 		Set<String> eventLabels = new HashSet<String>();
 		eventLabels.addAll(WikiWords.getInstance().getEventsLabels(language));
+		eventLabels.add("Ereignisse");
 		this.months = new HashMap<String, Integer>();
 		int monthNo = 1;
 		for (Set<String> monthNames : WikiWords.getInstance().getMonthNames(language)) {
@@ -634,7 +652,6 @@ public class EventExtractorFromYearPages {
 		}
 
 		line = removeDateLinks(line);
-
 		// remove leading weekdays
 		line = line.replaceAll("^" + EventDateExpressionsAll.getInstance().getRegexWeekdays(), "");
 		// remove leading "?" for unknown exact dates as in " ? - Conquista do
@@ -705,12 +722,16 @@ public class EventExtractorFromYearPages {
 		String oldTextPart = null;
 		while (oldTextPart == null || textPart != oldTextPart) {
 			oldTextPart = textPart;
+
 			for (String hyphen : EventDateExpressionsAll.getInstance().getHyphens())
 				textPart = StringUtils.stripStart(textPart, hyphen);
 			textPart = StringUtils.stripStart(textPart, ":");
 			textPart = StringUtils.stripEnd(textPart, ":");
 			textPart = StringUtils.stripStart(textPart, ",");
 			textPart = StringUtils.stripEnd(textPart, ",");
+
+			// following is not a normal space
+			textPart = StringUtils.stripStart(textPart, " ");
 
 			textPart = textPart.trim();
 		}
@@ -819,5 +840,23 @@ public class EventExtractorFromYearPages {
 				return true;
 		}
 		return false;
+	}
+
+	public static String getWikipediaArticleText(String title, Language language) throws IOException {
+		URL url = new URL("https://" + language.getLanguage() + ".wikipedia.org/w/index.php?action=raw&title="
+				+ title.replace(" ", "_"));
+
+		URLConnection urlConn = url.openConnection();
+		urlConn.setRequestProperty("Accept-Charset", "UTF-8");
+
+		String text = "";
+		try (BufferedReader br = new BufferedReader(
+				new InputStreamReader(url.openConnection().getInputStream(), "UTF-8"))) {
+			String line = null;
+			while (null != (line = br.readLine())) {
+				text += line + "\n";
+			}
+		}
+		return text;
 	}
 }

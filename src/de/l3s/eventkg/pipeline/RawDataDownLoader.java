@@ -180,6 +180,8 @@ public class RawDataDownLoader {
 			(new File(dataPath + "results/wikidata/" + language.getLanguage())).mkdirs();
 			(new File(dataPath + "meta/wikipedia/" + language.getLanguage())).mkdirs();
 			(new File(dbPath + "/" + language.getLanguageLowerCase())).mkdirs();
+			(new File(dbPath + "/eventkg_old/" + language.getLanguageLowerCase())).mkdirs();
+			(new File(dbPath + "/eventkg_current/" + language.getLanguageLowerCase())).mkdirs();
 		}
 		(new File(dbPath + "/all")).mkdirs();
 

@@ -483,6 +483,13 @@ public class DataCollector extends Extractor {
 		loadLocationsBlacklistEvents();
 		System.out.println("loadWikidataBlacklistEvents.");
 		loadWikidataBlacklistEvents();
+		
+		for(Entity event: this.blacklistEvents) {
+			if(event.getWikidataId().equals("Q6534"))
+				System.out.println("On blacklist: (1)"+event.getWikidataId()+".");
+			if(event.getNumericWikidataId()==6534)
+				System.out.println("On blacklist (2): "+event.getWikidataId()+".");
+		}
 
 		System.out.println("loadWikidataEvents.");
 		loadWikidataEvents();
@@ -1091,9 +1098,12 @@ public class DataCollector extends Extractor {
 
 	private Event createEvent(Language language, String wikipediaLabel, DataSet dataSet, String eventInstance) {
 
+		System.out.println("Create event "+language+", "+wikipediaLabel+"., "+dataSet.getId()+", "+eventInstance);
+		
 		Entity entity = getEntity(language, wikipediaLabel);
 
 		if (entity == null) {
+			System.out.println(" -> is null: "+wikipediaLabel+".");
 			// System.out.println("Missing entity for Wikipedia label: " +
 			// language + " - " + wikipediaLabel);
 			return null;
@@ -1102,8 +1112,10 @@ public class DataCollector extends Extractor {
 		String comment = dataSet.getId() + " (" + eventInstance + ")";
 
 		// ignore if it's a blacklist event
-		if (blacklistEvents.contains(entity))
+		if (blacklistEvents.contains(entity)) {
+			System.out.println(" -> is black list: "+wikipediaLabel+".");
 			return null;
+		}
 
 		if (entity.isEvent()) {
 			Event event = (Event) entity;
@@ -1119,6 +1131,8 @@ public class DataCollector extends Extractor {
 			newEvent.addEventInstanceComment(comment);
 		newEvent.addDataSetAndEventInstance(dataSet, eventInstance);
 
+		System.out.println(" -> add (ce): "+entity.getWikidataId()+".");
+		
 		uniqueEvents.add(newEvent);
 
 		return newEvent;
@@ -1134,6 +1148,8 @@ public class DataCollector extends Extractor {
 			return null;
 		}
 
+		System.out.println("Black list event by Wikidata ID) -> " + entity.getWikidataId() + ". " + comment);
+
 		blacklistEvents.add(entity);
 
 		return entity;
@@ -1148,6 +1164,9 @@ public class DataCollector extends Extractor {
 			// language + " - " + wikipediaLabel);
 			return null;
 		}
+
+		System.out.println("Black list event (" + language + "), " + wikipediaLabel + " -> " + entity.getWikidataId()
+				+ ". " + comment);
 
 		blacklistEvents.add(entity);
 
@@ -1172,14 +1191,20 @@ public class DataCollector extends Extractor {
 
 	private Event createEventByWikidataId(String wikidataId, DataSet dataSet, String eventInstance) {
 
+		System.out.println("createEventByWikidataId: "+wikidataId+"., "+dataSet.getId()+", "+eventInstance);
+		
 		Entity entity = getEntityFromWikidataId(wikidataId);
 		String comment = dataSet.getId() + " (" + eventInstance + ")";
 
-		if (blacklistEvents.contains(entity))
+		if (blacklistEvents.contains(entity)) {
+			System.out.println(" -> is blacklist: "+wikidataId+".");
 			return null;
+		}
 
-		if (entity == null)
+		if (entity == null) {
+			System.out.println(" -> is null: "+wikidataId+".");
 			return null;
+		}
 
 		if (entity.isEvent()) {
 			Event event = (Event) entity;
@@ -1192,6 +1217,8 @@ public class DataCollector extends Extractor {
 
 		if (comment != null)
 			newEvent.addEventInstanceComment(comment);
+		
+		System.out.println(" -> add: "+wikidataId+".");
 
 		uniqueEvents.add(newEvent);
 

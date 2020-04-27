@@ -293,4 +293,11 @@ public class FileLoader {
 		File f = new File(path);
 		return f.exists();
 	}
+
+	public static boolean fileExists(FileName fileName) {
+		String path = getPath(fileName);
+		File f = new File(path);
+		return f.exists();
+	}
+
 }

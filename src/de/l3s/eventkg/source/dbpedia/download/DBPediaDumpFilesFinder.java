@@ -24,7 +24,7 @@ public class DBPediaDumpFilesFinder {
 		ddff.init();
 
 		System.out.println(getOntologyURL());
-		ddff.getDBpediaURLsWithFileTypes(Language.DA, "2019.09.01");
+		ddff.getDBpediaURLsWithFileTypes(Language.BG, "2019.12.01");
 	}
 
 	public Map<FileName, String> getDBpediaURLsWithFileTypes(Language language, String version) {
@@ -41,7 +41,7 @@ public class DBPediaDumpFilesFinder {
 		dbpediaURLs.put(FileName.DBPEDIA_MAPPINGS,
 				getURL(language, version, "https://databus.dbpedia.org/marvin/mappings/mappingbased-objects"));
 		dbpediaURLs.put(FileName.DBPEDIA_MAPPINGS_LITERALS,
-				getURL(language, version, "https://databus.dbpedia.org/dbpedia/mappings/mappingbased-literals"));
+				getURL(language, version, "https://databus.dbpedia.org/marvin/mappings/mappingbased-literals"));
 		// dbpediaURLs.put(FileName.DBPEDIA_GEONAMES_LINKS,
 		// getURL(language, version,
 		// "https://databus.dbpedia.org/kurzum/cleaned-data/geonames"));

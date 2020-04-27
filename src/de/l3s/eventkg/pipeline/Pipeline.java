@@ -193,17 +193,10 @@ public class Pipeline {
 
 	private void pipelineStep3() {
 
-		// yes 1. zweite und dreitte von Pipeline 3 laufen lassen
-		// now 2. Pipeline 5
-		// 3. Neue DB erstellen
-		// 4. first sentences
-		// 5. Rest
-
 		List<Extractor> extractors = new ArrayList<Extractor>();
 
 		extractors.add(new WikidataEventsFromFileFinder(languages));
 		extractors.add(new WikidataEventSeriesFromFileFinder(languages));
-		extractors.add(new WikidataEventSeriesEditionsFromFileFinder(languages));
 		extractors.add(new DBpediaAllLocationsLoader(languages));
 		extractors.add(new DBInserter(languages));
 		// First step of integration
@@ -218,8 +211,6 @@ public class Pipeline {
 	private void pipelineStep4() {
 
 		List<Extractor> extractors = new ArrayList<Extractor>();
-
-		extractors.add(new EventKGDBCreatorFromPreviousVersion(languages));
 
 		// Collect relations from/to events
 		extractors.add(new DBpediaEventRelationsExtractor(languages, getAllEventPagesDataSet(true)));
@@ -238,6 +229,10 @@ public class Pipeline {
 
 		List<Extractor> extractors = new ArrayList<Extractor>();
 		getAllEventPagesDataSet(true);
+		extractors.add(new EventKGDBCreatorFromPreviousVersion(languages));
+
+		extractors.add(new WikidataEventSeriesEditionsFromFileFinder(languages));
+
 		extractors.add(new TextualEventsExtractor(languages, getAllEventPagesDataSet(true)));
 		extractors.add(new SubLocationsCollector(languages, getAllEventPagesDataSet(true))); //
 		extractors.add(new PositionsIntegrator(languages, getAllEventPagesDataSet(true)));
@@ -265,7 +260,6 @@ public class Pipeline {
 
 		List<Extractor> extractors = new ArrayList<Extractor>();
 
-		// extractors.add(new EventKGDBCreatorFromCurrentVersion(languages));
 		extractors.add(new EventFirstSentencesWriter(languages, getAllEventPagesDataSet(false)));
 
 		extractors.add(new LiteralRelationsCollector(languages, getAllEventPagesDataSet(false)));

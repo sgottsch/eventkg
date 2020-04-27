@@ -26,7 +26,7 @@ public enum Language {
 	DA("da", "Danish"),
 	AR("ar", "Arabian"),
 	HR("hr", "Croatian"),
-	NB("no", "Norwegian (Bokmål)"),
+	NO("no", "Norwegian (Bokmål)"),
 	NN("nn", "Norwegian (Nynorsk)"),
 	SR("sr", "Serbian"),
 	BS("bs", "Bosnian"),

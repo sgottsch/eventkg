@@ -101,6 +101,7 @@ public class WikidataExtractionWithoutEventPages extends Extractor {
 		}
 
 		Set<EntityDocumentDumpProcessor> processors = new HashSet<EntityDocumentDumpProcessor>();
+
 		processors.add(idToWikipediaMappingExtractor);
 		processors.add(temporalPropertiesExtractor);
 		processors.add(locationsExtractor);

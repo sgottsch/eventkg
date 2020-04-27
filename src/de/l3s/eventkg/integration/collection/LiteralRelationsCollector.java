@@ -295,51 +295,59 @@ public class LiteralRelationsCollector extends Extractor {
 				while (it.hasNext()) {
 					String line = it.nextLine();
 
-					String[] parts = line.split("\t");
-					String subject = parts[0];
+					try {
 
-					String property = parts[1];
+						String[] parts = line.split("\t");
+						String subject = parts[0];
 
-					if (property.startsWith("<"))
+						String property = parts[1];
+
+						if (property.startsWith("<"))
+							property = property.substring(1, property.length() - 1);
+
+						property = property.replace("http://dbpedia.org/ontology/", "");
+						// remove enclosing "<" and ">"
 						property = property.substring(1, property.length() - 1);
 
-					property = property.replace("http://dbpedia.org/ontology/", "");
-					// remove enclosing "<" and ">"
-					property = property.substring(1, property.length() - 1);
+						Entity entity = buildEntity(language, subject);
 
-					Entity entity = buildEntity(language, subject);
+						if (entity == null)
+							continue;
 
-					if (entity == null)
-						continue;
+						String object = parts[2];
 
-					String object = parts[2];
+						String dataTypeString = "";
+						if (object.contains("^^")) {
+							dataTypeString = object.substring(object.lastIndexOf("^") + 1);
+							// remove " ." in the end
+							dataTypeString = dataTypeString.replaceAll(" .$", "");
+						}
 
-					String dataTypeString = "";
-					if (object.contains("^^")) {
-						dataTypeString = object.substring(object.lastIndexOf("^") + 1);
-						// remove " ." in the end
-						dataTypeString = dataTypeString.replaceAll(" .$", "");
+						// extract language code
+						String languageCode = null;
+						if (object.matches(".*\"@.. \\.$")) {
+							languageCode = object.substring(object.length() - 4, object.length() - 2);
+						}
+
+						// object is everything between first " and last "
+						object = object.substring(object.indexOf("\"") + 1, object.lastIndexOf("\""));
+
+						if (object.isEmpty())
+							continue;
+
+						LiteralDataType dataType = LiteralDataTypeCollection.getInstance().getDataType(dataTypeString);
+
+						if (dataType == null || !dataType.isUsed())
+							continue;
+
+						buildRelation(entity, object, null, null, property,
+								DataSets.getInstance().getDataSet(language, Source.DBPEDIA), language, dataType, prefix,
+								languageCode);
+
+					} catch (StringIndexOutOfBoundsException | ArrayIndexOutOfBoundsException e) {
+						System.out.println("Error with line: " + line);
+						System.out.println(e.getMessage());
 					}
-
-					// extract language code
-					String languageCode = null;
-					if (object.matches(".*\"@.. \\.$")) {
-						languageCode = object.substring(object.length() - 4, object.length() - 2);
-					}
-
-					// object is everything between first " and last "
-					object = object.substring(object.indexOf("\"") + 1, object.lastIndexOf("\""));
-					if (object.isEmpty())
-						continue;
-
-					LiteralDataType dataType = LiteralDataTypeCollection.getInstance().getDataType(dataTypeString);
-
-					if (dataType == null || !dataType.isUsed())
-						continue;
-
-					buildRelation(entity, object, null, null, property,
-							DataSets.getInstance().getDataSet(language, Source.DBPEDIA), language, dataType, prefix,
-							languageCode);
 
 				}
 			} catch (IOException e1) {

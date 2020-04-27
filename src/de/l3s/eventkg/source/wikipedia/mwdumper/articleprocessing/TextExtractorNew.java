@@ -15,7 +15,6 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.apache.commons.io.IOUtils;
 import org.apache.commons.text.StringEscapeUtils;
 
 import de.l3s.eventkg.meta.Language;
@@ -125,7 +124,7 @@ public class TextExtractorNew {
 		itMap.put(4714697, "Barack Obama");
 		itMap.put(3862, "Seconda guerra mondiale");
 		exampleTexts.put(Language.IT, itMap);
-		
+
 		Map<Integer, String> daMap = new HashMap<Integer, String>();
 		daMap.put(71, "GNU Free Documentation License");
 		exampleTexts.put(Language.DA, daMap);
@@ -134,16 +133,28 @@ public class TextExtractorNew {
 		int id = 71;
 
 		languages.clear();
+		// languages.add(language);
+		// WikiWords.getInstance().init(languages);
+		//
+		// String text = IOUtils.toString(
+		// TextExtractorNew.class.getResourceAsStream("/resource/wikipage/" +
+		// language.getLanguage() + "/" + id),
+		// "UTF-8");
+		// // PageIdFinderTrove linkPageIdFinder = new PageIdFinderTrove();
+		//
+		// TextExtractorNew extr = new TextExtractorNew(text, id, true,
+		// language, exampleTexts.get(language).get(id),
+		// RedirectsTableCreator.getRedirectsDummy(language));
+
+		language = Language.PL;
 		languages.add(language);
 		WikiWords.getInstance().init(languages);
-
-		String text = IOUtils.toString(
-				TextExtractorNew.class.getResourceAsStream("/resource/wikipage/" + language.getLanguage() + "/" + id),
-				"UTF-8");
-		// PageIdFinderTrove linkPageIdFinder = new PageIdFinderTrove();
-
-		TextExtractorNew extr = new TextExtractorNew(text, id, true, language, exampleTexts.get(language).get(id),
+		String title = "Barack Obama";
+		id = 0;
+		String text = EventExtractorFromYearPages.getWikipediaArticleText(title, language);
+		TextExtractorNew extr = new TextExtractorNew(text, id, true, language, title,
 				RedirectsTableCreator.getRedirectsDummy(language));
+
 		extr.extractLinks();
 
 		System.out.println(extr.output.getFirstSentence());
@@ -158,8 +169,11 @@ public class TextExtractorNew {
 		for (Sentence sentence : extr.sentences) {
 			System.out.println(sentence.getText());
 			for (Link link : sentence.getLinks()) {
-				System.out.println(
-						"\t" + link.getName() + " | " + sentence.getText().substring(link.getStart(), link.getEnd()));
+				// System.out.println(
+				// "\t" + link.getName() + " | " +
+				// sentence.getText().substring(link.getStart(),
+				// link.getEnd()));
+				System.out.println("\t" + link.getName());
 			}
 		}
 

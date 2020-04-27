@@ -18,6 +18,10 @@ import de.l3s.eventkg.pipeline.Config;
 
 public class DatabaseCreator {
 
+	// In case of error: Delete DB via cmd:
+	// find db -name \*.lck -type f -delete
+	// find db -name \*.jdb -type f -delete
+
 	private Map<Language, Map<DatabaseName, Environment>> dbEnvironments = new HashMap<Language, Map<DatabaseName, Environment>>();
 	// private Environment languageIndependentEnvironment;
 	private Map<Language, Map<DatabaseName, Database>> databasesByLanguage = new HashMap<Language, Map<DatabaseName, Database>>();
@@ -54,7 +58,9 @@ public class DatabaseCreator {
 					envConfig.setTransactional(true);
 					environment = new Environment(new File(folderName), envConfig);
 
-					if (!dbEnvironments.containsKey(dbName))
+					System.out.println("Created environment " + language + ", " + dbName + ".");
+
+					if (!dbEnvironments.containsKey(language))
 						dbEnvironments.put(language, new HashMap<DatabaseName, Environment>());
 
 					dbEnvironments.get(language).put(dbName, environment);
@@ -166,7 +172,7 @@ public class DatabaseCreator {
 			if (dbEnvironments == null || !dbEnvironments.containsKey(Language.ALL)
 					|| !dbEnvironments.get(Language.ALL).containsKey(dbName))
 				System.out.println("Can't close environment.");
-			System.out.println("Close enviornment " + dbEnvironments.get(Language.ALL).get(dbName));
+			System.out.println("Close environment " + dbEnvironments.get(Language.ALL).get(dbName));
 			dbEnvironments.get(Language.ALL).get(dbName).close();
 
 		} catch (DatabaseException e) {
@@ -176,11 +182,17 @@ public class DatabaseCreator {
 
 	public void closeEnvironment(Language language, DatabaseName dbName) {
 		try {
+			System.out.println("Close environment " + language + " - " + dbEnvironments.get(language).get(dbName));
 
-			if (dbEnvironments == null || !dbEnvironments.containsKey(Language.ALL)
-					|| !dbEnvironments.get(Language.ALL).containsKey(dbName))
-				System.out.println("Can't close environment (" + language + ".");
-			System.out.println("Close enviornment " + language + " - " + dbEnvironments.get(Language.ALL).get(dbName));
+			if (dbEnvironments == null)
+				System.out.println("Can't close environment (" + language + "). dbEnvironments == null");
+			else if (!dbEnvironments.containsKey(language))
+				System.out.println(
+						"Can't close environment (" + language + "). !dbEnvironments.containsKey(" + language + ")");
+			else if (!dbEnvironments.get(language).containsKey(dbName)) {
+				System.out.println("Can't close environment (" + language + "). !dbEnvironments.get(" + language
+						+ ").containsKey(" + dbName + ")");
+			}
 
 			dbEnvironments.get(language).get(dbName).close();
 

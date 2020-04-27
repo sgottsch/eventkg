@@ -155,6 +155,8 @@ public class DBpediaEventRelationsExtractor extends Extractor {
 						object += parts[i] + " ";
 					object = object.trim();
 
+					object = object.replace("\n", " ").replace("\t", " ");
+
 					String subject = parts[0];
 					String property = parts[1];
 

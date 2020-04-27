@@ -97,6 +97,7 @@ public class EventDateExpressionsAll {
 		hyphens.add("-");
 		hyphens.add("—");
 		hyphens.add("−");
+		hyphens.add("–");
 
 		String hyphensOr = ("(" + StringUtils.join(hyphens, "|") + ")");
 		this.placeHolders.put("hyphensOr", hyphensOr);

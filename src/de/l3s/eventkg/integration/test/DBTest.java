@@ -58,6 +58,8 @@ public class DBTest {
 		exampleWikidataIds.add(151340);
 		exampleWikidataIds.add(176883);
 		exampleWikidataIds.add(1078119);
+		
+		exampleWikidataIds.add(6534);
 
 		exampleWikidataIds.add(97);
 		exampleWikidataIds.add(29);

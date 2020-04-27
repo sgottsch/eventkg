@@ -189,33 +189,35 @@ public class AllEventPagesDataSet {
 			}
 		}
 
-		BufferedReader br2 = null;
-		try {
+		if (FileLoader.fileExists(FileName.WIKIDATA_RECURRENT_EVENT_EDITIONS)) {
+			BufferedReader br2 = null;
 			try {
-				br2 = FileLoader.getReader(FileName.WIKIDATA_RECURRENT_EVENT_EDITIONS);
-			} catch (FileNotFoundException e1) {
-				e1.printStackTrace();
-			}
-
-			String line;
-			while ((line = br2.readLine()) != null) {
-
-				String[] parts = line.split(Config.TAB);
-
-				Event event = getWikidataIdMappings().getEventByWikidataId(parts[0]);
-				if (event != null) {
-					event.setRecurring(false);
-					event.setRecurrentEventEdition(true);
-					numberOfWikidataEvents += 1;
+				try {
+					br2 = FileLoader.getReader(FileName.WIKIDATA_RECURRENT_EVENT_EDITIONS);
+				} catch (FileNotFoundException e1) {
+					e1.printStackTrace();
 				}
-			}
-		} catch (IOException e) {
-			e.printStackTrace();
-		} finally {
-			try {
-				br2.close();
+
+				String line;
+				while ((line = br2.readLine()) != null) {
+
+					String[] parts = line.split(Config.TAB);
+
+					Event event = getWikidataIdMappings().getEventByWikidataId(parts[0]);
+					if (event != null) {
+						event.setRecurring(false);
+						event.setRecurrentEventEdition(true);
+						numberOfWikidataEvents += 1;
+					}
+				}
 			} catch (IOException e) {
 				e.printStackTrace();
+			} finally {
+				try {
+					br2.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
 			}
 		}
 

@@ -2,6 +2,8 @@ package de.l3s.eventkg.integration;
 
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
+import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -33,6 +35,7 @@ import de.l3s.eventkg.pipeline.Config;
 import de.l3s.eventkg.util.FileLoader;
 import de.l3s.eventkg.util.FileName;
 import de.l3s.eventkg.util.MemoryStatsUtil;
+import de.l3s.eventkg.util.URLUtil;
 
 public class DataStoreWriter {
 
@@ -42,12 +45,17 @@ public class DataStoreWriter {
 	public static final boolean ALLOW_DIRECTIVES = false;
 
 	private static final int NUMBER_OF_LINES_IN_PREVIEW = 50;
+
+	private static final DateFormat CONFIG_DBPEDIA_DATE_FORMAT = new SimpleDateFormat("yyyy.MM.dd");
+	private static final DateFormat CONFIG_WIKIPEDIA_DATE_FORMAT = new SimpleDateFormat("yyyyMMdd");
+	private static final DateFormat CONFIG_WIKIDATA_DATE_FORMAT = new SimpleDateFormat("yyyyMMdd");
+
 	private DataStore dataStore;
 	private DataSets dataSets;
 
 	private DataStoreWriterMode dataStoreWriterMode;
 
-	private static SimpleDateFormat standardFormat = new SimpleDateFormat(
+	private static final SimpleDateFormat OUTPUT_DATE_FORMAT = new SimpleDateFormat(
 			"\"yyyy-MM-dd\"'^^<" + PrefixEnum.XSD.getUrlPrefix() + "date>'");
 
 	private PrefixList prefixList;
@@ -65,7 +73,7 @@ public class DataStoreWriter {
 
 	public static void main(String[] args) {
 
-		System.out.println(standardFormat.format(new Date()));
+		System.out.println(OUTPUT_DATE_FORMAT.format(new Date()));
 	}
 
 	public DataStoreWriter(List<Language> languages, DataStoreWriterMode dataStoreWriterMode) {
@@ -213,7 +221,7 @@ public class DataStoreWriter {
 				if (dataSet.getDate() != null)
 					writeTriple(writer, null, null, prefixList.getPrefix(PrefixEnum.EVENT_KG_GRAPH), dataSet.getId(),
 							prefixList.getPrefix(PrefixEnum.DCTERMS), "created", null,
-							standardFormat.format(dataSet.getDate()), false, null, fileType);
+							OUTPUT_DATE_FORMAT.format(dataSet.getDate()), false, null, fileType);
 			}
 
 		} catch (FileNotFoundException e) {
@@ -239,16 +247,78 @@ public class DataStoreWriter {
 		}
 	}
 
-	private void createVoIDFile() {
+	public void createVoIDFile() {
 
-		String currentDate = standardFormat.format(new Date());
+		String currentDate = OUTPUT_DATE_FORMAT.format(new Date());
 
 		PrintWriter writer = null;
 		try {
 			writer = FileLoader.getWriter(FileName.ALL_TTL_VOID);
 
 			for (String line : FileLoader.readLines(FileName.ALL_TTL_VOID_INPUT)) {
-				writer.write(line.replace("@modification_date@", currentDate) + Config.NL);
+				line = line.replace("@modification_date@", currentDate);
+				try {
+					line = line.replace("@wikidata_date@",
+							OUTPUT_DATE_FORMAT.format(CONFIG_WIKIDATA_DATE_FORMAT.parse(Config.getValue("wikidata"))));
+				} catch (ParseException e) {
+					e.printStackTrace();
+				}
+				writer.write(line + Config.NL);
+			}
+
+			writer.write("# Wikipedias" + Config.NL);
+
+			for (Language language : this.languages) {
+				String languageCode = language.getLanguageLowerCase();
+				writer.write(
+						"eventKG-g:event_kg dcterms:source eventKG-g:wikipedia_" + languageCode + " ." + Config.NL);
+				writer.write("eventKG-g:wikipedia_" + languageCode + " rdf:type void:Dataset ." + Config.NL);
+				writer.write("eventKG-g:wikipedia_" + languageCode + " dcterms:language \"" + languageCode + "\" ."
+						+ Config.NL);
+				writer.write("eventKG-g:wikipedia_" + languageCode + " dcterms:description \""
+						+ language.getLanguageAdjective() + " Wikipedia\" ." + Config.NL);
+				writer.write("eventKG-g:wikipedia_" + languageCode + " foaf:homepage <https://" + languageCode
+						+ ".wikipedia.org/>  ." + Config.NL);
+
+				try {
+					Date wikipediaDate = CONFIG_WIKIPEDIA_DATE_FORMAT.parse(Config.getValue(language.getWiki()));
+					writer.write("eventKG-g:wikipedia_" + languageCode + " dcterms:modified "
+							+ OUTPUT_DATE_FORMAT.format(wikipediaDate) + " ." + Config.NL);
+				} catch (ParseException e) {
+				}
+
+				writer.write(Config.NL);
+			}
+
+			writer.write("# DBpedias" + Config.NL);
+
+			for (Language language : this.languages) {
+				String languageCode = language.getLanguageLowerCase();
+				writer.write("eventKG-g:event_kg dcterms:source eventKG-g:dbpedia_" + languageCode + " ." + Config.NL);
+				writer.write("eventKG-g:dbpedia_" + languageCode + " rdf:type void:Dataset ." + Config.NL);
+				writer.write("eventKG-g:dbpedia_" + languageCode + " dcterms:language \"" + languageCode + "\" ."
+						+ Config.NL);
+				writer.write("eventKG-g:dbpedia_" + languageCode + " dcterms:description \""
+						+ language.getLanguageAdjective() + " DBpedia\" ." + Config.NL);
+
+				if (language == Language.EN) {
+					writer.write("eventKG-g:dbpedia_" + languageCode + " foaf:homepage <http://dbpedia.org/>  ."
+							+ Config.NL);
+				} else {
+					String homepage = "http://" + languageCode + ".dbpedia.org/";
+					if (URLUtil.urlExists(homepage))
+						writer.write("eventKG-g:dbpedia_" + languageCode + " foaf:homepage <" + homepage + ">  ."
+								+ Config.NL);
+				}
+
+				try {
+					Date dbPediaDate = CONFIG_DBPEDIA_DATE_FORMAT.parse(Config.getValue("dbpedia"));
+					writer.write("eventKG-g:dbpedia_" + languageCode + " dcterms:modified "
+							+ OUTPUT_DATE_FORMAT.format(dbPediaDate) + " ." + Config.NL);
+				} catch (ParseException e) {
+				}
+
+				writer.write(Config.NL);
 			}
 
 		} catch (FileNotFoundException e) {
@@ -587,7 +657,8 @@ public class DataStoreWriter {
 				lineNo += 1;
 				writeTriple(writer, writerPreview, lineNo, this.basePrefix, startTime.getSubject().getId(),
 						prefixList.getPrefix(PrefixEnum.SEM), "hasBeginTimeStamp", null,
-						standardFormat.format(startTime.getStartTime().getDate()), false, startTime.getDataSet(), null);
+						OUTPUT_DATE_FORMAT.format(startTime.getStartTime().getDate()), false, startTime.getDataSet(),
+						null);
 				writeDateGranularityTriple(writer, writerPreview, lineNo, this.basePrefix,
 						startTime.getSubject().getId(), startTime.getStartTime().getGranularity(), false,
 						startTime.getDataSet(), true, fileType);
@@ -608,7 +679,7 @@ public class DataStoreWriter {
 				lineNo += 1;
 				writeTriple(writer, writerPreview, lineNo, this.basePrefix, endTime.getSubject().getId(),
 						prefixList.getPrefix(PrefixEnum.SEM), "hasEndTimeStamp", null,
-						standardFormat.format(endTime.getEndTime().getDate()), false, endTime.getDataSet(), null);
+						OUTPUT_DATE_FORMAT.format(endTime.getEndTime().getDate()), false, endTime.getDataSet(), null);
 				writeDateGranularityTriple(writer, writerPreview, lineNo, this.basePrefix, endTime.getSubject().getId(),
 						endTime.getEndTime().getGranularity(), false, endTime.getDataSet(), false, fileType);
 			}
@@ -956,7 +1027,7 @@ public class DataStoreWriter {
 				if (relation.getStartTime() != null) {
 					writeTriple(writer, writerPreview, this.relationNo, this.basePrefix, relationId,
 							prefixList.getPrefix(PrefixEnum.SEM), "hasBeginTimeStamp", null,
-							standardFormat.format(relation.getStartTime().getDate()), false, relation.getDataSet(),
+							OUTPUT_DATE_FORMAT.format(relation.getStartTime().getDate()), false, relation.getDataSet(),
 							fileType);
 					writeDateGranularityTriple(writer, writerPreview, this.relationNo, this.basePrefix, relationId,
 							relation.getStartTime().getGranularity(), false, relation.getDataSet(), true, fileType);
@@ -964,7 +1035,7 @@ public class DataStoreWriter {
 				if (relation.getEndTime() != null) {
 					writeTriple(writer, writerPreview, this.relationNo, this.basePrefix, relationId,
 							prefixList.getPrefix(PrefixEnum.SEM), "hasEndTimeStamp", null,
-							standardFormat.format(relation.getEndTime().getDate()), false, relation.getDataSet(),
+							OUTPUT_DATE_FORMAT.format(relation.getEndTime().getDate()), false, relation.getDataSet(),
 							fileType);
 					writeDateGranularityTriple(writer, writerPreview, this.relationNo, this.basePrefix, relationId,
 							relation.getEndTime().getGranularity(), false, relation.getDataSet(), false, fileType);
@@ -1077,7 +1148,7 @@ public class DataStoreWriter {
 				if (relation.getStartTime() != null) {
 					writeTriple(writer, writerPreview, lineNo, this.basePrefix, relationId,
 							prefixList.getPrefix(PrefixEnum.SEM), "hasBeginTimeStamp", null,
-							standardFormat.format(relation.getStartTime().getDate()), false, relation.getDataSet(),
+							OUTPUT_DATE_FORMAT.format(relation.getStartTime().getDate()), false, relation.getDataSet(),
 							fileType);
 					writeDateGranularityTriple(writer, writerPreview, lineNo, this.basePrefix, relationId,
 							relation.getStartTime().getGranularity(), false, relation.getDataSet(), true, fileType);
@@ -1085,7 +1156,7 @@ public class DataStoreWriter {
 				if (relation.getEndTime() != null) {
 					writeTriple(writer, writerPreview, lineNo, this.basePrefix, relationId,
 							prefixList.getPrefix(PrefixEnum.SEM), "hasEndTimeStamp", null,
-							standardFormat.format(relation.getEndTime().getDate()), false, relation.getDataSet(),
+							OUTPUT_DATE_FORMAT.format(relation.getEndTime().getDate()), false, relation.getDataSet(),
 							fileType);
 					writeDateGranularityTriple(writer, writerPreview, lineNo, this.basePrefix, relationId,
 							relation.getEndTime().getGranularity(), false, relation.getDataSet(), false, fileType);
@@ -1203,7 +1274,7 @@ public class DataStoreWriter {
 				if (relation.getStartTime() != null) {
 					writeTriple(writer, writerPreview, lineNo, this.basePrefix, relationId,
 							prefixList.getPrefix(PrefixEnum.SEM), "hasBeginTimeStamp", null,
-							standardFormat.format(relation.getStartTime().getDate()), false, relation.getDataSet(),
+							OUTPUT_DATE_FORMAT.format(relation.getStartTime().getDate()), false, relation.getDataSet(),
 							fileType);
 					writeDateGranularityTriple(writer, writerPreview, lineNo, this.basePrefix, relationId,
 							relation.getStartTime().getGranularity(), false, relation.getDataSet(), true, fileType);
@@ -1211,7 +1282,7 @@ public class DataStoreWriter {
 				if (relation.getEndTime() != null) {
 					writeTriple(writer, writerPreview, lineNo, this.basePrefix, relationId,
 							prefixList.getPrefix(PrefixEnum.SEM), "hasEndTimeStamp", null,
-							standardFormat.format(relation.getEndTime().getDate()), false, relation.getDataSet(),
+							OUTPUT_DATE_FORMAT.format(relation.getEndTime().getDate()), false, relation.getDataSet(),
 							fileType);
 					writeDateGranularityTriple(writer, writerPreview, lineNo, this.basePrefix, relationId,
 							relation.getEndTime().getGranularity(), false, relation.getDataSet(), false, fileType);
@@ -1532,6 +1603,13 @@ public class DataStoreWriter {
 
 		writeTriple(writer, writerPreview, lineNo, this.basePrefix, eventId, prefixList.getPrefix(PrefixEnum.DCTERMS),
 				"description", null, firstSentence, true, dataSet, language, FileType.NQ);
+	}
+
+	public void writeSubEvent(String parentEventEventKGId, String subEventEventKGId, int lineNo, DataSet dataSet,
+			PrintWriter writer, PrintWriter writerPreview) {
+		writeTriple(writer, writerPreview, lineNo, this.basePrefix, parentEventEventKGId,
+				prefixList.getPrefix(PrefixEnum.SEM), "hasSubEvent", this.basePrefix, subEventEventKGId, false, dataSet,
+				FileType.NQ);
 	}
 
 }
