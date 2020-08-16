@@ -3,6 +3,12 @@
 
 The EventKG is a novel multilingual resource incorporating event-centric information extracted from several large-scale knowledge graphs such as Wikidata, DBpedia and YAGO, as well as less structured sources such as Wikipedia Current Events and Wikipedia event lists in five languages. The EventKG is an extensible event-centric resource modeled in RDF. It relies on Open Data and best practices to make event data spread across different sources available through a common representation and reusable for a variety of novel algorithms and real-world applications.
 
+## Public SPARQL Endpoint
+
+If you just want to run queries on the current version of EventKG, you can simply use our [public SPARQL endpoint](http://eventkg.l3s.uni-hannover.de/sparql.html).
+
+You can find a tutorial about writing SPARQL queries for EventKG [here](http://eventkg.l3s.uni-hannover.de/tutorial.html).
+
 ## Configuration
 
 Create a configuration file like the following to state where to store your EventKG version, and the languages and dumps to be used for extraction:
