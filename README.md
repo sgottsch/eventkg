@@ -5,7 +5,7 @@ The EventKG is a novel multilingual resource incorporating event-centric informa
 
 ## Public SPARQL Endpoint
 
-If you just want to run queries on the current version of EventKG, you can simply use our [public SPARQL endpoint](http://eventkg.l3s.uni-hannover.de/sparql.html).
+If you just want to run queries on the current version of EventKG, you can simply use our [public SPARQL endpoint](http://eventkginterface.l3s.uni-hannover.de/sparql).
 
 You can find a tutorial about writing SPARQL queries for EventKG [here](http://eventkg.l3s.uni-hannover.de/tutorial.html).
 
