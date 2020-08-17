@@ -192,8 +192,10 @@ public class DataStoreWriter {
 		}
 	}
 
-	private void writeDataSetDescriptions() {
+	public void writeDataSetDescriptions() {
 
+		init();
+		System.out.println(this.prefixList);
 		FileType fileType = FileType.TTL;
 
 		PrintWriter writer = null;
@@ -853,8 +855,8 @@ public class DataStoreWriter {
 			int lineNoEvents = 0;
 			int lineNoEntities = 0;
 
-			int svov = 0;
-			int snov = 0;
+			int svov = 0; // subject event object event
+			int snov = 0; // Subject eNtity Object eVent
 			int svon = 0;
 			int snon = 0;
 
@@ -1312,14 +1314,21 @@ public class DataStoreWriter {
 
 	public List<String> createIntro(List<Prefix> prefixes, PrefixList prefixList, FileType fileType) {
 
-		if (!prefixes.contains(PrefixEnum.EVENT_KG_GRAPH))
+		boolean containsEventKGGraph = false;
+		for (Prefix prefix : prefixes) {
+			if (prefix.getPrefixEnum() == PrefixEnum.EVENT_KG_GRAPH) {
+				containsEventKGGraph = true;
+				break;
+			}
+		}
+		if (!containsEventKGGraph)
 			prefixes.add(prefixList.getPrefix(PrefixEnum.EVENT_KG_GRAPH));
 
 		List<String> lines = new ArrayList<String>();
 
 		lines.add("");
 		for (Prefix prefix : prefixes) {
-
+			System.out.println(prefix);
 			// ignore base relation
 			if (prefix.getPrefixEnum() == PrefixEnum.EVENT_KG_RESOURCE)
 				continue;
@@ -1383,7 +1392,6 @@ public class DataStoreWriter {
 				literal += "^^<" + dataType.getDataTypeRdf().replace("xsd:", PrefixEnum.XSD.getUrlPrefix()) + ">";
 			else
 				literal += "^^" + dataType.getDataTypeRdf();
-
 		}
 
 		return literal;
@@ -1580,10 +1588,10 @@ public class DataStoreWriter {
 				resourceWithPrefix = "<" + value + ">";
 			else
 				resourceWithPrefix = prefix.getAbbr() + value;
-		} else
+		} else {
 			resourceWithPrefix = prefix.getUrlPrefix() + value;
-
-		resourceWithPrefix = "<" + resourceWithPrefix + ">";
+			resourceWithPrefix = "<" + resourceWithPrefix + ">";
+		}
 
 		return resourceWithPrefix;
 	}
