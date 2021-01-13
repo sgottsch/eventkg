@@ -13,11 +13,11 @@ public class Location extends RelationWithSource {
 
 	private Source source;
 
-	public Location(Event subject, DataSet dataSet, Entity location, Language language) {
-		super(subject, dataSet);
+	public Location(Event event, DataSet dataSet, Entity location, Language language) {
+		super(event, dataSet);
 		this.location = location;
 		this.language = language;
-		subject.addLocation(location, dataSet);
+		event.addLocation(location, dataSet);
 	}
 
 	public Entity getLocation() {

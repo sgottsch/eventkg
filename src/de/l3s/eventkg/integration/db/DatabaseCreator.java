@@ -8,6 +8,7 @@ import com.sleepycat.je.Database;
 import com.sleepycat.je.DatabaseConfig;
 import com.sleepycat.je.DatabaseEntry;
 import com.sleepycat.je.DatabaseException;
+import com.sleepycat.je.DatabaseNotFoundException;
 import com.sleepycat.je.Environment;
 import com.sleepycat.je.EnvironmentConfig;
 import com.sleepycat.je.LockMode;
@@ -41,14 +42,17 @@ public class DatabaseCreator {
 		try {
 
 			Environment environment = null;
-			if (dbEnvironments.containsKey(dbName))
-				environment = dbEnvironments.get(dbName).get(language);
+			if (dbEnvironments.containsKey(language) && dbEnvironments.get(language).containsKey(dbName))
+				environment = dbEnvironments.get(language).get(dbName);
 
 			if (environment == null) {
 				// Open the environment, creating one if it does not exist
 				EnvironmentConfig envConfig = new EnvironmentConfig();
 
 				String folderName = Config.getValue("db_folder") + "/";
+				if (!folderName.endsWith("/"))
+					folderName = folderName + "/";
+
 				if (dbName.getSubFolder() != null)
 					folderName += dbName.getSubFolder() + "/";
 				folderName += language.getLanguageLowerCase();
@@ -65,7 +69,7 @@ public class DatabaseCreator {
 
 					dbEnvironments.get(language).put(dbName, environment);
 				} else
-					throw new DatabaseException("No folder for environment " + folderName + ".");
+					throw new DatabaseNotFoundException("No folder for environment " + folderName + ".");
 			}
 
 			// Open the database, creating one if it does not exist

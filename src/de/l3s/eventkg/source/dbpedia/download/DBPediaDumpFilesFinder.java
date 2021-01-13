@@ -24,7 +24,7 @@ public class DBPediaDumpFilesFinder {
 		ddff.init();
 
 		System.out.println(getOntologyURL());
-		ddff.getDBpediaURLsWithFileTypes(Language.BG, "2019.12.01");
+		ddff.getDBpediaURLsWithFileTypes(Language.BG, "2020.10.01");
 	}
 
 	public Map<FileName, String> getDBpediaURLsWithFileTypes(Language language, String version) {
@@ -73,6 +73,8 @@ public class DBPediaDumpFilesFinder {
 
 			query = "https://databus.dbpedia.org/repo/sparql?default-graph-uri=&query=" + query
 					+ "&format=application%2Fsparql-results%2Bjson&timeout=0&debug=on";
+			
+			
 			JSONObject json = new JSONObject(IOUtils.toString(new URL(query), Charset.forName("UTF-8")));
 			JSONArray arr = json.getJSONObject("results").getJSONArray("bindings");
 			return arr.getJSONObject(0).getJSONObject("url").getString("value");

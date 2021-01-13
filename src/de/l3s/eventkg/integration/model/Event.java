@@ -26,9 +26,7 @@ public class Event extends Entity {
 	private Set<Event> previousEvents = new HashSet<Event>();
 	private Map<Event, Set<DataSet>> previousEventsWithDataSets = new HashMap<Event, Set<DataSet>>();
 
-	private Set<Entity> locations = new HashSet<Entity>();;
 	private Map<Entity, Set<DataSet>> locationsWithDataSets = new HashMap<Entity, Set<DataSet>>();
-	private Map<DataSet, Set<Entity>> dataSetsWithLocations = new HashMap<DataSet, Set<Entity>>();
 
 	private Map<DataSet, Map<Language, Set<String>>> categories = new HashMap<DataSet, Map<Language, Set<String>>>();
 
@@ -149,6 +147,22 @@ public class Event extends Entity {
 		this.previousEventsWithDataSets.get(event).add(dataSet);
 	}
 
+	public void addParent(Event event) {
+		this.parents.add(event);
+	}
+
+	public void addChild(Event event) {
+		this.children.add(event);
+	}
+
+	public void addNextEvent(Event event) {
+		this.nextEvents.add(event);
+	}
+
+	public void addPreviousEvent(Event event) {
+		this.previousEvents.add(event);
+	}
+
 	public DateWithGranularity getStartTime() {
 		return startTime;
 	}
@@ -185,20 +199,11 @@ public class Event extends Entity {
 	}
 
 	public void addLocation(Entity location, DataSet dataSet) {
-		this.locations.add(location);
 
 		if (!this.locationsWithDataSets.containsKey(location))
 			locationsWithDataSets.put(location, new HashSet<DataSet>());
 		this.locationsWithDataSets.get(location).add(dataSet);
 
-		if (!this.dataSetsWithLocations.containsKey(dataSet))
-			dataSetsWithLocations.put(dataSet, new HashSet<Entity>());
-		this.dataSetsWithLocations.get(dataSet).add(location);
-
-	}
-
-	public Set<Entity> getLocations() {
-		return locations;
 	}
 
 	public Map<Entity, Set<DataSet>> getLocationsWithDataSets() {
@@ -213,20 +218,16 @@ public class Event extends Entity {
 		this.otherUrls = otherUrls;
 	}
 
+	public Set<String> getEventInstanceComments() {
+		return eventInstanceComments;
+	}
+
 	public Map<Event, Set<DataSet>> getChildrenWithDataSets() {
 		return childrenWithDataSets;
 	}
 
 	public Map<Event, Set<DataSet>> getParentsWithDataSets() {
 		return parentsWithDataSets;
-	}
-
-	public Set<String> getEventInstanceComments() {
-		return eventInstanceComments;
-	}
-
-	public void addEventInstanceComment(String eventInstanceComment) {
-		this.eventInstanceComments.add(eventInstanceComment);
 	}
 
 	public Map<Event, Set<DataSet>> getNextEventsWithDataSets() {
@@ -237,6 +238,10 @@ public class Event extends Entity {
 		return previousEventsWithDataSets;
 	}
 
+	public void addEventInstanceComment(String eventInstanceComment) {
+		this.eventInstanceComments.add(eventInstanceComment);
+	}
+
 	public Map<DataSet, Set<String>> getEventInstancesPerDataSet() {
 		return eventInstancesPerDataSet;
 	}
@@ -245,10 +250,6 @@ public class Event extends Entity {
 		if (!this.eventInstancesPerDataSet.containsKey(dataSet))
 			this.eventInstancesPerDataSet.put(dataSet, new HashSet<String>());
 		this.eventInstancesPerDataSet.get(dataSet).add(eventInstance);
-	}
-
-	public Map<DataSet, Set<Entity>> getDataSetsWithLocations() {
-		return dataSetsWithLocations;
 	}
 
 	public boolean isRecurring() {
@@ -305,6 +306,17 @@ public class Event extends Entity {
 
 	public void addDescription(DataSet dataSet, Language language, String description) {
 		this.descriptions.add(new Description(dataSet, description, language));
+	}
+
+	public void clearLocations() {
+		this.locationsWithDataSets = null;
+	}
+
+	public void clearEventDependencies() {
+		this.nextEvents = null;
+		this.previousEvents = null;
+		this.children = null;
+		this.parents = null;
 	}
 
 }

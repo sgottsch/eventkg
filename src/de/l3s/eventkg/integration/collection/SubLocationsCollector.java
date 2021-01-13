@@ -7,25 +7,29 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import de.l3s.eventkg.integration.AllEventPagesDataSet;
 import de.l3s.eventkg.integration.DataCollector;
+import de.l3s.eventkg.integration.WikidataIdMappings;
 import de.l3s.eventkg.integration.model.Entity;
 import de.l3s.eventkg.meta.Language;
 import de.l3s.eventkg.meta.Source;
 import de.l3s.eventkg.pipeline.Extractor;
+import de.l3s.eventkg.pipeline.output.TriplesWriter;
 import de.l3s.eventkg.util.FileLoader;
 import de.l3s.eventkg.util.FileName;
 
 public class SubLocationsCollector extends Extractor {
 
 	private Set<Entity> locations = new HashSet<Entity>();
-	private AllEventPagesDataSet allEventPagesDataSet;
+	private WikidataIdMappings wikidataIdMappings;
+	private TriplesWriter dataStoreWriter;
 
-	public SubLocationsCollector(List<Language> languages, AllEventPagesDataSet allEventPagesDataSet) {
+	public SubLocationsCollector(List<Language> languages, TriplesWriter dataStoreWriter,
+			WikidataIdMappings wikidataIdMappings) {
 		super("SubLocationsCollector", Source.ALL,
 				"Creates a transitive map with locations and their parent/sub locations (e.g., Paris is sub location of France).",
 				languages);
-		this.allEventPagesDataSet = allEventPagesDataSet;
+		this.wikidataIdMappings = wikidataIdMappings;
+		this.dataStoreWriter = dataStoreWriter;
 	}
 
 	public void run() {
@@ -35,8 +39,9 @@ public class SubLocationsCollector extends Extractor {
 
 	private void loadSubLocations() {
 
-//		System.out.println("EntitiesByWikidataNumericIds 2: "
-//				+ this.allEventPagesDataSet.getWikidataIdMappings().getEntitiesByWikidataNumericIds().size());
+		// System.out.println("EntitiesByWikidataNumericIds 2: "
+		// +
+		// this.allEventPagesDataSet.getWikidataIdMappings().getEntitiesByWikidataNumericIds().size());
 
 		BufferedReader br = null;
 		try {
@@ -53,10 +58,8 @@ public class SubLocationsCollector extends Extractor {
 				String entity1WikidataId = parts[0];
 				String entity2WikidataId = parts[2];
 
-				Entity location1 = this.allEventPagesDataSet.getWikidataIdMappings()
-						.getEntityByWikidataId((entity1WikidataId));
-				Entity location2 = this.allEventPagesDataSet.getWikidataIdMappings()
-						.getEntityByWikidataId((entity2WikidataId));
+				Entity location1 = wikidataIdMappings.getEntityByWikidataId((entity1WikidataId));
+				Entity location2 = wikidataIdMappings.getEntityByWikidataId((entity2WikidataId));
 
 				if (location1 == null) {
 					System.out.println("Missing location 1: " + entity1WikidataId);
@@ -73,6 +76,9 @@ public class SubLocationsCollector extends Extractor {
 				location1.addSubLocation(location2);
 				location2.addParentLocation(location1);
 
+				dataStoreWriter.startInstance();
+				dataStoreWriter.writeSubLocation(location1, location2, true);
+				dataStoreWriter.endInstance();
 			}
 		} catch (IOException e) {
 			e.printStackTrace();

@@ -4,75 +4,28 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-import de.l3s.eventkg.integration.AllEventPagesDataSet;
 import de.l3s.eventkg.integration.DataSets;
+import de.l3s.eventkg.integration.WikidataIdMappings;
 import de.l3s.eventkg.integration.model.Entity;
-import de.l3s.eventkg.integration.model.Event;
 import de.l3s.eventkg.integration.model.Position;
 import de.l3s.eventkg.integration.model.relation.DataSet;
 import de.l3s.eventkg.meta.Language;
 import de.l3s.eventkg.meta.Source;
 import de.l3s.eventkg.pipeline.Extractor;
+import de.l3s.eventkg.pipeline.output.TriplesWriter;
 
 public class PositionsIntegrator extends Extractor {
 
 	List<DataSet> dataSetsByTrustWorthiness = new ArrayList<DataSet>();
-	private AllEventPagesDataSet allEventPagesDataSet;
 
-	public static void main(String[] args) {
-		DataSets.getInstance().addDataSet(Language.DE, Source.DBPEDIA, "http://de.dbpedia.org/");
-		DataSets.getInstance().addDataSet(Language.FR, Source.DBPEDIA, "http://fr.dbpedia.org/");
-		DataSets.getInstance().addDataSet(Language.RU, Source.DBPEDIA, "http://ru.dbpedia.org/");
-		DataSets.getInstance().addDataSet(Language.PT, Source.DBPEDIA, "http://pt.dbpedia.org/");
-		DataSets.getInstance().addDataSet(Language.EN, Source.DBPEDIA, "http://dbpedia.org/");
-		DataSets.getInstance().addDataSet(Language.DE, Source.WIKIPEDIA, "https://dumps.wikimedia.org/dewiki/");
-		DataSets.getInstance().addDataSet(Language.FR, Source.WIKIPEDIA, "https://dumps.wikimedia.org/frwiki/");
-		DataSets.getInstance().addDataSet(Language.RU, Source.WIKIPEDIA, "https://dumps.wikimedia.org/ruwiki/");
-		DataSets.getInstance().addDataSet(Language.PT, Source.WIKIPEDIA, "https://dumps.wikimedia.org/ptwiki/");
-		DataSets.getInstance().addDataSet(Language.EN, Source.WIKIPEDIA, "https://dumps.wikimedia.org/enwiki/");
-		DataSets.getInstance().addDataSetWithoutLanguage(Source.WIKIDATA,
-				"https://dumps.wikimedia.org/wikidatawiki/entities/");
-		DataSets.getInstance().addDataSetWithoutLanguage(Source.YAGO,
-				"https://www.mpi-inf.mpg.de/departments/databases-and-information-systems/research/yago-naga/yago/downloads/");
-		DataSets.getInstance().addDataSet(Language.EN, Source.WCE, "http://wikitimes.l3s.de/Resource.jsp");
-		DataSets.getInstance().addDataSetWithoutLanguage(Source.EVENT_KG, "http://eventkg.l3s.uni-hannover.de/");
-		DataSets.getInstance().addDataSetWithoutLanguage(Source.INTEGRATED_TIME_2,
-				"http://eventkg.l3s.uni-hannover.de/");
-		DataSets.getInstance().addDataSetWithoutLanguage(Source.EVENT_KG, "http://eventkg.l3s.uni-hannover.de/");
+	private WikidataIdMappings wikidataIdMappings;
+	private TriplesWriter dataStoreWriter;
 
-		List<Language> languages = new ArrayList<Language>();
-		languages.add(Language.EN);
-		languages.add(Language.DE);
-
-		Entity entity = getDummyEntity();
-
-		PositionsIntegrator pi = new PositionsIntegrator(languages, null);
-		pi.initDataSetsByTrustWorthiness();
-		pi.integratePosition(entity);
-
-		for (Position position : entity.getPositions()) {
-			System.out.println(entity.getPositionsWithDataSets().get(position).getId() + ": " + position.getLatitude());
-		}
-	}
-
-	private static Entity getDummyEntity() {
-
-		Entity entity1 = new Entity();
-
-		Position pos1 = new Position(35.7833, 37.4972);
-		Position pos2 = new Position(35.783333333333, 37.497222222222);
-		Position pos3 = new Position(35.7833, 37.4972);
-
-		entity1.addPosition(pos1, DataSets.getInstance().getDataSetWithoutLanguage(Source.YAGO));
-		entity1.addPosition(pos2, DataSets.getInstance().getDataSetWithoutLanguage(Source.WIKIDATA));
-		entity1.addPosition(pos3, DataSets.getInstance().getDataSet(Language.EN, Source.DBPEDIA));
-
-		return entity1;
-	}
-
-	public PositionsIntegrator(List<Language> languages, AllEventPagesDataSet allEventPagesDataSet) {
+	public PositionsIntegrator(List<Language> languages, TriplesWriter dataStoreWriter,
+			WikidataIdMappings wikidataIdMappings) {
 		super("PositionsIntegrator", Source.ALL, "Fuses geo positions into a common graph.", languages);
-		this.allEventPagesDataSet = allEventPagesDataSet;
+		this.wikidataIdMappings = wikidataIdMappings;
+		this.dataStoreWriter = dataStoreWriter;
 	}
 
 	public void run() {
@@ -84,24 +37,23 @@ public class PositionsIntegrator extends Extractor {
 
 		initDataSetsByTrustWorthiness();
 
-		for (Entity entity : this.allEventPagesDataSet.getWikidataIdMappings().getEntitiesByWikidataNumericIds()
-				.values()) {
+		for (Entity entity : this.wikidataIdMappings.getEntities()) {
 			integratePosition(entity);
-		}
-
-		for (int wikidataId : this.allEventPagesDataSet.getWikidataIdsOfAllEvents()) {
-			Event event = this.allEventPagesDataSet.getEventByNumericWikidataId(wikidataId);
-			integratePosition(event);
 		}
 
 	}
 
-	private void integratePosition(Entity entity) {
+	public void integratePosition(Entity entity) {
+		dataStoreWriter.startInstance();
+
+		for (Position position : entity.getPositionsWithDataSets().keySet()) {
+			dataStoreWriter.writePosition(entity, position, entity.getPositionsWithDataSets().get(position), false);
+		}
 
 		Position integratedPosition = null;
 
-		if (entity.getPositions().size() == 1) {
-			for (Position position : entity.getPositions()) {
+		if (entity.getPositionsWithDataSets().keySet().size() == 1) {
+			for (Position position : entity.getPositionsWithDataSets().keySet()) {
 				integratedPosition = position;
 			}
 
@@ -124,10 +76,11 @@ public class PositionsIntegrator extends Extractor {
 		}
 
 		if (integratedPosition != null) {
-			entity.addPosition(new Position(integratedPosition.getLatitude(), integratedPosition.getLongitude()),
-					DataSets.getInstance().getDataSetWithoutLanguage(Source.EVENT_KG));
+			dataStoreWriter.writePosition(entity, integratedPosition,
+					DataSets.getInstance().getDataSetWithoutLanguage(Source.EVENT_KG), true);
 		}
 
+		dataStoreWriter.endInstance();
 	}
 
 	private Position takeMostPrecisePosition(Set<Position> positions) {
@@ -150,7 +103,7 @@ public class PositionsIntegrator extends Extractor {
 		return mostPrecisePosition;
 	}
 
-	private void initDataSetsByTrustWorthiness() {
+	public void initDataSetsByTrustWorthiness() {
 		dataSetsByTrustWorthiness.add(DataSets.getInstance().getDataSetWithoutLanguage(Source.WIKIDATA));
 
 		// English language most trustworthy

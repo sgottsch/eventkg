@@ -26,7 +26,7 @@ public class EntitiesWithEventsExtractor {
 		Map<String, String> idToStartTime = new HashMap<String, String>();
 
 		System.out.println("ALL_TTL_EVENTS_WITH_TEXTS");
-		List<String> lines1 = FileLoader.readLines(FileName.ALL_TTL_EVENTS_WITH_TEXTS);
+		List<String> lines1 = FileLoader.readLines(FileName.ALL_TTL_EVENTS);
 		int i1 = 0;
 		for (String line : lines1) {
 			if (i1 % 250000 == 0)
@@ -48,7 +48,7 @@ public class EntitiesWithEventsExtractor {
 		BufferedReader br = null;
 		try {
 			try {
-				br = FileLoader.getReader(FileName.ALL_TTL_ENTITIES_WITH_TEXTS);
+				br = FileLoader.getReader(FileName.ALL_TTL_ENTITIES);
 			} catch (FileNotFoundException e1) {
 				e1.printStackTrace();
 			}

@@ -1,7 +1,9 @@
 package de.l3s.eventkg.textual_events;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -13,27 +15,33 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.commons.io.LineIterator;
+import org.apache.commons.lang3.StringUtils;
+
 import com.google.common.collect.Sets;
 
-import de.l3s.eventkg.integration.AllEventPagesDataSet;
 import de.l3s.eventkg.integration.DataSets;
-import de.l3s.eventkg.integration.DataStore;
+import de.l3s.eventkg.integration.EntityIdGenerator;
 import de.l3s.eventkg.integration.TextualEvent;
+import de.l3s.eventkg.integration.WikidataIdMappings;
+import de.l3s.eventkg.integration.collection.EventDependency;
 import de.l3s.eventkg.integration.model.DateGranularity;
 import de.l3s.eventkg.integration.model.DateWithGranularity;
 import de.l3s.eventkg.integration.model.Entity;
 import de.l3s.eventkg.integration.model.Event;
 import de.l3s.eventkg.integration.model.relation.DataSet;
-import de.l3s.eventkg.integration.model.relation.EndTime;
-import de.l3s.eventkg.integration.model.relation.StartTime;
+import de.l3s.eventkg.integration.model.relation.Description;
+import de.l3s.eventkg.integration.model.relation.prefix.PrefixEnum;
+import de.l3s.eventkg.integration.model.relation.prefix.PrefixList;
 import de.l3s.eventkg.meta.Language;
 import de.l3s.eventkg.meta.Source;
 import de.l3s.eventkg.pipeline.Config;
 import de.l3s.eventkg.pipeline.Extractor;
+import de.l3s.eventkg.pipeline.output.TriplesWriter;
 import de.l3s.eventkg.source.currentevents.EventsFromFileExtractor;
 import de.l3s.eventkg.source.currentevents.model.WCEEntity;
 import de.l3s.eventkg.source.currentevents.model.WCEEvent;
-import de.l3s.eventkg.source.wikipedia.model.LinksToCount;
+import de.l3s.eventkg.source.wikipedia.model.LinksToCountNew;
 import de.l3s.eventkg.util.FileLoader;
 import de.l3s.eventkg.util.FileName;
 import gnu.trove.map.hash.THashMap;
@@ -41,11 +49,9 @@ import gnu.trove.set.hash.THashSet;
 
 public class TextualEventsExtractor extends Extractor {
 
-	public static final boolean PUT_ENTITIES_LINKED_IN_THE_SAME_EVENT_IN_LINK_SET = false;
-
 	private int numberOfExtractedWikiEvents = 0;
 
-	private AllEventPagesDataSet allEventPagesDataSet;
+	private static final int MINIMUM_NUMBER_OF_CHARACTERS_IN_WIKIPEDIA_EVENTS = 20;
 
 	private Set<TextualEvent> textualEvents;
 	private Map<Event, Set<TextualEvent>> eventsToTextualEvents;
@@ -57,14 +63,100 @@ public class TextualEventsExtractor extends Extractor {
 
 	private double JACCARD_THRESHOLD = 0.2;
 
-	public TextualEventsExtractor(List<Language> languages, AllEventPagesDataSet allEventPagesDataSet) {
+	private WikidataIdMappings wikidataIdMappings;
+
+	private TriplesWriter triplesWriter;
+
+	private Map<Language, PrintWriter> linkWriters;
+
+	private PrefixList prefixList;
+
+	private int eventNo;
+
+	private EntityIdGenerator idGeneratorPreviousVersion;
+
+	private Map<Event, Date> namedEventStartTimes;
+	private Map<Event, Date> namedEventEndTimes;
+
+	public TextualEventsExtractor(List<Language> languages, WikidataIdMappings wikidataIdMappings,
+			TriplesWriter dataStoreWriter) {
 		super("TextualEventsExtractor", de.l3s.eventkg.meta.Source.WIKIPEDIA,
 				"Collect and integrate textual events and their relations.", languages);
-		this.allEventPagesDataSet = allEventPagesDataSet;
+		this.languages = languages;
+		this.wikidataIdMappings = wikidataIdMappings;
+		this.triplesWriter = dataStoreWriter;
 	}
 
 	public void run() {
-		extractRelations();
+		prefixList = PrefixList.getInstance();
+		try {
+			init();
+			extractRelations();
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			for (PrintWriter writer : this.linkWriters.values())
+				writer.close();
+		}
+	}
+
+	private void init() throws FileNotFoundException {
+		initLinksWriters();
+
+		loadNamedEventDates();
+
+		// we can only link textual events to those from previous version. But
+		// for entities, we use the current version. Therefore, we use two ID
+		// generators (one here, one in the writer).
+
+		this.idGeneratorPreviousVersion = new EntityIdGenerator(true);
+		this.eventNo = this.idGeneratorPreviousVersion.getLastEventNo() + 1;
+	}
+
+	private void loadNamedEventDates() {
+
+		System.out.println("load named event dates");
+
+		this.namedEventStartTimes = new HashMap<Event, Date>();
+		this.namedEventEndTimes = new HashMap<Event, Date>();
+
+		SimpleDateFormat dateFormat = new SimpleDateFormat("G yyyy-MM-dd", Locale.ENGLISH);
+
+		LineIterator it = null;
+		try {
+			it = FileLoader.getLineIterator(FileName.TIMES_INTEGRATED);
+			while (it.hasNext()) {
+				String line = it.nextLine();
+
+				String[] parts = line.split(",");
+				String eventWikidataId = parts[0];
+				Event event = this.wikidataIdMappings.getEventByWikidataId(eventWikidataId);
+				String dateString = parts[2];
+
+				try {
+					Date date = dateFormat.parse(dateString);
+
+					if (parts[1].equals("B"))
+						this.namedEventStartTimes.put(event, date);
+					else
+						this.namedEventEndTimes.put(event, date);
+				} catch (ParseException e) {
+					e.printStackTrace();
+				}
+
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				it.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+
+		System.out.println("#Events with start times: " + this.namedEventStartTimes.keySet().size());
+		System.out.println("#Events with end times: " + this.namedEventEndTimes.keySet().size());
 	}
 
 	private void extractRelations() {
@@ -103,11 +195,6 @@ public class TextualEventsExtractor extends Extractor {
 	}
 
 	private void mergeEvents() {
-
-		for (Language language : languages) {
-			DataStore.getInstance().getMentionCountsFromTextualEvents().put(language,
-					new HashMap<Entity, Map<Entity, Integer>>());
-		}
 
 		// Is each location mentioned in the text a location of the event?
 		// Sometimes, they are just actors ("Ethiopia begins a massive offensive
@@ -153,7 +240,6 @@ public class TextualEventsExtractor extends Extractor {
 		// cluster is new sub event
 		// cluster is same as named event (=> just a new description)
 
-		int eventNumber = 0;
 		// map textual events to events
 		for (Set<TextualEvent> eventGroup : eventGroups) {
 
@@ -238,23 +324,23 @@ public class TextualEventsExtractor extends Extractor {
 
 			// --- create a new event for the event group or take a
 			// representative named event
-			Event event = null;
-
-			if (namedEvent != null && start.equals(namedEvent.getStartTime()) && end.equals(namedEvent.getEndTime())) {
-				event = namedEvent;
-			} else {
-				event = new Event();
-				eventNumber += 1;
-				event.setTemporaryId("T" + String.valueOf(eventNumber));
-
-				DataStore.getInstance().addEvent(event);
-
-				if (namedEvent == null) {
-					// completely new event
-				} else {
-					event.addParent(namedEvent, dataSet);
+			if (namedEvent != null) {
+				if (this.namedEventStartTimes.containsKey(namedEvent)
+						&& start.equals(namedEventStartTimes.get(namedEvent))
+						&& this.namedEventEndTimes.containsKey(namedEvent)
+						&& end.equals(namedEventEndTimes.get(namedEvent))) {
+					writeNamedEventDescriptions(namedEvent, eventGroup);
+					continue;
 				}
 			}
+
+			Event event = new Event();
+			// String eventId = "text_event_" + String.valueOf(eventNumber);
+			// event.setId(eventId);
+			// eventNumber += 1;
+
+			if (namedEvent != null)
+				event.addParent(namedEvent, dataSet);
 
 			// descriptions and categories
 			for (TextualEvent eventInCluster : eventGroup) {
@@ -285,46 +371,7 @@ public class TextualEventsExtractor extends Extractor {
 
 			// add links
 			for (Language language : relatedEntities.keySet()) {
-				Map<Entity, Map<Entity, Integer>> mentionPairsInLanguage = DataStore.getInstance()
-						.getMentionCountsFromTextualEvents().get(language);
-
-				for (Entity entity1 : relatedEntities.get(language).keySet()) {
-					LinksToCount linkCount = new LinksToCount(event, entity1,
-							relatedEntities.get(language).get(entity1), language, true);
-
-					DataStore.getInstance().addLinkRelation(linkCount.toGenericRelation());
-
-					if (PUT_ENTITIES_LINKED_IN_THE_SAME_EVENT_IN_LINK_SET) {
-						for (Entity entity2 : relatedEntities.get(language).keySet()) {
-
-							if (entity1 == entity2)
-								continue;
-
-							// remember mentions of two entities in the same
-							// events,
-							// so these numbers can be added later to the link
-							// set
-							// counts
-							if (!mentionPairsInLanguage.containsKey(entity1)) {
-								mentionPairsInLanguage.put(entity1, new HashMap<Entity, Integer>());
-							}
-							if (!mentionPairsInLanguage.get(entity1).containsKey(entity2))
-								mentionPairsInLanguage.get(entity1).put(entity2, 1);
-							else
-								mentionPairsInLanguage.get(entity1).put(entity2,
-										mentionPairsInLanguage.get(entity1).get(entity2) + 1);
-
-							if (!mentionPairsInLanguage.containsKey(entity2)) {
-								mentionPairsInLanguage.put(entity2, new HashMap<Entity, Integer>());
-							}
-							if (!mentionPairsInLanguage.get(entity2).containsKey(entity1))
-								mentionPairsInLanguage.get(entity2).put(entity1, 1);
-							else
-								mentionPairsInLanguage.get(entity2).put(entity1,
-										mentionPairsInLanguage.get(entity2).get(entity1) + 1);
-						}
-					}
-				}
+				writeLinkLine(language, relatedEntities.get(language).keySet());
 			}
 
 			// add locations
@@ -344,13 +391,18 @@ public class TextualEventsExtractor extends Extractor {
 
 			for (DataSet dataSetWithTime : dataSets) {
 				if (start != null)
-					DataStore.getInstance().addStartTime(
-							new StartTime(event, dataSetWithTime, new DateWithGranularity(start, startGranularity)));
+					event.addStartTime(new DateWithGranularity(start, startGranularity), dataSetWithTime);
 				if (end != null)
-					DataStore.getInstance().addEndTime(
-							new EndTime(event, dataSetWithTime, new DateWithGranularity(end, endGranularity)));
+					event.addEndTime(new DateWithGranularity(end, endGranularity), dataSetWithTime);
 			}
 
+			Set<Entity> relatedEntitiesUnique = new HashSet<Entity>();
+			for (Language language : relatedEntities.keySet()) {
+				relatedEntitiesUnique.addAll(relatedEntities.get(language).keySet());
+			}
+
+			writeTextualEvent(event, relatedEntitiesUnique);
+			writeEventLinkTriples(event, relatedEntities);
 		}
 
 	}
@@ -363,78 +415,6 @@ public class TextualEventsExtractor extends Extractor {
 				extendEvent(neighbour, cluster);
 		}
 	}
-
-	// private void mergeEvents() {
-	//
-	// Set<Set<TextualEvent>> mergedEvents = new HashSet<Set<TextualEvent>>();
-	//
-	// System.out.println("mergeEvents");
-	//
-	// for (String date : this.eventsByDates.keySet()) {
-	// Set<TextualEvent> doneEvents = new HashSet<TextualEvent>();
-	// for (TextualEvent event1 : this.eventsByDates.get(date)) {
-	// doneEvents.add(event1);
-	// for (TextualEvent event2 : this.eventsByDates.get(date)) {
-	// if (event1 == event2 || doneEvents.contains(event2))
-	// continue;
-	// if (event1.getRelatedEntities().isEmpty() ||
-	// event2.getRelatedEntities().isEmpty())
-	// continue;
-	// if (!Sets.intersection(event1.getRelatedEntities(),
-	// event2.getRelatedEntities()).isEmpty()) {
-	// event1.addCandidateSimilarEvent(event2);
-	// event2.addCandidateSimilarEvent(event1);
-	// }
-	// }
-	// }
-	// }
-	//
-	// Set<TextualEvent> unclearEvents = new HashSet<TextualEvent>();
-	// unclearEvents.addAll(this.textualEvents);
-	//
-	// for (TextualEvent event : this.textualEvents) {
-	// if (!unclearEvents.contains(event))
-	// continue;
-	// if (event.getCandidateSimilarEvents().isEmpty()) {
-	// unclearEvents.remove(event);
-	// continue;
-	// }
-	// // System.out.println(event.getStartDate()+" -
-	// // "+event.getEndDate());
-	// // System.out.println(event.getText());
-	// // for(TextualEvent event2: event.getCandidateSimilarEvents())
-	// // System.out.println("\t"+event2.getText());
-	// boolean clear = true;
-	// for (TextualEvent event2 : event.getCandidateSimilarEvents()) {
-	// // intersection should be full set -1 with is event/event2
-	// if (Sets.intersection(event2.getCandidateSimilarEvents(),
-	// event.getCandidateSimilarEvents())
-	// .size() < event.getCandidateSimilarEvents().size() - 1) {
-	// clear = false;
-	// break;
-	// }
-	// }
-	// if (clear) {
-	// unclearEvents.remove(event);
-	// for (TextualEvent event2 : event.getCandidateSimilarEvents()) {
-	// unclearEvents.remove(event2);
-	// }
-	// }
-	// }
-	//
-	// System.out.println("Unclear events: " + unclearEvents.size());
-	// for (TextualEvent event : unclearEvents) {
-	// Set<TextualEvent> candidates = new HashSet<TextualEvent>();
-	//
-	// candidates.addAll(event.getCandidateSimilarEvents());
-	// for (TextualEvent event2 : event.getCandidateSimilarEvents()) {
-	// candidates.addAll(event2.getCandidateSimilarEvents());
-	// }
-	//
-	// System.out.println(candidates.size());
-	// }
-	//
-	// }
 
 	private double minJaccard(Set<?> set1, Set<?> set2) {
 		return Sets.intersection(set1, set2).size() / Math.min(set1.size(), set2.size());
@@ -475,6 +455,10 @@ public class TextualEventsExtractor extends Extractor {
 						|| text.trim().equals("no events") || text.trim().equals("no events."))
 					continue;
 
+				text = text.replace("  ", " ");
+				if (text.length() < MINIMUM_NUMBER_OF_CHARACTERS_IN_WIKIPEDIA_EVENTS)
+					continue;
+
 				Set<Entity> relatedEntities = new HashSet<Entity>();
 				Set<Event> relatedEvents = new HashSet<Event>();
 
@@ -497,8 +481,7 @@ public class TextualEventsExtractor extends Extractor {
 					}
 
 					for (String entityName : linksAndLeadingLink) {
-						Entity entity = allEventPagesDataSet.getWikidataIdMappings().getEntityByWikipediaLabel(language,
-								entityName);
+						Entity entity = this.wikidataIdMappings.getEntityByWikipediaLabel(language, entityName);
 
 						if (entity == null)
 							continue;
@@ -558,13 +541,14 @@ public class TextualEventsExtractor extends Extractor {
 			String startDate = dateFormat.format(wceEvent.getDate());
 			String endDate = dateFormat.format(wceEvent.getDate());
 			String text = wceEvent.getDescription();
+			text = text.replace("  ", " ");
 
 			Set<Entity> relatedEntities = new HashSet<Entity>();
 			Set<Event> relatedEvents = new HashSet<Event>();
 			Set<String> sources = new HashSet<String>();
 
 			for (WCEEntity wceEntity : wceEvent.getEntities()) {
-				Entity entity = allEventPagesDataSet.getWikidataIdMappings().getEntityByWikipediaLabel(language,
+				Entity entity = this.wikidataIdMappings.getEntityByWikipediaLabel(language,
 						wceEntity.getWikiURL().replaceAll(" ", "_"));
 				if (entity == null)
 					continue;
@@ -580,7 +564,7 @@ public class TextualEventsExtractor extends Extractor {
 			Entity storyEntity = null;
 			if (wceEvent.getStory() != null) {
 				// add the story as related entity/event
-				storyEntity = allEventPagesDataSet.getWikidataIdMappings().getEntityByWikipediaLabel(language,
+				storyEntity = this.wikidataIdMappings.getEntityByWikipediaLabel(language,
 						wceEvent.getStory().getName().replaceAll(" ", "_"));
 				if (storyEntity != null) {
 					relatedEntities.add(storyEntity);
@@ -617,6 +601,144 @@ public class TextualEventsExtractor extends Extractor {
 		}
 
 		return numberOfWCEEvents;
+	}
+
+	private void initLinksWriters() throws FileNotFoundException {
+		this.linkWriters = new HashMap<Language, PrintWriter>();
+		for (Language language : this.languages) {
+			PrintWriter linksWriter = FileLoader.getWriter(FileName.TEXT_EVENT_LINKS, language);
+			this.linkWriters.put(language, linksWriter);
+		}
+	}
+
+	private void writeLinkLine(Language language, Set<Entity> entities) {
+		Set<String> entityNames = new HashSet<String>();
+		for (Entity entity : entities) {
+			entityNames.add(entity.getWikidataId());
+		}
+		linkWriters.get(language).println(StringUtils.join(entityNames, ","));
+	}
+
+	private void writeNamedEventDescriptions(Event namedEvent, Set<TextualEvent> eventGroup) {
+		this.triplesWriter.startInstance();
+		for (TextualEvent textEvent : eventGroup) {
+			this.triplesWriter.writeEventTextualEventDescription(namedEvent, textEvent.getLanguage(),
+					textEvent.getText(),
+					DataSets.getInstance().getDataSet(textEvent.getLanguage(), textEvent.getSource()));
+		}
+		this.triplesWriter.endInstance();
+	}
+
+	private void writeTextualEvent(Event event, Set<Entity> relatedEntities) {
+
+		triplesWriter.startInstance();
+
+		event.setTextEvent(true);
+
+		String eventId = this.idGeneratorPreviousVersion.getEventID(event);
+		if (eventId == null) {
+			eventId = "event_" + String.valueOf(eventNo);
+			eventNo += 1;
+		}
+		event.setId(eventId);
+
+		// type
+		triplesWriter.writeBasicTypeTriple(event, this.prefixList.getPrefix(PrefixEnum.EVENT_KG_SCHEMA), "TextEvent",
+				DataSets.getInstance().getDataSetWithoutLanguage(Source.EVENT_KG), true);
+
+		// URLs
+		for (DataSet dataSet : event.getOtherUrls().keySet()) {
+			for (String otherUrl : event.getOtherUrls().get(dataSet)) {
+				triplesWriter.writeBasicExtractedTriple(event, otherUrl, dataSet, true);
+			}
+		}
+
+		// times
+		boolean firstDate = true;
+		for (DateWithGranularity startTime : event.getStartTimesWithDataSets().keySet()) {
+			for (DataSet ds : event.getStartTimesWithDataSets().get(startTime)) {
+				triplesWriter.writeTime(event, startTime, ds, true, firstDate);
+				firstDate = false;
+			}
+		}
+
+		firstDate = true;
+		for (DateWithGranularity endTime : event.getEndTimesWithDataSets().keySet()) {
+			for (DataSet ds : event.getEndTimesWithDataSets().get(endTime)) {
+				triplesWriter.writeTime(event, endTime, ds, false, firstDate);
+				firstDate = false;
+			}
+		}
+
+		// descriptions
+		Map<Language, Set<String>> names = new HashMap<Language, Set<String>>();
+		for (Description description : event.getDescriptions()) {
+
+			if (!names.containsKey(description.getLanguage()))
+				names.put(description.getLanguage(), new HashSet<String>());
+
+			Language language = description.getLanguage();
+			triplesWriter.writeBasicDescriptionTriple(event, description.getLabel(), description.getDataSet(), language,
+					!names.get(description.getLanguage()).contains(description.getLabel()));
+			names.get(description.getLanguage()).add(description.getLabel());
+		}
+
+		// parent events
+		for (Event parentEvent : event.getParents()) {
+			triplesWriter.writeEventDependency(parentEvent, event, EventDependency.SUB_EVENT, true);
+			triplesWriter.writeEventDependency(event, parentEvent, EventDependency.SUB_EVENT_OF, true);
+		}
+
+		// categories
+		for (DataSet categoryDataSet : event.getCategories().keySet()) {
+			for (Language categoryLanguage : event.getCategories().get(categoryDataSet).keySet()) {
+				for (String category : event.getCategories().get(categoryDataSet).get(categoryLanguage)) {
+					triplesWriter.writeTextEventCategoryTriple(event, category, categoryLanguage, categoryDataSet,
+							true);
+				}
+			}
+		}
+
+		// sources
+		for (DataSet sourceDataSet : event.getSources().keySet()) {
+			for (String source : event.getSources().get(sourceDataSet)) {
+				triplesWriter.writeTextEventSourceTriple(event, source, sourceDataSet, true);
+			}
+		}
+
+		for (Entity entity : relatedEntities) {
+			triplesWriter.writeTextEventActorTriple(event, entity);
+		}
+
+		triplesWriter.endInstance();
+	}
+
+	private void writeEventLinkTriples(Event event, Map<Language, Map<Entity, Integer>> relatedEntities) {
+
+		triplesWriter.startInstance();
+
+		Map<Entity, LinksToCountNew> linkCounts = new HashMap<Entity, LinksToCountNew>();
+
+		for (Language language : relatedEntities.keySet()) {
+			for (Entity entity : relatedEntities.get(language).keySet()) {
+
+				LinksToCountNew linkCount = linkCounts.get(entity);
+
+				if (linkCount == null) {
+					linkCount = new LinksToCountNew(event, entity, true);
+					linkCounts.put(entity, linkCount);
+				}
+
+				int count = relatedEntities.get(language).get(entity);
+
+				linkCount.addCount(DataSets.getInstance().getDataSet(language, Source.WIKIPEDIA), count);
+			}
+		}
+
+		for (LinksToCountNew linkCount : linkCounts.values())
+			triplesWriter.writeTextEventLinkCount(linkCount);
+
+		triplesWriter.endInstance();
 	}
 
 }

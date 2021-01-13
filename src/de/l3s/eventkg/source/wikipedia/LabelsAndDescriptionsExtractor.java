@@ -47,34 +47,6 @@ public class LabelsAndDescriptionsExtractor extends Extractor {
 		}
 	}
 
-	private void collectDescriptionsFromFile(File file, Language language, DataSet dataSet) {
-
-		LineIterator it = null;
-		try {
-			it = FileLoader.getLineIterator(file.getAbsolutePath(), false);
-			while (it.hasNext()) {
-				String line = it.nextLine();
-				String[] parts = line.split(Config.TAB);
-				String wikidataId = parts[0];
-
-				Event event = allEventPagesDataSet.getEventByWikidataId(wikidataId);
-
-				if (event != null) {
-					event.addDescription(dataSet, language, parts[1]);
-				}
-			}
-		} catch (IOException e) {
-			e.printStackTrace();
-		} finally {
-			try {
-				it.close();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		}
-
-	}
-
 	private void collectAliasesFromFile(File file, Language language, DataSet dataSet) {
 
 		LineIterator it = null;
@@ -110,6 +82,34 @@ public class LabelsAndDescriptionsExtractor extends Extractor {
 						}
 						entity.addAlias(dataSet, language, alias);
 					}
+				}
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				it.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+
+	}
+
+	private void collectDescriptionsFromFile(File file, Language language, DataSet dataSet) {
+
+		LineIterator it = null;
+		try {
+			it = FileLoader.getLineIterator(file.getAbsolutePath(), false);
+			while (it.hasNext()) {
+				String line = it.nextLine();
+				String[] parts = line.split(Config.TAB);
+				String wikidataId = parts[0];
+
+				Event event = allEventPagesDataSet.getEventByWikidataId(wikidataId);
+
+				if (event != null) {
+					event.addDescription(dataSet, language, parts[1]);
 				}
 			}
 		} catch (IOException e) {

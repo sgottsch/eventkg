@@ -9,6 +9,7 @@ import java.text.SimpleDateFormat;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.LineIterator;
@@ -178,8 +179,11 @@ public class TimeFusionEvaluationResults {
 		// filter s.t. only events with user annotation remain
 		for (Iterator<String> it = events.keySet().iterator(); it.hasNext();) {
 			String label = it.next();
-			if (events.get(label).getDataSetsWithStartTimes().get(getDataSet("user")) == null)
-				it.remove();
+			for (Set<DataSet> dss : events.get(label).getStartTimesWithDataSets().values()) {
+				if (dss.contains(getDataSet("user")))
+					continue;
+			}
+			it.remove();
 		}
 		System.out.println("#Events with annotations: " + events.size());
 
@@ -210,8 +214,16 @@ public class TimeFusionEvaluationResults {
 		for (Event event : events.values()) {
 			correctInDataSet.put(event, new HashMap<DataSet, Boolean>());
 			for (DataSet dataSet : this.dataSets.values()) {
-				DateWithGranularity userStartDate = event.getDataSetsWithStartTimes().get(getDataSet("user"));
-				DateWithGranularity dataStartDate = event.getDataSetsWithStartTimes().get(dataSet);
+				DateWithGranularity userStartDate = null;
+				DateWithGranularity dataStartDate = null;
+
+				for (DateWithGranularity date : event.getStartTimesWithDataSets().keySet()) {
+					if (event.getStartTimesWithDataSets().get(date) == getDataSet("user"))
+						userStartDate = date;
+					if (event.getStartTimesWithDataSets().get(date) == dataSet)
+						dataStartDate = date;
+				}
+
 				if (userStartDate != null && dataStartDate != null && userStartDate.equals(dataStartDate)) {
 					correctStartDates.put(dataSet, correctStartDates.get(dataSet) + 1);
 					correctDates.put(dataSet, correctDates.get(dataSet) + 1);
@@ -226,8 +238,15 @@ public class TimeFusionEvaluationResults {
 					correctInDataSet.get(event).put(dataSet, false);
 				}
 
-				DateWithGranularity userEndDate = event.getDataSetsWithEndTimes().get(getDataSet("user"));
-				DateWithGranularity dataEndDate = event.getDataSetsWithEndTimes().get(dataSet);
+				DateWithGranularity userEndDate = null;
+				DateWithGranularity dataEndDate = null;
+
+				for (DateWithGranularity date : event.getEndTimesWithDataSets().keySet()) {
+					if (event.getEndTimesWithDataSets().get(date) == getDataSet("user"))
+						userEndDate = date;
+					if (event.getEndTimesWithDataSets().get(date) == dataSet)
+						dataEndDate = date;
+				}
 				if (userEndDate != null && dataEndDate != null && userEndDate.equals(dataEndDate)) {
 					correctEndDates.put(dataSet, correctEndDates.get(dataSet) + 1);
 					correctDates.put(dataSet, correctDates.get(dataSet) + 1);

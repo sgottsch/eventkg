@@ -77,7 +77,7 @@ public class PropertyNamesProcessor implements EntityDocumentDumpProcessor {
 
 			if (labelValue != null) {
 				outLabelsProperties.get(language).println(
-						propertyDocument.getPropertyId().getId() + Config.TAB + csvEscape(labelValue.getText()));
+						propertyDocument.getEntityId().getId() + Config.TAB + csvEscape(labelValue.getText()));
 			}
 
 			List<String> aliases = new ArrayList<String>();
@@ -88,7 +88,7 @@ public class PropertyNamesProcessor implements EntityDocumentDumpProcessor {
 				}
 			}
 			if (!aliases.isEmpty())
-				outAliasesProperties.get(language).println(propertyDocument.getPropertyId().getId() + Config.TAB
+				outAliasesProperties.get(language).println(propertyDocument.getEntityId().getId() + Config.TAB
 						+ StringUtils.join(aliases, Config.TAB) + "");
 
 			String description = null;
@@ -99,7 +99,7 @@ public class PropertyNamesProcessor implements EntityDocumentDumpProcessor {
 			}
 			if (description != null)
 				outDescriptionsProperties.get(language)
-						.println(propertyDocument.getPropertyId().getId() + Config.TAB + csvEscape(description));
+						.println(propertyDocument.getEntityId().getId() + Config.TAB + csvEscape(description));
 		}
 	}
 

@@ -57,7 +57,7 @@ public class TemporalPropertiesExtractor implements EntityDocumentDumpProcessor 
 
 							if (timeString != null) {
 								this.itemsWithTemporalPropertyCount++;
-								out.print(itemDocument.getItemId().getId());
+								out.print(itemDocument.getEntityId().getId());
 								out.print(TAB);
 								out.print(propertyId);
 								out.print(TAB);

@@ -55,7 +55,7 @@ public class LabelsAndDescriptionsExtractor implements EntityDocumentDumpProcess
 
 		for (Language language : this.languages) {
 			this.outWikipediaTitles.put(language,
-					FileLoader.getPrintStream(FileName.ID_TO_WIKIPEDIA_MAPPING_FILE_NAME, language));
+					FileLoader.getPrintStream(FileName.ID_TO_WIKIPEDIA_MAPPING, language));
 			this.outLabels.put(language, FileLoader.getPrintStream(FileName.WIKIDATA_LABELS, language));
 			this.outDescriptions.put(language, FileLoader.getPrintStream(FileName.WIKIDATA_DESCRIPTIONS, language));
 			this.outAliases.put(language, FileLoader.getPrintStream(FileName.WIKIDATA_ALIASES, language));
@@ -80,7 +80,7 @@ public class LabelsAndDescriptionsExtractor implements EntityDocumentDumpProcess
 		this.itemCount++;
 
 		boolean tc = false;
-		// if (itemDocument.getItemId().getId().equals("Q28")) {
+		// if (itemDocument.getEntityId().getId().equals("Q28")) {
 		// System.out.println("TC: Found Q28.");
 		// tc = true;
 		// }
@@ -94,14 +94,14 @@ public class LabelsAndDescriptionsExtractor implements EntityDocumentDumpProcess
 					System.out.println("TC: " + language + ", " + labelValue.getText());
 
 				outLabels.get(language)
-						.println(itemDocument.getItemId().getId() + TAB + csvEscape(labelValue.getText()));
+						.println(itemDocument.getEntityId().getId() + TAB + csvEscape(labelValue.getText()));
 			}
 
 			SiteLink siteLink = itemDocument.getSiteLinks().get(language.getWiki());
 			String wikiLink = null;
 			if (siteLink != null) {
 				wikiLink = siteLink.getPageTitle();
-				outWikipediaTitles.get(language).println(itemDocument.getItemId().getId() + TAB + csvEscape(wikiLink));
+				outWikipediaTitles.get(language).println(itemDocument.getEntityId().getId() + TAB + csvEscape(wikiLink));
 			}
 
 			List<String> aliases = new ArrayList<String>();
@@ -113,7 +113,7 @@ public class LabelsAndDescriptionsExtractor implements EntityDocumentDumpProcess
 			}
 			if (!aliases.isEmpty())
 				outAliases.get(language)
-						.println(itemDocument.getItemId().getId() + TAB + StringUtils.join(aliases, TAB) + "");
+						.println(itemDocument.getEntityId().getId() + TAB + StringUtils.join(aliases, TAB) + "");
 
 			String description = null;
 			MonolingualTextValue descriptionValue = itemDocument.getDescriptions().get(language.getLanguageLowerCase());
@@ -121,7 +121,7 @@ public class LabelsAndDescriptionsExtractor implements EntityDocumentDumpProcess
 				description = descriptionValue.getText();
 			}
 			if (description != null)
-				outDescriptions.get(language).println(itemDocument.getItemId().getId() + TAB + csvEscape(description));
+				outDescriptions.get(language).println(itemDocument.getEntityId().getId() + TAB + csvEscape(description));
 		}
 
 		// Print progress every 100,000 items:
@@ -140,7 +140,7 @@ public class LabelsAndDescriptionsExtractor implements EntityDocumentDumpProcess
 
 			if (labelValue != null) {
 				outLabelsProperties.get(language)
-						.println(propertyDocument.getPropertyId().getId() + TAB + csvEscape(labelValue.getText()));
+						.println(propertyDocument.getEntityId().getId() + TAB + csvEscape(labelValue.getText()));
 			}
 
 			List<String> aliases = new ArrayList<String>();
@@ -152,7 +152,7 @@ public class LabelsAndDescriptionsExtractor implements EntityDocumentDumpProcess
 			}
 			if (!aliases.isEmpty())
 				outAliasesProperties.get(language)
-						.println(propertyDocument.getPropertyId().getId() + TAB + StringUtils.join(aliases, TAB) + "");
+						.println(propertyDocument.getEntityId().getId() + TAB + StringUtils.join(aliases, TAB) + "");
 
 			String description = null;
 			MonolingualTextValue descriptionValue = propertyDocument.getDescriptions()
@@ -162,7 +162,7 @@ public class LabelsAndDescriptionsExtractor implements EntityDocumentDumpProcess
 			}
 			if (description != null)
 				outDescriptionsProperties.get(language)
-						.println(propertyDocument.getPropertyId().getId() + TAB + csvEscape(description));
+						.println(propertyDocument.getEntityId().getId() + TAB + csvEscape(description));
 		}
 	}
 

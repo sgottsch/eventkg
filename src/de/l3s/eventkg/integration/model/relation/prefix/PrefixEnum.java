@@ -1,5 +1,7 @@
 package de.l3s.eventkg.integration.model.relation.prefix;
 
+import de.l3s.eventkg.pipeline.Config;
+
 public enum PrefixEnum {
 
 	SCHEMA_ORG("so:", "http://schema.org/"),
@@ -7,9 +9,9 @@ public enum PrefixEnum {
 	RDFS("rdfs:", "http://www.w3.org/2000/01/rdf-schema#"),
 	DCTERMS("dcterms:", "http://purl.org/dc/terms/"),
 	XSD("xsd:", "http://www.w3.org/2001/XMLSchema#"),
-	EVENT_KG_SCHEMA("eventKG-s:", "http://eventkg.l3s.uni-hannover.de/schema/"),
-	EVENT_KG_RESOURCE("eventKG-r:", "http://eventkg.l3s.uni-hannover.de/resource/"),
-	EVENT_KG_GRAPH("eventKG-g:", "http://eventkg.l3s.uni-hannover.de/graph/"),
+	EVENT_KG_SCHEMA("eventKG-s:", Config.getSchemaURI()),
+	EVENT_KG_RESOURCE("eventKG-r:", Config.getResourceURI()),
+	EVENT_KG_GRAPH("eventKG-g:", Config.getGraphURI()),
 	VOID("void:", "http://rdfs.org/ns/void#"),
 	WIKIDATA_PROPERTY("wdt:", "http://www.wikidata.org/prop/direct/"),
 	WIKIDATA_ENTITY("wd:", "http://www.wikidata.org/entity/"),
@@ -53,6 +55,7 @@ public enum PrefixEnum {
 	}
 
 	public String getAbbr() {
+		Config.getValue("uri");
 		return abbr;
 	}
 

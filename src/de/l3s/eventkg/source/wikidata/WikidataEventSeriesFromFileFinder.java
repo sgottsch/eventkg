@@ -13,6 +13,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.io.LineIterator;
+import org.apache.commons.lang3.StringUtils;
 
 import com.google.common.collect.Sets;
 
@@ -23,7 +24,6 @@ import de.l3s.eventkg.pipeline.Extractor;
 import de.l3s.eventkg.util.FileLoader;
 import de.l3s.eventkg.util.FileName;
 import de.l3s.eventkg.util.MapUtil;
-import edu.stanford.nlp.util.StringUtils;
 
 /**
  * Given the "subclass of" and "instance of" relations extracted from the
@@ -113,6 +113,7 @@ public class WikidataEventSeriesFromFileFinder extends Extractor {
 		}
 		forbiddenClasses.add(WikidataResource.RECURRENT_EVENT_EDITION.getId());
 		forbiddenClasses.add(WikidataResource.SPORTS_SEASON.getId());
+		forbiddenClasses.add(WikidataResource.TELEVISION_SERIES.getId());
 
 		Set<String> allClasses = new HashSet<String>();
 

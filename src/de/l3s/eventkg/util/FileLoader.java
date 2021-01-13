@@ -31,6 +31,8 @@ public class FileLoader {
 	public static final String ONLINE_META_FOLDER_SUFFIX = "meta/";
 	public static final String ONLINE_OUTPUT_FOLDER_SUFFIX = "output/";
 	public static final String ONLINE_OUTPUT_PREVIEW_FOLDER_SUFFIX = "output_preview/";
+	public static final String ONLINE_OUTPUT_LIGHT_FOLDER_SUFFIX = "output_light/";
+	public static final String ONLINE_OUTPUT_LIGHT_PREVIEW_FOLDER_SUFFIX = "output_light_preview/";
 	public static final String ONLINE_PREVIOUS_VERSION_FOLDER_SUFFIX = "previous_version/";
 
 	public static SimpleDateFormat PARSE_DATE_FORMAT = new SimpleDateFormat("G yyyy-MM-dd", Locale.US);
@@ -48,6 +50,14 @@ public class FileLoader {
 		return new File(getPath(fileName, language));
 	}
 
+	public static File getFile(FileName fileName) {
+		return new File(getPath(fileName));
+	}
+
+	public static File getFileLight(FileName fileName) {
+		return new File(getLightPath(getPath(fileName)));
+	}
+
 	public static BufferedReader getReader(FileName fileName) throws FileNotFoundException {
 		return getReader(getPath(fileName), fileName.hasColumnNamesInFirstLine());
 	}
@@ -63,6 +73,10 @@ public class FileLoader {
 			}
 		}
 		return br;
+	}
+
+	public static LineIterator getLineIteratorLight(FileName fileName) throws IOException {
+		return getLineIterator(getLightPath(getPath(fileName)), fileName.hasColumnNamesInFirstLine());
 	}
 
 	public static LineIterator getLineIterator(FileName fileName) throws IOException {
@@ -167,6 +181,10 @@ public class FileLoader {
 		return new PrintWriter(getPath(fileName));
 	}
 
+	public static PrintWriter getWriterLight(FileName fileName) throws FileNotFoundException {
+		return new PrintWriter(getLightPath(getPath(fileName)));
+	}
+
 	public static PrintWriter getWriterWithAppend(FileName fileName) throws IOException {
 		return new PrintWriter(new FileWriter(getPath(fileName), true));
 	}
@@ -213,14 +231,18 @@ public class FileLoader {
 			path = Config.getValue("data_folder") + ONLINE_OUTPUT_FOLDER_SUFFIX;
 		else if (fileName.isOutputPreviewData())
 			path = Config.getValue("data_folder") + ONLINE_OUTPUT_PREVIEW_FOLDER_SUFFIX;
+		else if (fileName.isOutputLightData())
+			path = Config.getValue("data_folder") + ONLINE_OUTPUT_LIGHT_FOLDER_SUFFIX;
+		else if (fileName.isOutputLightPreviewData())
+			path = Config.getValue("data_folder") + ONLINE_OUTPUT_LIGHT_PREVIEW_FOLDER_SUFFIX;
 		else if (fileName.isPreviousVersionData())
 			path = Config.getValue("data_folder") + ONLINE_PREVIOUS_VERSION_FOLDER_SUFFIX;
 
 		if (fileName.getSource() != null) {
 			if (language == null) {
-				path = path + fileName.getSource().name().toLowerCase();
+				path = path + fileName.getSource().name().toLowerCase() + "/";
 			} else {
-				path = path + fileName.getSource().name().toLowerCase() + "/" + language.getLanguage();
+				path = path + fileName.getSource().name().toLowerCase() + "/" + language.getLanguage() + "/";
 			}
 		}
 
@@ -229,9 +251,13 @@ public class FileLoader {
 			if (language != null && fileNameString.contains("$lang$"))
 				fileNameString = fileNameString.replace("$lang$", language.getLanguage().toLowerCase());
 
-			return path + "/" + fileNameString;
-		} else
+			path = path + fileNameString;
+			System.out.println("   Path: " + path);
 			return path;
+		} else {
+			System.out.println("   Path: " + path);
+			return path;
+		}
 	}
 
 	public static List<File> getFilesList(FileName folderName, Language language) {
@@ -298,6 +324,14 @@ public class FileLoader {
 		String path = getPath(fileName);
 		File f = new File(path);
 		return f.exists();
+	}
+
+	public static String getLightPath(String path) {
+		path = path.replace(ONLINE_OUTPUT_PREVIEW_FOLDER_SUFFIX, ONLINE_OUTPUT_LIGHT_PREVIEW_FOLDER_SUFFIX);
+		path = path.replace(ONLINE_OUTPUT_FOLDER_SUFFIX, ONLINE_OUTPUT_LIGHT_FOLDER_SUFFIX);
+		path = path.replace(".nq", ".ttl");
+		System.out.println("   Light path: " + path);
+		return path;
 	}
 
 }

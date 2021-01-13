@@ -11,6 +11,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.commons.lang3.StringUtils;
+
 import com.google.common.collect.Sets;
 
 import de.l3s.eventkg.meta.Language;
@@ -20,7 +22,6 @@ import de.l3s.eventkg.pipeline.Extractor;
 import de.l3s.eventkg.util.FileLoader;
 import de.l3s.eventkg.util.FileName;
 import de.l3s.eventkg.util.MapUtil;
-import edu.stanford.nlp.util.StringUtils;
 
 /**
  * Given the "subclass of" and "instance of" relations extracted from the
@@ -157,6 +158,10 @@ public class WikidataEventsFromFileFinder extends Extractor {
 			newTargetClasses.removeAll(ignoredClasses);
 			targetClasses = newTargetClasses;
 
+			for (String line : FileLoader.readLines(FileName.WIKIDATA_POSITIVE_EVENT_CLASSES)) {
+				targetClasses.add(line.split("\t")[0]);
+			}
+			
 			if (printTree) {
 				for (String id : newTargetClasses) {
 					System.out.println(indent + labels.get(id) + "\t" + id);

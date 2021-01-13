@@ -4,16 +4,15 @@ import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.text.ParseException;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
-import de.l3s.eventkg.integration.AllEventPagesDataSet;
 import de.l3s.eventkg.integration.DataSets;
 import de.l3s.eventkg.integration.DataStore;
+import de.l3s.eventkg.integration.WikidataIdMappings;
 import de.l3s.eventkg.integration.model.DateGranularity;
 import de.l3s.eventkg.integration.model.DateWithGranularity;
 import de.l3s.eventkg.integration.model.Entity;
@@ -25,7 +24,6 @@ import de.l3s.eventkg.integration.model.relation.prefix.PrefixEnum;
 import de.l3s.eventkg.integration.model.relation.prefix.PrefixList;
 import de.l3s.eventkg.meta.Language;
 import de.l3s.eventkg.meta.Source;
-import de.l3s.eventkg.pipeline.Config;
 import de.l3s.eventkg.pipeline.Config.TimeSymbol;
 import de.l3s.eventkg.pipeline.Extractor;
 import de.l3s.eventkg.source.dbpedia.DBpediaPartOfLoader;
@@ -37,31 +35,16 @@ import gnu.trove.set.hash.THashSet;
 
 public class EventAndTemporalRelationsCollector extends Extractor {
 
-	private AllEventPagesDataSet allEventPagesDataSet;
 	private Set<Relation> relations = new THashSet<Relation>();
 
 	private Set<String> partOfProperties;
+	private WikidataIdMappings wikidataIdMappings;
 
-	public static void main(String[] args) {
-
-		List<Language> languages = new ArrayList<Language>();
-		languages.add(Language.DE);
-
-		Config.init("config_eventkb_local.txt");
-
-		AllEventPagesDataSet allEventPagesDataSet = new AllEventPagesDataSet(languages);
-		allEventPagesDataSet.init();
-
-		EventAndTemporalRelationsCollector extr = new EventAndTemporalRelationsCollector(languages,
-				allEventPagesDataSet);
-		extr.run();
-	}
-
-	public EventAndTemporalRelationsCollector(List<Language> languages, AllEventPagesDataSet allEventPagesDataSet) {
+	public EventAndTemporalRelationsCollector(List<Language> languages, WikidataIdMappings wikidataIdMappings) {
 		super("EventAndTemporalRelationsCollector", Source.ALL,
 				"Integrates temporal relations and those between events from all sources (s.t. they use the same set of entities. Different relations are not merged.).",
 				languages);
-		this.allEventPagesDataSet = allEventPagesDataSet;
+		this.wikidataIdMappings = wikidataIdMappings;
 	}
 
 	public void run() {
@@ -73,6 +56,7 @@ public class EventAndTemporalRelationsCollector extends Extractor {
 		loadDBpediaRelations();
 		System.out.println("Collect triples with temporal relations.");
 		collectTriples();
+		System.out.println("Write triples.");
 	}
 
 	private void collectTriples() {
@@ -162,11 +146,11 @@ public class EventAndTemporalRelationsCollector extends Extractor {
 			if (relation.getSource() == Source.WIKIDATA) {
 				if (!wikidataRelationsWhoseLabelsWereStored.contains(relation.getProperty())) {
 					for (Language language : this.languages) {
-						if (allEventPagesDataSet.getWikidataIdMappings().getWikidataPropertysByID(language,
+						if (this.wikidataIdMappings.getWikidataPropertysByID(language,
 								relation.getProperty()) != null) {
 							DataStore.getInstance()
-									.addPropertyLabel(new PropertyLabel(prefix, relation.getProperty(),
-											allEventPagesDataSet.getWikidataIdMappings()
+									.addPropertyLabel(new PropertyLabel(
+											prefix, relation.getProperty(), this.wikidataIdMappings
 													.getWikidataPropertysByID(language, relation.getProperty()),
 											language, genericRelation.getDataSet()));
 						}
@@ -394,8 +378,7 @@ public class EventAndTemporalRelationsCollector extends Extractor {
 					String propertyWikidataId = parts[1];
 					String timeString = parts[2];
 
-					TimeSymbol type = this.allEventPagesDataSet.getWikidataIdMappings()
-							.getWikidataTemporalPropertyTypeById(propertyWikidataId);
+					TimeSymbol type = this.wikidataIdMappings.getWikidataTemporalPropertyTypeById(propertyWikidataId);
 
 					if (type == TimeSymbol.START_TIME || type == TimeSymbol.START_AND_END_TIME) {
 						DateWithGranularity startTime;
@@ -513,7 +496,7 @@ public class EventAndTemporalRelationsCollector extends Extractor {
 	}
 
 	private Entity buildEntityByWikidataId(String entityWikidataId) {
-		Entity entity = this.allEventPagesDataSet.getWikidataIdMappings().getEntityByWikidataId(entityWikidataId);
+		Entity entity = this.wikidataIdMappings.getEntityByWikidataId(entityWikidataId);
 		return entity;
 	}
 
@@ -638,7 +621,7 @@ public class EventAndTemporalRelationsCollector extends Extractor {
 	}
 
 	private Entity buildEntity(Language language, String wikipediaLabel) {
-		return this.allEventPagesDataSet.getWikidataIdMappings().getEntityByWikipediaLabel(language, wikipediaLabel);
+		return this.wikidataIdMappings.getEntityByWikipediaLabel(language, wikipediaLabel);
 	}
 
 	private Relation buildRelation(Entity entity1, Entity entity2, DateWithGranularity startTime,

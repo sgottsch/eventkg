@@ -15,6 +15,7 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.text.StringEscapeUtils;
 
 import de.l3s.eventkg.meta.Language;
@@ -27,8 +28,6 @@ import de.l3s.eventkg.source.wikipedia.mwdumper.model.Link;
 import de.l3s.eventkg.source.wikipedia.mwdumper.model.Paragraph;
 import de.l3s.eventkg.source.wikipedia.mwdumper.model.Reference;
 import de.l3s.eventkg.source.wikipedia.mwdumper.model.Sentence;
-import edu.stanford.nlp.util.Sets;
-import edu.stanford.nlp.util.StringUtils;
 import opennlp.tools.util.Span;
 
 public class TextExtractorNew {
@@ -580,7 +579,7 @@ public class TextExtractorNew {
 					for (int pos = start; pos <= end; pos++)
 						positionsOfThisLink.add(pos);
 
-					if (Sets.intersects(forbiddenPositions, positionsOfThisLink)) {
+					if (!Collections.disjoint(forbiddenPositions, positionsOfThisLink)) {
 						continue;
 					}
 
@@ -857,7 +856,7 @@ public class TextExtractorNew {
 			for (int i = link.getStart(); i < link.getEnd(); i++)
 				linkPositions.add(i);
 
-			if (Sets.intersects(linkPositions, removedPositions)) {
+			if (!Collections.disjoint(linkPositions, removedPositions)) {
 				it.remove();
 			} else {
 				// shift the link to the left, if something was removed in front

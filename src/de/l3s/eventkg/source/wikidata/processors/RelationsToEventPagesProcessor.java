@@ -9,6 +9,7 @@ import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
+import org.apache.commons.lang3.StringUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -27,13 +28,13 @@ import org.wikidata.wdtk.datamodel.interfaces.Statement;
 import org.wikidata.wdtk.datamodel.interfaces.StatementGroup;
 import org.wikidata.wdtk.datamodel.interfaces.StringValue;
 import org.wikidata.wdtk.datamodel.interfaces.TimeValue;
+import org.wikidata.wdtk.datamodel.interfaces.UnsupportedValue;
 import org.wikidata.wdtk.datamodel.interfaces.ValueVisitor;
 
 import de.l3s.eventkg.integration.AllEventPagesDataSet;
 import de.l3s.eventkg.source.wikidata.WikidataSnakType;
 import de.l3s.eventkg.util.FileLoader;
 import de.l3s.eventkg.util.FileName;
-import edu.stanford.nlp.util.StringUtils;
 
 public class RelationsToEventPagesProcessor implements EntityDocumentDumpProcessor {
 
@@ -142,17 +143,17 @@ public class RelationsToEventPagesProcessor implements EntityDocumentDumpProcess
 		this.itemCount++;
 
 		boolean tc = false;
-		// if (itemDocument.getItemId().getId().equals("Q567") ||
-		// itemDocument.getItemId().getId().equals("567"))
+		// if (itemDocument.getEntityId().getId().equals("Q567") ||
+		// itemDocument.getEntityId().getId().equals("567"))
 		// tc = true;
 
 		if (tc) {
-			System.out.println("Test case: " + itemDocument.getItemId().getId());
+			System.out.println("Test case: " + itemDocument.getEntityId().getId());
 		}
 
-		boolean subjectIsEvent = this.targetEventIds.contains(getNumericId(itemDocument.getItemId().getId()));
+		boolean subjectIsEvent = this.targetEventIds.contains(getNumericId(itemDocument.getEntityId().getId()));
 		boolean subjectHasExistenceTime = this.entitiesWithExistenceTimes
-				.contains(getNumericId(itemDocument.getItemId().getId()));
+				.contains(getNumericId(itemDocument.getEntityId().getId()));
 
 		if (tc) {
 			System.out.println("subjectIsEvent: " + subjectIsEvent);
@@ -178,7 +179,7 @@ public class RelationsToEventPagesProcessor implements EntityDocumentDumpProcess
 							id = ((ItemIdValue) statement.getClaim().getMainSnak().getValue()).getId();
 
 							boolean objectIsEvent = this.targetEventIds.contains(getNumericId(id));
-							boolean objectHasExistenceTime = this.entitiesWithExistenceTimes.contains(id);
+							boolean objectHasExistenceTime = this.entitiesWithExistenceTimes.contains(getNumericId(id));
 
 							if (tc) {
 								System.out.println("\nid: " + id);
@@ -195,7 +196,7 @@ public class RelationsToEventPagesProcessor implements EntityDocumentDumpProcess
 								itemsWithEventCount += 1;
 
 								outEventRelations.print(statement.getStatementId() + "\t"
-										+ itemDocument.getItemId().getId() + "\t" + propertyId + "\t" + id + "\n");
+										+ itemDocument.getEntityId().getId() + "\t" + propertyId + "\t" + id + "\n");
 							} else if (subjectHasExistenceTime && objectHasExistenceTime) {
 
 								if (tc) {
@@ -205,7 +206,7 @@ public class RelationsToEventPagesProcessor implements EntityDocumentDumpProcess
 								itemsWithEntityRelationCount += 1;
 
 								outEntityRelations.print(statement.getStatementId() + "\t"
-										+ itemDocument.getItemId().getId() + "\t" + propertyId + "\t" + id + "\n");
+										+ itemDocument.getEntityId().getId() + "\t" + propertyId + "\t" + id + "\n");
 							}
 
 						} catch (ClassCastException e) {
@@ -216,11 +217,6 @@ public class RelationsToEventPagesProcessor implements EntityDocumentDumpProcess
 
 								String res = statement.getClaim().getMainSnak().getValue()
 										.accept(new ValueVisitor<String>() {
-
-											@Override
-											public String visit(DatatypeIdValue val) {
-												return null;
-											}
 
 											@Override
 											public String visit(EntityIdValue val) {
@@ -274,6 +270,11 @@ public class RelationsToEventPagesProcessor implements EntityDocumentDumpProcess
 														+ TAB2 + val.getSecond() + TAB2 + val.getPrecision();
 											}
 
+											@Override
+											public String visit(UnsupportedValue value) {
+												return null;
+											}
+
 										});
 
 								if (res == null)
@@ -307,7 +308,7 @@ public class RelationsToEventPagesProcessor implements EntityDocumentDumpProcess
 									}
 								}
 
-								this.outEventLiteralRelations.print(itemDocument.getItemId().getId() + TAB + propertyId
+								this.outEventLiteralRelations.print(itemDocument.getEntityId().getId() + TAB + propertyId
 										+ TAB + res + TAB + statement.getRank() + TAB
 										+ StringUtils.join(refStrings, TAB2) + "\n");
 							}

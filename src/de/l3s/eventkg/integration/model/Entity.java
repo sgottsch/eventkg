@@ -32,17 +32,10 @@ public class Entity {
 	private Set<Entity> parentLocations = new HashSet<Entity>();
 	private Set<Entity> allParentLocations = new HashSet<Entity>();
 
-	private Set<DateWithGranularity> startTimes = new HashSet<DateWithGranularity>();;
 	private Map<DateWithGranularity, Set<DataSet>> startTimesWithDataSets = new HashMap<DateWithGranularity, Set<DataSet>>();
-	private Map<DataSet, DateWithGranularity> dataSetsWithStartTimes = new HashMap<DataSet, DateWithGranularity>();
-
-	private Set<DateWithGranularity> endTimes = new HashSet<DateWithGranularity>();;
 	private Map<DateWithGranularity, Set<DataSet>> endTimesWithDataSets = new HashMap<DateWithGranularity, Set<DataSet>>();
-	private Map<DataSet, DateWithGranularity> dataSetsWithEndTimes = new HashMap<DataSet, DateWithGranularity>();
 
-	private Set<Position> positions = new HashSet<Position>();
 	private Map<Position, DataSet> positionsWithDataSets = new HashMap<Position, DataSet>();
-	private Map<DataSet, Set<Position>> dataSetsWithPositions = new HashMap<DataSet, Set<Position>>();
 
 	private Set<Alias> aliases = new HashSet<Alias>();
 
@@ -51,6 +44,9 @@ public class Entity {
 	private int isNoLocationCount = 0;
 
 	private boolean isActor = false;
+	private boolean isTextEvent;
+
+	private Map<Entity, Map<Language, Integer>> linkCounts = null;
 
 	public Entity() {
 
@@ -124,6 +120,14 @@ public class Entity {
 		return isEvent;
 	}
 
+	public boolean isTextEvent() {
+		return isTextEvent;
+	}
+
+	public void setTextEvent(boolean isTextEvent) {
+		this.isTextEvent = isTextEvent;
+	}
+
 	public void setEvent(boolean isEvent) {
 		this.isEvent = isEvent;
 	}
@@ -180,31 +184,19 @@ public class Entity {
 	}
 
 	public void addStartTime(DateWithGranularity startTime, DataSet dataSet) {
-		this.startTimes.add(startTime);
 		if (!this.startTimesWithDataSets.containsKey(startTime))
 			startTimesWithDataSets.put(startTime, new HashSet<DataSet>());
 		this.startTimesWithDataSets.get(startTime).add(dataSet);
-		this.dataSetsWithStartTimes.put(dataSet, startTime);
 	}
 
 	public void addEndTime(DateWithGranularity endTime, DataSet dataSet) {
-		this.endTimes.add(endTime);
 		if (!this.endTimesWithDataSets.containsKey(endTime))
 			endTimesWithDataSets.put(endTime, new HashSet<DataSet>());
 		this.endTimesWithDataSets.get(endTime).add(dataSet);
-		this.dataSetsWithEndTimes.put(dataSet, endTime);
-	}
-
-	public Set<DateWithGranularity> getStartTimes() {
-		return startTimes;
 	}
 
 	public Map<DateWithGranularity, Set<DataSet>> getStartTimesWithDataSets() {
 		return startTimesWithDataSets;
-	}
-
-	public Set<DateWithGranularity> getEndTimes() {
-		return endTimes;
 	}
 
 	public Map<DateWithGranularity, Set<DataSet>> getEndTimesWithDataSets() {
@@ -235,31 +227,8 @@ public class Entity {
 		this.isActor = isActor;
 	}
 
-	public Map<DataSet, DateWithGranularity> getDataSetsWithStartTimes() {
-		return dataSetsWithStartTimes;
-	}
-
-	public Map<DataSet, DateWithGranularity> getDataSetsWithEndTimes() {
-		return dataSetsWithEndTimes;
-	}
-
 	public void addPosition(Position position, DataSet dataSet) {
-		this.positions.add(position);
-
 		this.positionsWithDataSets.put(position, dataSet);
-
-		if (!this.dataSetsWithPositions.containsKey(dataSet))
-			this.dataSetsWithPositions.put(dataSet, new HashSet<Position>());
-
-		this.dataSetsWithPositions.get(dataSet).add(position);
-	}
-
-	public Set<Position> getPositions() {
-		return positions;
-	}
-
-	public Set<Position> getPositionsOfDataSet(DataSet dataSet) {
-		return dataSetsWithPositions.get(dataSet);
 	}
 
 	public Map<Position, DataSet> getPositionsWithDataSets() {
@@ -296,6 +265,65 @@ public class Entity {
 
 	public void addAlias(DataSet dataSet, Language language, String description) {
 		this.aliases.add(new Alias(dataSet, description, language));
+	}
+
+	public void clearTimes() {
+		this.startTimesWithDataSets = null;
+		this.endTimesWithDataSets = null;
+	}
+
+	public void clearLocations() {
+		this.subLocations = null;
+		this.parentLocations = null;
+	}
+
+	public void clearPositions() {
+		this.positionsWithDataSets = null;
+	}
+
+	public Set<Position> getPositionsOfDataSet(DataSet dataSet) {
+		Set<Position> positionsOfDataSet = new HashSet<Position>();
+
+		for (Position position : getPositionsWithDataSets().keySet()) {
+			if (getPositionsWithDataSets().get(position) == dataSet)
+				positionsOfDataSet.add(position);
+		}
+
+		return positionsOfDataSet;
+	}
+
+	public void addLinkCount(Entity targetEntity, Language language, int count) {
+
+		if (this.linkCounts == null)
+			this.linkCounts = new HashMap<Entity, Map<Language, Integer>>();
+
+		if (!this.linkCounts.containsKey(targetEntity))
+			this.linkCounts.put(targetEntity, new HashMap<Language, Integer>());
+
+		this.linkCounts.get(targetEntity).put(language, count);
+	}
+
+	public void increaseLinkCount(Entity targetEntity, Language language) {
+
+		if (this.linkCounts == null)
+			this.linkCounts = new HashMap<Entity, Map<Language, Integer>>();
+
+		if (!this.linkCounts.containsKey(targetEntity))
+			this.linkCounts.put(targetEntity, new HashMap<Language, Integer>());
+
+		if (!this.linkCounts.get(targetEntity).containsKey(language))
+			this.linkCounts.get(targetEntity).put(language, 1);
+		else
+			this.linkCounts.get(targetEntity).put(language, this.linkCounts.get(targetEntity).get(language) + 1);
+
+	}
+
+	public Map<Entity, Map<Language, Integer>> getLinkCounts() {
+		return linkCounts;
+	}
+
+	public void clearLinkCounts() {
+		this.linkCounts = null;
 	}
 
 }

@@ -16,6 +16,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -29,7 +30,6 @@ import de.l3s.eventkg.source.wikipedia.mwdumper.articleprocessing.Output;
 import de.l3s.eventkg.source.wikipedia.mwdumper.articleprocessing.TextExtractorNew;
 import de.l3s.eventkg.source.wikipedia.mwdumper.model.Link;
 import de.l3s.eventkg.source.wikipedia.mwdumper.model.Sentence;
-import edu.stanford.nlp.util.StringUtils;
 
 public class LanguageAdderMetaFiles {
 

@@ -6,32 +6,35 @@ import java.util.Set;
 
 import com.google.common.collect.Sets;
 
-import de.l3s.eventkg.integration.AllEventPagesDataSet;
 import de.l3s.eventkg.integration.DataSets;
-import de.l3s.eventkg.integration.DataStore;
+import de.l3s.eventkg.integration.WikidataIdMappings;
 import de.l3s.eventkg.integration.model.Entity;
 import de.l3s.eventkg.integration.model.Event;
-import de.l3s.eventkg.integration.model.relation.Location;
+import de.l3s.eventkg.integration.model.relation.DataSet;
 import de.l3s.eventkg.meta.Language;
 import de.l3s.eventkg.meta.Source;
 import de.l3s.eventkg.pipeline.Extractor;
+import de.l3s.eventkg.pipeline.output.TriplesWriter;
 
 public class LocationsIntegrator extends Extractor {
 
-	private AllEventPagesDataSet allEventPagesDataSet;
+	private WikidataIdMappings wikidataIdMappings;
+	private TriplesWriter dataStoreWriter;
 
-	public LocationsIntegrator(List<Language> languages, AllEventPagesDataSet allEventPagesDataSet) {
+	public LocationsIntegrator(List<Language> languages, TriplesWriter dataStoreWriter,
+			WikidataIdMappings wikidataIdMappings) {
 		super("LocationsIntegrator", Source.ALL,
 				"Fuses locations of events into a common graph: For each event, takes the union of locations from all sources and then limits this set of locations to the sub locations (e.g., {Paris, Francy, Lyon} becomes {Paris, Lyon}.",
 				languages);
-		this.allEventPagesDataSet = allEventPagesDataSet;
+		this.wikidataIdMappings = wikidataIdMappings;
+		this.dataStoreWriter = dataStoreWriter;
 	}
 
 	public void run() {
 		// System.out.println("integrateLocationsByUnion");
 		// integrateLocationsByUnion();
-		System.out.println("integrateLocationsMinimum");
-		integrateLocationsMinimum();
+		System.out.println("integrateLocations");
+		integrateLocations();
 	}
 
 	// private void integrateLocationsByUnion() {
@@ -45,43 +48,31 @@ public class LocationsIntegrator extends Extractor {
 	// }
 	// }
 
-	private void integrateLocationsMinimum() {
+	private void integrateLocations() {
 
 		int i = 0;
 
-		// simply take the union of all locations per entity
-		for (Event event : DataStore.getInstance().getEvents()) {
-			integrateLocationsOfEvent(event, i);
-			i += 1;
-		}
-
-		for (int wikidataId : this.allEventPagesDataSet.getWikidataIdsOfAllEvents()) {
-			Event event = this.allEventPagesDataSet.getEventByNumericWikidataId(wikidataId);
-			integrateLocationsOfEvent(event, i);
-			i += 1;
+		for (Entity entity : this.wikidataIdMappings.getEntities()) {
+			if (entity.isEvent()) {
+				integrateLocationsOfEvent((Event) entity, i);
+				i += 1;
+			}
 		}
 	}
 
 	private void integrateLocationsOfEvent(Event event, int i) {
 
-		boolean tc = false;
-		if (event.getNumericWikidataId() != null && event.getNumericWikidataId() == 171416) {
-			System.out.println("TEST CASE: " + event.getWikidataId());
-			tc = true;
-		}
-
 		Set<Entity> locations = new HashSet<Entity>();
-		locations.addAll(event.getLocations());
 
-		if (tc) {
-			for (Entity loc : locations) {
-				System.out.println(" Loc: " + loc.getWikidataId());
+		for (Entity location : event.getLocationsWithDataSets().keySet()) {
+			locations.add(location);
+			for (DataSet ds : event.getLocationsWithDataSets().get(location)) {
+				dataStoreWriter.writeEventLocation(event, location, ds, false);
 			}
 		}
 
 		if (i % 10000 == 0)
-			System.out.println(i + "\t" + event.getWikidataId() + "\t" + event.getLocations().size() + " / "
-					+ DataStore.getInstance().getLocations().size());
+			System.out.println(i + "\t" + event.getWikidataId());
 
 		if (locations.isEmpty())
 			return;
@@ -121,8 +112,10 @@ public class LocationsIntegrator extends Extractor {
 			System.out.println(" -> " + locations.size());
 
 		for (Entity location : locations) {
-			DataStore.getInstance().addLocation(new Location(event,
-					DataSets.getInstance().getDataSetWithoutLanguage(Source.EVENT_KG), location, null));
+			dataStoreWriter.startInstance();
+			dataStoreWriter.writeEventLocation(event, location,
+					DataSets.getInstance().getDataSetWithoutLanguage(Source.EVENT_KG), true);
+			dataStoreWriter.endInstance();
 		}
 	}
 

@@ -7,9 +7,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.commons.lang3.StringUtils;
+
 import de.l3s.eventkg.source.wikipedia.mwdumper.model.Link;
 import de.l3s.eventkg.source.wikipedia.mwdumper.model.Sentence;
-import edu.stanford.nlp.util.StringUtils;
 
 public class Output {
 

@@ -24,11 +24,11 @@ public class LanguageCoverage {
 		Set<Language> languages = new HashSet<Language>();
 		Map<String, Set<Language>> languagesPerEvent = new HashMap<String, Set<Language>>();
 
-		System.out.println(FileLoader.getPath(FileName.ALL_TTL_EVENTS_WITH_TEXTS));
+		System.out.println(FileLoader.getPath(FileName.ALL_TTL_EVENTS));
 
 		LineIterator it = null;
 		try {
-			it = FileLoader.getLineIterator(FileName.ALL_TTL_EVENTS_WITH_TEXTS);
+			it = FileLoader.getLineIterator(FileName.ALL_TTL_EVENTS);
 			while (it.hasNext()) {
 				String line = it.nextLine();
 				String[] parts = line.split(" (?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)");
@@ -96,13 +96,15 @@ public class LanguageCoverage {
 
 	public static void test() {
 
-		String line = "<http://eventKG.l3s.uni-hannover.de/resource/event_1300022> <http://purl.org/dc/terms/description> \"Ugandan High @Court Justice V.F. Kibuuka Musoke rules that Rolling Stone violated the civil rights of homosexuals when it printed their pictures on the front page with the headline \\\"Hang Them.\\\" The court orders the newspaper to pay each of the three lead plaintiffs $1.5 million Ugandan shillings.\"@en <http://eventKG.l3s.uni-hannover.de/graph/wikipedia_en> .";
+		String line = Config.getResourceURI("event_1300022")
+				+ " <http://purl.org/dc/terms/description> \"Ugandan High @Court Justice V.F. Kibuuka Musoke rules that Rolling Stone violated the civil rights of homosexuals when it printed their pictures on the front page with the headline \\\"Hang Them.\\\" The court orders the newspaper to pay each of the three lead plaintiffs $1.5 million Ugandan shillings.\"@en <http://eventKG.l3s.uni-hannover.de/graph/wikipedia_en> .";
 		String part = line.substring(line.indexOf(" ")).trim();
 		part = part.substring(part.indexOf(" ")).trim();
 		String langStr = part.substring(part.lastIndexOf("@") + 1, part.lastIndexOf("@") + 3);
 
 		System.out.println(langStr);
 		Language language = Language.getLanguage(langStr.toUpperCase());
+		System.out.println(language);
 
 	}
 

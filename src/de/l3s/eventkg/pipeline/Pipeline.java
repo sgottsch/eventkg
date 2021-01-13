@@ -4,30 +4,38 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
+import org.apache.commons.lang3.StringUtils;
+
 import de.l3s.eventkg.integration.AllEventPagesDataSet;
+import de.l3s.eventkg.integration.ConnectedEntitiesLoader;
 import de.l3s.eventkg.integration.DataCollector;
 import de.l3s.eventkg.integration.DataSets;
-import de.l3s.eventkg.integration.DataStoreWriter;
 import de.l3s.eventkg.integration.DataStoreWriterMode;
 import de.l3s.eventkg.integration.EventKGDBCreatorFromCurrentVersion;
 import de.l3s.eventkg.integration.EventKGDBCreatorFromPreviousVersion;
-import de.l3s.eventkg.integration.TypesWriter;
+import de.l3s.eventkg.integration.WikidataIdMappings;
 import de.l3s.eventkg.integration.collection.EventAndTemporalRelationsCollector;
+import de.l3s.eventkg.integration.collection.EventDependenciesCollector;
 import de.l3s.eventkg.integration.collection.LiteralRelationsCollector;
-import de.l3s.eventkg.integration.collection.SubLocationsCollector;
+import de.l3s.eventkg.integration.collection.LocationsCollector;
+import de.l3s.eventkg.integration.collection.PositionsCollector;
+import de.l3s.eventkg.integration.collection.TimesCollector;
+import de.l3s.eventkg.integration.collection.TypesCollector;
 import de.l3s.eventkg.integration.db.DBInserter;
 import de.l3s.eventkg.integration.integrator.LiteralRelationsIntegrator;
-import de.l3s.eventkg.integration.integrator.LocationsIntegrator;
-import de.l3s.eventkg.integration.integrator.PositionsIntegrator;
 import de.l3s.eventkg.integration.integrator.RelationsIntegrator;
-import de.l3s.eventkg.integration.integrator.TimesIntegrator;
+import de.l3s.eventkg.integration.model.Entity;
 import de.l3s.eventkg.integration.model.relation.prefix.PrefixList;
 import de.l3s.eventkg.meta.Language;
 import de.l3s.eventkg.meta.Source;
+import de.l3s.eventkg.pipeline.output.DataStoreWriter;
+import de.l3s.eventkg.pipeline.output.TriplesWriter;
 import de.l3s.eventkg.source.currentevents.CurrentEventsRelationsExtraction;
 import de.l3s.eventkg.source.currentevents.EventsFromFileExtractor;
 import de.l3s.eventkg.source.dbpedia.DBpediaAllLocationsLoader;
@@ -45,9 +53,9 @@ import de.l3s.eventkg.source.wikidata.WikidataExtractionWithoutEventPages;
 import de.l3s.eventkg.source.wikipedia.EventFirstSentencesWriter;
 import de.l3s.eventkg.source.wikipedia.LabelsAndDescriptionsExtractor;
 import de.l3s.eventkg.source.wikipedia.WikiWords;
+import de.l3s.eventkg.source.wikipedia.WikipediaCoMentionsExtractor;
 import de.l3s.eventkg.source.wikipedia.WikipediaEventsByCategoryNameLoader;
 import de.l3s.eventkg.source.wikipedia.WikipediaLinkCountsExtractor;
-import de.l3s.eventkg.source.wikipedia.WikipediaLinkSetsExtractor;
 import de.l3s.eventkg.source.yago.YAGOEventLocationsExtractor;
 import de.l3s.eventkg.source.yago.YAGOEventRelationsExtractor;
 import de.l3s.eventkg.source.yago.YAGOExistenceTimeExtractor;
@@ -62,6 +70,11 @@ public class Pipeline {
 	private AllEventPagesDataSet allEventPagesDataSet;
 
 	public static void main(String[] args) {
+
+		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+
+		System.out.println(
+				"Run EventKG pipeline :" + StringUtils.join(args, " ") + " (" + dateFormat.format(new Date()) + ")");
 
 		Config.init(args[0]);
 		List<Language> languages = new ArrayList<Language>();
@@ -79,7 +92,7 @@ public class Pipeline {
 
 		Pipeline pipeline = new Pipeline(languages);
 		Pipeline.initDataSets(languages);
-
+		
 		if (steps.contains(1)) {
 			System.out.println("Step 1: Download files.");
 			pipeline.download();
@@ -127,23 +140,28 @@ public class Pipeline {
 			System.out.println("Skip step 5: Write output (entities and events).");
 
 		if (steps.contains(6)) {
-			System.out.println("Step 6: Write output (relations).");
+			System.out.println("Step 6: Write output (pre-defined relations - times, locations,...).");
 			pipeline.pipelineStep6();
 		} else
-			System.out.println("Skip step 6: Write output (relations).");
+			System.out.println("Skip step 6: Write output (pre-defined relations - times, locations,...).");
 
 		if (steps.contains(7)) {
-			System.out.println("Step 7: Write output (link relations).");
+			System.out.println("Step 7: Write output (event and entity relations).");
 			pipeline.pipelineStep7();
 		} else
-			System.out.println("Skip step 7: Write output (link relations).");
+			System.out.println("Skip step 7: Write output (event and entity relations).");
 
 		if (steps.contains(8)) {
-			System.out.println("Step 8: Type extraction.");
+			System.out.println("Step 8: Write output (text events).");
 			pipeline.pipelineStep8();
 		} else
-			System.out.println("Skip step 8: Type extraction.");
+			System.out.println("Skip step 8: Write output (text events).");
 
+		if (steps.contains(9)) {
+			System.out.println("Step 9: Write output (links).");
+			pipeline.pipelineStep9();
+		} else
+			System.out.println("Skip step 9: Write output (links).");
 	}
 
 	public Pipeline(List<Language> languages) {
@@ -227,17 +245,14 @@ public class Pipeline {
 
 	private void pipelineStep5() {
 
+		// Event and entity labels and IDs
+		System.out.println("Pipeline step 5: Event and entity labels and IDs.");
+
 		List<Extractor> extractors = new ArrayList<Extractor>();
 		getAllEventPagesDataSet(true);
 		extractors.add(new EventKGDBCreatorFromPreviousVersion(languages));
 
 		extractors.add(new WikidataEventSeriesEditionsFromFileFinder(languages));
-
-		extractors.add(new TextualEventsExtractor(languages, getAllEventPagesDataSet(true)));
-		extractors.add(new SubLocationsCollector(languages, getAllEventPagesDataSet(true))); //
-		extractors.add(new PositionsIntegrator(languages, getAllEventPagesDataSet(true)));
-		extractors.add(new LocationsIntegrator(languages, getAllEventPagesDataSet(true)));
-		extractors.add(new TimesIntegrator(languages, getAllEventPagesDataSet(true)));
 		extractors.add(new YAGOIDExtractor(languages, getAllEventPagesDataSet(true))); //
 		extractors.add(new LabelsAndDescriptionsExtractor(languages, getAllEventPagesDataSet(true))); //
 
@@ -247,9 +262,17 @@ public class Pipeline {
 			MemoryStatsUtil.printMemoryStats();
 		}
 
+		TriplesWriter triplesWriter = new TriplesWriter(true);
 		DataStoreWriter outputWriter = new DataStoreWriter(languages, allEventPagesDataSet,
-				DataStoreWriterMode.RE_USE_IDS_OF_PREVIOUS_EVENTKG_VERSION);
-		outputWriter.writeNoRelations();
+				DataStoreWriterMode.RE_USE_IDS_OF_PREVIOUS_EVENTKG_VERSION, triplesWriter);
+
+		try {
+			outputWriter.writeNoRelations();
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			triplesWriter.close();
+		}
 
 		new EventKGDBCreatorFromCurrentVersion(languages).run();
 
@@ -258,59 +281,130 @@ public class Pipeline {
 
 	private void pipelineStep6() {
 
+		System.out.println("Pipeline step 6: Pre-defined entity and event relations (times, locations, types, ...).");
+
+		TriplesWriter triplesWriter = new TriplesWriter(false);
+		WikidataIdMappings wikidataIdMappings = getAllEventPagesDataSet(true).getWikidataIdMappings();
+
 		List<Extractor> extractors = new ArrayList<Extractor>();
 
-		extractors.add(new EventFirstSentencesWriter(languages, getAllEventPagesDataSet(false)));
+		extractors.add(new TimesCollector(languages, wikidataIdMappings, triplesWriter));
+		extractors.add(new LocationsCollector(languages, wikidataIdMappings, triplesWriter));
+		extractors.add(new PositionsCollector(languages, wikidataIdMappings, triplesWriter));
+		extractors.add(new EventDependenciesCollector(languages, wikidataIdMappings, triplesWriter));
+		extractors.add(new TypesCollector(languages, wikidataIdMappings, triplesWriter));
+		extractors.add(new EventFirstSentencesWriter(languages, wikidataIdMappings, triplesWriter));
 
-		extractors.add(new LiteralRelationsCollector(languages, getAllEventPagesDataSet(false)));
-		extractors.add(new LiteralRelationsIntegrator(languages));
-
-		extractors.add(new EventAndTemporalRelationsCollector(languages, getAllEventPagesDataSet(false)));
-		extractors.add(new RelationsIntegrator(languages));
-
-		for (Extractor extractor : extractors) {
-			extractor.printInformation();
-			extractor.run();
-			MemoryStatsUtil.printMemoryStats();
+		try {
+			for (Extractor extractor : extractors) {
+				extractor.printInformation();
+				extractor.run();
+				extractor = null;
+				MemoryStatsUtil.printMemoryStats();
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			triplesWriter.close();
 		}
-
-		DataStoreWriter outputWriter = new DataStoreWriter(languages,
-				DataStoreWriterMode.USE_IDS_OF_CURRENT_EVENTKG_VERSION);
-		outputWriter.writeRelations();
 
 		System.out.println("Done.");
 	}
 
 	private void pipelineStep7() {
 
+		System.out.println("Pipeline step 7: Event and entity relations.");
+
 		List<Extractor> extractors = new ArrayList<Extractor>();
-		getAllEventPagesDataSet(false);
+		TriplesWriter triplesWriter = new TriplesWriter(false);
+
+		WikidataIdMappings wikidataIdMappings = getAllEventPagesDataSet(true).getWikidataIdMappings();
+
+		extractors.add(new LiteralRelationsCollector(languages, wikidataIdMappings));
+		extractors.add(new LiteralRelationsIntegrator(languages, triplesWriter));
+
+		extractors.add(new EventAndTemporalRelationsCollector(languages, wikidataIdMappings));
+		extractors.add(new RelationsIntegrator(languages, triplesWriter));
+
 		MemoryStatsUtil.printMemoryStats();
 
-		// We need to find relation to find connected entities. Non-event
-		// entities only get link information if they are connected.
-		extractors.add(new EventAndTemporalRelationsCollector(languages, getAllEventPagesDataSet(false)));
-
-		extractors.add(new WikipediaLinkCountsExtractor(languages, getAllEventPagesDataSet(false)));
-		extractors.add(new WikipediaLinkSetsExtractor(languages, getAllEventPagesDataSet(false)));
-
-		for (Extractor extractor : extractors) {
-			extractor.printInformation();
-			extractor.run();
-			MemoryStatsUtil.printMemoryStats();
+		try {
+			for (Extractor extractor : extractors) {
+				extractor.printInformation();
+				extractor.run();
+				MemoryStatsUtil.printMemoryStats();
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			triplesWriter.close();
 		}
-
-		DataStoreWriter outputWriter = new DataStoreWriter(languages,
-				DataStoreWriterMode.USE_IDS_OF_CURRENT_EVENTKG_VERSION);
-		outputWriter.writeLinkRelations();
 
 		System.out.println("Done.");
 	}
 
 	private void pipelineStep8() {
-		TypesWriter extractor = new TypesWriter(languages);
-		extractor.printInformation();
-		extractor.run();
+
+		System.out.println("Pipeline step 8: Text events.");
+
+		List<Extractor> extractors = new ArrayList<Extractor>();
+		TriplesWriter triplesWriter = new TriplesWriter(false);
+		WikidataIdMappings wikidataIdMappings = getAllEventPagesDataSet(true).getWikidataIdMappings();
+
+		extractors.add(new TextualEventsExtractor(languages, wikidataIdMappings, triplesWriter));
+
+		MemoryStatsUtil.printMemoryStats();
+		try {
+			for (Extractor extractor : extractors) {
+				extractor.printInformation();
+				extractor.run();
+				MemoryStatsUtil.printMemoryStats();
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			triplesWriter.close();
+		}
+
+		System.out.println("Done.");
+	}
+
+	private void pipelineStep9() {
+
+		System.out.println("Pipeline step 9: Links.");
+
+		List<Extractor> extractors = new ArrayList<Extractor>();
+		TriplesWriter triplesWriter = new TriplesWriter(false);
+
+		WikidataIdMappings wikidataIdMappings = getAllEventPagesDataSet(true).getWikidataIdMappings();
+
+		MemoryStatsUtil.printMemoryStats();
+
+		Map<Entity, Set<Entity>> connectedEntities = ConnectedEntitiesLoader.loadConnectedEntities(wikidataIdMappings);
+
+		MemoryStatsUtil.printMemoryStats();
+
+		extractors
+				.add(new WikipediaLinkCountsExtractor(languages, wikidataIdMappings, triplesWriter, connectedEntities));
+		extractors
+				.add(new WikipediaCoMentionsExtractor(languages, wikidataIdMappings, triplesWriter, connectedEntities));
+
+		MemoryStatsUtil.printMemoryStats();
+		try {
+			for (Extractor extractor : extractors) {
+				extractor.printInformation();
+				extractor.run();
+				MemoryStatsUtil.printMemoryStats();
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			triplesWriter.close();
+		}
+
+		connectedEntities = null;
+
+		System.out.println("Done.");
 	}
 
 	private AllEventPagesDataSet getAllEventPagesDataSet(boolean loadEntityAndEventInfo) {
@@ -339,7 +433,7 @@ public class Pipeline {
 		DataSets.getInstance().addDataSetWithoutLanguage(Source.YAGO,
 				"https://www.mpi-inf.mpg.de/departments/databases-and-information-systems/research/yago-naga/yago/downloads/");
 		DataSets.getInstance().addDataSet(Language.EN, Source.WCE, "http://wikitimes.l3s.de/Resource.jsp");
-		DataSets.getInstance().addDataSetWithoutLanguage(Source.EVENT_KG, "http://eventkg.l3s.uni-hannover.de/");
+		DataSets.getInstance().addDataSetWithoutLanguage(Source.EVENT_KG, Config.getValue("uri"));
 		// DataSets.getInstance().addDataSetWithoutLanguage(Source.INTEGRATED_TIME_2,
 		// "http://eventkg.l3s.uni-hannover.de/");
 		// DataSets.getInstance().addDataSetWithoutLanguage(Source.INTEGRATED_LOC,

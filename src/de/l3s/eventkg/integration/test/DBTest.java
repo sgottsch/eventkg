@@ -3,7 +3,9 @@ package de.l3s.eventkg.integration.test;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import com.sleepycat.je.Database;
@@ -53,29 +55,32 @@ public class DBTest {
 		// showDatabase(dbc.getDB(Language.DE,
 		// DatabaseName.WIKIDATA_ID_TO_WIKIPEDIA_LABEL));
 
-		Set<Integer> exampleWikidataIds = new HashSet<Integer>();
-		exampleWikidataIds.add(4582410);
-		exampleWikidataIds.add(151340);
-		exampleWikidataIds.add(176883);
-		exampleWikidataIds.add(1078119);
-		
-		exampleWikidataIds.add(6534);
+		Map<Integer, String> exampleWikidataIds = new LinkedHashMap<Integer, String>();
+		exampleWikidataIds.put(4582410, "1985 NCAA Women's Division I Basketball Tournament");
+		exampleWikidataIds.put(151340, "Battle of France");
+		exampleWikidataIds.put(176883, "FIFA World Cup");
+		exampleWikidataIds.put(1078119, "2010 FIFA U-17 Women's World Cup");
 
-		exampleWikidataIds.add(97);
-		exampleWikidataIds.add(29);
-		exampleWikidataIds.add(117157);
-		exampleWikidataIds.add(203950);
+		exampleWikidataIds.put(6534, "French Revolution");
+
+		exampleWikidataIds.put(97, "Atlantic Ocean");
+		exampleWikidataIds.put(29, "chess variant");
+		exampleWikidataIds.put(117157, "Gulf of Cádiz");
+		exampleWikidataIds.put(203950, "Cape Trafalgar");
+
+		exampleWikidataIds.put(52670482, "Linuxwochen 2018");
 
 		for (Language language : languages) {
 			System.out.println("=== " + language);
 			Database db = dbc.getDB(language, DatabaseName.WIKIDATA_ID_TO_WIKIPEDIA_ID);
 			Database db2 = dbc.getDB(language, DatabaseName.WIKIDATA_ID_TO_WIKIDATA_LABEL);
 
-			for (int wikidataId : exampleWikidataIds) {
+			for (int wikidataId : exampleWikidataIds.keySet()) {
 				String wikipediaId = dbc.getEntry(db, String.valueOf(wikidataId));
 				String wikidataLabel = dbc.getEntry(db2, String.valueOf(wikidataId));
 
-				System.out.println(language + "\t" + wikidataId + "\t" + wikipediaId + "\t" + wikidataLabel);
+				System.out.println(language + "\t" + wikidataId + " (" + exampleWikidataIds.get(wikidataId) + ")\t"
+						+ wikipediaId + "\t" + wikidataLabel);
 
 				if (wikipediaId != null) {
 					Database db3 = dbc.getDB(language, DatabaseName.WIKIPEDIA_ID_TO_WIKIDATA_ID);
@@ -115,19 +120,21 @@ public class DBTest {
 
 		System.out.println("Test Wikidata mapping to current EventKG version.");
 
-		Set<Integer> exampleWikidataIds = new HashSet<Integer>();
-		exampleWikidataIds.add(4582410);
-		exampleWikidataIds.add(151340);
-		exampleWikidataIds.add(176883);
-		exampleWikidataIds.add(1078119);
+		Map<Integer, String> exampleWikidataIds = new LinkedHashMap<Integer, String>();
+		exampleWikidataIds.put(4582410, "1985 NCAA Women's Division I Basketball Tournament");
+		exampleWikidataIds.put(151340, "Battle of France");
+		exampleWikidataIds.put(176883, "FIFA World Cup");
+		exampleWikidataIds.put(1078119, "2010 FIFA U-17 Women's World Cup");
 
-		exampleWikidataIds.add(97);
-		exampleWikidataIds.add(29);
-		exampleWikidataIds.add(117157);
-		exampleWikidataIds.add(203950);
+		exampleWikidataIds.put(97, "Atlantic Ocean");
+		exampleWikidataIds.put(29, "chess variant");
+		exampleWikidataIds.put(117157, "Gulf of Cádiz");
+		exampleWikidataIds.put(203950, "Cape Trafalgar");
 
-		for (int wikidataId : exampleWikidataIds) {
-			System.out.println(wikidataId);
+		exampleWikidataIds.put(52670482, "Linuxwochen 2018");
+
+		for (int wikidataId : exampleWikidataIds.keySet()) {
+			System.out.println(wikidataId + " - " + exampleWikidataIds.get(wikidataId));
 			System.out.println(" Current, entity: " + dbc
 					.getEntry(dbc.getDB(DatabaseName.WIKIDATA_ID_TO_EVENTKG_ENTITY_ID), String.valueOf(wikidataId)));
 

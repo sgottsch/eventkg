@@ -90,7 +90,7 @@ public class DBInserter extends Extractor {
 
 			LineIterator it = null;
 			try {
-				it = FileLoader.getLineIterator(FileName.ID_TO_WIKIPEDIA_MAPPING_FILE_NAME, language);
+				it = FileLoader.getLineIterator(FileName.ID_TO_WIKIPEDIA_MAPPING, language);
 				while (it.hasNext()) {
 
 					if (lines % 1000000 == 0) {
@@ -108,22 +108,15 @@ public class DBInserter extends Extractor {
 					String wikidataId = parts[0];
 					String wikipediaId = parts[1].replaceAll(" ", "_");
 
-					if (wikidataId.startsWith("Q6534"))
-						System.out.println("1. Step: " + wikidataId + ".");
-
 					if (!labelIsValid(wikipediaId, forbiddenPrefixes)) {
 						continue;
 					}
-					if (wikidataId.startsWith("Q6534"))
-						System.out.println("2. Step: " + wikidataId + ".");
 
 					int numericWikidataId = Integer.parseInt(wikidataId.substring(1));
 
 					if (!this.validWikidataIds.contains(numericWikidataId)) {
 						continue;
 					}
-					if (wikidataId.startsWith("Q6534"))
-						System.out.println("3. Step: " + wikidataId + ".");
 
 					dbCreator.createEntry(db, String.valueOf(numericWikidataId), wikipediaId);
 					dbCreator.createEntry(db2, wikipediaId, String.valueOf(numericWikidataId));
@@ -252,10 +245,11 @@ public class DBInserter extends Extractor {
 
 	private Set<Integer> loadAllValidWikidataEntities() {
 
-		// valid = hasFacts and/or is not news/scientific article
+		// valid = Wikidata event, hasFacts and/or is not news/scientific
+		// article
 
 		Set<String> wikipediaInternalClasses = loadWikipediaInternalClasses();
-
+		 Set<String> forbiddenWikidataClasses = loadForbiddenWikidataClasses();
 		System.out.println("loadAllWikidataEntitiesWithFacts");
 
 		Set<Integer> wikidataIds = new HashSet<Integer>();
@@ -430,7 +424,7 @@ public class DBInserter extends Extractor {
 
 				if (parentClass.equals(WikidataResource.WIKINEWS_ARTICLE.getId())) {
 					entitiesInWikiNews.add(parts[0]);
-				} else if (parentClass.equals(WikidataResource.SCIENTIFIC_ARTICLE.getId())
+				} else if (forbiddenWikidataClasses.contains(parentClass)
 						|| wikipediaInternalClasses.contains(parentClass)) {
 					// remove scientific article and Wikipedia internal items
 					// (e.g. templates)
@@ -471,6 +465,146 @@ public class DBInserter extends Extractor {
 		System.out.println("Valid Wikidata IDs: " + wikidataIds.size());
 
 		return wikidataIds;
+	}
+
+	// private Set<Integer> loadAllValidWikidataEntities() {
+	//
+	// // valid = has Wikipedia page or label and is not news/scientific
+	// // article or time of the day
+	//
+	// Set<Integer> wikidataIds = new HashSet<Integer>();
+	//
+	// Set<String> wikipediaInternalClasses = loadWikipediaInternalClasses();
+	// Set<String> forbiddenWikidataClasses = loadForbiddenWikidataClasses();
+	//
+	// // remove scientific articles
+	// // TODO: Do this as blacklist class
+	//
+	// int entitiesToIgnore = 0;
+	//
+	// // Ignore all entities that are in WikiNews ONLY. Some events (e.g.
+	// // German federal election 2017 are events AND in WikiNews.
+	// Set<String> entitiesWithValidClass = new HashSet<String>();
+	// Set<String> entitiesInWikiNews = new HashSet<String>();
+	//
+	// for (Language language : this.languages) {
+	// LineIterator it = null;
+	// try {
+	// it = FileLoader.getLineIterator(FileName.WIKIDATA_LABELS, language);
+	// while (it.hasNext()) {
+	// wikidataIds.add(Integer.valueOf(it.next().split("\t")[0].substring(1)));
+	// }
+	// } catch (IOException e) {
+	// e.printStackTrace();
+	// } finally {
+	// try {
+	// it.close();
+	// } catch (IOException e) {
+	// e.printStackTrace();
+	// }
+	// }
+	// }
+	//
+	// for (Language language : this.languages) {
+	// LineIterator it = null;
+	// try {
+	// it = FileLoader.getLineIterator(FileName.ID_TO_WIKIPEDIA_MAPPING,
+	// language);
+	// while (it.hasNext()) {
+	// wikidataIds.add(Integer.valueOf(it.next().split("\t")[0].substring(1)));
+	// }
+	// } catch (IOException e) {
+	// e.printStackTrace();
+	// } finally {
+	// try {
+	// it.close();
+	// } catch (IOException e) {
+	// e.printStackTrace();
+	// }
+	// }
+	// }
+	//
+	// BufferedReader br6 = null;
+	// try {
+	// try {
+	// br6 = FileLoader.getReader(FileName.WIKIDATA_INSTANCE_OF);
+	// } catch (FileNotFoundException e1) {
+	// e1.printStackTrace();
+	// }
+	//
+	// String line;
+	// while ((line = br6.readLine()) != null) {
+	//
+	// String[] parts = line.split(Config.TAB);
+	//
+	// String parentClass = parts[2];
+	//
+	// if (parentClass.equals(WikidataResource.WIKINEWS_ARTICLE.getId())) {
+	// entitiesInWikiNews.add(parts[0]);
+	// } else if (forbiddenWikidataClasses.contains(parentClass)
+	// || wikipediaInternalClasses.contains(parentClass)) {
+	// // remove scientific article and Wikipedia internal items
+	// // (e.g. templates)
+	// wikidataIds.remove(Integer.valueOf(parts[0].substring(1)));
+	// } else {
+	// entitiesWithValidClass.add(parts[0]);
+	// }
+	//
+	// }
+	// } catch (IOException e) {
+	// e.printStackTrace();
+	// } finally {
+	// try {
+	// br6.close();
+	// } catch (IOException e) {
+	// e.printStackTrace();
+	// }
+	// }
+	//
+	// System.out.println("Ignore " + entitiesToIgnore
+	// + " entities because they are Wikipedia internal entities or scientific
+	// article.");
+	//
+	// System.out.println("WikiNews entities: " + entitiesInWikiNews.size());
+	// entitiesInWikiNews.removeAll(entitiesWithValidClass);
+	// System.out.println("Ignore " + entitiesInWikiNews.size() + " entities
+	// because they are in WikiNews only.");
+	// entitiesWithValidClass.clear();
+	//
+	// for (String entity : entitiesInWikiNews) {
+	// wikidataIds.remove(Integer.valueOf(entity.substring(1)));
+	// }
+	//
+	// System.out.println("6534. is valid 2? " + wikidataIds.contains(6534));
+	// System.out.println("653487. is valid 2? " +
+	// wikidataIds.contains(653487));
+	//
+	// System.out.println("Valid Wikidata IDs: " + wikidataIds.size());
+	//
+	// return wikidataIds;
+	// }
+
+	private Set<String> loadForbiddenWikidataClasses() {
+
+		Set<String> forbiddenWikidataClasses = new HashSet<String>();
+
+		LineIterator it = null;
+		try {
+			it = FileLoader.getLineIterator(FileName.WIKIDATA_FORBIDDEN_CLASSES);
+			while (it.hasNext()) {
+				forbiddenWikidataClasses.add(it.next().split("\t")[0]);
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				it.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+
+		return forbiddenWikidataClasses;
 	}
 
 	private boolean labelIsValid(String wikipediaLabel, Set<String> forbiddenPrefixes) {

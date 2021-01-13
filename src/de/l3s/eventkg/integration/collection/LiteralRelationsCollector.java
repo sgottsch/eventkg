@@ -11,9 +11,9 @@ import java.util.Set;
 import org.apache.commons.io.LineIterator;
 import org.wikidata.wdtk.datamodel.interfaces.StatementRank;
 
-import de.l3s.eventkg.integration.AllEventPagesDataSet;
 import de.l3s.eventkg.integration.DataSets;
 import de.l3s.eventkg.integration.DataStore;
+import de.l3s.eventkg.integration.WikidataIdMappings;
 import de.l3s.eventkg.integration.model.DateWithGranularity;
 import de.l3s.eventkg.integration.model.Entity;
 import de.l3s.eventkg.integration.model.relation.DataSet;
@@ -36,14 +36,14 @@ import de.l3s.eventkg.util.TimeTransformer;
 
 public class LiteralRelationsCollector extends Extractor {
 
-	private AllEventPagesDataSet allEventPagesDataSet;
+	private WikidataIdMappings wikidataIdMappings;
 	private Set<LiteralRelation> relations = new HashSet<LiteralRelation>();
 
-	public LiteralRelationsCollector(List<Language> languages, AllEventPagesDataSet allEventPagesDataSet) {
+	public LiteralRelationsCollector(List<Language> languages, WikidataIdMappings wikidataIdMappings) {
 		super("LiteralRelationsCollector", Source.ALL,
 				"Integrates literal relations from all sources (s.t. they use the same set of entities. Different relations are not merged.).",
 				languages);
-		this.allEventPagesDataSet = allEventPagesDataSet;
+		this.wikidataIdMappings = wikidataIdMappings;
 	}
 
 	public void run() {
@@ -64,17 +64,11 @@ public class LiteralRelationsCollector extends Extractor {
 		collectTriples();
 		System.out
 				.println("# Literal relations with all: " + DataStore.getInstance().getLiteralRelations().size() + ".");
-
 	}
 
 	private void loadYAGO() {
 
 		Prefix prefix = PrefixList.getInstance().getPrefix(PrefixEnum.YAGO);
-		System.out.println("YAGO: " + prefix.getAbbr());
-
-		System.out.println("File: " + FileName.YAGO_EVENT_LITERALS_FACTS.getFileName());
-
-		System.out.println("Path: " + FileLoader.getPath(FileName.YAGO_EVENT_LITERALS_FACTS));
 
 		LineIterator it = null;
 		try {
@@ -183,7 +177,7 @@ public class LiteralRelationsCollector extends Extractor {
 
 				String[] parts = line.split("\t");
 				String subject = parts[0];
-				Entity entity = this.allEventPagesDataSet.getWikidataIdMappings().getEntityByWikidataId(subject);
+				Entity entity = wikidataIdMappings.getEntityByWikidataId(subject);
 
 				if (entity == null)
 					continue;
@@ -306,8 +300,6 @@ public class LiteralRelationsCollector extends Extractor {
 							property = property.substring(1, property.length() - 1);
 
 						property = property.replace("http://dbpedia.org/ontology/", "");
-						// remove enclosing "<" and ">"
-						property = property.substring(1, property.length() - 1);
 
 						Entity entity = buildEntity(language, subject);
 
@@ -382,11 +374,10 @@ public class LiteralRelationsCollector extends Extractor {
 
 				if (!wikidataRelationsWhoseLabelsWereStored.contains(relation.getProperty())) {
 					for (Language language : this.languages) {
-						if (allEventPagesDataSet.getWikidataIdMappings().getWikidataPropertysByID(language,
-								relation.getProperty()) != null) {
+						if (wikidataIdMappings.getWikidataPropertysByID(language, relation.getProperty()) != null) {
 							DataStore.getInstance()
-									.addPropertyLabel(new PropertyLabel(wikidataPrefix, relation.getProperty(),
-											allEventPagesDataSet.getWikidataIdMappings()
+									.addPropertyLabel(new PropertyLabel(
+											wikidataPrefix, relation.getProperty(), wikidataIdMappings
 													.getWikidataPropertysByID(language, relation.getProperty()),
 											language, relation.getDataSet()));
 						}
@@ -409,7 +400,7 @@ public class LiteralRelationsCollector extends Extractor {
 	}
 
 	private Entity buildEntity(Language language, String wikipediaLabel) {
-		return this.allEventPagesDataSet.getWikidataIdMappings().getEntityByWikipediaLabel(language, wikipediaLabel);
+		return this.wikidataIdMappings.getEntityByWikipediaLabel(language, wikipediaLabel);
 	}
 
 	private LiteralRelation buildRelation(Entity entity, String object, DateWithGranularity startTime,
@@ -424,7 +415,6 @@ public class LiteralRelationsCollector extends Extractor {
 			return null;
 
 		if (property.startsWith("http:") || property.startsWith("https:")) {
-			property = "<" + property + ">";
 			prefix = PrefixList.getInstance().getPrefix(PrefixEnum.NO_PREFIX);
 		}
 

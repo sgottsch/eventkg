@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -15,7 +16,6 @@ import de.l3s.eventkg.pipeline.Config;
 import de.l3s.eventkg.pipeline.Extractor;
 import de.l3s.eventkg.util.FileLoader;
 import de.l3s.eventkg.util.FileName;
-import edu.stanford.nlp.util.Sets;
 
 public class DBpediaDBOEventsLoader extends Extractor {
 
@@ -41,7 +41,7 @@ public class DBpediaDBOEventsLoader extends Extractor {
 		Set<String> foundEvents = new HashSet<String>();
 		Set<String> uniqueFoundEvents = new HashSet<String>();
 		Set<String> targetObjects = loadEventObjects();
-		Set<String> blacklistObjects = loadBlacklistObjects(language);
+		Set<String> blacklistObjects = loadBlacklistClasses(language);
 
 		try {
 			resultsWriter = FileLoader.getWriter(FileName.DBPEDIA_DBO_EVENTS_FILE_NAME, language);
@@ -72,11 +72,11 @@ public class DBpediaDBOEventsLoader extends Extractor {
 
 					boolean onBlackList = blacklistObjects.contains(object);
 					if (!onBlackList && parentClasses.containsKey(object)) {
-						onBlackList = Sets.intersects(parentClasses.get(object), blacklistObjects);
+						onBlackList = !Collections.disjoint(parentClasses.get(object), blacklistObjects);
 					}
 
 					if (targetObjects.contains(object) || onBlackList || (parentClasses.containsKey(object)
-							&& Sets.intersects(parentClasses.get(object), targetObjects))) {
+							&& !Collections.disjoint(parentClasses.get(object), targetObjects))) {
 
 						String subject = parts[0];
 						String property = parts[1];
@@ -131,15 +131,32 @@ public class DBpediaDBOEventsLoader extends Extractor {
 		return targetProperties;
 	}
 
-	public static Set<String> loadBlacklistObjects(Language language) {
+	public static Set<String> loadBlacklistClasses(Language language) {
 
-		// create a set of entities that cannot be events. This e.g. applies to
-		// football leagues which are seen as events in the French DBpedia, but
-		// nowhere else (English DBpedia has them as Organization).
+		// create a set of entities that cannot be events.
 
 		Set<String> blacklistObjects = new HashSet<String>();
 
-		blacklistObjects.add("Organisation");
+		// each sub class or dbo:Organisation except for SportsLeague
+		blacklistObjects.add("SportsLeague");
+		blacklistObjects.add("Broadcaster");
+		blacklistObjects.add("Group");
+		blacklistObjects.add("SportsClub");
+		blacklistObjects.add("GovernmentAgency");
+		blacklistObjects.add("Legislature");
+		blacklistObjects.add("MilitaryUnit");
+		blacklistObjects.add("PoliticalParty");
+		blacklistObjects.add("SportsTeam");
+		blacklistObjects.add("TradeUnion");
+		blacklistObjects.add("EducationalInstitution");
+		blacklistObjects.add("EmployersOrganisation");
+		blacklistObjects.add("GeopoliticalOrganisation");
+		blacklistObjects.add("InternationalOrganisation");
+		blacklistObjects.add("Non-ProfitOrganisation");
+		blacklistObjects.add("Parliament");
+		blacklistObjects.add("ReligiousOrganisation");
+		blacklistObjects.add("SambaSchool");
+		blacklistObjects.add("TermOfOffice");
 
 		// there is a bug in the Italian DBpedia which makes a lot of events
 		// so:Person

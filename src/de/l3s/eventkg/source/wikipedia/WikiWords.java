@@ -11,10 +11,11 @@ import java.util.Map;
 import java.util.Set;
 import java.util.regex.Pattern;
 
+import org.apache.commons.lang3.StringUtils;
+
 import de.l3s.eventkg.meta.Language;
 import de.l3s.eventkg.util.FileLoader;
 import de.l3s.eventkg.util.FileName;
-import edu.stanford.nlp.util.StringUtils;
 
 public class WikiWords {
 

@@ -94,6 +94,14 @@ public class RawDataDownLoader {
 					RawDataDownLoader.class.getResource(
 							"/resource/meta_data/wikidata/" + FileName.WIKIDATA_IGNORED_EVENT_CLASSES.getFileName()),
 					new File(metaDataPath + "wikidata/" + FileName.WIKIDATA_IGNORED_EVENT_CLASSES.getFileName()));
+			FileUtils.copyURLToFile(
+					RawDataDownLoader.class.getResource(
+							"/resource/meta_data/wikidata/" + FileName.WIKIDATA_POSITIVE_EVENT_CLASSES.getFileName()),
+					new File(metaDataPath + "wikidata/" + FileName.WIKIDATA_POSITIVE_EVENT_CLASSES.getFileName()));
+			FileUtils.copyURLToFile(
+					RawDataDownLoader.class.getResource(
+							"/resource/meta_data/wikidata/" + FileName.WIKIDATA_FORBIDDEN_CLASSES.getFileName()),
+					new File(metaDataPath + "wikidata/" + FileName.WIKIDATA_FORBIDDEN_CLASSES.getFileName()));
 
 			// YAGO
 			FileUtils.copyURLToFile(
@@ -167,6 +175,8 @@ public class RawDataDownLoader {
 
 		(new File(dataPath + "output/")).mkdirs();
 		(new File(dataPath + "output_preview/")).mkdirs();
+		(new File(dataPath + "output_light/")).mkdirs();
+		(new File(dataPath + "output_light_preview/")).mkdirs();
 
 		(new File(dataPath + "previous_version/")).mkdirs();
 
@@ -183,6 +193,8 @@ public class RawDataDownLoader {
 			(new File(dbPath + "/eventkg_old/" + language.getLanguageLowerCase())).mkdirs();
 			(new File(dbPath + "/eventkg_current/" + language.getLanguageLowerCase())).mkdirs();
 		}
+		(new File(dbPath + "/eventkg_old/all")).mkdirs();
+		(new File(dbPath + "/eventkg_current/all")).mkdirs();
 		(new File(dbPath + "/all")).mkdirs();
 
 		this.metaDataPath = this.dataPath + FileLoader.ONLINE_META_FOLDER_SUFFIX;

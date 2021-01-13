@@ -12,12 +12,12 @@ import org.apache.commons.io.LineIterator;
 import org.apache.commons.lang3.StringUtils;
 
 import com.sleepycat.je.Database;
-import com.sleepycat.je.DatabaseException;
 
 import de.l3s.eventkg.integration.db.DatabaseCreator;
 import de.l3s.eventkg.integration.db.DatabaseName;
 import de.l3s.eventkg.integration.test.DBTest;
 import de.l3s.eventkg.meta.Language;
+import de.l3s.eventkg.pipeline.Config;
 import de.l3s.eventkg.util.FileLoader;
 import de.l3s.eventkg.util.FileName;
 
@@ -29,8 +29,11 @@ public class EventKGDBCreator {
 	public boolean loadFromPreviousVersion;
 	private List<Language> languages;
 
-	private int a = 0;
-	private int b = 0;
+	private boolean readPreviousVersionFromLightOutput = false;
+	private boolean readCurrentVersionFromLightOutput = true;
+
+	// private int a = 0;
+	// private int b = 0;
 
 	private DatabaseName descriptionsDatabaseName;
 
@@ -48,37 +51,54 @@ public class EventKGDBCreator {
 		// first file needs to be event!
 		Map<FileName, Database> files = new LinkedHashMap<FileName, Database>();
 
+		Integer numberOfEventFiles = 1;
+
 		if (loadFromPreviousVersion) {
 			System.out.println(" Load from previous EventKG version.");
-			files.put(FileName.ALL_TTL_EVENTS_WITH_TEXTS_PREVIOUS_VERSION,
+			files.put(FileName.ALL_TTL_EVENTS_PREVIOUS_VERSION,
 					dbCreator.getDB(DatabaseName.WIKIDATA_ID_TO_OLD_EVENTKG_EVENT_ID));
-			files.put(FileName.ALL_TTL_ENTITIES_WITH_TEXTS_PREVIOUS_VERSION,
+			files.put(FileName.ALL_TTL_TEXT_EVENTS_PREVIOUS_VERSION,
+					dbCreator.getDB(DatabaseName.WIKIDATA_ID_TO_OLD_EVENTKG_EVENT_ID));
+			files.put(FileName.ALL_TTL_ENTITIES_PREVIOUS_VERSION,
 					dbCreator.getDB(DatabaseName.WIKIDATA_ID_TO_OLD_EVENTKG_ENTITY_ID));
 			this.descriptionsDatabaseName = DatabaseName.OLD_EVENTKG_EVENT_DESCRIPTION_TO_EVENTKG_ID;
+			numberOfEventFiles = 2;
 		} else {
 			System.out.println(" Load from current EventKG version.");
-			files.put(FileName.ALL_TTL_EVENTS_WITH_TEXTS,
-					dbCreator.getDB(DatabaseName.WIKIDATA_ID_TO_EVENTKG_EVENT_ID));
-			files.put(FileName.ALL_TTL_ENTITIES_WITH_TEXTS,
-					dbCreator.getDB(DatabaseName.WIKIDATA_ID_TO_EVENTKG_ENTITY_ID));
+			files.put(FileName.ALL_TTL_EVENTS, dbCreator.getDB(DatabaseName.WIKIDATA_ID_TO_EVENTKG_EVENT_ID));
+			files.put(FileName.ALL_TTL_ENTITIES, dbCreator.getDB(DatabaseName.WIKIDATA_ID_TO_EVENTKG_ENTITY_ID));
 			this.descriptionsDatabaseName = DatabaseName.EVENTKG_EVENT_DESCRIPTION_TO_EVENTKG_ID;
+			numberOfEventFiles = 1;
 		}
 
+		// We only need to load textual events when we are in the
+		// PREVIOUS_VERSION mode, because textual events are an independent step
+		// at the end.
+
+		boolean readLightOutput = readPreviousVersionFromLightOutput;
+		if (!loadFromPreviousVersion)
+			readLightOutput = readCurrentVersionFromLightOutput;
+
 		boolean isEventsFile = true;
+		int lastId = 0;
 
 		try {
 			for (FileName fileName : files.keySet()) {
 
-				a = 0;
+				// a = 0;
 
-				int lastId = 0;
 				System.out.println(" Process file " + fileName.getFileName() + ".");
 
 				Database db = files.get(fileName);
 				int lineNumber = 0;
 				LineIterator it = null;
 				try {
-					it = FileLoader.getLineIterator(fileName);
+
+					if (readLightOutput)
+						it = FileLoader.getLineIteratorLight(fileName);
+					else
+						it = FileLoader.getLineIterator(fileName);
+
 					while (it.hasNext()) {
 
 						if (lineNumber % 500000 == 0)
@@ -86,49 +106,43 @@ public class EventKGDBCreator {
 
 						String line = it.nextLine();
 						lineNumber += 1;
-						boolean tc = false;
-
-						if (line.contains("entity_10908971")) {
-							tc = true;
-							System.out.println("TC: " + line);
-						}
 
 						if (line.isEmpty() || line.startsWith("@"))
 							continue;
 
 						String[] parts = line.split(" ");
 
-						if (tc)
-							System.out.println("TC:1");
-
 						if (isEventsFile && (parts[1].equals("dcterms:description")
 								|| parts[1].equals("<http://purl.org/dc/terms/description>"))) {
-							parseEventDescription(line, tc, parts, eventIds);
+							parseEventDescription(line, parts, eventIds, readLightOutput);
 							continue;
 						}
-						if (tc)
-							System.out.println("TC:2");
 
-						if (!parts[1].equals("owl:sameAs")
-								&& !parts[1].equals("<http://www.w3.org/2002/07/owl#sameAs>"))
-							continue;
-						if (tc)
-							System.out.println("TC:3");
-
-						// Wikidata IDs only
-						if (!parts[parts.length - 2].equals("eventKG-g:wikidata") && !parts[parts.length - 2]
-								.equals("<http://eventKG.l3s.uni-hannover.de/graph/wikidata>"))
-							continue;
-						if (tc)
-							System.out.println("TC:4");
+						if (parts.length < 2)
+							System.out.println("Error in " + fileName + " with line " + lineNumber + ": " + line);
 
 						String entityId = parts[0];
-						entityId = entityId.replace("http://eventKG.l3s.uni-hannover.de/resource/", "");
+						entityId = entityId.replace(Config.getResourceURI(), "");
 						entityId = entityId.substring(1, entityId.length() - 1);
 
 						int entityNo = Integer.valueOf(entityId.substring(entityId.lastIndexOf("_") + 1));
 						if (entityNo > lastId)
 							lastId = entityNo;
+
+						if (!parts[1].equals("owl:sameAs")
+								&& !parts[1].equals("<http://www.w3.org/2002/07/owl#sameAs>"))
+							continue;
+
+						// Wikidata IDs only
+						if (!(loadFromPreviousVersion && readPreviousVersionFromLightOutput
+								|| !loadFromPreviousVersion && readCurrentVersionFromLightOutput)) {
+							if (!parts[parts.length - 2].equals("eventKG-g:wikidata")
+									&& !parts[parts.length - 2].equals(Config.getGraphURI("wikidata")))
+								continue;
+						} else {
+							if (!parts[2].startsWith("<http://www.wikidata.org/entity/Q"))
+								continue;
+						}
 
 						if (isEventsFile)
 							eventIds.add(entityNo);
@@ -138,22 +152,20 @@ public class EventKGDBCreator {
 						int wikidataId = Integer
 								.parseInt(wikidataIdString.substring(wikidataIdString.indexOf("/Q") + 2));
 
-						if (tc)
-							try {
-								System.out.println("TC:5 - " + String.valueOf(wikidataId) + " => " + entityId + "; db: "
-										+ db + " - " + db.getDatabaseName() + ", " + db.getEnvironment());
-							} catch (DatabaseException e) {
-								e.printStackTrace();
-							}
-
 						dbCreator.createEntry(db, String.valueOf(wikidataId), entityId);
-						if (a < 50)
-							System.out.println("A: " + String.valueOf(wikidataId) + "->" + entityId);
-						a += 1;
+						// if (a < 50)
+						// System.out.println("A: " + String.valueOf(wikidataId)
+						// + "->" + entityId);
+						// a += 1;
 					}
 
-					System.out.println(" last ID: " + lastId);
-					dbCreator.createEntry(db, LAST_ID, String.valueOf(lastId));
+					numberOfEventFiles -= 1;
+
+					if (numberOfEventFiles <= 0) {
+						isEventsFile = false;
+						System.out.println(" last ID: " + lastId);
+						dbCreator.createEntry(db, LAST_ID, String.valueOf(lastId));
+					}
 
 				} catch (IOException e) {
 					e.printStackTrace();
@@ -164,7 +176,6 @@ public class EventKGDBCreator {
 						e.printStackTrace();
 					}
 				}
-				isEventsFile = false;
 			}
 		} finally {
 
@@ -199,30 +210,27 @@ public class EventKGDBCreator {
 	}
 
 	// TODO: Remove line and tc parameter
-	private void parseEventDescription(String line, boolean tc, String[] parts, Set<Integer> eventIds) {
-
-		if (tc)
-			System.out.println("TC:A");
+	private void parseEventDescription(String line, String[] parts, Set<Integer> eventIds,
+			boolean readFromLightOutput) {
 
 		String eventId = parts[0];
-		eventId = eventId.replace("http://eventKG.l3s.uni-hannover.de/resource/", "");
+		eventId = eventId.replace(Config.getResourceURI(), "");
 		eventId = eventId.substring(1, eventId.length() - 1);
 
 		int eventNo = Integer.valueOf(eventId.substring(eventId.lastIndexOf("_") + 1));
 
 		if (!eventIds.contains(eventNo)) {
-			if (tc)
-				System.out.println("TC:B");
 			// only collect descriptions of events that are NOT mapped to
 			// Wikidata IDs
 
 			// only collect descriptions from WCE and Wikipedia
-			if (!parts[parts.length - 2].contains("wce") && !parts[parts.length - 2].contains("wikipedia"))
+			if (readFromLightOutput && !parts[parts.length - 2].contains("wce")
+					&& !parts[parts.length - 2].contains("wikipedia"))
 				return;
 
-			if (b < 50) {
-				System.out.println("B: " + line);
-			}
+			// if (b < 50) {
+			// System.out.println("B: " + line);
+			// }
 
 			String languageString = parts[parts.length - 2].substring(parts[parts.length - 2].lastIndexOf("_") + 1);
 			languageString = languageString.replace(">", "");
@@ -238,11 +246,12 @@ public class EventKGDBCreator {
 			String description = StringUtils.join(descriptionParts, " ");
 			description = description.substring(1, description.lastIndexOf("\""));
 
-			if (b < 50) {
-				System.out.println(" " + String.valueOf(description) + "->" + String.valueOf(eventNo));
-				System.out.println(" " + language + ", " + eventIds.size());
-				b += 1;
-			}
+			// if (b < 50) {
+			// System.out.println(" " + String.valueOf(description) + "->" +
+			// String.valueOf(eventNo));
+			// System.out.println(" " + language + ", " + eventIds.size());
+			// b += 1;
+			// }
 
 			this.dbCreator.createEntry(db, description, String.valueOf(eventNo));
 		}

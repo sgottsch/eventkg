@@ -4,11 +4,13 @@ import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.io.LineIterator;
+import org.apache.commons.lang3.StringUtils;
 
 import de.l3s.eventkg.integration.db.DatabaseCreator;
 import de.l3s.eventkg.integration.db.DatabaseName;
@@ -19,74 +21,25 @@ import de.l3s.eventkg.pipeline.Config.TimeSymbol;
 import de.l3s.eventkg.source.dbpedia.DBpediaAllLocationsLoader;
 import de.l3s.eventkg.util.FileLoader;
 import de.l3s.eventkg.util.FileName;
-import edu.stanford.nlp.util.StringUtils;
 import gnu.trove.map.hash.THashMap;
 
 public class WikidataIdMappings {
 
 	private DatabaseCreator dbCreator = new DatabaseCreator();
 
-	// private Map<Language, Map<String, String>> wikidataEntitiesByIDs;
-	// private Map<Language, Map<String, String>> wikidataIdsForWikipediaLabels;
 	private Map<Language, Map<String, String>> wikidataPropertysByIDs;
 
-	// private CacheManager cacheManager;
-
-	// private Cache<Integer, Entity> entitiesByWikidataNumericIds;
-
 	private Map<Integer, Entity> entitiesByWikidataNumericIds = new THashMap<Integer, Entity>();
-
-	// private DataStore dataStore;
-
-	// private Map<String, Entity> entitiesByWikidataIds;
 
 	private List<Language> languages;
 
 	private Map<String, TimeSymbol> temporalPropertyIds;
 
-	// private Map<Language, Map<String, String>> redirects = new
-	// HashMap<Language, Map<String, String>>();
-
 	public WikidataIdMappings(List<Language> languages) {
 		this.languages = languages;
-
-		// this.cacheManager =
-		// CacheManagerBuilder.newCacheManagerBuilder().build(true);
-
-		// this.cacheManager = CacheManagerBuilder.newCacheManagerBuilder()
-		// .with(CacheManagerBuilder.persistence(new
-		// File(Config.getValue("cache_folder")))).build(true);
 	}
 
 	public void load() {
-
-		// this.entitiesByWikidataNumericIds =
-		// cacheManager.createCache("entitiesByWikidataNumericIds",
-		// CacheConfigurationBuilder.newCacheConfigurationBuilder(Integer.class,
-		// Entity.class,
-		// ResourcePoolsBuilder.heap(10000).offheap(1, MemoryUnit.GB)).build());
-
-		// this.entitiesByWikidataNumericIds =
-		// this.cacheManager.createCache("entitiesByWikidataNumericIds",
-		// CacheConfigurationBuilder.newCacheConfigurationBuilder(Integer.class,
-		// Entity.class,
-		// ResourcePoolsBuilder.newResourcePoolsBuilder().heap(100000,
-		// EntryUnit.ENTRIES)
-		// .offheap(2, MemoryUnit.GB).disk(20, MemoryUnit.GB, false)));
-
-		// this.dataStore = DataStore.getInstance();
-
-		// System.out.println("Add entities to data store - " +
-		// TimeTransformer.getTime() + ".");
-		// for (Iterator<Entry<Integer, Entity>> it =
-		// this.entitiesByWikidataNumericIds.iterator(); it.hasNext();) {
-		// Entry<Integer, Entity> entry = it.next();
-		// dataStore.addEntity(entry.getValue());
-		// }
-		// System.out.println(" -> Done - " + TimeTransformer.getTime() + ".");
-		//
-		//
-
 		loadEntitiesFromDB();
 
 		loadWikidataPropertyIdMapping();
@@ -95,7 +48,7 @@ public class WikidataIdMappings {
 
 	private void loadEntitiesFromDB() {
 
-		System.out.println("Load entities from the database.");
+		System.out.println("Load entities from " + FileName.WIKIDATA_VALID_IDS.getFileName() + ".");
 		LineIterator it = null;
 		try {
 			it = FileLoader.getLineIterator(FileName.WIKIDATA_VALID_IDS);
@@ -119,7 +72,7 @@ public class WikidataIdMappings {
 		}
 		System.out.println(" => Done.");
 
-		System.out.println("Load location entities.");
+		System.out.println("Mark location entities.");
 		DBpediaAllLocationsLoader.loadLocationEntities(this.languages, this);
 		System.out.println(" => Done.");
 	}
@@ -215,6 +168,19 @@ public class WikidataIdMappings {
 			return entitiesByWikidataNumericIds.get(Integer.valueOf(wikidataId));
 	}
 
+	public Event getEventByWikipediaLabel(Language language, String wikipediaLabel) {
+
+		String wikidataId = dbCreator.getEntry(dbCreator.getDB(language, DatabaseName.WIKIPEDIA_ID_TO_WIKIDATA_ID),
+				wikipediaLabel);
+
+		Entity entity = entitiesByWikidataNumericIds.get(Integer.valueOf(wikidataId));
+
+		if (entity != null && entity.isEvent())
+			return (Event) entity;
+		else
+			return null;
+	}
+
 	public Entity getEntityByWikidataId(String wikidataId) {
 		return entitiesByWikidataNumericIds.get(Integer.parseInt(wikidataId.substring(1)));
 	}
@@ -227,25 +193,9 @@ public class WikidataIdMappings {
 			return null;
 	}
 
-	public Event getEventByWikidataId(int wikidataId) {
-		Entity entity = entitiesByWikidataNumericIds.get(wikidataId);
-		if (entity.isEvent())
-			return (Event) entity;
-		else
-			return null;
-	}
-
 	public Entity getEntityByWikidataId(int wikidataId) {
 		return entitiesByWikidataNumericIds.get(wikidataId);
 	}
-
-	// public Cache<Integer, Entity> getEntitiesByWikidataIds() {
-	// return this.entitiesByWikidataNumericIds;
-	// }
-	//
-	// public Cache<Integer, Entity> getEntitiesByWikidataNumericIds() {
-	// return entitiesByWikidataNumericIds;
-	// }
 
 	public void updateEntityToEvent(Event event) {
 		this.entitiesByWikidataNumericIds.put(event.getNumericWikidataId(), event);
@@ -276,8 +226,8 @@ public class WikidataIdMappings {
 		return entitiesByWikidataNumericIds;
 	}
 
-	// public void close() {
-	// this.cacheManager.close();
-	// }
+	public Collection<Entity> getEntities() {
+		return entitiesByWikidataNumericIds.values();
+	}
 
 }

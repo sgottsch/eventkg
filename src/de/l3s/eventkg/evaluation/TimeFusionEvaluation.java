@@ -15,6 +15,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.io.LineIterator;
+import org.apache.commons.lang3.StringUtils;
 
 import de.l3s.eventkg.integration.model.DateWithGranularity;
 import de.l3s.eventkg.integration.model.Event;
@@ -25,7 +26,6 @@ import de.l3s.eventkg.pipeline.Config;
 import de.l3s.eventkg.util.FileLoader;
 import de.l3s.eventkg.util.FileName;
 import de.l3s.eventkg.util.TimeTransformer;
-import edu.stanford.nlp.util.StringUtils;
 
 public class TimeFusionEvaluation {
 
@@ -263,7 +263,7 @@ public class TimeFusionEvaluation {
 		int i = 0;
 		LineIterator it = null;
 		try {
-			it = FileLoader.getLineIterator(FileName.ALL_TTL_EVENTS_WITH_TEXTS);
+			it = FileLoader.getLineIterator(FileName.ALL_TTL_EVENTS);
 			while (it.hasNext()) {
 				String line = it.nextLine();
 

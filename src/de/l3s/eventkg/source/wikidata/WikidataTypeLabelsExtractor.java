@@ -1,47 +1,35 @@
 package de.l3s.eventkg.source.wikidata;
 
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.util.List;
 import java.util.Set;
 
 import org.apache.commons.io.LineIterator;
 
 import de.l3s.eventkg.integration.DataSets;
-import de.l3s.eventkg.integration.DataStoreWriter;
-import de.l3s.eventkg.integration.DataStoreWriterMode;
-import de.l3s.eventkg.integration.model.FileType;
 import de.l3s.eventkg.integration.model.relation.DataSet;
-import de.l3s.eventkg.integration.model.relation.prefix.PrefixEnum;
-import de.l3s.eventkg.integration.model.relation.prefix.PrefixList;
 import de.l3s.eventkg.meta.Language;
 import de.l3s.eventkg.meta.Source;
 import de.l3s.eventkg.pipeline.Extractor;
+import de.l3s.eventkg.pipeline.output.TriplesWriter;
 import de.l3s.eventkg.util.FileLoader;
 import de.l3s.eventkg.util.FileName;
 
 public class WikidataTypeLabelsExtractor extends Extractor {
 
 	private Set<Integer> wikidataTypes;
+	private TriplesWriter datastoreWriter;
 
-	public WikidataTypeLabelsExtractor(List<Language> languages, Set<Integer> wikidataTypes) {
+	public WikidataTypeLabelsExtractor(List<Language> languages, Set<Integer> wikidataTypes,
+			TriplesWriter dataStoreWriter) {
 		super("WikidataTypeLabelsExtractor", Source.WIKIDATA, "Loads all Wikidata type labels.", languages);
 		this.wikidataTypes = wikidataTypes;
+		this.datastoreWriter = dataStoreWriter;
 	}
 
 	@Override
 	public void run() {
 
-		PrefixList prefixList = PrefixList.getInstance();
-
-		FileType fileType = FileType.NQ;
-
-		PrintWriter writer = null;
-		PrintWriter writerPreview = null;
-
-		DataStoreWriter dataStoreWriter = new DataStoreWriter(languages,
-				DataStoreWriterMode.USE_IDS_OF_CURRENT_EVENTKG_VERSION);
-		dataStoreWriter.initPrefixes();
 		DataSet dataSet = DataSets.getInstance().getDataSetWithoutLanguage(Source.WIKIDATA);
 
 		// Set<Integer> nonWikidataTypeIds = new THashSet<Integer>();
@@ -93,44 +81,33 @@ public class WikidataTypeLabelsExtractor extends Extractor {
 		// }
 
 		System.out.println("Write class labels.");
-		try {
-			writer = FileLoader.getWriter(FileName.ALL_TTL_TYPE_LABELS_WIKIDATA);
-			writerPreview = FileLoader.getWriter(FileName.ALL_TTL_TYPE_LABELS_WIKIDATA_PREVIEW);
-			for (Language language : this.languages) {
+		for (Language language : this.languages) {
 
-				LineIterator it3 = null;
-				int lineNo = 0;
+			LineIterator it3 = null;
 
-				try {
-					it3 = FileLoader.getLineIterator(FileName.WIKIDATA_LABELS, language);
-					while (it3.hasNext()) {
-						String line = it3.nextLine();
-						String wikidataId = line.split("\t")[0];
-						int numericWikidataId = Integer.valueOf(wikidataId.substring(1));
+			try {
+				it3 = FileLoader.getLineIterator(FileName.WIKIDATA_LABELS, language);
+				while (it3.hasNext()) {
+					String line = it3.nextLine();
+					String wikidataId = line.split("\t")[0];
+					int numericWikidataId = Integer.valueOf(wikidataId.substring(1));
 
-						if (wikidataTypes.contains(numericWikidataId)) {
-							dataStoreWriter.writeTriple(writer, writerPreview, lineNo,
-									prefixList.getPrefix(PrefixEnum.WIKIDATA_ENTITY), wikidataId,
-									prefixList.getPrefix(PrefixEnum.RDFS), "label", null, line.split("\t")[1], true,
-									dataSet, language, fileType);
-							lineNo += 1;
-						}
-					}
-				} catch (IOException e) {
-					e.printStackTrace();
-				} finally {
-					try {
-						it3.close();
-					} catch (IOException e) {
-						e.printStackTrace();
+					if (wikidataTypes.contains(numericWikidataId)) {
+						datastoreWriter.startInstance();
+						datastoreWriter.writeWikidataTypeLabelTriple(wikidataId, line.split("\t")[1], dataSet, language,
+								false);
+						datastoreWriter.endInstance();
 					}
 				}
+			} catch (IOException e) {
+				e.printStackTrace();
+			} finally {
+				try {
+					it3.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
 			}
-		} catch (IOException e) {
-			e.printStackTrace();
-		} finally {
-			writer.close();
-			writerPreview.close();
 		}
 
 	}

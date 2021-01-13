@@ -64,4 +64,28 @@ public class Config {
 
 	}
 
+	public static String getResourceURI() {
+		return getURL() + "resource/";
+	}
+
+	public static String getSchemaURI() {
+		return getURL() + "schema/";
+	}
+
+	public static String getGraphURI() {
+		return getURL() + "graph/";
+	}
+
+	public static String getGraphURI(String name) {
+		return "<" + getURL() + "graph/" + name + ">";
+	}
+
+	public static String getResourceURI(String name) {
+		return "<" + getURL() + "resource/" + name + ">";
+	}
+
+	public static String getURL() {
+		return getValue("url");
+	}
+
 }

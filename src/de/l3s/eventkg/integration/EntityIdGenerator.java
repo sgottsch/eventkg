@@ -21,6 +21,9 @@ public class EntityIdGenerator {
 	private DatabaseCreator dbCreator = new DatabaseCreator();
 
 	public EntityIdGenerator(boolean fromPreviousVersion) {
+
+		System.out.println("EntityIdGenerator: " + fromPreviousVersion);
+
 		if (fromPreviousVersion) {
 			wikidataIdToEventKGEventID = DatabaseName.WIKIDATA_ID_TO_OLD_EVENTKG_EVENT_ID;
 			wikidataIdToEventKGEntityID = DatabaseName.WIKIDATA_ID_TO_OLD_EVENTKG_ENTITY_ID;
@@ -47,7 +50,6 @@ public class EntityIdGenerator {
 			return getEventID((Event) entity);
 		else
 			return getEntityID(entity);
-
 	}
 
 	public String getEventID(Event event) {

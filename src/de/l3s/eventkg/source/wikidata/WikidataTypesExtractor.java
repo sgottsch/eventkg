@@ -1,10 +1,7 @@
 package de.l3s.eventkg.source.wikidata;
 
 import java.io.BufferedReader;
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.PrintWriter;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -12,34 +9,34 @@ import java.util.Map;
 import java.util.Set;
 
 import de.l3s.eventkg.integration.DataSets;
-import de.l3s.eventkg.integration.DataStoreWriter;
-import de.l3s.eventkg.integration.DataStoreWriterMode;
-import de.l3s.eventkg.integration.EntityIdGenerator;
-import de.l3s.eventkg.integration.model.FileType;
+import de.l3s.eventkg.integration.WikidataIdMappings;
+import de.l3s.eventkg.integration.model.Entity;
 import de.l3s.eventkg.integration.model.relation.DataSet;
-import de.l3s.eventkg.integration.model.relation.prefix.Prefix;
 import de.l3s.eventkg.integration.model.relation.prefix.PrefixEnum;
 import de.l3s.eventkg.integration.model.relation.prefix.PrefixList;
 import de.l3s.eventkg.meta.Language;
 import de.l3s.eventkg.meta.Source;
-import de.l3s.eventkg.pipeline.Config;
 import de.l3s.eventkg.pipeline.Extractor;
+import de.l3s.eventkg.pipeline.output.TriplesWriter;
 import de.l3s.eventkg.util.FileLoader;
 import de.l3s.eventkg.util.FileName;
 import gnu.trove.set.hash.THashSet;
 
 public class WikidataTypesExtractor extends Extractor {
 
-	private EntityIdGenerator eventKGIdMapping;
-
-	private Map<String, Set<String>> typesPerEntity = new HashMap<String, Set<String>>();
+	private Map<Entity, Set<String>> typesPerEntity = new HashMap<Entity, Set<String>>();
 	private Map<String, Set<String>> parentClasses = new HashMap<String, Set<String>>();
 
 	private Set<Integer> usedTypes = new THashSet<Integer>();
+	private WikidataIdMappings wikidataIdMappings;
 
-	public WikidataTypesExtractor(List<Language> languages, EntityIdGenerator eventKGIdMapping) {
+	private TriplesWriter datastoreWriter;
+
+	public WikidataTypesExtractor(List<Language> languages, WikidataIdMappings wikidataIdMappings,
+			TriplesWriter dataStoreWriter) {
 		super("DBpediaTypesExtractor", Source.WIKIDATA, "Loads all Wikidata types.", languages);
-		this.eventKGIdMapping = eventKGIdMapping;
+		this.wikidataIdMappings = wikidataIdMappings;
+		this.datastoreWriter = dataStoreWriter;
 	}
 
 	@Override
@@ -47,106 +44,74 @@ public class WikidataTypesExtractor extends Extractor {
 
 		PrefixList prefixList = PrefixList.getInstance();
 
-		FileType fileType = FileType.NQ;
+		createTypeHierarchy();
 
-		PrintWriter writer = null;
-		PrintWriter writerPreview = null;
-
-		DataStoreWriter dataStoreWriter = new DataStoreWriter(languages,
-				DataStoreWriterMode.USE_IDS_OF_CURRENT_EVENTKG_VERSION);
-		dataStoreWriter.initPrefixes();
+		Set<String> usedLines = new HashSet<String>();
+		BufferedReader br = null;
+		DataSet dataSet = DataSets.getInstance().getDataSetWithoutLanguage(Source.WIKIDATA);
 
 		try {
-			writer = FileLoader.getWriter(FileName.ALL_TTL_TYPES_WIKIDATA);
-			writerPreview = FileLoader.getWriter(FileName.ALL_TTL_TYPES_WIKIDATA_PREVIEW);
+			br = FileLoader.getReader(FileName.WIKIDATA_INSTANCE_OF);
+			String line;
+			while ((line = br.readLine()) != null) {
+				if (line.startsWith("#"))
+					continue;
 
-			List<Prefix> prefixes = new ArrayList<Prefix>();
-			prefixes.add(prefixList.getPrefix(PrefixEnum.RDF));
-			prefixes.add(prefixList.getPrefix(PrefixEnum.RDFS));
-			prefixes.add(prefixList.getPrefix(PrefixEnum.WIKIDATA_ENTITY));
-			for (String line : dataStoreWriter.createIntro(prefixes, prefixList, fileType)) {
-				writer.write(line + Config.NL);
-				writerPreview.write(line + Config.NL);
-			}
+				String[] parts = line.split("\t");
 
-			createTypeHierarchy();
+				String instanceId = parts[0];
+				String type = parts[2];
 
-			Set<String> usedLines = new HashSet<String>();
-			int lineNo = 0;
-			BufferedReader br = null;
-			DataSet dataSet = DataSets.getInstance().getDataSetWithoutLanguage(Source.WIKIDATA);
-
-			try {
-				br = FileLoader.getReader(FileName.WIKIDATA_INSTANCE_OF);
-				String line;
-				while ((line = br.readLine()) != null) {
-					if (line.startsWith("#"))
-						continue;
-
-					String[] parts = line.split("\t");
-
-					String instanceId = parts[0];
-					String type = parts[2];
-
-					String eventKGId = eventKGIdMapping.getEventKGIDByWikidataId(instanceId);
-					if (eventKGId == null) {
-						continue;
-					}
-					lineNo += 1;
-
-					String lineId = eventKGId + " " + type;
-
-					if (usedLines.contains(lineId))
-						continue;
-					usedLines.add(lineId);
-
-					if (!typesPerEntity.containsKey(eventKGId))
-						typesPerEntity.put(eventKGId, new HashSet<String>());
-
-					usedTypes.add(Integer.valueOf(type.substring(1)));
-					typesPerEntity.get(eventKGId).add(type);
-
-					dataStoreWriter.writeTriple(writer, writerPreview, lineNo, dataStoreWriter.getBasePrefix(),
-							eventKGId, prefixList.getPrefix(PrefixEnum.RDF), "type",
-							prefixList.getPrefix(PrefixEnum.WIKIDATA_ENTITY), type, false, dataSet, fileType);
-
+				Entity eventKGEntity = this.wikidataIdMappings.getEntityByWikidataId(instanceId);
+				if (eventKGEntity == null) {
+					continue;
 				}
-			} catch (FileNotFoundException e1) {
-				e1.printStackTrace();
-			} finally {
-				br.close();
+
+				String eventKGId = eventKGEntity.getId();
+				if (eventKGId == null) {
+					continue;
+				}
+
+				String lineId = eventKGId + " " + type;
+
+				if (usedLines.contains(lineId))
+					continue;
+				usedLines.add(lineId);
+
+				if (!typesPerEntity.containsKey(eventKGEntity))
+					typesPerEntity.put(eventKGEntity, new HashSet<String>());
+
+				usedTypes.add(Integer.valueOf(type.substring(1)));
+				typesPerEntity.get(eventKGEntity).add(type);
+
+				datastoreWriter.startInstance();
+				datastoreWriter.writeWikidataTypeTriple(eventKGEntity, prefixList.getPrefix(PrefixEnum.WIKIDATA_ENTITY),
+						type, dataSet, false);
+				datastoreWriter.endInstance();
 			}
-
-		} catch (
-
-		IOException e) {
+		} catch (NumberFormatException | IOException e) {
 			e.printStackTrace();
 		} finally {
-			writer.close();
-			writerPreview.close();
+			try {
+				br.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 		}
-
-		System.out.println("event_437985: " + typesPerEntity.get("event_437985"));
-		System.out.println("<event_437985>: " + typesPerEntity.get("event_437985"));
-		System.out.println("<event_437985> transitive: " + getTransitiveClasses("<event_437985>"));
-
-		System.out.println("entity_4956997: " + typesPerEntity.get("entity_4956997"));
-		System.out.println("<entity_4956997>: " + typesPerEntity.get("<entity_4956997>"));
-		System.out.println("<entity_4956997> transitive: " + getTransitiveClasses("<entity_4956997>"));
 
 	}
 
-	public Set<String> getTransitiveClasses(String eventKGId) {
+	public Set<String> getTransitiveClasses(Entity eventKGEntity) {
 		Set<String> types = new HashSet<String>();
-		if (typesPerEntity.containsKey(eventKGId))
-			for (String parent : typesPerEntity.get(eventKGId)) {
+		if (typesPerEntity.containsKey(eventKGEntity))
+			for (String parent : typesPerEntity.get(eventKGEntity)) {
 				types.add(parent);
 				if (parentClasses.containsKey(parent))
 					for (String parentParent : parentClasses.get(parent)) {
 						types.add(parentParent);
 					}
 			}
-		types.add(eventKGId);
+		// types.add(eventKGId);
 		return types;
 	}
 
@@ -216,7 +181,7 @@ public class WikidataTypesExtractor extends Extractor {
 
 	}
 
-	public Map<String, Set<String>> getTypesPerEntity() {
+	public Map<Entity, Set<String>> getTypesPerEntity() {
 		return typesPerEntity;
 	}
 

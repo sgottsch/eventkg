@@ -1,10 +1,7 @@
 package de.l3s.eventkg.source.dbpedia;
 
 import java.io.BufferedReader;
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.PrintWriter;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -12,33 +9,34 @@ import java.util.Map;
 import java.util.Set;
 
 import de.l3s.eventkg.integration.DataSets;
-import de.l3s.eventkg.integration.DataStoreWriter;
-import de.l3s.eventkg.integration.DataStoreWriterMode;
-import de.l3s.eventkg.integration.EntityIdGenerator;
-import de.l3s.eventkg.integration.model.FileType;
+import de.l3s.eventkg.integration.WikidataIdMappings;
+import de.l3s.eventkg.integration.model.Entity;
 import de.l3s.eventkg.integration.model.relation.DataSet;
-import de.l3s.eventkg.integration.model.relation.prefix.Prefix;
 import de.l3s.eventkg.integration.model.relation.prefix.PrefixEnum;
 import de.l3s.eventkg.integration.model.relation.prefix.PrefixList;
 import de.l3s.eventkg.meta.Language;
 import de.l3s.eventkg.meta.Source;
-import de.l3s.eventkg.pipeline.Config;
 import de.l3s.eventkg.pipeline.Extractor;
+import de.l3s.eventkg.pipeline.output.TriplesWriter;
 import de.l3s.eventkg.util.FileLoader;
 import de.l3s.eventkg.util.FileName;
 
 public class DBpediaTypesExtractor extends Extractor {
 
-	private EntityIdGenerator eventKGIdMapping;
+	private WikidataIdMappings wikidataIdMappings;
 
-	private Map<String, Set<String>> typesPerEntity = new HashMap<String, Set<String>>();
+	private Map<Entity, Set<String>> typesPerEntity = new HashMap<Entity, Set<String>>();
 	private Map<String, Set<String>> parentClasses = new HashMap<String, Set<String>>();
 
 	private Map<String, Set<String>> wikidataToDBO = new HashMap<String, Set<String>>();
 
-	public DBpediaTypesExtractor(List<Language> languages, EntityIdGenerator eventKGIdMapping) {
+	private TriplesWriter datastoreWriter;
+
+	public DBpediaTypesExtractor(List<Language> languages, WikidataIdMappings wikidataIdMappings,
+			TriplesWriter dataStoreWriter) {
 		super("DBpediaTypesExtractor", Source.DBPEDIA, "Loads all DBpedia:ontology types.", languages);
-		this.eventKGIdMapping = eventKGIdMapping;
+		this.wikidataIdMappings = wikidataIdMappings;
+		this.datastoreWriter = dataStoreWriter;
 	}
 
 	public static void main(String[] args) {
@@ -49,122 +47,90 @@ public class DBpediaTypesExtractor extends Extractor {
 
 	@Override
 	public void run() {
-
 		PrefixList prefixList = PrefixList.getInstance();
 
-		FileType fileType = FileType.NQ;
+		this.parentClasses = parseOntologyAndWriteSubclasses(this.datastoreWriter, prefixList, this.wikidataToDBO);
 
-		PrintWriter writer = null;
-		PrintWriter writerPreview = null;
-		PrintWriter writerOntology = null;
-		PrintWriter writerOntologyPreview = null;
+		for (Language language : languages) {
 
-		DataStoreWriter dataStoreWriter = new DataStoreWriter(languages,
-				DataStoreWriterMode.USE_IDS_OF_CURRENT_EVENTKG_VERSION);
-		dataStoreWriter.initPrefixes();
+			Set<String> usedLines = new HashSet<String>();
+			BufferedReader br = null;
+			DataSet dataSet = DataSets.getInstance().getDataSet(language, Source.DBPEDIA);
 
-		try {
-			writer = FileLoader.getWriter(FileName.ALL_TTL_TYPES_DBPEDIA);
-			writerPreview = FileLoader.getWriter(FileName.ALL_TTL_TYPES_DBPEDIA_PREVIEW);
-			writerOntology = FileLoader.getWriter(FileName.ALL_TTL_DBPEDIA_ONTOLOGY);
-			writerOntologyPreview = FileLoader.getWriter(FileName.ALL_TTL_DBPEDIA_ONTOLOGY_PREVIEW);
+			if (FileLoader.fileExists(FileName.DBPEDIA_TYPES, language)) {
 
-			List<Prefix> prefixes = new ArrayList<Prefix>();
-			prefixes.add(prefixList.getPrefix(PrefixEnum.RDF));
-			prefixes.add(prefixList.getPrefix(PrefixEnum.RDFS));
-			prefixes.add(prefixList.getPrefix(PrefixEnum.OWL));
-			prefixes.add(prefixList.getPrefix(PrefixEnum.DBPEDIA_ONTOLOGY));
-			for (String line : dataStoreWriter.createIntro(prefixes, prefixList, fileType)) {
-				writer.write(line + Config.NL);
-				writerPreview.write(line + Config.NL);
-				writerOntology.write(line + Config.NL);
-				writerOntologyPreview.write(line + Config.NL);
-			}
+				try {
+					br = FileLoader.getReader(FileName.DBPEDIA_TYPES, language);
+					String line;
+					while ((line = br.readLine()) != null) {
+						if (line.startsWith("#"))
+							continue;
 
-			this.parentClasses = parseOntologyAndWriteSubclasses(writerOntology, writerOntologyPreview, prefixList,
-					fileType, dataStoreWriter, this.wikidataToDBO);
+						String[] parts = line.split(" ");
 
-			for (Language language : languages) {
+						String type = parts[2];
 
-				Set<String> usedLines = new HashSet<String>();
-				int lineNo = 0;
-				BufferedReader br = null;
-				DataSet dataSet = DataSets.getInstance().getDataSet(language, Source.DBPEDIA);
+						if (!type.startsWith("<http://dbpedia.org/ontology"))
+							continue;
+						type = type.substring(type.lastIndexOf("/") + 1, type.length() - 1);
 
-				if (FileLoader.fileExists(FileName.DBPEDIA_TYPES, language)) {
+						// manually solve bug in Russian DBpedia (many
+						// "book" types)
+						if (language == Language.RU && type.equals("Book"))
+							continue;
+						// manually solve bug in Germany DBpedia (many
+						// "WrittenWork" types)
+						if (language == Language.DE && type.equals("WrittenWork"))
+							continue;
 
-					try {
-						br = FileLoader.getReader(FileName.DBPEDIA_TYPES, language);
-						String line;
-						while ((line = br.readLine()) != null) {
-							if (line.startsWith("#"))
-								continue;
+						// German DBpedia is also erroneous for dbo:Place.
+						// For example, World War II is a place there
+						if (language == Language.DE && type.equals("Place"))
+							continue;
 
-							String[] parts = line.split(" ");
+						String resource = parts[0];
+						resource = resource.substring(resource.lastIndexOf("/") + 1, resource.length() - 1);
+						if (resource.contains("__"))
+							resource = resource.substring(0, resource.lastIndexOf("__"));
 
-							String type = parts[2];
-
-							if (!type.startsWith("<http://dbpedia.org/ontology"))
-								continue;
-							type = type.substring(type.lastIndexOf("/") + 1, type.length() - 1);
-
-							// manually solve bug in Russian DBpedia (many
-							// "book" types)
-							if (language == Language.RU && type.equals("Book"))
-								continue;
-							// manually solve bug in Germany DBpedia (many
-							// "WrittenWork" types)
-							if (language == Language.DE && type.equals("WrittenWork"))
-								continue;
-
-							// German DBpedia is also erroneous for dbo:Place.
-							// For example, World War II is a place there
-							if (language == Language.DE && type.equals("Place"))
-								continue;
-
-							String resource = parts[0];
-							resource = resource.substring(resource.lastIndexOf("/") + 1, resource.length() - 1);
-							if (resource.contains("__"))
-								resource = resource.substring(0, resource.lastIndexOf("__"));
-
-							String eventKGId = eventKGIdMapping.getEventKGIdByWikipediaId(dataSet.getLanguage(),
-									resource);
-							if (eventKGId == null)
-								continue;
-
-							lineNo += 1;
-
-							String lineId = resource + " " + type;
-
-							if (usedLines.contains(lineId))
-								continue;
-							usedLines.add(lineId);
-
-							if (!typesPerEntity.containsKey(eventKGId))
-								typesPerEntity.put(eventKGId, new HashSet<String>());
-
-							typesPerEntity.get(eventKGId).add(type);
-
-							dataStoreWriter.writeTriple(writer, writerPreview, lineNo, dataStoreWriter.getBasePrefix(),
-									eventKGId, prefixList.getPrefix(PrefixEnum.RDF), "type",
-									prefixList.getPrefix(PrefixEnum.DBPEDIA_ONTOLOGY), type, false, dataSet, fileType);
+						Entity eventKGEntity = this.wikidataIdMappings.getEntityByWikipediaLabel(dataSet.getLanguage(),
+								resource);
+						if (eventKGEntity == null) {
+							continue;
 						}
-					} catch (FileNotFoundException e1) {
-						e1.printStackTrace();
-					} finally {
+
+						String eventKGId = eventKGEntity.getId();
+						if (eventKGId == null) {
+							continue;
+						}
+
+						String lineId = resource + " " + type;
+
+						if (usedLines.contains(lineId))
+							continue;
+						usedLines.add(lineId);
+
+						if (!typesPerEntity.containsKey(eventKGEntity))
+							typesPerEntity.put(eventKGEntity, new HashSet<String>());
+
+						typesPerEntity.get(eventKGEntity).add(type);
+
+						datastoreWriter.startInstance();
+						datastoreWriter.writeDBPediaTypeTriple(eventKGEntity,
+								prefixList.getPrefix(PrefixEnum.DBPEDIA_ONTOLOGY), type, dataSet, false);
+						datastoreWriter.endInstance();
+					}
+				} catch (IOException e1) {
+					e1.printStackTrace();
+				} finally {
+					try {
 						br.close();
+					} catch (IOException e) {
+						e.printStackTrace();
 					}
 				}
-
 			}
 
-		} catch (IOException e) {
-			e.printStackTrace();
-		} finally {
-			writer.close();
-			writerPreview.close();
-			writerOntology.close();
-			writerOntologyPreview.close();
 		}
 
 	}
@@ -184,16 +150,14 @@ public class DBpediaTypesExtractor extends Extractor {
 	}
 
 	public static Map<String, Set<String>> parseOntology() {
-		return parseOntologyAndWriteSubclasses(null, null, null, null, null, null);
+		return parseOntologyAndWriteSubclasses(null, null, null);
 	}
 
-	private static Map<String, Set<String>> parseOntologyAndWriteSubclasses(PrintWriter writer,
-			PrintWriter writerPreview, PrefixList prefixList, FileType fileType, DataStoreWriter dataStoreWriter,
-			Map<String, Set<String>> wikidataToDBO) {
+	private static Map<String, Set<String>> parseOntologyAndWriteSubclasses(TriplesWriter datastoreWriter,
+			PrefixList prefixList, Map<String, Set<String>> wikidataToDBO) {
 
 		Map<String, Set<String>> parentClasses = new HashMap<String, Set<String>>();
 
-		int lineNo = 0;
 		BufferedReader br = null;
 
 		try {
@@ -237,18 +201,16 @@ public class DBpediaTypesExtractor extends Extractor {
 						continue;
 					type2 = type2.substring(type2.lastIndexOf("/") + 1, type2.length() - 1);
 
-					lineNo += 1;
-
 					if (!parentClasses.containsKey(type1))
 						parentClasses.put(type1, new HashSet<String>());
 					parentClasses.get(type1).add(type2);
 
-					if (dataStoreWriter != null)
-						dataStoreWriter.writeTriple(writer, writerPreview, lineNo,
-								prefixList.getPrefix(PrefixEnum.DBPEDIA_ONTOLOGY), type1,
-								prefixList.getPrefix(PrefixEnum.RDFS), "subClassOf",
-								prefixList.getPrefix(PrefixEnum.DBPEDIA_ONTOLOGY), type2, false,
-								DataSets.getInstance().getDataSetWithoutLanguage(Source.DBPEDIA), fileType);
+					if (datastoreWriter != null) {
+						datastoreWriter.startInstance();
+						datastoreWriter.writeDBPediaOntologySubClassTriple(type1, type2,
+								DataSets.getInstance().getDataSetWithoutLanguage(Source.DBPEDIA), true);
+						datastoreWriter.endInstance();
+					}
 				} else if (parts[1].equals("<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>")
 						&& parts[2].equals("<http://www.w3.org/2002/07/owl#Class>")) {
 					String type1 = parts[0];
@@ -256,14 +218,12 @@ public class DBpediaTypesExtractor extends Extractor {
 						continue;
 					type1 = type1.substring(type1.lastIndexOf("/") + 1, type1.length() - 1);
 
-					lineNo += 1;
-
-					if (dataStoreWriter != null)
-						dataStoreWriter.writeTriple(writer, writerPreview, lineNo,
-								prefixList.getPrefix(PrefixEnum.DBPEDIA_ONTOLOGY), type1,
-								prefixList.getPrefix(PrefixEnum.RDF), "type", prefixList.getPrefix(PrefixEnum.OWL),
-								"Class", false, DataSets.getInstance().getDataSetWithoutLanguage(Source.DBPEDIA),
-								fileType);
+					if (datastoreWriter != null) {
+						datastoreWriter.startInstance();
+						datastoreWriter.writeDBPediaOntologyTypeTriple(type1, prefixList.getPrefix(PrefixEnum.OWL),
+								"Class", DataSets.getInstance().getDataSetWithoutLanguage(Source.DBPEDIA), true);
+						datastoreWriter.endInstance();
+					}
 				}
 			}
 		} catch (IOException e1) {
@@ -325,7 +285,7 @@ public class DBpediaTypesExtractor extends Extractor {
 
 	}
 
-	public Map<String, Set<String>> getTypesPerEntity() {
+	public Map<Entity, Set<String>> getTypesPerEntity() {
 		return typesPerEntity;
 	}
 

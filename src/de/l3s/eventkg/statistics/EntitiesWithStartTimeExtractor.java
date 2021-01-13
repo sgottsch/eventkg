@@ -19,8 +19,7 @@ public class EntitiesWithStartTimeExtractor {
 		Map<String, String> idToStartTime = new HashMap<String, String>();
 		Map<String, String> idToEndTime = new HashMap<String, String>();
 
-		System.out.println("ALL_TTL_EVENTS_WITH_TEXTS");
-		for (String line : FileLoader.readLines(FileName.ALL_TTL_EVENTS_WITH_TEXTS)) {
+		for (String line : FileLoader.readLines(FileName.ALL_TTL_EVENTS)) {
 			if (line.isEmpty() || line.startsWith("@"))
 				continue;
 			String[] parts = line.split(" ");
@@ -34,7 +33,7 @@ public class EntitiesWithStartTimeExtractor {
 		}
 
 		System.out.println("ALL_TTL_ENTITIES_WITH_TEXTS");
-		for (String line : FileLoader.readLines(FileName.ALL_TTL_ENTITIES_WITH_TEXTS)) {
+		for (String line : FileLoader.readLines(FileName.ALL_TTL_ENTITIES)) {
 			if (line.isEmpty() || line.startsWith("@"))
 				continue;
 			String[] parts = line.split(" ");
