@@ -138,7 +138,6 @@ public class DBpediaDBOEventsLoader extends Extractor {
 		Set<String> blacklistObjects = new HashSet<String>();
 
 		// each sub class or dbo:Organisation except for SportsLeague
-		blacklistObjects.add("SportsLeague");
 		blacklistObjects.add("Broadcaster");
 		blacklistObjects.add("Group");
 		blacklistObjects.add("SportsClub");
