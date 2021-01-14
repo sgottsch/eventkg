@@ -146,6 +146,8 @@ public class AllEventPagesDataSet {
 	private void loadWikidataRecurringEvents() {
 
 		int numberOfWikidataEvents = 0;
+		
+		System.out.println("Read event series.");
 
 		BufferedReader br = null;
 		try {
@@ -167,7 +169,13 @@ public class AllEventPagesDataSet {
 					continue;
 
 				Entity entityTmp = getWikidataIdMappings().getEntityByWikidataId(parts[0]);
+
+				if (parts[0].equals("Q170645"))
+					System.out.println("Example event in WIKIDATA_EVENT_SERIES: " + line + " -> " + entityTmp);
+
 				if (entityTmp != null && entityTmp.isEvent()) {
+					if (parts[0].equals("Q170645"))
+						System.out.println(" -> set series.");
 					((Event) entityTmp).setRecurring(true);
 					numberOfWikidataEvents += 1;
 				}
@@ -181,6 +189,8 @@ public class AllEventPagesDataSet {
 				e.printStackTrace();
 			}
 		}
+
+		System.out.println("Read event series editions.");
 
 		if (FileLoader.fileExists(FileName.WIKIDATA_RECURRENT_EVENT_EDITIONS)) {
 			BufferedReader br2 = null;
@@ -197,7 +207,15 @@ public class AllEventPagesDataSet {
 					String[] parts = line.split(Config.TAB);
 
 					Event event = getWikidataIdMappings().getEventByWikidataId(parts[0]);
+
+					if (parts[0].equals("Q170645"))
+						System.out.println(
+								"Example event in WIKIDATA_RECURRENT_EVENT_EDITIONS: " + line + " -> " + event);
+
 					if (event != null) {
+						if (parts[0].equals("Q170645"))
+							System.out.println(" -> set edition. " + event.isRecurring());
+
 						event.setRecurring(false);
 						event.setRecurrentEventEdition(true);
 						numberOfWikidataEvents += 1;

@@ -6,8 +6,8 @@ import java.util.List;
 
 import org.apache.commons.io.LineIterator;
 
-import de.l3s.eventkg.integration.AllEventPagesDataSet;
 import de.l3s.eventkg.integration.DataSets;
+import de.l3s.eventkg.integration.WikidataIdMappings;
 import de.l3s.eventkg.integration.model.Entity;
 import de.l3s.eventkg.integration.model.Event;
 import de.l3s.eventkg.integration.model.relation.DataSet;
@@ -20,12 +20,12 @@ import de.l3s.eventkg.util.FileName;
 
 public class LabelsAndDescriptionsExtractor extends Extractor {
 
-	private AllEventPagesDataSet allEventPagesDataSet;
+	private WikidataIdMappings wikidataIdMappings;
 
-	public LabelsAndDescriptionsExtractor(List<Language> languages, AllEventPagesDataSet allEventPagesDataSet) {
+	public LabelsAndDescriptionsExtractor(List<Language> languages, WikidataIdMappings wikidataIdMappings) {
 		super("LabelsAndDescriptionsExtractor", de.l3s.eventkg.meta.Source.WIKIPEDIA,
 				"Collect labels and descriptions of entities and events.", languages);
-		this.allEventPagesDataSet = allEventPagesDataSet;
+		this.wikidataIdMappings = wikidataIdMappings;
 	}
 
 	public void run() {
@@ -57,7 +57,7 @@ public class LabelsAndDescriptionsExtractor extends Extractor {
 				String[] parts = line.split(Config.TAB);
 				String wikidataId = parts[0];
 
-				Event event = allEventPagesDataSet.getEventByWikidataId(wikidataId);
+				Event event = wikidataIdMappings.getEventByWikidataId(wikidataId);
 
 				if (event != null) {
 
@@ -70,7 +70,7 @@ public class LabelsAndDescriptionsExtractor extends Extractor {
 						event.addAlias(dataSet, language, alias);
 					}
 				} else {
-					Entity entity = allEventPagesDataSet.getWikidataIdMappings().getEntityByWikidataId(wikidataId);
+					Entity entity = wikidataIdMappings.getEntityByWikidataId(wikidataId);
 					if (entity == null)
 						continue;
 
@@ -106,7 +106,7 @@ public class LabelsAndDescriptionsExtractor extends Extractor {
 				String[] parts = line.split(Config.TAB);
 				String wikidataId = parts[0];
 
-				Event event = allEventPagesDataSet.getEventByWikidataId(wikidataId);
+				Event event = wikidataIdMappings.getEventByWikidataId(wikidataId);
 
 				if (event != null) {
 					event.addDescription(dataSet, language, parts[1]);

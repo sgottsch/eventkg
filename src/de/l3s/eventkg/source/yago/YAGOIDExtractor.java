@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.util.List;
 
 import de.l3s.eventkg.integration.AllEventPagesDataSet;
+import de.l3s.eventkg.integration.WikidataIdMappings;
 import de.l3s.eventkg.integration.model.Entity;
 import de.l3s.eventkg.meta.Language;
 import de.l3s.eventkg.meta.Source;
@@ -15,11 +16,11 @@ import de.l3s.eventkg.util.FileName;
 
 public class YAGOIDExtractor extends Extractor {
 
-	private AllEventPagesDataSet allEventPagesDataSet;
+	private WikidataIdMappings wikidataIdMappings;
 
-	public YAGOIDExtractor(List<Language> languages, AllEventPagesDataSet allEventPagesDataSet) {
+	public YAGOIDExtractor(List<Language> languages, WikidataIdMappings wikidataIdMappings) {
 		super("YAGOIdExtractor", Source.YAGO, "Extracts YAGO IDs using Wikidata IDs.", languages);
-		this.allEventPagesDataSet = allEventPagesDataSet;
+		this.wikidataIdMappings = wikidataIdMappings;
 	}
 
 	public void run() {
@@ -51,7 +52,7 @@ public class YAGOIDExtractor extends Extractor {
 
 				String wikidataId = parts[2].substring(parts[2].lastIndexOf("/") + 1, parts[2].lastIndexOf(">"));
 
-				Entity entity = this.allEventPagesDataSet.getWikidataIdMappings().getEntityByWikidataId(wikidataId);
+				Entity entity = wikidataIdMappings.getEntityByWikidataId(wikidataId);
 				if (entity != null)
 					entity.setYagoId(yagoId);
 
