@@ -92,7 +92,7 @@ public class Pipeline {
 
 		Pipeline pipeline = new Pipeline(languages);
 		Pipeline.initDataSets(languages);
-		
+
 		if (steps.contains(1)) {
 			System.out.println("Step 1: Download files.");
 			pipeline.download();
@@ -159,9 +159,16 @@ public class Pipeline {
 
 		if (steps.contains(9)) {
 			System.out.println("Step 9: Write output (links).");
-			pipeline.pipelineStep9();
+			pipeline.pipelineStep9(true);
 		} else
 			System.out.println("Skip step 9: Write output (links).");
+
+		if (steps.contains(10)) {
+			System.out.println("Step 10: Write output (co-mentions).");
+			pipeline.pipelineStep9(false);
+		} else
+			System.out.println("Skip step 10: Write output (co-mentions).");
+
 	}
 
 	public Pipeline(List<Language> languages) {
@@ -249,12 +256,12 @@ public class Pipeline {
 		System.out.println("Pipeline step 5: Event and entity labels and IDs.");
 
 		List<Extractor> extractors = new ArrayList<Extractor>();
-		getAllEventPagesDataSet(true);
-		extractors.add(new EventKGDBCreatorFromPreviousVersion(languages));
+		WikidataIdMappings wikidataIdMappings = getAllEventPagesDataSet(true).getWikidataIdMappings();
 
+		extractors.add(new EventKGDBCreatorFromPreviousVersion(languages));
 		extractors.add(new WikidataEventSeriesEditionsFromFileFinder(languages));
-		extractors.add(new YAGOIDExtractor(languages, getAllEventPagesDataSet(true))); //
-		extractors.add(new LabelsAndDescriptionsExtractor(languages, getAllEventPagesDataSet(true))); //
+		extractors.add(new YAGOIDExtractor(languages, wikidataIdMappings));
+		extractors.add(new LabelsAndDescriptionsExtractor(languages, wikidataIdMappings));
 
 		for (Extractor extractor : extractors) {
 			extractor.printInformation();
@@ -369,7 +376,7 @@ public class Pipeline {
 		System.out.println("Done.");
 	}
 
-	private void pipelineStep9() {
+	private void pipelineStep9(boolean counts) {
 
 		System.out.println("Pipeline step 9: Links.");
 
@@ -384,10 +391,12 @@ public class Pipeline {
 
 		MemoryStatsUtil.printMemoryStats();
 
-		extractors
-				.add(new WikipediaLinkCountsExtractor(languages, wikidataIdMappings, triplesWriter, connectedEntities));
-		extractors
-				.add(new WikipediaCoMentionsExtractor(languages, wikidataIdMappings, triplesWriter, connectedEntities));
+		if (counts)
+			extractors.add(
+					new WikipediaLinkCountsExtractor(languages, wikidataIdMappings, triplesWriter, connectedEntities));
+		else
+			extractors.add(
+					new WikipediaCoMentionsExtractor(languages, wikidataIdMappings, triplesWriter, connectedEntities));
 
 		MemoryStatsUtil.printMemoryStats();
 		try {
