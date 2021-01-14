@@ -710,7 +710,7 @@ public class TriplesWriter {
 			return;
 		}
 
-		String relationId = "relation_" + String.valueOf(this.literalRelationNo);
+		String relationId = "literal_relation_" + String.valueOf(this.literalRelationNo);
 		this.literalRelationNo += 1;
 
 		writer.write(createTriple(this.basePrefix, relationId, prefixList.getPrefix(PrefixEnum.RDF), "type",
@@ -763,13 +763,18 @@ public class TriplesWriter {
 	}
 
 	public void writeGenericEventRelation(GenericRelation relation) {
+		startInstance();
 
 		RDFWriter writer = getWriter(RDFWriterName.EVENT_RELATIONS, true);
 
 		writeGenericRelation(writer, relation);
+
+		endInstance();
 	}
 
 	public void writeGenericEntityRelation(GenericRelation relation) {
+
+		startInstance();
 
 		RDFWriter writer = null;
 		if (relation.getStartTime() == null && relation.getEndTime() == null)
@@ -778,11 +783,11 @@ public class TriplesWriter {
 			writer = getWriter(RDFWriterName.TEMPORAL_ENTITY_RELATIONS, true);
 
 		writeGenericRelation(writer, relation);
+
+		endInstance();
 	}
 
 	private void writeGenericRelation(RDFWriter writer, GenericRelation relation) {
-
-		startInstance();
 
 		String relationId = "relation_" + String.valueOf(this.genericRelationNo);
 		this.genericRelationNo += 1;
@@ -835,8 +840,6 @@ public class TriplesWriter {
 			writer.write(createDateGranularityTriple(this.basePrefix, relationId,
 					relation.getEndTime().getGranularity(), relation.getDataSet(), false), true);
 		}
-
-		endInstance();
 
 	}
 
