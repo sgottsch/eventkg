@@ -155,7 +155,7 @@ public class TriplesWriter {
 				"latitude", null, createLiteral(String.valueOf(position.getLatitude()), LiteralDataType.DOUBLE), false,
 				null, dataSet);
 		LinePair lineLongitude = createTriple(this.basePrefix, entityId, prefixList.getPrefix(PrefixEnum.SCHEMA_ORG),
-				"latitude", null, createLiteral(String.valueOf(position.getLongitude()), LiteralDataType.DOUBLE), false,
+				"longitude", null, createLiteral(String.valueOf(position.getLongitude()), LiteralDataType.DOUBLE), false,
 				null, dataSet);
 
 		if (lineLatitude != null)
@@ -356,6 +356,11 @@ public class TriplesWriter {
 	}
 
 	public void writeBasicSameAsTriple(Entity entity, Prefix prefix, String type, DataSet dataSet, boolean printLight) {
+
+		if (type.contains("\\")) {
+			System.out.println("\\ not allowed: " + type);
+			return;
+		}
 
 		RDFWriter writer = null;
 		if (entity.isEvent())
