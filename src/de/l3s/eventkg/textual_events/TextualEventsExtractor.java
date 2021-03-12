@@ -110,7 +110,9 @@ public class TextualEventsExtractor extends Extractor {
 		// generators (one here, one in the writer).
 
 		this.idGeneratorPreviousVersion = new EntityIdGenerator(true);
-		this.eventNo = this.idGeneratorPreviousVersion.getLastEventNo() + 1;
+		
+		EntityIdGenerator idGeneratorCurrentVersion = new EntityIdGenerator(false);
+		this.eventNo = idGeneratorCurrentVersion.getLastEventNo() + 1;
 	}
 
 	private void loadNamedEventDates() {

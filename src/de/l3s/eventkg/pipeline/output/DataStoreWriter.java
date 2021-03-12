@@ -357,7 +357,7 @@ public class DataStoreWriter {
 
 			if (entity.getYagoId() != null)
 				triplesWriter.writeBasicSameAsTriple(entity, prefixList.getPrefix(PrefixEnum.YAGO),
-						entity.getWikidataId(), dataSets.getDataSetWithoutLanguage(Source.YAGO), true);
+						entity.getYagoId(), dataSets.getDataSetWithoutLanguage(Source.YAGO), true);
 
 			Map<Language, Set<String>> names = new HashMap<Language, Set<String>>();
 			for (Language language : this.languages)

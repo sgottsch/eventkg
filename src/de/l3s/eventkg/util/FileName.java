@@ -115,13 +115,7 @@ public enum FileName {
 			false,
 			false,
 			false),
-	WIKIDATA_POSITIVE_EVENT_CLASSES(
-			"event_positive_classes.tsv",
-			Source.WIKIDATA,
-			FileType.META,
-			false,
-			false,
-			false),
+	WIKIDATA_POSITIVE_EVENT_CLASSES("event_positive_classes.tsv", Source.WIKIDATA, FileType.META, false, false, false),
 	WIKIDATA_IGNORED_EVENT_CLASSES(
 			"event_ignored_event_classes.tsv",
 			Source.WIKIDATA,
@@ -143,13 +137,7 @@ public enum FileName {
 			false,
 			false,
 			false),
-	WIKIDATA_FORBIDDEN_CLASSES(
-			"wikidata_forbidden_classes.tsv",
-			Source.WIKIDATA,
-			FileType.META,
-			false,
-			false,
-			false),
+	WIKIDATA_FORBIDDEN_CLASSES("wikidata_forbidden_classes.tsv", Source.WIKIDATA, FileType.META, false, false, false),
 	WIKIDATA_MANUAL_FORBIDDEN_PROPERTY_NAMES(
 			"forbidden_property_names.tsv",
 			Source.WIKIDATA,
@@ -257,6 +245,8 @@ public enum FileName {
 
 	ALL_TTL_EVENTS("events.nq", FileType.OUTPUT, false, false, false),
 	ALL_TTL_ENTITIES("entities.nq", FileType.OUTPUT, false, false, false),
+	ALL_TTL_PREFERRED_LABELS("preferred_labels.nq", FileType.OUTPUT, false, false, false),
+	ALL_TTL_PREFERRED_LABELS_PREVIEW("preferred_labels_preview.nq", FileType.OUTPUT_PREVIEW, false, false, false),
 	ALL_TTL_TEXT_EVENTS("text_events.nq", FileType.OUTPUT, false, false, false),
 	ALL_TTL_EVENTS_FIRST_SENTENCES("events_first_sentences.nq", FileType.OUTPUT, false, false, false),
 	ALL_TTL_EVENTS_FIRST_SENTENCES_PREVIEW(
@@ -365,30 +355,6 @@ public enum FileName {
 	ALL_TTL_ENTITIES_PREVIOUS_VERSION("entities.nq", FileType.PREVIOUS_VERSION, false, false, false),
 	ALL_TTL_EVENTS_PREVIOUS_VERSION("events.nq", FileType.PREVIOUS_VERSION, false, false, false),
 	ALL_TTL_TEXT_EVENTS_PREVIOUS_VERSION("text_events.nq", FileType.PREVIOUS_VERSION, false, false, false),
-	// ALL_TTL_EVENTS_OTHER_RELATIONS_PREVIOUS_VERSION(
-	// "relations_other.nq",
-	// FileType.PREVIOUS_VERSION,
-	// false,
-	// false,
-	// false),
-	// ALL_TTL_ENTITIES_OTHER_RELATIONS_PREVIOUS_VERSION(
-	// "relations_entities_other.nq",
-	// FileType.PREVIOUS_VERSION,
-	// false,
-	// false,
-	// false),
-	// ALL_TTL_ENTITIES_TEMPORAL_RELATIONS_PREVIOUS_VERSION(
-	// "relations_entities_temporal.nq",
-	// FileType.PREVIOUS_VERSION,
-	// false,
-	// false,
-	// false),
-	// ALL_TTL_EVENTS_LINK_RELATIOINS_PREVIOUS_VERSION(
-	// "relations_links.nq",
-	// FileType.PREVIOUS_VERSION,
-	// false,
-	// false,
-	// false),
 
 	/**
 	 * Event pages with times
@@ -510,7 +476,7 @@ public enum FileName {
 
 	WIKIPEDIA_FIRST_SENTENCES("first_sentences-", Source.WIKIPEDIA, FileType.RESULTS, true, false, false),
 	WIKIPEDIA_EVENTS("event_instances.tsv", Source.WIKIPEDIA, FileType.RESULTS, false, false, false),
-	TIMES_INTEGRATED("cimes_integrated.csv", Source.ALL, FileType.RESULTS, false, false, false),
+	TIMES_INTEGRATED("times_integrated.csv", Source.ALL, FileType.RESULTS, false, false, false),
 	CONNECTED_ENTITIES("connected_entities.csv", Source.ALL, FileType.RESULTS, false, false, false);
 
 	private Source source;

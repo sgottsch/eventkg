@@ -52,9 +52,16 @@ public class WikipediaLinkCountsExtractor extends Extractor {
 
 	private void writeResults() {
 
+		System.out
+				.println("Write results for " + this.wikidataIdMappings.getEntities().size() + " entities and events.");
+		int withLinkCounts = 0;
+		int targetEntities = 0;
+
 		for (Entity entity : this.wikidataIdMappings.getEntities()) {
 			if (entity.getLinkCounts() != null) {
+				withLinkCounts += 1;
 				for (Entity targetEntity : entity.getLinkCounts().keySet()) {
+					targetEntities += 1;
 					this.triplesWriter.startInstance();
 					this.triplesWriter.writeLinkCount(entity, targetEntity, entity.getLinkCounts().get(targetEntity));
 					this.triplesWriter.endInstance();
@@ -62,6 +69,10 @@ public class WikipediaLinkCountsExtractor extends Extractor {
 				entity.clearLinkCounts();
 			}
 		}
+
+		System.out.println("withLinkCounts: " + withLinkCounts);
+		System.out.println("targetEntities: " + targetEntities);
+
 	}
 
 	private void processFileIterator(File file, Language language) {

@@ -85,8 +85,8 @@ public class DBpediaEventRelationsExtractor extends Extractor {
 						continue;
 
 					try {
-						subject = subject.substring(subject.lastIndexOf("resource/") + 9, subject.lastIndexOf(">"));
-						object = object.substring(object.lastIndexOf("/") + 1, object.lastIndexOf(">"));
+						subject = subject.substring(subject.lastIndexOf("/resource/") + 10, subject.lastIndexOf(">"));
+						object = object.substring(object.lastIndexOf("/resource/") + 10, object.lastIndexOf(">"));
 					} catch (StringIndexOutOfBoundsException e) {
 						// skip objects like
 						// "http://fr.dbpedia.org/resource/Sultanat_d'Égypte__1"@fr

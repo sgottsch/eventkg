@@ -4,7 +4,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>de.l3s.eventkg</groupId>
 	<artifactId>eventkg</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>3.2</version>
 	<name>EventKG</name>
 	<build>
 		<sourceDirectory>src</sourceDirectory>
@@ -30,18 +30,10 @@
 			<artifactId>commons-lang3</artifactId>
 			<version>3.11</version>
 		</dependency>
-		<!-- <dependency> <groupId>org.wikidata.wdtk</groupId> <artifactId>wdtk-dumpfiles</artifactId> 
-			<version>0.8.0</version> </dependency> -->
 		<dependency>
 			<groupId>org.wikidata.wdtk</groupId>
 			<artifactId>wdtk-dumpfiles</artifactId>
 			<version>0.11.1</version>
-		</dependency>
-
-		<dependency>
-			<groupId>mysql</groupId>
-			<artifactId>mysql-connector-java</artifactId>
-			<version>8.0.22</version>
 		</dependency>
 		<dependency>
 			<groupId>com.google.guava</groupId>
@@ -63,10 +55,6 @@
 			<artifactId>commons-text</artifactId>
 			<version>1.9</version>
 		</dependency>
-
-		<!-- <dependency> <groupId>org.apache.commons</groupId> <artifactId>commons-text</artifactId> 
-			<version>1.7</version> </dependency> <dependency> <groupId>edu.stanford.nlp</groupId> 
-			<artifactId>stanford-corenlp</artifactId> <version>3.7.0</version> </dependency> -->
 		<dependency>
 			<groupId>org.apache.opennlp</groupId>
 			<artifactId>opennlp-tools</artifactId>

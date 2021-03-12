@@ -18,6 +18,7 @@ import de.l3s.eventkg.integration.model.relation.DataSet;
 import de.l3s.eventkg.integration.model.relation.GenericRelation;
 import de.l3s.eventkg.integration.model.relation.LiteralDataType;
 import de.l3s.eventkg.integration.model.relation.LiteralRelation;
+import de.l3s.eventkg.integration.model.relation.PropertyLabel;
 import de.l3s.eventkg.integration.model.relation.SubProperty;
 import de.l3s.eventkg.integration.model.relation.prefix.Prefix;
 import de.l3s.eventkg.integration.model.relation.prefix.PrefixEnum;
@@ -118,6 +119,7 @@ public class TriplesWriter {
 		RDFWriter writer = getWriter(RDFWriterName.EVENT_BASE_RELATIONS, printLight);
 
 		String entityId = getId(event);
+
 		if (entityId == null) {
 			System.out.println("Event has no ID: " + event.getWikidataId() + " / " + event.getWikidataLabels());
 			return;
@@ -155,8 +157,8 @@ public class TriplesWriter {
 				"latitude", null, createLiteral(String.valueOf(position.getLatitude()), LiteralDataType.DOUBLE), false,
 				null, dataSet);
 		LinePair lineLongitude = createTriple(this.basePrefix, entityId, prefixList.getPrefix(PrefixEnum.SCHEMA_ORG),
-				"longitude", null, createLiteral(String.valueOf(position.getLongitude()), LiteralDataType.DOUBLE), false,
-				null, dataSet);
+				"longitude", null, createLiteral(String.valueOf(position.getLongitude()), LiteralDataType.DOUBLE),
+				false, null, dataSet);
 
 		if (lineLatitude != null)
 			writer.write(lineLatitude, printLight);
@@ -514,7 +516,7 @@ public class TriplesWriter {
 		return linePair;
 	}
 
-	private String createResourceWithPrefix(Prefix prefix, String value) {
+	public static String createResourceWithPrefix(Prefix prefix, String value) {
 
 		if (prefix == null)
 			return value;
@@ -584,6 +586,16 @@ public class TriplesWriter {
 		}
 
 		LinePair line = createTriple(this.basePrefix, entityId, propertyPrefix, property, null, type, true, language,
+				dataSet);
+
+		writer.write(line, printLight);
+	}
+
+	private void writeLanguageStringTriple(RDFWriter writer, Prefix subjectPrefix, String subject,
+			Prefix propertyPrefix, String property, String type, DataSet dataSet, Language language,
+			boolean printLight) {
+
+		LinePair line = createTriple(subjectPrefix, subject, propertyPrefix, property, null, type, true, language,
 				dataSet);
 
 		writer.write(line, printLight);
@@ -665,6 +677,8 @@ public class TriplesWriter {
 	}
 
 	public void resetNumberOfInstances(RDFWriterName name) {
+		if (writers.getWriter(name).getWriter() != null)
+			writers.getWriter(name).getWriter().flush();
 		writers.getWriter(name).resetNumberOfLines();
 	}
 
@@ -959,6 +973,27 @@ public class TriplesWriter {
 					language, DataSets.getInstance().getDataSet(language, Source.WIKIPEDIA)), false);
 		}
 
+	}
+
+	public void writePropertyLabel(PropertyLabel propertyLabel) {
+		RDFWriter writer = getWriter(RDFWriterName.PROPERTY_LABELS, true);
+
+		writeLanguageStringTriple(writer, propertyLabel.getPrefix(), propertyLabel.getProperty(),
+				prefixList.getPrefix(PrefixEnum.RDFS), "label", propertyLabel.getLabel(), propertyLabel.getDataSet(),
+				propertyLabel.getLanguage(), true);
+	}
+
+	public void writePreferredLabel(String id, String label, String graph) {
+		RDFWriter writer = getWriter(RDFWriterName.PREFERRED_LABELS, true);
+
+		String lineLight = id + " <" + prefixList.getPrefix(PrefixEnum.SKOS).getUrlPrefix() + "prefLabel> " + label
+				+ " ";
+		String line = lineLight + graph + " .";
+		lineLight += " .";
+
+		LinePair lp = new LinePair(line, lineLight);
+
+		writer.write(lp, true);
 	}
 
 }

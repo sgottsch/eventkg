@@ -120,7 +120,8 @@ public class RedirectsTableCreator {
 						List<String> parts = splitInsertLine(part);
 
 						if (parts.get(2).length() <= 1) {
-							System.out.println("Problem: " + prevPart + " | " + part);
+							System.out.println(
+									"Problem with WIKIPEDIA_REDIRECTS (" + language + "): " + prevPart + " | " + part);
 							continue;
 						}
 

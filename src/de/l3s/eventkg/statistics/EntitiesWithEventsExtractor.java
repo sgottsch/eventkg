@@ -25,7 +25,6 @@ public class EntitiesWithEventsExtractor {
 		Map<String, Set<String>> relationToEvents = new HashMap<String, Set<String>>();
 		Map<String, String> idToStartTime = new HashMap<String, String>();
 
-		System.out.println("ALL_TTL_EVENTS_WITH_TEXTS");
 		List<String> lines1 = FileLoader.readLines(FileName.ALL_TTL_EVENTS);
 		int i1 = 0;
 		for (String line : lines1) {

@@ -89,7 +89,7 @@ public class DBpediaTypesExtractor extends Extractor {
 							continue;
 
 						String resource = parts[0];
-						resource = resource.substring(resource.lastIndexOf("/") + 1, resource.length() - 1);
+						resource = resource.substring(resource.lastIndexOf("/resource/") + 10, resource.length() - 1);
 						if (resource.contains("__"))
 							resource = resource.substring(0, resource.lastIndexOf("__"));
 

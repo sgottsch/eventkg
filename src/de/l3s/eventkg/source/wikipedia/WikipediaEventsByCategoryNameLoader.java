@@ -147,8 +147,9 @@ public class WikipediaEventsByCategoryNameLoader extends Extractor {
 
 						String[] parts = part.split(",");
 
-						if (parts[2].length() <= 1) {
-							System.out.println("Problem: " + prevPart + " | " + part);
+						if (parts.length <= 2) {
+							System.out.println("Problem with WIKIPEDIA_CATEGORYLINKS (" + language + "): " + prevPart
+									+ " | " + part);
 							continue;
 						}
 

@@ -74,8 +74,8 @@ public class DBpediaEventLocationsExtractor extends Extractor {
 						if (!subject.contains("resource"))
 							continue;
 
-						subject = subject.substring(subject.lastIndexOf("resource/") + 9, subject.lastIndexOf(">"));
-						object = object.substring(object.lastIndexOf("/") + 1, object.lastIndexOf(">"));
+						subject = subject.substring(subject.lastIndexOf("/resource/") + 10, subject.lastIndexOf(">"));
+						object = object.substring(object.lastIndexOf("/resource/") + 10, object.lastIndexOf(">"));
 
 						String fileLine = subject + Config.TAB + property + Config.TAB + object;
 						if (foundEvents.contains(fileLine))

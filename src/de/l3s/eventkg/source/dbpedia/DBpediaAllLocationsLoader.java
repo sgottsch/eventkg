@@ -71,7 +71,7 @@ public class DBpediaAllLocationsLoader extends Extractor {
 						continue;
 
 					try {
-						subject = subject.substring(subject.lastIndexOf("resource/") + 9, subject.lastIndexOf(">"));
+						subject = subject.substring(subject.lastIndexOf("/resource/") + 10, subject.lastIndexOf(">"));
 					} catch (StringIndexOutOfBoundsException e) {
 						continue;
 					}

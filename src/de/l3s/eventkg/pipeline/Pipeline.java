@@ -19,6 +19,7 @@ import de.l3s.eventkg.integration.DataSets;
 import de.l3s.eventkg.integration.DataStoreWriterMode;
 import de.l3s.eventkg.integration.EventKGDBCreatorFromCurrentVersion;
 import de.l3s.eventkg.integration.EventKGDBCreatorFromPreviousVersion;
+import de.l3s.eventkg.integration.PreferredLabelsWriter;
 import de.l3s.eventkg.integration.WikidataIdMappings;
 import de.l3s.eventkg.integration.collection.EventAndTemporalRelationsCollector;
 import de.l3s.eventkg.integration.collection.EventDependenciesCollector;
@@ -35,6 +36,7 @@ import de.l3s.eventkg.integration.model.relation.prefix.PrefixList;
 import de.l3s.eventkg.meta.Language;
 import de.l3s.eventkg.meta.Source;
 import de.l3s.eventkg.pipeline.output.DataStoreWriter;
+import de.l3s.eventkg.pipeline.output.PropertyLabelsWriter;
 import de.l3s.eventkg.pipeline.output.TriplesWriter;
 import de.l3s.eventkg.source.currentevents.CurrentEventsRelationsExtraction;
 import de.l3s.eventkg.source.currentevents.EventsFromFileExtractor;
@@ -237,6 +239,10 @@ public class Pipeline {
 
 		List<Extractor> extractors = new ArrayList<Extractor>();
 
+		// find entities with existence times
+		new TimesCollector(languages, getAllEventPagesDataSet(false).getWikidataIdMappings()).run();
+		this.allEventPagesDataSet = null;
+
 		// Collect relations from/to events
 		extractors.add(new DBpediaEventRelationsExtractor(languages, getAllEventPagesDataSet(true)));
 		extractors.add(new CurrentEventsRelationsExtraction(languages, getAllEventPagesDataSet(true)));
@@ -301,6 +307,7 @@ public class Pipeline {
 		extractors.add(new EventDependenciesCollector(languages, wikidataIdMappings, triplesWriter));
 		extractors.add(new TypesCollector(languages, wikidataIdMappings, triplesWriter));
 		extractors.add(new EventFirstSentencesWriter(languages, wikidataIdMappings, triplesWriter));
+		extractors.add(new PreferredLabelsWriter(languages, triplesWriter));
 
 		try {
 			for (Extractor extractor : extractors) {
@@ -308,14 +315,15 @@ public class Pipeline {
 				extractor.run();
 				extractor = null;
 				MemoryStatsUtil.printMemoryStats();
+
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
 			triplesWriter.close();
 		}
-
 		System.out.println("Done.");
+
 	}
 
 	private void pipelineStep7() {
@@ -332,6 +340,8 @@ public class Pipeline {
 
 		extractors.add(new EventAndTemporalRelationsCollector(languages, wikidataIdMappings));
 		extractors.add(new RelationsIntegrator(languages, triplesWriter));
+
+		extractors.add(new PropertyLabelsWriter(languages, triplesWriter));
 
 		MemoryStatsUtil.printMemoryStats();
 

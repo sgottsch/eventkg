@@ -68,7 +68,7 @@ public class DBpediaDBOEventsLoader extends Extractor {
 
 					String[] parts = line.split(" ");
 					String object = parts[2];
-					object = object.substring(object.lastIndexOf("/") + 1, object.lastIndexOf(">"));
+					object = object.substring(object.lastIndexOf("/resource/") + 10, object.lastIndexOf(">"));
 
 					boolean onBlackList = blacklistObjects.contains(object);
 					if (!onBlackList && parentClasses.containsKey(object)) {

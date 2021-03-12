@@ -19,6 +19,7 @@ public enum PrefixEnum {
 	OWL("owl:", "http://www.w3.org/2002/07/owl#"),
 	TIME("time:", "http://www.w3.org/2006/time#"),
 	SEM("sem:", "http://semanticweb.cs.vu.nl/2009/11/sem/"),
+	SKOS("skos:", "http://www.w3.org/2004/02/skos/core#"),
 	NO_PREFIX("", ""),
 	DBPEDIA_RESOURCE(null, null),
 	// TODO: Solve that better. Mapping from lang to prefix.

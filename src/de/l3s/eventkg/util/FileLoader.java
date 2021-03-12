@@ -329,7 +329,7 @@ public class FileLoader {
 	public static String getLightPath(String path) {
 		path = path.replace(ONLINE_OUTPUT_PREVIEW_FOLDER_SUFFIX, ONLINE_OUTPUT_LIGHT_PREVIEW_FOLDER_SUFFIX);
 		path = path.replace(ONLINE_OUTPUT_FOLDER_SUFFIX, ONLINE_OUTPUT_LIGHT_FOLDER_SUFFIX);
-		path = path.replace(".nq", ".ttl");
+		path = path.replace(".nq", ".nt");
 		System.out.println("   Light path: " + path);
 		return path;
 	}

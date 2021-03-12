@@ -62,6 +62,8 @@ public class DataSets {
 	}
 
 	public DataSet getDataSet(Language language, Source source) {
+		if (!this.dataSets.containsKey(language))
+			return null;
 		return this.dataSets.get(language).get(source);
 	}
 

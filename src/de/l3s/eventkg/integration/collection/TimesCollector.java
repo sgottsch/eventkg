@@ -38,9 +38,18 @@ public class TimesCollector extends Extractor {
 		this.wikidataIdMappings = wikidataIdMappings;
 	}
 
+	public TimesCollector(List<Language> languages, WikidataIdMappings wikidataIdMappings) {
+		super("TimesCollector", Source.ALL, "Collects, fuses start and end times into a common graph.", languages);
+		this.languages = languages;
+		this.wikidataIdMappings = wikidataIdMappings;
+	}
+
 	public void run() {
 		loadTimes();
-		integrateTimes();
+
+		if (this.dataStoreWriter != null)
+			integrateTimes();
+
 		clear();
 	}
 
@@ -50,7 +59,7 @@ public class TimesCollector extends Extractor {
 		}
 	}
 
-	private void loadTimes() {
+	public void loadTimes() {
 
 		// "event.setStartTime()" is needed for the matching of textual to named
 		// events. To this end, collect times by trust of the source. The last
