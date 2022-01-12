@@ -560,7 +560,8 @@ public class RawDataDownLoader {
 
 	private void downloadYAGODBPediaRelations() {
 
-		File zippedFile = downloadFile("http://webdam.inria.fr/paris/yd_relations.zip",
+		File zippedFile = downloadFile(
+				"https://github.com/dig-team/PARIS/raw/main/data/yago-dbpedia-relations-result.zip",
 				this.dataPath + "yago/" + "yd_relations.zip");
 
 		ZipFile zipFile = null;
