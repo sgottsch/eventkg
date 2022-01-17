@@ -53,6 +53,8 @@ The EventKG extraction pipeline consists of several steps described in the follo
 
 6. The resulting *.nq* files can be found in the folder `data/output`.
 
+An example script to execute the whole pipeline is given in `pipeline.sh`.
+
 ## Manual Configuration
 
 EventKG extracts information from several reference sources and fits them into the EventKG schema. Therefore, several expressions needs to be defined manually. This includes mappings from source-specific property labels to the EventKG schema and language-specific temporal expressions, as explained below. If the reference sources get updated or a new language is included in EventKG, manual changes are necessary for these files.
@@ -110,7 +112,7 @@ Examples:
 |--|--|
 | predefined regexes | A set of placeholders which are given in the code and can be re-used. No need to change this |
 | new regexes | New placeholders that can be re-used later on. |
-| dayTitle | Regex for Wikipedia page titles that represent a specific day. For example "^@regexMonth1@ @regexDay1@$" to find "March 15" for the Wikipedia article https://en.wikipedia.org/wiki/March_15. Other example: en: January 22, de: 22. Januar, fr: 22 janvier, pt: 22 de janeiro, ru: 22 января |
+| dayTitle | Regex for Wikipedia page titles that represent a specific day. For example "^@regexMonth1@ @regexDay1@$" to find "March 15" for the Wikipedia article https://en.wikipedia.org/wiki/March_15. Other example: en: January 22, de: 22. Januar, fr: 22 janvier, pt: 22 de janeiro, ru: 22 Ñ�Ð½Ð²Ð°Ñ€Ñ� |
 | yearTitlePatterns | Regexes for Wikipedia page titles that represent a specific year. For example "^(?<y>[0-9]{@digitsInYear@}) in .*$" to find "2007 in philosophy" for the Wikipedia article https://en.wikipedia.org/wiki/2007_in_philosophy. |
 | datePatterns | A list of regexes to extract date expressions from event texts. |
 | dateLinkResolvers | Sometimes, dates are given as links, which are resolved using these regexes. The "<r>" group denotes the anchor text. For example to find 474 BC in "*[[474 BC]] &ndash; [[Roman consul]] ...". |
