@@ -123,18 +123,6 @@ public class Pipeline {
 		} else
 			System.out.println("Skip step 4: Continue extraction -> Extract relations between events.");
 
-		// if (steps.contains(5)) {
-		// System.out.println("Step 5: Integration step 2.");
-		// pipeline.pipelineStep5();
-		// } else
-		// System.out.println("Skip step 5: Integration step 2.");
-		//
-		// if (steps.contains(6)) {
-		// System.out.println("Step 6: Type extraction step 2.");
-		// pipeline.pipelineStep6();
-		// } else
-		// System.out.println("Skip step 6: Type extraction step 2.");
-
 		if (steps.contains(5)) {
 			System.out.println("Step 5: Write output (entities and events).");
 			pipeline.pipelineStep5();
