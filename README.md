@@ -14,20 +14,16 @@ You can find a tutorial about writing SPARQL queries for EventKG [here](http://e
 Create a configuration file like the following to state where to store your EventKG version, and the languages and dumps to be used for extraction:
 
 ```
-data_folder	/home/....../data
-languages	en,de,ru,fr,pt,it
-enwiki	20190101
-dewiki	20190101
-frwiki	20190101
-ruwiki	20190101
-ptwiki	20190101
-dbpedia	2016-10
-wikidata	20181231
+data_folder	.../eventkg/data/
+languages	en,fr,de,it,ru,pt,es,nl,pl,no,ru,hr,sl,bg,da
+wikipedia	20220601
+wikidata	20220601
+dbpedia	2022.03.01
 ```
-Currently, the five languages English (en), German (de), Russian (ru), French (fr), and Portuguese (pt) are supported.
+Currently, the 15 languages English (en), French (fr), German (de), Italian (it), Russian (ru), Portuguese (pt), Spanish (es), Dutch (nl), Polish (pl), Norwegian (no), Romanian (ru), Croatian (hr), Slovene (sl), Bulgarian (bg) and Danish (da) are supported.
 Timestamps of current Wikipedia dumps can be found on [https://dumps.wikimedia.org/enwiki](https://dumps.wikimedia.org/enwiki/). Usually, the dump dates are consistent between languages. The chosen dump needs to say "Dump complete" on the dump's website.
 Wikidata dumps are listed on [https://dumps.wikimedia.org/wikidatawiki/entities/](https://dumps.wikimedia.org/wikidatawiki/entities/). There is one dump for each language.
-DBpedia is dumped for all languages at once. The newest dump is listed on the top of [http://wiki.dbpedia.org/datasets](http://wiki.dbpedia.org/datasets).
+DBpedia is dumped for all languages at once. The newest dump is listed, for example, on the top of [https://databus.dbpedia.org/marvin/mappings/instance-types](https://databus.dbpedia.org/marvin/mappings/instance-types).
 
 ## Run the extraction
 
@@ -112,7 +108,7 @@ Examples:
 |--|--|
 | predefined regexes | A set of placeholders which are given in the code and can be re-used. No need to change this |
 | new regexes | New placeholders that can be re-used later on. |
-| dayTitle | Regex for Wikipedia page titles that represent a specific day. For example "^@regexMonth1@ @regexDay1@$" to find "March 15" for the Wikipedia article https://en.wikipedia.org/wiki/March_15. Other example: en: January 22, de: 22. Januar, fr: 22 janvier, pt: 22 de janeiro, ru: 22 Ñ�Ð½Ð²Ð°Ñ€Ñ� |
+| dayTitle | Regex for Wikipedia page titles that represent a specific day. For example "^@regexMonth1@ @regexDay1@$" to find "March 15" for the Wikipedia article https://en.wikipedia.org/wiki/March_15. Other example: en: January 22, de: 22. Januar, fr: 22 janvier, pt: 22 de janeiro, ru: 22 Ã‘ï¿½Ã�Â½Ã�Â²Ã�Â°Ã‘â‚¬Ã‘ï¿½ |
 | yearTitlePatterns | Regexes for Wikipedia page titles that represent a specific year. For example "^(?<y>[0-9]{@digitsInYear@}) in .*$" to find "2007 in philosophy" for the Wikipedia article https://en.wikipedia.org/wiki/2007_in_philosophy. |
 | datePatterns | A list of regexes to extract date expressions from event texts. |
 | dateLinkResolvers | Sometimes, dates are given as links, which are resolved using these regexes. The "<r>" group denotes the anchor text. For example to find 474 BC in "*[[474 BC]] &ndash; [[Roman consul]] ...". |

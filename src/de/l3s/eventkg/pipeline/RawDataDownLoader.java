@@ -45,7 +45,9 @@ import de.l3s.eventkg.meta.Language;
 import de.l3s.eventkg.source.dbpedia.download.DBPediaDumpFilesFinder;
 import de.l3s.eventkg.util.FileLoader;
 import de.l3s.eventkg.util.FileName;
+import net.sf.sevenzipjbinding.ArchiveFormat;
 import net.sf.sevenzipjbinding.ExtractOperationResult;
+import net.sf.sevenzipjbinding.IInArchive;
 import net.sf.sevenzipjbinding.ISequentialOutStream;
 import net.sf.sevenzipjbinding.SevenZip;
 import net.sf.sevenzipjbinding.SevenZipException;
@@ -226,7 +228,7 @@ public class RawDataDownLoader {
 		for (Language language : this.languages) {
 
 			String wikiName = language.getWiki();
-			String dumpDate = Config.getValue(wikiName);
+			String dumpDate = Config.getValue("wikipedia");
 
 			Writer dumpFilesListFile = null;
 			String baseUrl = "https://dumps.wikimedia.org/" + wikiName + "/" + dumpDate + "/";
@@ -462,7 +464,7 @@ public class RawDataDownLoader {
 
 	public void downloadYAGOFiles() {
 
-		String yagoUrl = "http://resources.mpi-inf.mpg.de/yago-naga/yago3.1/";
+		String yagoUrl = "https://resources.mpi-inf.mpg.de/yago-naga/yago3.1/";
 		Map<String, FileName> urls = new HashMap<String, FileName>();
 		urls.put("yagoTaxonomy.ttl.7z", FileName.YAGO_TAXONOMY);
 		urls.put("yagoDateFacts.ttl.7z", FileName.YAGO_DATE_FACTS);
@@ -471,33 +473,28 @@ public class RawDataDownLoader {
 		urls.put("yagoWikidataInstances.ttl.7z", FileName.YAGO_WIKIDATA_INSTANCES);
 		urls.put("yagoLiteralFacts.ttl.7z", FileName.YAGO_LITERAL_FACTS);
 
-		// try {
-		// SevenZip.initSevenZipFromPlatformJAR();
-		// } catch (SevenZipNativeInitializationException e) {
-		// e.printStackTrace();
-		// }
-
 		for (String urlString : urls.keySet()) {
 			File downloadedFile = null;
-
-			// try {
 
 			downloadedFile = downloadFile(yagoUrl + urlString, this.dataPath + "yago/" + urlString);
 
 			downloadedFile = new File(this.dataPath + "yago/" + urlString);
 
-			RandomAccessFile randomAccessFile = null;
-			ISimpleInArchive inArchive = null;
 			PrintWriter writer = null;
+
+			IInArchive archive = null;
+			RandomAccessFile randomAccessFile = null;
 
 			try {
 				writer = FileLoader.getWriter(urls.get(urlString));
+
 				randomAccessFile = new RandomAccessFile(downloadedFile.getPath(), "r");
-				inArchive = SevenZip.openInArchive(null, new RandomAccessFileInStream(randomAccessFile))
-						.getSimpleInterface();
+
+				archive = SevenZip.openInArchive(ArchiveFormat.SEVEN_ZIP, // null - autodetect
+						new RandomAccessFileInStream(randomAccessFile));
 
 				// write the archive file content into new file
-				for (ISimpleInArchiveItem item : inArchive.getArchiveItems()) {
+				for (ISimpleInArchiveItem item : archive.getSimpleInterface().getArchiveItems()) {
 
 					if (!item.isFolder()) {
 						ExtractOperationResult result;
@@ -528,9 +525,9 @@ public class RawDataDownLoader {
 			} catch (Exception e) {
 				System.err.println("Error occurs: " + e);
 			} finally {
-				if (inArchive != null) {
+				if (archive != null) {
 					try {
-						inArchive.close();
+						archive.close();
 					} catch (SevenZipException e) {
 						System.err.println("Error closing archive: " + e);
 					}

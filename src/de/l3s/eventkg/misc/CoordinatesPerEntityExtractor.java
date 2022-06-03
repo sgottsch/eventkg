@@ -15,7 +15,7 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.LineIterator;
 import org.apache.commons.lang3.StringUtils;
 
-import com.github.jsonldjava.shaded.com.google.common.collect.Sets;
+import com.google.common.collect.Sets;
 
 import de.l3s.eventkg.pipeline.Config;
 import de.l3s.eventkg.util.FileLoader;

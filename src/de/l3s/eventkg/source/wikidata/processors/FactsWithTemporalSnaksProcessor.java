@@ -77,6 +77,8 @@ public class FactsWithTemporalSnaksProcessor implements EntityDocumentDumpProces
 		outTemporalFacts = FileLoader.getPrintStream(FileName.WIKIDATA_TEMPORAL_FACTS);
 		loadForbiddenPropertyIds();
 	}
+	
+	// TODO: Update to new Wikidata Toolkit version
 
 	@Override
 	public void processItemDocument(ItemDocument itemDocument) {

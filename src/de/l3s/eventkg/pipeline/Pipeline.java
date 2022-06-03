@@ -457,8 +457,7 @@ public class Pipeline {
 		for (Language language : languages) {
 
 			// Wikipedia
-			String wikiName = language.getWiki();
-			String dumpDate = Config.getValue(wikiName);
+			String dumpDate = Config.getValue("wikipedia");
 			try {
 				DataSets.getInstance().getDataSet(language, Source.WIKIPEDIA).setDate(configDateFormat.parse(dumpDate));
 			} catch (ParseException e1) {

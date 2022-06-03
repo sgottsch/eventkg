@@ -29,7 +29,7 @@ public class EventKGDBCreator {
 	public boolean loadFromPreviousVersion;
 	private List<Language> languages;
 
-	private boolean readPreviousVersionFromLightOutput = false;
+	private boolean readPreviousVersionFromLightOutput = true;
 	private boolean readCurrentVersionFromLightOutput = true;
 
 	// private int a = 0;
@@ -114,7 +114,7 @@ public class EventKGDBCreator {
 
 						if (isEventsFile && (parts[1].equals("dcterms:description")
 								|| parts[1].equals("<http://purl.org/dc/terms/description>"))) {
-							parseEventDescription(line, parts, eventIds, readLightOutput);
+							parseEventDescription(parts, eventIds, readLightOutput);
 							continue;
 						}
 
@@ -209,9 +209,11 @@ public class EventKGDBCreator {
 		}
 	}
 
-	// TODO: Remove line and tc parameter
-	private void parseEventDescription(String line, String[] parts, Set<Integer> eventIds,
-			boolean readFromLightOutput) {
+	private void parseEventDescription(String[] parts, Set<Integer> eventIds, boolean readFromLightOutput) {
+
+		int offset = 2;
+		if (readFromLightOutput)
+			offset = 1;
 
 		String eventId = parts[0];
 		eventId = eventId.replace(Config.getResourceURI(), "");
@@ -224,26 +226,34 @@ public class EventKGDBCreator {
 			// Wikidata IDs
 
 			// only collect descriptions from WCE and Wikipedia
-			if (readFromLightOutput && !parts[parts.length - 2].contains("wce")
-					&& !parts[parts.length - 2].contains("wikipedia"))
+			if (readFromLightOutput && !parts[parts.length - offset].contains("wce")
+					&& !parts[parts.length - offset].contains("wikipedia"))
 				return;
 
 			// if (b < 50) {
 			// System.out.println("B: " + line);
 			// }
 
-			String languageString = parts[parts.length - 2].substring(parts[parts.length - 2].lastIndexOf("_") + 1);
-			languageString = languageString.replace(">", "");
+			String languageString = null;
+
+			if (readFromLightOutput) {
+				languageString = parts[parts.length - offset].substring(parts[parts.length - offset].indexOf("@") + 1);
+			} else {
+				languageString = parts[parts.length - offset]
+						.substring(parts[parts.length - offset].lastIndexOf("_") + 1);
+				languageString = languageString.replace(">", "");
+			}
 
 			Language language = Language.getLanguage(languageString);
 
 			Database db = this.dbCreator.getDB(language, this.descriptionsDatabaseName);
 
 			List<String> descriptionParts = new ArrayList<String>();
-			for (int i = 2; i < parts.length - 2; i++) {
+			for (int i = 2; i < parts.length - offset; i++) {
 				descriptionParts.add(parts[i]);
 			}
 			String description = StringUtils.join(descriptionParts, " ");
+
 			description = description.substring(1, description.lastIndexOf("\""));
 
 			// if (b < 50) {

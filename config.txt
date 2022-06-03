@@ -1,0 +1,5 @@
+data_folder	...
+languages	en,fr,de,it,ru,pt,es,nl,pl,no,ru,hr,sl,bg,da
+wikipedia	20220601
+wikidata	20220601
+dbpedia	2022.03.01

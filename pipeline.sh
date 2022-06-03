@@ -1,3 +1,5 @@
+mkdir logs
+
 nohup java -jar jars/Pipeline.jar config_eventkg.txt 1 > logs/nohup_1.out
 nohup java -jar -Xmx70G jars/Pipeline.jar config_eventkg.txt 2,3 > logs/nohup_2_3.out
 
