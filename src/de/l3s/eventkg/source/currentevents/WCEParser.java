@@ -83,7 +83,7 @@ public class WCEParser {
 		// c) tables and no categories
 		// We try a first, and then b + c together
 
-		for (Element dayDiv : doc.select("div[class=\"vevent\"]")) {
+		for (Element dayDiv : doc.select("div.vevent")) {
 
 			String dateString = dayDiv.select("span[class*=\"bday\"]").get(0).text();
 
@@ -92,9 +92,13 @@ public class WCEParser {
 			if (print)
 				System.out.println(date);
 
-			for (Element descriptionDiv : dayDiv.select("div[class=\"description\"]")) {
+			for (Element descriptionDiv : dayDiv.select("div.description")) {
 
-				for (Element headingDiv : descriptionDiv.select("div[role=\"heading\"]")) {
+				List<Element> headingElements = descriptionDiv.select("p"); // new syntax (since 2021)
+				headingElements.addAll(descriptionDiv.select("div[role=\"heading\"]")); // old syntax (before 2021)
+
+				for (Element headingDiv : headingElements) {
+
 					if (print)
 						System.out.println("\t" + headingDiv.text());
 
@@ -110,9 +114,13 @@ public class WCEParser {
 
 					Story story = null;
 					Element storyList = null;
-					for (Element li : el.getElementsByTag("li")) {
 
-						if (!li.getElementsByTag("ul").isEmpty()) {
+					if (el == null)
+						continue;
+
+					for (Element li : el.getElementsByTag("li")) {
+						
+						if (!li.getElementsByTag("ul").isEmpty() && !li.getElementsByTag("a").isEmpty()) {
 							// List element is a story
 							String text = li.getElementsByTag("a").get(0).text();
 							if (print)

@@ -77,9 +77,9 @@ public class ProgressFilter extends PageFilter {
 	private void showProgress() {
 		long delta = System.currentTimeMillis() - start;
 		sendOutput(format.format(new Object[] {
-			new Integer(pages),
+				Integer.valueOf(pages),
 			rate(delta, pages),
-			new Integer(revisions),
+			Integer.valueOf(revisions),
 			rate(delta, revisions)}));
 	}
 	
@@ -89,7 +89,7 @@ public class ProgressFilter extends PageFilter {
 
 	private static Object rate(long delta, int count) {
 		return (delta > 0.001)
-			? (Object)new Double(1000.0 * (double)count / (double)delta)
+			? (Object)Double.valueOf(1000.0 * (double)count / (double)delta)
 			: (Object)"-";
 	}
 }

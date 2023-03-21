@@ -78,13 +78,13 @@ public class EventSubClassProcessor implements EntityDocumentDumpProcessor {
 				for (Statement statement : statements) {
 
 					if (statement.getClaim() != null && statement.getClaim().getMainSnak() != null
-							&& statement.getClaim().getMainSnak().getValue() != null) {
+							&& statement.getClaim().getValue() != null) {
 
-						String id = ((ItemIdValue) statement.getClaim().getMainSnak().getValue()).getId();
+						String id = ((ItemIdValue) statement.getClaim().getValue()).getId();
 
 						if (id != null) {
 							this.itemsWithInstanceOfCount++;
-							outInstanceOf.print(itemDocument.getItemId().getId());
+							outInstanceOf.print(itemDocument.getEntityId().getId());
 							outInstanceOf.print(Config.TAB);
 							outInstanceOf.print(csvEscape(itemDocument.findLabel("en")));
 							outInstanceOf.print(Config.TAB);
@@ -111,13 +111,13 @@ public class EventSubClassProcessor implements EntityDocumentDumpProcessor {
 				for (Statement statement : statements) {
 
 					if (statement.getClaim() != null && statement.getClaim().getMainSnak() != null
-							&& statement.getClaim().getMainSnak().getValue() != null) {
+							&& statement.getClaim().getValue() != null) {
 
-						String id = ((ItemIdValue) statement.getClaim().getMainSnak().getValue()).getId();
+						String id = ((ItemIdValue) statement.getClaim().getValue()).getId();
 
 						if (id != null) {
 							this.itemsWithSubClassCount++;
-							outSubClass.print(itemDocument.getItemId().getId());
+							outSubClass.print(itemDocument.getEntityId().getId());
 							outSubClass.print(Config.TAB);
 							outSubClass.print(csvEscape(itemDocument.findLabel("en")));
 							outSubClass.print(Config.TAB);
@@ -144,13 +144,13 @@ public class EventSubClassProcessor implements EntityDocumentDumpProcessor {
 				for (Statement statement : statements) {
 
 					if (statement.getClaim() != null && statement.getClaim().getMainSnak() != null
-							&& statement.getClaim().getMainSnak().getValue() != null) {
+							&& statement.getClaim().getValue() != null) {
 
-						String id = ((ItemIdValue) statement.getClaim().getMainSnak().getValue()).getId();
+						String id = ((ItemIdValue) statement.getClaim().getValue()).getId();
 
 						if (id != null) {
 							this.itemsWithPartOfCount++;
-							outPartOf.print(itemDocument.getItemId().getId());
+							outPartOf.print(itemDocument.getEntityId().getId());
 							outPartOf.print(Config.TAB);
 							outPartOf.print(csvEscape(itemDocument.findLabel("en")));
 							outPartOf.print(Config.TAB);
@@ -178,13 +178,13 @@ public class EventSubClassProcessor implements EntityDocumentDumpProcessor {
 					for (Statement statement : statements) {
 
 						if (statement.getClaim() != null && statement.getClaim().getMainSnak() != null
-								&& statement.getClaim().getMainSnak().getValue() != null) {
+								&& statement.getClaim().getValue() != null) {
 
-							String id = ((ItemIdValue) statement.getClaim().getMainSnak().getValue()).getId();
+							String id = ((ItemIdValue) statement.getClaim().getValue()).getId();
 
 							if (id != null) {
 								this.itemsWithPartOfCount++;
-								outPartOfSeries.print(itemDocument.getItemId().getId());
+								outPartOfSeries.print(itemDocument.getEntityId().getId());
 								outPartOfSeries.print(Config.TAB);
 								outPartOfSeries.print(csvEscape(itemDocument.findLabel("en")));
 								outPartOfSeries.print(Config.TAB);
@@ -214,13 +214,13 @@ public class EventSubClassProcessor implements EntityDocumentDumpProcessor {
 				for (Statement statement : statements) {
 
 					if (statement.getClaim() != null && statement.getClaim().getMainSnak() != null
-							&& statement.getClaim().getMainSnak().getValue() != null) {
+							&& statement.getClaim().getValue() != null) {
 
-						String id = ((ItemIdValue) statement.getClaim().getMainSnak().getValue()).getId();
+						String id = ((ItemIdValue) statement.getClaim().getValue()).getId();
 
 						if (id != null) {
 							this.itemsWithFollowsCount++;
-							outFollows.print(itemDocument.getItemId().getId());
+							outFollows.print(itemDocument.getEntityId().getId());
 							outFollows.print(Config.TAB);
 							outFollows.print(csvEscape(itemDocument.findLabel("en")));
 							outFollows.print(Config.TAB);
@@ -247,13 +247,13 @@ public class EventSubClassProcessor implements EntityDocumentDumpProcessor {
 				for (Statement statement : statements) {
 
 					if (statement.getClaim() != null && statement.getClaim().getMainSnak() != null
-							&& statement.getClaim().getMainSnak().getValue() != null) {
+							&& statement.getClaim().getValue() != null) {
 
-						String id = ((ItemIdValue) statement.getClaim().getMainSnak().getValue()).getId();
+						String id = ((ItemIdValue) statement.getClaim().getValue()).getId();
 
 						if (id != null) {
 							this.itemsWithFollowedByCount++;
-							outFollowedBy.print(itemDocument.getItemId().getId());
+							outFollowedBy.print(itemDocument.getEntityId().getId());
 							outFollowedBy.print(Config.TAB);
 							outFollowedBy.print(csvEscape(itemDocument.findLabel("en")));
 							outFollowedBy.print(Config.TAB);

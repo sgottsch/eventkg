@@ -90,11 +90,11 @@ public class SubLocationsExtractor implements EntityDocumentDumpProcessor {
 					for (Statement statement : statements) {
 
 						if (statement.getClaim() != null && statement.getClaim().getMainSnak() != null
-								&& statement.getClaim().getMainSnak().getValue() != null) {
+								&& statement.getClaim().getValue() != null) {
 
 							String id = null;
 							try {
-								id = ((ItemIdValue) statement.getClaim().getMainSnak().getValue()).getId();
+								id = ((ItemIdValue) statement.getClaim().getValue()).getId();
 							} catch (ClassCastException e) {
 								continue;
 							}
@@ -103,7 +103,7 @@ public class SubLocationsExtractor implements EntityDocumentDumpProcessor {
 								this.itemsWithSubLocationCount++;
 								outLocations.print(Config.SUB_LOCATION_SYMBOL);
 								outLocations.print(Config.TAB);
-								outLocations.print(itemDocument.getItemId().getId());
+								outLocations.print(itemDocument.getEntityId().getId());
 								outLocations.print(Config.TAB);
 								outLocations.print(csvEscape(itemDocument.findLabel("en")));
 								outLocations.print(Config.TAB);
@@ -135,11 +135,11 @@ public class SubLocationsExtractor implements EntityDocumentDumpProcessor {
 					for (Statement statement : statements) {
 
 						if (statement.getClaim() != null && statement.getClaim().getMainSnak() != null
-								&& statement.getClaim().getMainSnak().getValue() != null) {
+								&& statement.getClaim().getValue() != null) {
 
 							String id = null;
 							try {
-								id = ((ItemIdValue) statement.getClaim().getMainSnak().getValue()).getId();
+								id = ((ItemIdValue) statement.getClaim().getValue()).getId();
 							} catch (ClassCastException e) {
 								continue;
 							}
@@ -148,7 +148,7 @@ public class SubLocationsExtractor implements EntityDocumentDumpProcessor {
 								this.itemsWithParentLocationCount++;
 								outLocations.print(Config.PARENT_LOCATION_SYMBOL);
 								outLocations.print(Config.TAB);
-								outLocations.print(itemDocument.getItemId().getId());
+								outLocations.print(itemDocument.getEntityId().getId());
 								outLocations.print(Config.TAB);
 								outLocations.print(csvEscape(itemDocument.findLabel("en")));
 								outLocations.print(Config.TAB);

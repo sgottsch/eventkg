@@ -86,11 +86,18 @@ public class WikipediaEventsByCategoryNameLoader extends Extractor {
 				if (line.trim().startsWith("INSERT INTO")) {
 					line = line.substring(line.indexOf("("));
 					for (String part : line.split("\\),\\(")) {
+
 						String[] parts = part.split(",");
 
-						int nameSpace = Integer.valueOf(parts[1]);
-						if (nameSpace != 0)
+						try {
+							int nameSpace = Integer.valueOf(parts[1]);
+							if (nameSpace != 0)
+								continue;
+						} catch (NumberFormatException e) {
+							System.out.println("WikipediaEventsByCategoryNameLoader: Ignore invalid namespace "
+									+ parts[1] + " in " + part + ".");
 							continue;
+						}
 
 						String p0 = parts[0];
 						if (p0.startsWith("("))

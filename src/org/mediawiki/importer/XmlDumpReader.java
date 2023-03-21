@@ -425,7 +425,7 @@ public class XmlDumpReader  extends DefaultHandler {
 	void openText(Attributes attributes) {
 		String bytes = attributes.getValue("bytes");
 		if (bytes != null) {
-			rev.Bytes = new Integer(bytes);
+			rev.Bytes = Integer.valueOf(bytes);
 		}
 	}
 

@@ -52,7 +52,6 @@ import net.sf.sevenzipjbinding.ISequentialOutStream;
 import net.sf.sevenzipjbinding.SevenZip;
 import net.sf.sevenzipjbinding.SevenZipException;
 import net.sf.sevenzipjbinding.impl.RandomAccessFileInStream;
-import net.sf.sevenzipjbinding.simple.ISimpleInArchive;
 import net.sf.sevenzipjbinding.simple.ISimpleInArchiveItem;
 
 public class RawDataDownLoader {
@@ -327,14 +326,29 @@ public class RawDataDownLoader {
 				if (year == 1994 && month < 9)
 					continue;
 
+				if (year <= 2001) {
+					// In 2023, the WCE removed all pages before January 2002. They are in the
+					// EventKG resource folder now.
+					try {
+						FileUtils.copyURLToFile(
+								RawDataDownLoader.class.getResource("/resource/data/wce/events_" + String.valueOf(year)
+										+ "_" + String.valueOf(month + 1) + ".json"),
+								new File(this.dataPath + "wce/events_" + String.valueOf(year) + "_" + (month + 1)
+										+ ".json"));
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+				}
+
 				if (year > currentYear)
 					break;
 
 				if (year == currentYear && month > currentMonth)
 					break;
 
-				downloadFile(url.replaceAll("\\$date\\$", monthNames.get(month) + "_" + year),
-						this.dataPath + "wce/events_" + String.valueOf(year) + "_" + (month + 1) + ".json");
+				downloadFile(url.replaceAll("\\$date\\$", monthNames.get(month) + "_" + String.valueOf(year)),
+						this.dataPath + "wce/events_" + String.valueOf(year) + "_" + String.valueOf(month + 1)
+								+ ".json");
 
 			}
 		}

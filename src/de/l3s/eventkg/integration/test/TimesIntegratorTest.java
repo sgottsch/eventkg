@@ -1,18 +1,12 @@
 package de.l3s.eventkg.integration.test;
 
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
 import de.l3s.eventkg.integration.DataSets;
-import de.l3s.eventkg.integration.DataStore;
 import de.l3s.eventkg.integration.integrator.TimesIntegrator;
-import de.l3s.eventkg.integration.model.DateGranularity;
-import de.l3s.eventkg.integration.model.DateWithGranularity;
 import de.l3s.eventkg.integration.model.Entity;
-import de.l3s.eventkg.integration.model.relation.EndTime;
-import de.l3s.eventkg.integration.model.relation.StartTime;
 import de.l3s.eventkg.meta.Language;
 import de.l3s.eventkg.meta.Source;
 import de.l3s.eventkg.pipeline.Config;
@@ -42,7 +36,7 @@ public class TimesIntegratorTest {
 
 		// ~~~
 
-		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+//		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 
 		List<Language> languages = new ArrayList<Language>();
 		languages.add(Language.EN);
@@ -57,28 +51,28 @@ public class TimesIntegratorTest {
 
 		// ~~~
 
-		StartTime time1 = new StartTime(entity1, DataSets.getInstance().getDataSetWithoutLanguage(Source.YAGO),
-				new DateWithGranularity(dateFormat.parse("1896-12-17"), DateGranularity.DAY));
-		StartTime time2 = new StartTime(entity1, DataSets.getInstance().getDataSetWithoutLanguage(Source.YAGO),
-				new DateWithGranularity(dateFormat.parse("2009-06-30"), DateGranularity.DAY));
-		StartTime time3 = new StartTime(entity1, DataSets.getInstance().getDataSet(Language.DE, Source.DBPEDIA),
-				new DateWithGranularity(dateFormat.parse("2011-12-18"), DateGranularity.DAY));
-		StartTime time4 = new StartTime(entity1, DataSets.getInstance().getDataSet(Language.EN, Source.DBPEDIA),
-				new DateWithGranularity(dateFormat.parse("1895-12-17"), DateGranularity.DAY));
+//		StartTime time1 = new StartTime(entity1, DataSets.getInstance().getDataSetWithoutLanguage(Source.YAGO),
+//				new DateWithGranularity(dateFormat.parse("1896-12-17"), DateGranularity.DAY));
+//		StartTime time2 = new StartTime(entity1, DataSets.getInstance().getDataSetWithoutLanguage(Source.YAGO),
+//				new DateWithGranularity(dateFormat.parse("2009-06-30"), DateGranularity.DAY));
+//		StartTime time3 = new StartTime(entity1, DataSets.getInstance().getDataSet(Language.DE, Source.DBPEDIA),
+//				new DateWithGranularity(dateFormat.parse("2011-12-18"), DateGranularity.DAY));
+//		StartTime time4 = new StartTime(entity1, DataSets.getInstance().getDataSet(Language.EN, Source.DBPEDIA),
+//				new DateWithGranularity(dateFormat.parse("1895-12-17"), DateGranularity.DAY));
 
 //		DataStore.getInstance().addStartTime(time1);
 //		DataStore.getInstance().addStartTime(time2);
 //		DataStore.getInstance().addStartTime(time3);
 //		DataStore.getInstance().addStartTime(time4);
 
-		EndTime time1E = new EndTime(entity1, DataSets.getInstance().getDataSetWithoutLanguage(Source.YAGO),
-				new DateWithGranularity(dateFormat.parse("1896-12-17"), DateGranularity.DAY));
-		EndTime time2E = new EndTime(entity1, DataSets.getInstance().getDataSetWithoutLanguage(Source.YAGO),
-				new DateWithGranularity(dateFormat.parse("2009-06-30"), DateGranularity.DAY));
-		EndTime time3E = new EndTime(entity1, DataSets.getInstance().getDataSet(Language.DE, Source.DBPEDIA),
-				new DateWithGranularity(dateFormat.parse("2011-12-18"), DateGranularity.DAY));
-		EndTime time4E = new EndTime(entity1, DataSets.getInstance().getDataSet(Language.EN, Source.DBPEDIA),
-				new DateWithGranularity(dateFormat.parse("1890-12-17"), DateGranularity.DAY));
+//		EndTime time1E = new EndTime(entity1, DataSets.getInstance().getDataSetWithoutLanguage(Source.YAGO),
+//				new DateWithGranularity(dateFormat.parse("1896-12-17"), DateGranularity.DAY));
+//		EndTime time2E = new EndTime(entity1, DataSets.getInstance().getDataSetWithoutLanguage(Source.YAGO),
+//				new DateWithGranularity(dateFormat.parse("2009-06-30"), DateGranularity.DAY));
+//		EndTime time3E = new EndTime(entity1, DataSets.getInstance().getDataSet(Language.DE, Source.DBPEDIA),
+//				new DateWithGranularity(dateFormat.parse("2011-12-18"), DateGranularity.DAY));
+//		EndTime time4E = new EndTime(entity1, DataSets.getInstance().getDataSet(Language.EN, Source.DBPEDIA),
+//				new DateWithGranularity(dateFormat.parse("1890-12-17"), DateGranularity.DAY));
 
 //		DataStore.getInstance().addEndTime(time1E);
 //		DataStore.getInstance().addEndTime(time2E);

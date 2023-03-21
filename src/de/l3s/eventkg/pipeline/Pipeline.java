@@ -76,8 +76,8 @@ public class Pipeline {
 		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
 		System.out.println(
-				"Run EventKG pipeline :" + StringUtils.join(args, " ") + " (" + dateFormat.format(new Date()) + ")");
-
+				"Run EventKG pipeline :" + StringUtils.join(args, " ") + " (" + dateFormat.format(new Date()) + ")");	
+		
 		Config.init(args[0]);
 		List<Language> languages = new ArrayList<Language>();
 		for (String language : Config.getValue("languages").split(",")) {

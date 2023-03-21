@@ -13,7 +13,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.wikidata.wdtk.datamodel.interfaces.DatatypeIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.EntityDocumentDumpProcessor;
 import org.wikidata.wdtk.datamodel.interfaces.EntityIdValue;
 import org.wikidata.wdtk.datamodel.interfaces.GlobeCoordinatesValue;
@@ -29,6 +28,7 @@ import org.wikidata.wdtk.datamodel.interfaces.StatementGroup;
 import org.wikidata.wdtk.datamodel.interfaces.StringValue;
 import org.wikidata.wdtk.datamodel.interfaces.TimeValue;
 import org.wikidata.wdtk.datamodel.interfaces.UnsupportedValue;
+import org.wikidata.wdtk.datamodel.interfaces.ValueSnak;
 import org.wikidata.wdtk.datamodel.interfaces.ValueVisitor;
 
 import de.l3s.eventkg.integration.AllEventPagesDataSet;
@@ -172,11 +172,11 @@ public class RelationsToEventPagesProcessor implements EntityDocumentDumpProcess
 				for (Statement statement : statementGroup) {
 
 					if (statement.getClaim() != null && statement.getClaim().getMainSnak() != null
-							&& statement.getClaim().getMainSnak().getValue() != null) {
+							&& statement.getClaim().getValue() != null) {
 
 						String id = null;
 						try {
-							id = ((ItemIdValue) statement.getClaim().getMainSnak().getValue()).getId();
+							id = ((ItemIdValue) statement.getClaim().getValue()).getId();
 
 							boolean objectIsEvent = this.targetEventIds.contains(getNumericId(id));
 							boolean objectHasExistenceTime = this.entitiesWithExistenceTimes.contains(getNumericId(id));
@@ -215,67 +215,65 @@ public class RelationsToEventPagesProcessor implements EntityDocumentDumpProcess
 
 							if (subjectIsEvent) {
 
-								String res = statement.getClaim().getMainSnak().getValue()
-										.accept(new ValueVisitor<String>() {
+								String res = statement.getClaim().getValue().accept(new ValueVisitor<String>() {
 
-											@Override
-											public String visit(EntityIdValue val) {
-												return null;
-											}
+									@Override
+									public String visit(EntityIdValue val) {
+										return null;
+									}
 
-											@Override
-											public String visit(GlobeCoordinatesValue val) {
-												return WikidataSnakType.GLOBE_COORDINATE.toString() + TAB
-														+ val.getLatitude() + TAB2 + val.getLongitude() + TAB2
-														+ val.getPrecision() + TAB2 + val.getGlobe();
-											}
+									@Override
+									public String visit(GlobeCoordinatesValue val) {
+										return WikidataSnakType.GLOBE_COORDINATE.toString() + TAB + val.getLatitude()
+												+ TAB2 + val.getLongitude() + TAB2 + val.getPrecision() + TAB2
+												+ val.getGlobe();
+									}
 
-											@Override
-											public String visit(MonolingualTextValue val) {
-												return WikidataSnakType.MONOLINGUAL_TEXT.toString() + TAB
-														+ tabify(val.getText()) + TAB2 + val.getLanguageCode();
-											}
+									@Override
+									public String visit(MonolingualTextValue val) {
+										return WikidataSnakType.MONOLINGUAL_TEXT.toString() + TAB
+												+ tabify(val.getText()) + TAB2 + val.getLanguageCode();
+									}
 
-											@Override
-											public String visit(QuantityValue val) {
-												return WikidataSnakType.QUANTITY.toString() + TAB
-														+ val.getNumericValue() + TAB2 + val.getLowerBound() + TAB2
-														+ val.getUpperBound() + TAB2 + val.getUnit();
-											}
+									@Override
+									public String visit(QuantityValue val) {
+										return WikidataSnakType.QUANTITY.toString() + TAB + val.getNumericValue() + TAB2
+												+ val.getLowerBound() + TAB2 + val.getUpperBound() + TAB2
+												+ val.getUnit();
+									}
 
-											@Override
-											public String visit(StringValue val) {
+									@Override
+									public String visit(StringValue val) {
 
-												// ignore images (file formats
-												// see here:
-												// https://www.wikidata.org/wiki/Property:P18)
-												String stringValue = val.getString().toLowerCase();
-												if (stringValue.contains(".") && (stringValue.endsWith(".png")
-														|| stringValue.endsWith(".svg") || stringValue.endsWith(".jpg")
-														|| stringValue.endsWith(".jpeg") || stringValue.endsWith(".jpe")
-														|| stringValue.endsWith(".tif") || stringValue.endsWith(".tiff")
-														|| stringValue.endsWith(".gif") || stringValue.endsWith(".xcf")
-														|| stringValue.endsWith(".pdf") || stringValue.endsWith(".djvu")
-														|| stringValue.endsWith(".webp")))
-													return null;
+										// ignore images (file formats
+										// see here:
+										// https://www.wikidata.org/wiki/Property:P18)
+										String stringValue = val.getString().toLowerCase();
+										if (stringValue.contains(".") && (stringValue.endsWith(".png")
+												|| stringValue.endsWith(".svg") || stringValue.endsWith(".jpg")
+												|| stringValue.endsWith(".jpeg") || stringValue.endsWith(".jpe")
+												|| stringValue.endsWith(".tif") || stringValue.endsWith(".tiff")
+												|| stringValue.endsWith(".gif") || stringValue.endsWith(".xcf")
+												|| stringValue.endsWith(".pdf") || stringValue.endsWith(".djvu")
+												|| stringValue.endsWith(".webp")))
+											return null;
 
-												return WikidataSnakType.STRING.toString() + TAB
-														+ tabify(val.getString());
-											}
+										return WikidataSnakType.STRING.toString() + TAB + tabify(val.getString());
+									}
 
-											@Override
-											public String visit(TimeValue val) {
-												return WikidataSnakType.TIME.toString() + TAB + val.getYear() + TAB2
-														+ val.getMonth() + TAB2 + val.getDay() + TAB2 + val.getMinute()
-														+ TAB2 + val.getSecond() + TAB2 + val.getPrecision();
-											}
+									@Override
+									public String visit(TimeValue val) {
+										return WikidataSnakType.TIME.toString() + TAB + val.getYear() + TAB2
+												+ val.getMonth() + TAB2 + val.getDay() + TAB2 + val.getMinute() + TAB2
+												+ val.getSecond() + TAB2 + val.getPrecision();
+									}
 
-											@Override
-											public String visit(UnsupportedValue value) {
-												return null;
-											}
+									@Override
+									public String visit(UnsupportedValue value) {
+										return null;
+									}
 
-										});
+								});
 
 								if (res == null)
 									continue;
@@ -291,10 +289,10 @@ public class RelationsToEventPagesProcessor implements EntityDocumentDumpProcess
 									for (Iterator<Snak> it = reference.getAllSnaks(); it.hasNext();) {
 										Snak snak = it.next();
 										if (this.temporalPropertyIds.contains(snak.getPropertyId().getId())) {
-											if (snak.getValue() == null)
+											if (snak instanceof ValueSnak && ((ValueSnak) snak).getValue() == null)
 												continue;
-											refStrings.add(
-													snak.getPropertyId().getId() + " " + snak.getValue().toString());
+											refStrings.add(snak.getPropertyId().getId() + " "
+													+ ((ValueSnak) snak).getValue().toString());
 										}
 									}
 								}
@@ -302,14 +300,15 @@ public class RelationsToEventPagesProcessor implements EntityDocumentDumpProcess
 								for (Iterator<Snak> it = statement.getClaim().getAllQualifiers(); it.hasNext();) {
 									Snak snak = it.next();
 									if (this.temporalPropertyIds.contains(snak.getPropertyId().getId())) {
-										if (snak.getValue() == null)
+										if (snak instanceof ValueSnak && ((ValueSnak) snak).getValue() == null)
 											continue;
-										refStrings.add(snak.getPropertyId().getId() + " " + snak.getValue().toString());
+										refStrings.add(snak.getPropertyId().getId() + " "
+												+ ((ValueSnak) snak).getValue().toString());
 									}
 								}
 
-								this.outEventLiteralRelations.print(itemDocument.getEntityId().getId() + TAB + propertyId
-										+ TAB + res + TAB + statement.getRank() + TAB
+								this.outEventLiteralRelations.print(itemDocument.getEntityId().getId() + TAB
+										+ propertyId + TAB + res + TAB + statement.getRank() + TAB
 										+ StringUtils.join(refStrings, TAB2) + "\n");
 							}
 

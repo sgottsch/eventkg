@@ -63,11 +63,11 @@ public class NamespaceFilter extends PageFilter {
 			String trimmed = keyString.trim();
 			try {
 				int key = Integer.parseInt(trimmed);
-				matches.put(new Integer(key), trimmed);
+				matches.put(Integer.valueOf(key), trimmed);
 			} catch (NumberFormatException e) {
 				for (int key = 0; key < namespaceKeys.length; key++) {
 					if (trimmed.equalsIgnoreCase(namespaceKeys[key]))
-						matches.put(new Integer(key), trimmed);
+						matches.put(Integer.valueOf(key), trimmed);
 				}
 			}
 		}

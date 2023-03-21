@@ -19,6 +19,7 @@ import org.wikidata.wdtk.datamodel.interfaces.Snak;
 import org.wikidata.wdtk.datamodel.interfaces.Statement;
 import org.wikidata.wdtk.datamodel.interfaces.StatementGroup;
 import org.wikidata.wdtk.datamodel.interfaces.TimeValue;
+import org.wikidata.wdtk.datamodel.interfaces.ValueSnak;
 
 import de.l3s.eventkg.util.FileLoader;
 import de.l3s.eventkg.util.FileName;
@@ -77,7 +78,7 @@ public class FactsWithTemporalSnaksProcessor implements EntityDocumentDumpProces
 		outTemporalFacts = FileLoader.getPrintStream(FileName.WIKIDATA_TEMPORAL_FACTS);
 		loadForbiddenPropertyIds();
 	}
-	
+
 	// TODO: Update to new Wikidata Toolkit version
 
 	@Override
@@ -90,18 +91,19 @@ public class FactsWithTemporalSnaksProcessor implements EntityDocumentDumpProces
 			for (Statement statement : statementGroup) {
 
 				if (statement.getClaim() != null && statement.getClaim().getMainSnak() != null
-						&& statement.getClaim().getMainSnak().getValue() != null) {
+						&& statement.getClaim().getValue() != null) {
 
 					String id = null;
 					try {
-						id = ((ItemIdValue) statement.getClaim().getMainSnak().getValue()).getId();
+						id = ((ItemIdValue) statement.getClaim().getValue()).getId();
 
 						List<Snak> temporalSnaks = new ArrayList<Snak>();
 						// search for temporal qualifiers
 						for (Iterator<Snak> it = statement.getClaim().getAllQualifiers(); it.hasNext();) {
 							Snak snak = it.next();
-							if (temporalPropertyIds.contains(snak.getPropertyId().getId())) {
-								if (snak.getValue() != null)
+							if (temporalPropertyIds.contains(snak.getPropertyId().getId())
+									&& snak instanceof ValueSnak) {
+								if (((ValueSnak) snak).getValue() != null)
 									temporalSnaks.add(snak);
 							}
 						}
@@ -110,11 +112,11 @@ public class FactsWithTemporalSnaksProcessor implements EntityDocumentDumpProces
 
 							itemsWithTemporalPropertiesCount += 1;
 
-							outTemporalFacts.print(statement.getStatementId() + "\t" + itemDocument.getItemId().getId()
-									+ "\t" + propertyId + "\t" + id + "\n");
+							outTemporalFacts.print(statement.getStatementId() + "\t"
+									+ itemDocument.getEntityId().getId() + "\t" + propertyId + "\t" + id + "\n");
 							for (Snak snak : temporalSnaks) {
 
-								String timeString = transformToTimeString((TimeValue) snak.getValue());
+								String timeString = transformToTimeString((TimeValue) ((ValueSnak) snak).getValue());
 
 								outTemporalFacts.print(
 										"\t" + snak.getPropertyId().getId() + "\t" + csvEscape(timeString) + "\n");

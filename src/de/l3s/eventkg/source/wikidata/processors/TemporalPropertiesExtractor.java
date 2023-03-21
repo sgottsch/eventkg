@@ -50,10 +50,10 @@ public class TemporalPropertiesExtractor implements EntityDocumentDumpProcessor 
 					for (Statement statement : statements) {
 
 						if (statement.getClaim() != null && statement.getClaim().getMainSnak() != null
-								&& statement.getClaim().getMainSnak().getValue() != null) {
+								&& statement.getClaim().getValue() != null) {
 
 							String timeString = transformToTimeString(
-									(TimeValue) statement.getClaim().getMainSnak().getValue());
+									(TimeValue) statement.getClaim().getValue());
 
 							if (timeString != null) {
 								this.itemsWithTemporalPropertyCount++;

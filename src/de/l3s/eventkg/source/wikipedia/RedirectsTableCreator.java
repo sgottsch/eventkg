@@ -57,9 +57,15 @@ public class RedirectsTableCreator {
 
 						List<String> parts = splitInsertLine(part);
 
-						int nameSpace = Integer.valueOf(parts.get(1));
-						if (nameSpace != 0)
+						try {
+							int nameSpace = Integer.valueOf(parts.get(1));
+							if (nameSpace != 0)
+								continue;
+						} catch (NumberFormatException e) {
+							System.out.println("RedirectsTableCreator: Ignore invalid namespace " + parts.get(1)
+									+ " in " + part + ".");
 							continue;
+						}
 
 						String p0 = parts.get(0);
 						if (p0.startsWith("("))

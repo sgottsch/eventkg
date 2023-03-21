@@ -50,6 +50,9 @@ public class Config {
 	}
 
 	public static void init(String fileName) {
+		
+		System.out.println("Initialise config file: " + fileName);
+
 		properties = new HashMap<String, String>();
 
 		try {

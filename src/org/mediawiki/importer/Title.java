@@ -48,7 +48,7 @@ public class Title {
 				return;
 			}
 		}
-		Namespace = new Integer(0);
+		Namespace = Integer.valueOf(0);
 		Text = prefixedTitle;
 	}
 	
@@ -78,12 +78,12 @@ public class Title {
 		else if (isSpecial())
 			return null;
 		else
-			return new Title(new Integer(Namespace.intValue() + 1), Text, namespaces);
+			return new Title(Integer.valueOf(Namespace.intValue() + 1), Text, namespaces);
 	}
 	
 	public Title subjectPage() {
 		if (isTalk())
-			return new Title(new Integer(Namespace.intValue() - 1), Text, namespaces);
+			return new Title(Integer.valueOf(Namespace.intValue() - 1), Text, namespaces);
 		else
 			return this;
 	}

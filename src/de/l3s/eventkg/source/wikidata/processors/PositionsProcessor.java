@@ -50,11 +50,11 @@ public class PositionsProcessor implements EntityDocumentDumpProcessor {
 				for (Statement statement : statements) {
 
 					if (statement.getClaim() != null && statement.getClaim().getMainSnak() != null
-							&& statement.getClaim().getMainSnak().getValue() != null) {
+							&& statement.getClaim().getValue() != null) {
 
 						GlobeCoordinatesValue value = null;
 						try {
-							value = (GlobeCoordinatesValue) statement.getClaim().getMainSnak().getValue();
+							value = (GlobeCoordinatesValue) statement.getClaim().getValue();
 						} catch (ClassCastException e) {
 							continue;
 						}
@@ -63,7 +63,7 @@ public class PositionsProcessor implements EntityDocumentDumpProcessor {
 							this.itemsWithPositionCount++;
 							String globe = value.getGlobe();
 							globe = globe.substring(globe.lastIndexOf("/") + 1);
-							outPositions.print(itemDocument.getItemId().getId());
+							outPositions.print(itemDocument.getEntityId().getId());
 							outPositions.print(Config.TAB);
 							outPositions.print(csvEscape(itemDocument.findLabel("en")));
 							outPositions.print(Config.TAB);

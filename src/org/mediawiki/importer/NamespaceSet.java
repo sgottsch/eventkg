@@ -40,7 +40,7 @@ public class NamespaceSet {
 	}
 	
 	public void add(int index, String prefix, String nscase) {
-		add(new Integer(index), prefix, nscase);
+		add(Integer.valueOf(index), prefix, nscase);
 	}
 	
 	public void add(Integer index, String prefix, String nscase) {
